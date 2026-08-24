@@ -94,14 +94,31 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "85ae0bcea6199ea0e9bbc23d7d6f2caf3a8badf49aef1060f79826e4cae07ae5",
       "lines": [
-        1,
-        57
+        35,
+        45
       ],
-      "path": "src/capture/platform/windows/packet_delivery.rs",
-      "symbol": null
+      "path": "src/capture/platform/windows/packet_delivery.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "85ae0bcea6199ea0e9bbc23d7d6f2caf3a8badf49aef1060f79826e4cae07ae5",
+      "lines": [
+        30,
+        35
+      ],
+      "path": "src/capture/platform/windows/packet_delivery.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "85ae0bcea6199ea0e9bbc23d7d6f2caf3a8badf49aef1060f79826e4cae07ae5",
+      "lines": [
+        45,
+        55
+      ],
+      "path": "src/capture/platform/windows/packet_delivery.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -133,8 +150,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/capture/platform/windows/packet_delivery.rs:28.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -143,12 +160,12 @@
   "module": "pocketstation::capture::platform::windows::packet_delivery",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::windows::packet_delivery` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:PacketReadPlan",
-    "fn:plan_packet_read"
+    "Declares public enum `PacketReadPlan`.",
+    "Declares public fn `plan_packet_read`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/packet_delivery.rs",
@@ -202,7 +219,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::windows::packet delivery responsibilities, including the src/capture/platform/windows/packet delivery boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::platform::windows::packet_delivery`."
   },
   "queues": [],
   "recovery_behavior": [],

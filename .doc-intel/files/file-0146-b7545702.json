@@ -571,14 +571,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "b34b34d9898e985db873fe92eafd55f9b837efbda7b789e9086e7a90ef5b522e",
       "lines": [
         1,
-        860
+        4
       ],
       "path": "src/graph/compile/plan.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::compile::plan"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -637,26 +637,30 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::SampleFormat",
-    "crate::graph::builtins::PassthroughNode",
-    "crate::graph::compile::Compiler",
-    "crate::graph::dsl::Pipeline",
-    "crate::graph::ir::GraphIr",
-    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext}",
-    "crate::graph::partition::ExecutionPartition",
-    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
-    "crate::graph::plan::*",
-    "crate::graph::ports::{AudioCaps, ChannelLayout, EdgeContract, PortDirection, PortSpec}",
-    "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity}",
-    "crate::graph::registry::{NodeFactory, NodeRegistry}",
-    "crate::graph::runtime_node::RuntimeNode",
-    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "proptest::prelude::*",
-    "std::sync::Arc",
-    "super::*",
-    "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext};"
+    "Consumes configuration at src/graph/compile/plan.rs:354.",
+    "Consumes configuration at src/graph/compile/plan.rs:365.",
+    "Consumes configuration at src/graph/compile/plan.rs:426.",
+    "Consumes configuration at src/graph/compile/plan.rs:448.",
+    "Consumes configuration at src/graph/compile/plan.rs:470.",
+    "Consumes configuration at src/graph/compile/plan.rs:492.",
+    "Consumes configuration at src/graph/compile/plan.rs:514.",
+    "Depends on `crate::frame::SampleFormat` through a declared Rust import.",
+    "Depends on `crate::graph::builtins::PassthroughNode` through a declared Rust import.",
+    "Depends on `crate::graph::compile::Compiler` through a declared Rust import.",
+    "Depends on `crate::graph::dsl::Pipeline` through a declared Rust import.",
+    "Depends on `crate::graph::ir::GraphIr` through a declared Rust import.",
+    "Depends on `crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext}` through a declared Rust import.",
+    "Depends on `crate::graph::partition::ExecutionPartition` through a declared Rust import.",
+    "Depends on `crate::graph::partition::{ExecutionPartition, SafetyContract}` through a declared Rust import.",
+    "Depends on `crate::graph::plan::*` through a declared Rust import.",
+    "Depends on `crate::graph::ports::{AudioCaps, ChannelLayout, EdgeContract, PortDirection, PortSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity}` through a declared Rust import.",
+    "Depends on `crate::graph::registry::{NodeFactory, NodeRegistry}` through a declared Rust import.",
+    "Depends on `crate::graph::runtime_node::RuntimeNode` through a declared Rust import.",
+    "Depends on `crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}` through a declared Rust import.",
+    "Depends on `proptest::prelude::*` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -747,17 +751,17 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::compile::plan` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-c51f6c9502969abb9937"
   ],
   "outputs": [
-    "fn:new",
-    "fn:plan",
-    "return Err(PlanError::FanInOnSinglePort {",
-    "return Err(PlanError::MoveExclusiveFanOut {",
-    "struct:RuntimePlanner"
+    "Creates a typed failure at src/graph/compile/plan.rs:125.",
+    "Creates a typed failure at src/graph/compile/plan.rs:321.",
+    "Declares public fn `new`.",
+    "Declares public fn `plan`.",
+    "Declares public struct `RuntimePlanner`."
   ],
   "package": "pocketstation",
   "path": "src/graph/compile/plan.rs",
@@ -1110,8 +1114,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::compile::plan responsibilities, including Validates the graph and produces the bounded runtime execution and memory plan.; Creates a new `RuntimePlanner`.; Lower a verified IR into an execution-ready plan.."
+    "classification": "DECLARED",
+    "text": "RuntimePlanner \u2014 lowers a verified `GraphIr` into a `RuntimePlan`. The pipeline runs real lowering steps in order: fan-out grouping, fan-in mix grouping (with multiplicity validation), execution-domain partitioning, memory sizing, edge instrumentation, then emit."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1150,6 +1154,11 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/graph/partition.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_protocol.rs",
     "REFERENCES:src/graph/ir.rs",
     "REFERENCES:src/graph/plan.rs",
     "REFERENCES:src/graph/ports.rs",

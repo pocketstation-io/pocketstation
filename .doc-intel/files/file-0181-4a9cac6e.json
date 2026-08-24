@@ -4,7 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/runtime/audio/runner.rs",
     "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPLEMENTS:src/runtime/audio/runner.rs",
+    "IMPLEMENTS:src/session/prepare/error.rs",
     "IMPORTS:src/runtime/audio/mod.rs",
     "REFERENCES:src/runtime/audio/runner.rs",
     "REFERENCES:src/session/prepare/error.rs",
@@ -146,7 +149,10 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/runtime/audio/runner.rs",
     "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPLEMENTS:src/runtime/audio/runner.rs",
+    "IMPLEMENTS:src/session/prepare/error.rs",
     "IMPORTS:src/runtime/audio/mod.rs",
     "REFERENCES:src/runtime/audio/runner.rs",
     "REFERENCES:src/session/prepare/error.rs",
@@ -464,20 +470,23 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "9dc2e93f2bb5af5a9c5b8d5d927bf31f8c057c00119f25a0140dbeac0c7bb897",
       "lines": [
         1,
-        446
+        1
       ],
       "path": "src/runtime/audio/executor.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::audio::executor"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/runtime/audio/runner.rs",
     "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPLEMENTS:src/runtime/audio/runner.rs",
+    "IMPLEMENTS:src/session/prepare/error.rs",
     "IMPORTS:src/runtime/audio/mod.rs",
     "REFERENCES:src/runtime/audio/runner.rs",
     "REFERENCES:src/session/prepare/error.rs",
@@ -499,7 +508,10 @@
   "generated_from": "not_applicable",
   "git_object": "2c72c6215702be536f02ca409210ea9ca799e0bb",
   "implemented_by": [
+    "CALLS:src/runtime/audio/runner.rs",
     "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPLEMENTS:src/runtime/audio/runner.rs",
+    "IMPLEMENTS:src/session/prepare/error.rs",
     "IMPORTS:src/runtime/audio/mod.rs",
     "REFERENCES:src/runtime/audio/runner.rs",
     "REFERENCES:src/session/prepare/error.rs",
@@ -512,7 +524,10 @@
     "NodeFactory for WorkerSinkFactory"
   ],
   "imported_by": [
+    "CALLS:src/runtime/audio/runner.rs",
     "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPLEMENTS:src/runtime/audio/runner.rs",
+    "IMPLEMENTS:src/session/prepare/error.rs",
     "IMPORTS:src/runtime/audio/mod.rs",
     "REFERENCES:src/runtime/audio/runner.rs",
     "REFERENCES:src/session/prepare/error.rs",
@@ -543,32 +558,33 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::frame::AudioFrame",
-    "crate::frame::LineagedAudioFrame",
-    "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
-    "crate::graph::compile::Compiler",
-    "crate::graph::compile::RuntimePlanner",
-    "crate::graph::dsl::Pipeline",
-    "crate::graph::ir::GraphIr",
-    "crate::graph::node::PrepareContext",
-    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId}",
-    "crate::graph::partition::ExecutionPartition",
-    "crate::graph::plan::RuntimePlan",
-    "crate::graph::register_builtins",
-    "crate::graph::registry::NodeRegistry",
-    "crate::graph::registry::{NodeFactory, NodeRegistry}",
-    "crate::graph::runtime_node::RuntimeNode",
-    "crate::graph::spec::EdgeId",
-    "crate::graph::spec::NodeId",
-    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
-    "crate::runtime::audio::EdgeObservations",
-    "crate::runtime::audio::{DispatchSummary, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter}",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::sync::Arc",
-    "super::*",
-    "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};"
+    "Consumes configuration at src/runtime/audio/executor.rs:11.",
+    "Consumes configuration at src/runtime/audio/executor.rs:15.",
+    "Consumes configuration at src/runtime/audio/executor.rs:187.",
+    "Consumes configuration at src/runtime/audio/executor.rs:228.",
+    "Consumes configuration at src/runtime/audio/executor.rs:239.",
+    "Consumes configuration at src/runtime/audio/executor.rs:281.",
+    "Consumes configuration at src/runtime/audio/executor.rs:3.",
+    "Depends on `crate::frame::AudioFrame` through a declared Rust import.",
+    "Depends on `crate::frame::LineagedAudioFrame` through a declared Rust import.",
+    "Depends on `crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `crate::graph::compile::Compiler` through a declared Rust import.",
+    "Depends on `crate::graph::compile::RuntimePlanner` through a declared Rust import.",
+    "Depends on `crate::graph::dsl::Pipeline` through a declared Rust import.",
+    "Depends on `crate::graph::ir::GraphIr` through a declared Rust import.",
+    "Depends on `crate::graph::node::PrepareContext` through a declared Rust import.",
+    "Depends on `crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId}` through a declared Rust import.",
+    "Depends on `crate::graph::partition::ExecutionPartition` through a declared Rust import.",
+    "Depends on `crate::graph::plan::RuntimePlan` through a declared Rust import.",
+    "Depends on `crate::graph::register_builtins` through a declared Rust import.",
+    "Depends on `crate::graph::registry::NodeRegistry` through a declared Rust import.",
+    "Depends on `crate::graph::registry::{NodeFactory, NodeRegistry}` through a declared Rust import.",
+    "Depends on `crate::graph::runtime_node::RuntimeNode` through a declared Rust import.",
+    "Depends on `crate::graph::spec::EdgeId` through a declared Rust import.",
+    "Depends on `crate::graph::spec::NodeId` through a declared Rust import.",
+    "Depends on `crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }` through a declared Rust import.",
+    "Depends on `crate::runtime::audio::EdgeObservations` through a declared Rust import.",
+    "Depends on `crate::runtime::audio::{DispatchSummary, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -635,7 +651,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::audio::executor` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-3caaa68fb904e3dab03b",
@@ -643,15 +659,18 @@
     "pattern-c2561f2a635a7ffcdd4a"
   ],
   "outputs": [
-    "Err(NodeError::Prepare(",
-    "enum:ExecError",
-    "fn:execute_from",
-    "fn:from_node",
-    "fn:new",
-    "fn:observations",
-    "return Err(ExecError::Node(format!(",
-    "struct:PlanExecutionSummary",
-    "struct:RealtimePlanExecutor"
+    "Creates a typed failure at src/runtime/audio/executor.rs:127.",
+    "Creates a typed failure at src/runtime/audio/executor.rs:176.",
+    "Creates a typed failure at src/runtime/audio/executor.rs:204.",
+    "Creates a typed failure at src/runtime/audio/executor.rs:290.",
+    "Creates a typed failure at src/runtime/audio/executor.rs:84.",
+    "Declares public enum `ExecError`.",
+    "Declares public fn `execute_from`.",
+    "Declares public fn `from_node`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observations`.",
+    "Declares public struct `PlanExecutionSummary`.",
+    "Declares public struct `RealtimePlanExecutor`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/audio/executor.rs",
@@ -806,8 +825,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::audio::executor responsibilities, including Classifies failures reported as exec error.; Reported when the owning operation encounters node.; Creates `ExecError` from node.."
+    "classification": "DECLARED",
+    "text": "Realtime node execution connected by the bounded edges of a `RuntimePlan`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -864,6 +883,10 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/graph/partition.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/audio/router.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/graph/ir.rs",
     "REFERENCES:src/graph/node.rs",
@@ -892,17 +915,17 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::runtime::audio::executor::ExecError: Classifies failures reported as exec error.",
-    "pocketstation::runtime::audio::executor::ExecError::Node: Reported when the owning operation encounters node.",
+    "pocketstation::runtime::audio::executor::ExecError: Classifies failures surfaced by exec operations.",
+    "pocketstation::runtime::audio::executor::ExecError::Node: Reports that no de is available.",
     "from_node: Creates `ExecError` from node.",
     "pocketstation::runtime::audio::executor::PlanExecutionSummary: Reports the counters and terminal facts collected for plan execution.",
-    "PlanExecutionSummary::nodes_executed: Stores the nodes executed used by `PlanExecutionSummary`.",
-    "PlanExecutionSummary::edges_attempted: Stores the edges attempted used by `PlanExecutionSummary`.",
-    "PlanExecutionSummary::edges_enqueued: Stores the edges enqueued used by `PlanExecutionSummary`.",
-    "PlanExecutionSummary::edges_dropped: Stores the edges dropped used by `PlanExecutionSummary`.",
+    "PlanExecutionSummary::nodes_executed: References the nodes executed participating in `PlanExecutionSummary`.",
+    "PlanExecutionSummary::edges_attempted: References the edges attempted participating in `PlanExecutionSummary`.",
+    "PlanExecutionSummary::edges_enqueued: References the edges enqueued participating in `PlanExecutionSummary`.",
+    "PlanExecutionSummary::edges_dropped: References the edges dropped participating in `PlanExecutionSummary`.",
     "pocketstation::runtime::audio::executor::RealtimePlanExecutor: Executes realtime plan according to its compiled plan and cancellation contract.",
     "new: Creates a new `RealtimePlanExecutor`.",
-    "execute_from: Executes from for `RealtimePlanExecutor`.",
+    "execute_from: Executes one lineaged frame from the named source node through `RealtimePlanExecutor`.",
     "observations: Returns the observations exposed by `RealtimePlanExecutor`."
   ],
   "retry_behavior": [],

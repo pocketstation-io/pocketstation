@@ -5,11 +5,11 @@ use crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, S
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Reports sequence or timestamp continuity observed for one signal stream."]
 pub struct SignalContinuityObservation {
-    #[doc = "Stores the discontinuity observed used by `SignalContinuityObservation`."]
+    #[doc = "Reports whether discontinuity is observed for `SignalContinuityObservation`."]
     pub discontinuity_observed: bool,
-    #[doc = "Stores the source recovered used by `SignalContinuityObservation`."]
+    #[doc = "References the source recovered participating in `SignalContinuityObservation`."]
     pub source_recovered: bool,
-    #[doc = "Stores the policy changed used by `SignalContinuityObservation`."]
+    #[doc = "Reports whether policy changed is true for `SignalContinuityObservation`."]
     pub policy_changed: bool,
 }
 
@@ -92,33 +92,33 @@ fn timestamp_regressed(previous: SignalTiming, current: SignalTiming) -> bool {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as signal continuity error."]
+#[doc = "Classifies failures surfaced by signal continuity operations."]
 pub enum SignalContinuityError {
     #[error("signal envelope is invalid: {0}")]
-    #[doc = "Reports invalid envelope."]
+    #[doc = "Reports that the supplied envelope is invalid."]
     InvalidEnvelope(SignalEnvelopeError),
     #[error("signal continuity requires source-independent lineage")]
-    #[doc = "Reports missing lineage."]
+    #[doc = "Reports that the required lineage is missing."]
     MissingLineage,
     #[error("signal identity changed within one continuity tracker")]
-    #[doc = "Reports identity changed."]
+    #[doc = "Reports that identity changed across a boundary that requires stability."]
     IdentityChanged,
     #[error("signal sequence gap occurred without a discontinuity epoch change")]
-    #[doc = "Reports sequence gap without discontinuity."]
+    #[doc = "Classifies a failure at the sequence gap without discontinuity stage or component of `SignalContinuityError`."]
     SequenceGapWithoutDiscontinuity,
     #[error("signal timestamp regressed")]
-    #[doc = "Reports timestamp regression."]
+    #[doc = "Reports that timestamp moved backward instead of remaining monotonic."]
     TimestampRegression,
     #[error("signal discontinuity epoch regressed")]
-    #[doc = "Reports discontinuity regressed."]
+    #[doc = "Reports that discontinuity moved backward instead of remaining monotonic."]
     DiscontinuityRegressed,
     #[error("signal source generation regressed")]
-    #[doc = "Reports generation regressed."]
+    #[doc = "Reports that generation moved backward instead of remaining monotonic."]
     GenerationRegressed,
     #[error("signal source recovery occurred without a discontinuity")]
-    #[doc = "Reports recovery without discontinuity."]
+    #[doc = "Classifies a failure at the recovery without discontinuity stage or component of `SignalContinuityError`."]
     RecoveryWithoutDiscontinuity,
     #[error("signal policy epoch regressed")]
-    #[doc = "Reports policy regressed."]
+    #[doc = "Reports that policy moved backward instead of remaining monotonic."]
     PolicyRegressed,
 }

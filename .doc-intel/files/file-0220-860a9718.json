@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/lifecycle/host.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -21,6 +22,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/session/lifecycle/host.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -95,19 +97,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "cc0faffc4745853d43cd1794de28490efa48114da2e8f308a41b7fd14011a85d",
       "lines": [
         1,
-        34
+        4
       ],
       "path": "src/session/extensions/polled_audio.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::extensions::polled_audio"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/lifecycle/host.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -125,6 +128,7 @@
   "generated_from": "not_applicable",
   "git_object": "f0d7ddbc7d968e55248b10af99cb1665452dec8c",
   "implemented_by": [
+    "CALLS:src/session/lifecycle/host.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -133,6 +137,7 @@
     "SessionEngineBuilder"
   ],
   "imported_by": [
+    "CALLS:src/session/lifecycle/host.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -142,9 +147,9 @@
     "crate::session::{ EndpointConfiguration, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, CONNECTOR_NODE_TYPE_ID, }"
   ],
   "inputs": [
-    "crate::endpoint::{PolledAudioEndpoint, POLLED_AUDIO_OPERATOR_ID}",
-    "crate::graph::NodeTypeId",
-    "crate::session::{ EndpointConfiguration, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, CONNECTOR_NODE_TYPE_ID, }"
+    "Depends on `crate::endpoint::{PolledAudioEndpoint, POLLED_AUDIO_OPERATOR_ID}` through a declared Rust import.",
+    "Depends on `crate::graph::NodeTypeId` through a declared Rust import.",
+    "Depends on `crate::session::{ EndpointConfiguration, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, CONNECTOR_NODE_TYPE_ID, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -153,14 +158,14 @@
   "module": "pocketstation::session::extensions::polled_audio",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::polled_audio` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-860df4a136fe70f7347e"
   ],
   "outputs": [
-    "fn:polled_audio",
-    "fn:register_polled_audio_endpoint"
+    "Declares public fn `polled_audio`.",
+    "Declares public fn `register_polled_audio_endpoint`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/polled_audio.rs",
@@ -188,8 +193,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::polled audio responsibilities, including Declares a bounded polled-audio endpoint on `Session`.; Registers polled audio endpoint for `SessionEngineBuilder`.."
+    "classification": "DECLARED",
+    "text": "Session composition for the bounded polled-audio endpoint. The endpoint module owns the concrete driver and queue. Session owns only declaration and registration against the Endpoint contracts."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -250,6 +255,7 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/session/lifecycle/host.rs",
     "REFERENCES:src/endpoint/polled_audio.rs",
     "REFERENCES:src/session/declaration/draft.rs",
     "REFERENCES:src/session/error.rs",

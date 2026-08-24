@@ -60,24 +60,24 @@ impl Drop for ConnectorSecret {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the connector configuration value kind used by PocketStation."]
 pub enum ConnectorConfigurationValueKind {
-    #[doc = "Selects text behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as text."]
     Text,
-    #[doc = "Selects boolean behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as boolean."]
     Boolean,
-    #[doc = "Selects signed integer behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as signed integer."]
     SignedInteger,
-    #[doc = "Selects unsigned integer behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as unsigned integer."]
     UnsignedInteger,
-    #[doc = "Selects duration milliseconds behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as duration milliseconds."]
     DurationMilliseconds,
-    #[doc = "Selects byte count behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as byte count."]
     ByteCount,
-    #[doc = "Selects secret behavior for `ConnectorConfigurationValueKind`."]
+    #[doc = "Declares that a connector configuration value is encoded as secret."]
     Secret,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported connector configuration value cases."]
+#[doc = "Carries one validated connector configuration value in its declared scalar or secret form."]
 pub enum ConnectorConfigurationValue {
     #[doc = "Represents the text case of `ConnectorConfigurationValue`."]
     Text(String),
@@ -182,16 +182,16 @@ impl ConnectorConfiguration {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Selects the connector configuration requirement used by PocketStation."]
 pub enum ConnectorConfigurationRequirement {
-    #[doc = "Selects required behavior for `ConnectorConfigurationRequirement`."]
+    #[doc = "Declares the connector configuration field to be required."]
     Required,
-    #[doc = "Selects optional behavior for `ConnectorConfigurationRequirement`."]
+    #[doc = "Declares the connector configuration field to be optional."]
     Optional,
-    #[doc = "Selects default behavior for `ConnectorConfigurationRequirement`."]
+    #[doc = "Declares the connector configuration field to be default."]
     Default(ConnectorConfigurationValue),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported connector configuration constraint cases."]
+#[doc = "Classifies validation constraints applied to connector configuration fields."]
 pub enum ConnectorConfigurationConstraint {
     #[doc = "Represents the non empty case of `ConnectorConfigurationConstraint`."]
     NonEmpty,
@@ -640,33 +640,33 @@ fn validate_value(
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported connector configuration error code cases."]
+#[doc = "Provides stable categories for connector configuration validation failures."]
 pub enum ConnectorConfigurationErrorCode {
-    #[doc = "Reports invalid schema."]
+    #[doc = "Reports that the supplied schema is invalid."]
     InvalidSchema,
-    #[doc = "Reports duplicate field."]
+    #[doc = "Reports that field duplicates an existing declaration or record."]
     DuplicateField,
-    #[doc = "Reports too many fields."]
+    #[doc = "Reports that the number of fields exceeds the supported limit."]
     TooManyFields,
-    #[doc = "Reports unknown field."]
+    #[doc = "Reports that the referenced field is not declared or registered."]
     UnknownField,
-    #[doc = "Reports missing required field."]
+    #[doc = "Reports that the required required field is missing."]
     MissingRequiredField,
-    #[doc = "Reports wrong type."]
+    #[doc = "Reports that type does not match the required identity or contract."]
     WrongType,
-    #[doc = "Reports invalid value."]
+    #[doc = "Reports that the supplied value is invalid."]
     InvalidValue,
-    #[doc = "Reports constraint violation."]
+    #[doc = "Classifies a failure at the constraint violation stage or component of `ConnectorConfigurationErrorCode`."]
     ConstraintViolation,
-    #[doc = "Reports value too large."]
+    #[doc = "Reports that value exceeds the supported size limit."]
     ValueTooLarge,
-    #[doc = "Reports empty secret."]
+    #[doc = "Reports that secret is empty."]
     EmptySecret,
-    #[doc = "Reports secret default forbidden."]
+    #[doc = "Reports that secret default is forbidden by the declared safety contract."]
     SecretDefaultForbidden,
-    #[doc = "Reports secret classification mismatch."]
+    #[doc = "Reports that secret classification does not match the expected contract."]
     SecretClassificationMismatch,
-    #[doc = "Reports unexpected sensitive value."]
+    #[doc = "Reports that sensitive value is not valid in the current protocol or lifecycle state."]
     UnexpectedSensitiveValue,
 }
 

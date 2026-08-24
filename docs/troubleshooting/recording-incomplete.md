@@ -1,6 +1,6 @@
 # A recording is incomplete
 
-<!-- claims: CLM-TRBL-007-CAP-001,CLM-TRBL-007-CAP-002,CLM-TRBL-007-CAP-003,CLM-TRBL-007-SOURCE-001 -->
+<!-- claims: CLM-TRBL-007-SCOPE-001,CLM-TRBL-007-TEXT-001,CLM-TRBL-007-TEXT-002,CLM-TRBL-007-TEXT-003,CLM-TRBL-007-TEXT-004,CLM-TRBL-007-TEXT-005,CLM-TRBL-007-TEXT-006,CLM-TRBL-007-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,6 +77,29 @@ Do not append or retry finalization unless the writer contract permits it. Compl
 
 The claims on **A recording is incomplete** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/recording/writer.rs:1-1262` (`DIRECT`)
+- `src/recording/writer.rs:17-17` (`DIRECT`)
+- `src/recording/writer.rs:18-18` (`DIRECT`)
+- `src/recording/writer.rs:19-19` (`DIRECT`)
+- `src/recording/writer.rs:20-20` (`DIRECT`)
+- `src/recording/writer.rs:21-21` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:24-82` (`DIRECT`)
+- `src/recording/writer.rs:26-26` (`DIRECT`)
+- `src/recording/writer.rs:26-26` (`DIRECT`)
+- `src/recording/writer.rs:28-28` (`DIRECT`)
+- `src/recording/writer.rs:28-28` (`DIRECT`)
+- `src/recording/writer.rs:30-30` (`DIRECT`)
+- `src/recording/writer.rs:30-30` (`DIRECT`)
+- `src/recording/writer.rs:32-36` (`DIRECT`)
+- `src/recording/writer.rs:33-33` (`DIRECT`)
+- `src/recording/writer.rs:34-34` (`DIRECT`)
+- `src/recording/writer.rs:35-35` (`DIRECT`)
+- `src/recording/writer.rs:38-38` (`DIRECT`)
+- `src/recording/writer.rs:38-38` (`DIRECT`)
 
 For **A recording is incomplete**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

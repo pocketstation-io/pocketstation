@@ -1,6 +1,6 @@
 # Polled audio
 
-<!-- claims: CLM-DOC-018-CAP-001,CLM-DOC-018-SOURCE-001 -->
+<!-- claims: CLM-DOC-018-SCOPE-001,CLM-DOC-018-TEXT-001,CLM-DOC-018-TEXT-002,CLM-DOC-018-TEXT-003,CLM-DOC-018-TEXT-004,CLM-DOC-018-TEXT-005,CLM-DOC-018-TEXT-006,CLM-DOC-018-SOURCE-001 -->
 
 ## What it is
 
@@ -46,15 +46,15 @@ The scope of **Polled audio** ends at the native contracts and executable condit
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::endpoint::polled_audio::PolledAudioEndpoint` | struct | Declares application-polled audio and retains its bounded receipt. | `src/endpoint/polled_audio.rs:16` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioBatchLease` | struct | Owns bounded access to polled audio batch. | `src/endpoint/polled_audio_driver.rs:218` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioBatchLease` | struct | Holds the ownership or bounded access represented by polled audio batch lease. | `src/endpoint/polled_audio_driver.rs:218` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfig` | struct | Configures polled audio endpoint behavior at its owning API boundary. | `src/endpoint/polled_audio_driver.rs:23` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioFrame` | struct | Carries one polled audio payload together with its declared metadata. | `src/endpoint/polled_audio_driver.rs:256` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioObservations` | struct | Reports the polled audio observations collected at an observation boundary. | `src/endpoint/polled_audio_driver.rs:56` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioReceipt` | struct | Retains the identity and observation access returned for polled audio. | `src/endpoint/polled_audio_driver.rs:105` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` | enum | Classifies failures reported as polled audio endpoint config error. | `src/endpoint/polled_audio_driver.rs:40` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` | enum | Classifies failures reported as polled audio poll error. | `src/endpoint/polled_audio_driver.rs:74` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::BatchCapacityTooLarge` | variant | Reported when the owning operation encounters batch capacity too large. | `src/endpoint/polled_audio_driver.rs:50` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::LeaseCapacityTooLarge` | variant | Reported when the owning operation encounters lease capacity too large. | `src/endpoint/polled_audio_driver.rs:52` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` | enum | Classifies failures surfaced by polled audio endpoint config operations. | `src/endpoint/polled_audio_driver.rs:40` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` | enum | Classifies failures surfaced by polled audio poll operations. | `src/endpoint/polled_audio_driver.rs:74` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::BatchCapacityTooLarge` | variant | Reports that batch capacity exceeds the supported size limit. | `src/endpoint/polled_audio_driver.rs:50` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::LeaseCapacityTooLarge` | variant | Reports that lease capacity exceeds the supported size limit. | `src/endpoint/polled_audio_driver.rs:52` |
 
 ## Executable evidence
 
@@ -88,6 +88,29 @@ Executable evidence selected for **Polled audio** is limited to each test's reco
 
 The claims on **Polled audio** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/endpoint/polled_audio_driver.rs:1-853` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:16-16` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:17-17` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:18-18` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:19-19` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:20-20` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:22-22` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:22-22` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:22-22` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:23-27` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:24-24` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:25-25` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:26-26` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:30-36` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:40-53` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:42-42` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:44-44` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:46-46` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:48-48` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:50-50` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:52-52` (`DIRECT`)
 
 For **Polled audio**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

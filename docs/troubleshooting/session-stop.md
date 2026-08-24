@@ -1,6 +1,6 @@
 # Session stop reports component failures
 
-<!-- claims: CLM-TRBL-012-CAP-001,CLM-TRBL-012-CAP-002,CLM-TRBL-012-CAP-003,CLM-TRBL-012-CAP-004,CLM-TRBL-012-CAP-005,CLM-TRBL-012-CAP-006,CLM-TRBL-012-SOURCE-001 -->
+<!-- claims: CLM-TRBL-012-SCOPE-001,CLM-TRBL-012-TEXT-001,CLM-TRBL-012-TEXT-002,CLM-TRBL-012-TEXT-003,CLM-TRBL-012-TEXT-004,CLM-TRBL-012-TEXT-005,CLM-TRBL-012-TEXT-006,CLM-TRBL-012-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,6 +77,29 @@ A stop failure does not establish a safe restart from the same resources. Frames
 
 The claims on **Session stop reports component failures** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/running.rs:1-2625` (`DIRECT`)
+- `src/session/lifecycle/running.rs:59-63` (`DIRECT`)
+- `src/session/lifecycle/running.rs:60-60` (`DIRECT`)
+- `src/session/lifecycle/running.rs:61-61` (`DIRECT`)
+- `src/session/lifecycle/running.rs:62-62` (`DIRECT`)
+- `src/session/lifecycle/running.rs:65-68` (`DIRECT`)
+- `src/session/lifecycle/running.rs:66-66` (`DIRECT`)
+- `src/session/lifecycle/running.rs:67-67` (`DIRECT`)
+- `src/session/lifecycle/running.rs:70-76` (`DIRECT`)
+- `src/session/lifecycle/running.rs:71-71` (`DIRECT`)
+- `src/session/lifecycle/running.rs:72-72` (`DIRECT`)
+- `src/session/lifecycle/running.rs:73-73` (`DIRECT`)
+- `src/session/lifecycle/running.rs:74-74` (`DIRECT`)
+- `src/session/lifecycle/running.rs:75-75` (`DIRECT`)
+- `src/session/lifecycle/running.rs:78-78` (`DIRECT`)
+- `src/session/lifecycle/running.rs:79-87` (`DIRECT`)
+- `src/session/lifecycle/running.rs:80-80` (`DIRECT`)
+- `src/session/lifecycle/running.rs:81-81` (`DIRECT`)
+- `src/session/lifecycle/running.rs:82-82` (`DIRECT`)
+- `src/session/lifecycle/running.rs:83-83` (`DIRECT`)
+- `src/session/lifecycle/running.rs:84-84` (`DIRECT`)
+- `src/session/lifecycle/running.rs:85-85` (`DIRECT`)
+- `src/session/lifecycle/running.rs:86-86` (`DIRECT`)
+- `src/session/lifecycle/running.rs:89-92` (`DIRECT`)
+- `src/session/lifecycle/running.rs:90-90` (`DIRECT`)
 
 For **Session stop reports component failures**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

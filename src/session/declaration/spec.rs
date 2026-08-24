@@ -8,7 +8,7 @@ use crate::session::{
     SourceConfiguration, SourceTypeId,
 };
 
-#[doc = "Defines the public session spec version value."]
+#[doc = "Defines the stable session spec version used by the owning public contract."]
 pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 5);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -243,7 +243,7 @@ pub enum StreamOrigin {
     SourceOutput {
         #[doc = "Identifies the source instance identifier recorded by `SourceOutput`."]
         source_instance_id: SourceInstanceId,
-        #[doc = "Stores the output port used by `SourceOutput`."]
+        #[doc = "References the output port participating in `SourceOutput`."]
         output_port: String,
         #[doc = "Identifies the stream identifier recorded by `SourceOutput`."]
         stream_id: StreamId,
@@ -254,7 +254,7 @@ pub enum StreamOrigin {
     OperatorOutput {
         #[doc = "Identifies the operator instance identifier recorded by `OperatorOutput`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the output port used by `OperatorOutput`."]
+        #[doc = "References the output port participating in `OperatorOutput`."]
         output_port: Option<String>,
     },
 }
@@ -266,14 +266,14 @@ pub enum ConnectionTarget {
     OperatorInput {
         #[doc = "Identifies the operator instance identifier recorded by `OperatorInput`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the input port used by `OperatorInput`."]
+        #[doc = "References the input port participating in `OperatorInput`."]
         input_port: Option<String>,
     },
     #[doc = "Represents the endpoint input case of `ConnectionTarget`."]
     EndpointInput {
         #[doc = "Identifies the endpoint identifier recorded by `EndpointInput`."]
         endpoint_id: EndpointId,
-        #[doc = "Stores the input port used by `EndpointInput`."]
+        #[doc = "References the input port participating in `EndpointInput`."]
         input_port: Option<String>,
     },
 }
@@ -323,7 +323,7 @@ impl ConnectionSpec {
 
 #[deprecated(note = "use OperatorInstanceSpec")]
 #[cfg(any(test, feature = "internal-testing"))]
-#[doc = "Names the operator spec type used by the public API."]
+#[doc = "Exposes `OperatorInstanceSpec` as the public `OperatorSpec` alias at this API boundary."]
 pub type OperatorSpec = OperatorInstanceSpec;
 
 #[derive(Debug, Clone)]

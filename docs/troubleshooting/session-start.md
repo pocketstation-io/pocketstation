@@ -1,6 +1,6 @@
 # Session fails before start
 
-<!-- claims: CLM-TRBL-001-CAP-001,CLM-TRBL-001-CAP-002,CLM-TRBL-001-CAP-003,CLM-TRBL-001-CAP-004,CLM-TRBL-001-CAP-005,CLM-TRBL-001-SOURCE-001 -->
+<!-- claims: CLM-TRBL-001-SCOPE-001,CLM-TRBL-001-TEXT-001,CLM-TRBL-001-TEXT-002,CLM-TRBL-001-TEXT-003,CLM-TRBL-001-TEXT-004,CLM-TRBL-001-TEXT-005,CLM-TRBL-001-TEXT-006,CLM-TRBL-001-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,7 +77,7 @@ Retry only from a newly valid declaration or newly prepared resource state. No f
 
 The claims on **Session fails before start** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/compile/error.rs:1-381` (`DIRECT`)
-- `src/session/prepare/error.rs:1-95` (`DIRECT`)
+- `src/session/compile/error.rs:1-1` (`DECLARED`)
+- `src/session/prepare/error.rs:1-1` (`DECLARED`)
 
 For **Session fails before start**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

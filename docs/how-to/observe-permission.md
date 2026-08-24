@@ -1,6 +1,6 @@
 # Observe permission without prompting
 
-<!-- claims: CLM-GUIDE-005-CAP-001,CLM-GUIDE-005-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-005-SCOPE-001,CLM-GUIDE-005-TEXT-001,CLM-GUIDE-005-TEXT-002,CLM-GUIDE-005-TEXT-003,CLM-GUIDE-005-TEXT-004,CLM-GUIDE-005-TEXT-005,CLM-GUIDE-005-TEXT-006,CLM-GUIDE-005-SOURCE-001 -->
 
 ## Scope
 
@@ -19,6 +19,33 @@ A host UI that can decide whether and when to present a permission prompt.
 3. Request permission only through the host application's platform UI.
 4. Prepare or start the selected source.
 5. Use the open result as the authoritative decision.
+
+## Concrete repository example
+
+The executable repository test `given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once` (`test-3002ec0fb883ffa835f6`) shows the concrete API sequence and asserted outcome at `src/capture/platform/linux/pipewire.rs:1855`.
+
+```rust
+    }
+
+    #[test]
+    fn given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once() {
+        let pool = AudioBufferPool::new(1, 1);
+        let counters = CaptureObservationCounters::default();
+        let held = acquire_capture_buffer(&pool, &counters)
+            .expect("first acquisition must reserve the only slot");
+
+        assert!(acquire_capture_buffer(&pool, &counters).is_none());
+        assert_eq!(counters.snapshot().pool_exhausted_total, 1);
+        assert_eq!(pool.acquire_failures(), 1);
+
+        drop(held);
+        assert_eq!(pool.available_slots(), 1);
+    }
+```
+
+```bash
+cargo test --all-features given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once
+```
 
 ## Important consequence
 
@@ -87,7 +114,30 @@ Executable evidence selected for **Observe permission without prompting** is lim
 
 The claims on **Observe permission without prompting** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/authorization.rs:1-318` (`DIRECT`)
-- `src/lib.rs:1-1161` (`DIRECT`)
+- `src/capture/authorization.rs:1-1` (`DECLARED`)
+- `src/lib.rs:55-71` (`DIRECT`)
+- `src/lib.rs:236-250` (`DIRECT`)
+- `src/lib.rs:237-237` (`DIRECT`)
+- `src/lib.rs:238-238` (`DIRECT`)
+- `src/lib.rs:239-239` (`DIRECT`)
+- `src/lib.rs:240-240` (`DIRECT`)
+- `src/lib.rs:241-241` (`DIRECT`)
+- `src/lib.rs:242-242` (`DIRECT`)
+- `src/lib.rs:243-243` (`DIRECT`)
+- `src/lib.rs:244-244` (`DIRECT`)
+- `src/lib.rs:245-245` (`DIRECT`)
+- `src/lib.rs:246-246` (`DIRECT`)
+- `src/lib.rs:247-247` (`DIRECT`)
+- `src/lib.rs:248-248` (`DIRECT`)
+- `src/lib.rs:249-249` (`DIRECT`)
+- `src/lib.rs:252-255` (`DIRECT`)
+- `src/lib.rs:253-253` (`DIRECT`)
+- `src/lib.rs:254-254` (`DIRECT`)
+- `src/lib.rs:257-261` (`DIRECT`)
+- `src/lib.rs:258-258` (`DIRECT`)
+- `src/lib.rs:259-259` (`DIRECT`)
+- `src/lib.rs:260-260` (`DIRECT`)
+- `src/lib.rs:263-267` (`DIRECT`)
+- `src/lib.rs:264-264` (`DIRECT`)
 
 For **Observe permission without prompting**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

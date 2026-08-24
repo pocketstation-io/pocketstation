@@ -56,7 +56,7 @@
       "content_hash": "35f342756c888cfc47191ad85ad91cad0f92f853c71e366995ff1a28eaf09c36",
       "lines": [
         1,
-        171
+        21
       ],
       "path": ".github/workflows/publish.yml",
       "symbol": null
@@ -83,9 +83,9 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings",
-    "run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu",
-    "run: cargo test --workspace --all-features --locked"
+    "Consumes configuration at .github/workflows/publish.yml:113.",
+    "Consumes configuration at .github/workflows/publish.yml:116.",
+    "Consumes configuration at .github/workflows/publish.yml:119."
   ],
   "invariants": [
     {
@@ -103,7 +103,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`.github/workflows/publish.yml` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

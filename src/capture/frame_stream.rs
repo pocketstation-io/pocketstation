@@ -7,7 +7,7 @@ use rtrb::{Consumer, Producer, PushError, RingBuffer};
 use crate::capture::CaptureError;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported captured frame delivery cases."]
+#[doc = "Reports whether a captured frame was accepted, dropped, or rejected by delivery."]
 pub enum CapturedFrameDelivery {
     #[doc = "Indicates the delivered state for `CapturedFrameDelivery`."]
     Delivered,
@@ -20,9 +20,9 @@ pub enum CapturedFrameDelivery {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports the captured frame stream stats collected at an observation boundary."]
 pub struct CapturedFrameStreamStats {
-    #[doc = "Stores the delivered frames used by `CapturedFrameStreamStats`."]
+    #[doc = "Contains the delivered frames owned or reported by `CapturedFrameStreamStats`."]
     pub delivered_frames: u64,
-    #[doc = "Stores the dropped newest frames used by `CapturedFrameStreamStats`."]
+    #[doc = "Contains the dropped newest frames owned or reported by `CapturedFrameStreamStats`."]
     pub dropped_newest_frames: u64,
     #[doc = "Counts the total number of frames discarded before start observed by `CapturedFrameStreamStats`."]
     pub frames_discarded_before_start_total: u64,
@@ -36,7 +36,7 @@ struct CapturedFrameStreamCounters {
 }
 
 #[derive(Clone, Debug)]
-#[doc = "Owns bounded access to captured frame observation."]
+#[doc = "Holds the ownership or bounded access represented by captured frame observation handle."]
 pub struct CapturedFrameObservationHandle {
     counters: Arc<CapturedFrameStreamCounters>,
 }
@@ -184,7 +184,7 @@ impl CapturedFrameStream {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
-    #[doc = "Returns whether closed applies to `CapturedFrameStream`."]
+    #[doc = "Reports whether closed is true for `CapturedFrameStream`."]
     pub fn is_closed(&self) -> bool {
         let abandoned = self.consumer.is_abandoned();
         if abandoned {

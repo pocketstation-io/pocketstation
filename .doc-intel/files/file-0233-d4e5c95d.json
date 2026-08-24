@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -30,6 +31,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -106,19 +108,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "6bc7cc45e56a40e8fc8e41857aa9f1aeda0aedd6659c3bc8d80af7c95b8b5e2e",
       "lines": [
         1,
-        94
+        1
       ],
       "path": "src/session/lifecycle/operator_inputs.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::lifecycle::operator_inputs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -137,6 +140,7 @@
   "generated_from": "not_applicable",
   "git_object": "0ed6eefd556aa96ea458e2c0f6cd5a23edd5e8ee",
   "implemented_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -145,6 +149,7 @@
     "OperatorInputObservationBinding"
   ],
   "imported_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -154,8 +159,8 @@
     "super::observations::SessionOperatorInputMetrics"
   ],
   "inputs": [
-    "crate::runtime::{EdgeObservations, PlanEdgeObservationHandle, TypedEdgeObservationHandle}",
-    "super::observations::SessionOperatorInputMetrics"
+    "Depends on `crate::runtime::{EdgeObservations, PlanEdgeObservationHandle, TypedEdgeObservationHandle}` through a declared Rust import.",
+    "Depends on `super::observations::SessionOperatorInputMetrics` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -164,14 +169,14 @@
   "module": "pocketstation::session::lifecycle::operator_inputs",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::operator_inputs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:OperatorInputObservation",
-    "fn:aggregate",
-    "fn:per_port",
-    "struct:OperatorInputObservationBinding"
+    "Declares public enum `OperatorInputObservation`.",
+    "Declares public fn `aggregate`.",
+    "Declares public fn `per_port`.",
+    "Declares public struct `OperatorInputObservationBinding`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/operator_inputs.rs",
@@ -218,8 +223,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::operator inputs responsibilities, including operator inputs; operator input observation; 0."
+    "classification": "DECLARED",
+    "text": "Operator input-edge aggregation and per-port Session metrics."
   },
   "queues": [],
   "recovery_behavior": [],

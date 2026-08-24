@@ -80,14 +80,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "e826149a665dafaa246a8a3a3e4b744cccaabc77698339afd53b17f1e8e4c6b6",
       "lines": [
         1,
-        29
+        1
       ],
       "path": "src/graph/signal/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::signal"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -137,22 +137,22 @@
     "timing::{SignalTiming, SignalTimingError}"
   ],
   "inputs": [
-    "continuity::{SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker}",
-    "envelope::{SignalEnvelope, SignalEnvelopeError}",
-    "lineage::{SignalDerivation, SignalDerivationError, SignalLineage, SignalLineageError}",
-    "module:continuity",
-    "module:envelope",
-    "module:lineage",
-    "module:operator",
-    "module:payload",
-    "module:preparation",
-    "module:spec",
-    "module:timing",
-    "operator::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, }",
-    "payload::SignalPayload",
-    "preparation::{ AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, }",
-    "spec::{ BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec, SignalSpecError, TextFormat, }",
-    "timing::{SignalTiming, SignalTimingError}"
+    "Depends on `continuity::{SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker}` through a declared Rust import.",
+    "Depends on `continuity` through a declared Rust import.",
+    "Depends on `envelope::{SignalEnvelope, SignalEnvelopeError}` through a declared Rust import.",
+    "Depends on `envelope` through a declared Rust import.",
+    "Depends on `lineage::{SignalDerivation, SignalDerivationError, SignalLineage, SignalLineageError}` through a declared Rust import.",
+    "Depends on `lineage` through a declared Rust import.",
+    "Depends on `operator::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, }` through a declared Rust import.",
+    "Depends on `operator` through a declared Rust import.",
+    "Depends on `payload::SignalPayload` through a declared Rust import.",
+    "Depends on `payload` through a declared Rust import.",
+    "Depends on `preparation::{ AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, }` through a declared Rust import.",
+    "Depends on `preparation` through a declared Rust import.",
+    "Depends on `spec::{ BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec, SignalSpecError, TextFormat, }` through a declared Rust import.",
+    "Depends on `spec` through a declared Rust import.",
+    "Depends on `timing::{SignalTiming, SignalTimingError}` through a declared Rust import.",
+    "Depends on `timing` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -161,7 +161,7 @@
   "module": "pocketstation::graph::signal",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::signal` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -229,8 +229,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::signal responsibilities, including signal."
+    "classification": "DECLARED",
+    "text": "Signal vocabulary, envelopes, lineage, and asynchronous Operator contract."
   },
   "queues": [],
   "recovery_behavior": [],

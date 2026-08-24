@@ -20,19 +20,19 @@ use crate::session::compile::{
 use crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId};
 
 const AUDIO_PORT: &str = "audio";
-#[doc = "Defines the public application source node type identifier value."]
+#[doc = "Defines application source node type identifier as `\"source.application\"` for the owning public contract."]
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
-#[doc = "Defines the public microphone source node type identifier value."]
+#[doc = "Defines microphone source node type identifier as `\"source.microphone\"` for the owning public contract."]
 pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
 pub(crate) const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external_audio_ingress";
 pub(crate) const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated_audio_ingress";
 pub(crate) const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated_audio";
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as session graph registration error."]
+#[doc = "Classifies failures produced during session graph registration."]
 pub enum SessionGraphRegistrationError {
     #[error("Session structural node type '{node_type_id}' is already registered")]
-    #[doc = "Reports duplicate node type."]
+    #[doc = "Reports that node type duplicates an existing declaration or record."]
     DuplicateNodeType {
         #[doc = "Identifies the node type identifier recorded by `DuplicateNodeType`."]
         node_type_id: String,

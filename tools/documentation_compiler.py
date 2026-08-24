@@ -23,6 +23,8 @@ from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Iterator
 
+from documentation_protocol_audit import run_strict_protocol_audit
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / ".doc-intel"
@@ -410,6 +412,10 @@ def cmd_init(arguments: argparse.Namespace) -> None:
     DB.mkdir(parents=True, exist_ok=True)
     if STATE.exists() and not arguments.force:
         raise CompilerError("state already exists; init is intentionally non-destructive")
+    # Capture the repository state before a forced rebuild removes any prior
+    # compiler artifacts.  Otherwise the snapshot record describes the
+    # compiler's own cleanup rather than the state it was asked to freeze.
+    initial_status = git("status", "--porcelain=v1", "--untracked-files=all").splitlines()
     if arguments.force:
         dossier_dir = DB / "files"
         if dossier_dir.exists():
@@ -451,7 +457,6 @@ def cmd_init(arguments: argparse.Namespace) -> None:
         )
     write_jsonl(REPOSITORY_MANIFEST, manifest)
     write_jsonl(DB / "inventory.jsonl", manifest)
-    status = git("status", "--porcelain=v1", "--untracked-files=all").splitlines()
     submodules = run("git", "submodule", "status", check=False).stdout.splitlines()
     cargo = tomllib.loads(git_bytes(snapshot, "Cargo.toml").decode()) if any(
         item["path"] == "Cargo.toml" for item in manifest
@@ -462,7 +467,7 @@ def cmd_init(arguments: argparse.Namespace) -> None:
         "branch_at_initialization": git("branch", "--show-current"),
         "snapshot": snapshot,
         "head_at_initialization": git("rev-parse", "HEAD"),
-        "working_tree_status_at_initialization": status,
+        "working_tree_status_at_initialization": initial_status,
         "submodules": submodules,
         "workspace_members": cargo.get("workspace", {}).get("members", [cargo.get("package", {}).get("name", ROOT.name)]),
         "package_members": [cargo.get("package", {}).get("name")] if cargo.get("package") else [],
@@ -802,13 +807,35 @@ def source_excerpt(snapshot: str, path: str, begin: int, end: int) -> str:
 
 
 def rustdoc_signature(item: dict[str, Any]) -> Any:
-    value = item.get("inner", {}).get(rustdoc_kind(item), {})
+    kind = rustdoc_kind(item)
+    value = item.get("inner", {}).get(kind, {})
     if not isinstance(value, dict):
         return "not_applicable"
+    if kind == "struct_field":
+        return {"type": value}
+    if kind == "variant":
+        return {
+            "kind": value.get("kind"),
+            "discriminant": value.get("discriminant"),
+        }
+    if kind == "module":
+        return "not_applicable_to_module"
+    if kind in {"constant", "static"}:
+        return {
+            "type": value.get("type"),
+            "value": value.get("const") or value.get("expr"),
+            "is_mutable": value.get("is_mutable"),
+        }
+    if kind == "trait":
+        return {
+            "generics": value.get("generics"),
+            "bounds": value.get("bounds"),
+            "is_unsafe": value.get("is_unsafe"),
+        }
     for key in ("sig", "type", "generics"):
         if key in value:
             return value[key]
-    return "See source excerpt and compiler item kind."
+    return {"kind": kind, "compiler_record": value}
 
 
 def rustdoc_stable_key(item: dict[str, Any]) -> tuple[Any, ...] | None:
@@ -1050,6 +1077,66 @@ def cmd_extract_symbols(arguments: argparse.Namespace) -> None:
                 add_edge(source, "REFERENCES", compiler_to_symbol[reference], "compiler type/signature reference", "resolved")
             elif str(reference) in index and index[str(reference)].get("crate_id") != 0:
                 add_edge(source, "REFERENCES_EXTERNAL", None, f"rustdoc external item {reference}", "external")
+
+    record_by_symbol = {record["symbol_id"]: record for record in records}
+    symbols_by_name: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for record in records:
+        symbols_by_name[record["name"]].append(record)
+
+    # Rustdoc owns the declaration spans; resolve lexical calls only within
+    # those compiler-owned spans. Ambiguous names remain explicit instead of
+    # being guessed into a resolved edge.
+    for record in records:
+        if record["kind"] != "function":
+            continue
+        excerpt = source_excerpt(
+            snapshot, record["source_file"], record["source_lines"][0], record["source_lines"][1]
+        )
+        for token in call_tokens(excerpt):
+            name = token.rsplit("::", 1)[-1]
+            choices = [candidate for candidate in symbols_by_name.get(name, []) if candidate["symbol_id"] != record["symbol_id"]]
+            if len(choices) == 1:
+                target = choices[0]
+                add_edge(
+                    record["symbol_id"],
+                    "CALLS",
+                    target["symbol_id"],
+                    f"lexical call `{token}` inside compiler-owned source span",
+                    "resolved",
+                )
+                record["calls"].append(target["symbol_id"])
+                target["called_by"].append(record["symbol_id"])
+            elif choices:
+                add_edge(
+                    record["symbol_id"],
+                    "CALLS",
+                    None,
+                    f"ambiguous lexical call `{token}` inside compiler-owned source span",
+                    "unresolved_explicit",
+                )
+
+    # Rustdoc represents impl blocks as unnamed compiler items. Link their
+    # concrete owner and trait even though impl blocks are not symbol records.
+    for item in index.values():
+        implementation = item.get("inner", {}).get("impl")
+        span = item.get("span")
+        if not isinstance(implementation, dict) or not isinstance(span, dict):
+            continue
+        if span.get("filename") not in file_by_path or implementation.get("trait") is None:
+            continue
+        owner_refs = list(rustdoc_references(implementation.get("for")))
+        trait_refs = list(rustdoc_references(implementation.get("trait")))
+        owner_id = next((compiler_to_symbol[value] for value in owner_refs if value in compiler_to_symbol), None)
+        trait_id = next((compiler_to_symbol[value] for value in trait_refs if value in compiler_to_symbol), None)
+        trait_path = str(implementation.get("trait", {}).get("path", "external trait"))
+        if not owner_id:
+            continue
+        if trait_id:
+            add_edge(owner_id, "IMPLEMENTS", trait_id, "rustdoc impl block", "resolved")
+            record_by_symbol[owner_id]["implements"].append(trait_id)
+            record_by_symbol[trait_id]["implemented_by"].append(owner_id)
+        else:
+            add_edge(owner_id, "IMPLEMENTS_EXTERNAL", None, f"rustdoc impl of `{trait_path}`", "external")
     file_id_by_path = {record["path"]: record["file_id"] for record in files}
     for file_record in files:
         if not file_record.get("dossier"):
@@ -1074,10 +1161,24 @@ def cmd_extract_symbols(arguments: argparse.Namespace) -> None:
                     imported,
                     "resolved" if target_path else "unresolved_explicit",
                 )
+        boundary_records = (
+            ("ffi_io", "CROSSES_FFI", "foreign-function call or ABI declaration", "external"),
+            ("process_io", "SPAWNS_PROCESS", "process boundary recorded in dossier", "external"),
+            ("callbacks", "INVOKES_CALLBACK", "callback boundary recorded in dossier", "dynamic"),
+            ("threads", "SPAWNS_THREAD", "thread boundary recorded in dossier", "dynamic"),
+        )
+        for field, kind, mechanism, edge_status in boundary_records:
+            if dossier.get(field):
+                add_edge(file_record["file_id"], kind, None, mechanism, edge_status)
         dossier["analysis_stage"] = "relationships_resolved"
         write_json(dossier_path, dossier)
         file_record["analysis_stage"] = "relationships_resolved"
     write_jsonl(EDGE_MANIFEST, sorted(edges, key=lambda record: record["edge_id"]))
+    for record in records:
+        for field in ("calls", "called_by", "implements", "implemented_by"):
+            record[field] = sorted(set(record[field]))
+    write_jsonl(SYMBOL_MANIFEST, records)
+    write_jsonl(DB / "symbols.jsonl", records)
     write_jsonl(REPOSITORY_MANIFEST, files)
     write_jsonl(DB / "inventory.jsonl", files)
     import gzip
@@ -1327,7 +1428,17 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
             continue
         parent = by_symbol_id.get(symbol.get("parent"), {})
         parent_name = parent.get("name", "").lower()
-        qualifies = symbol["kind"] in {"struct_field", "variant"} and any(
+        grandparent = by_symbol_id.get(parent.get("parent"), {})
+        error_container = any(
+            token in str(value.get("name", "")).lower()
+            for value in (parent, grandparent)
+            for token in ("error", "failure")
+        )
+        # Configuration values are the fields consumed by an owning config,
+        # options, policy, selector, or settings type. Enum variants describe
+        # valid choices or failures; they are not independent configuration
+        # inputs and belong in the owning field's valid-values evidence.
+        qualifies = not error_container and symbol["kind"] == "struct_field" and any(
             word in parent_name for word in config_parent_words
         )
         if not qualifies:
@@ -1364,7 +1475,7 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
     lifecycle_verbs = re.compile(r"^(?:prepare|prepared|start|started|run|running|cancel|cancelled|stop|stopped|drain|drained|finalize|finalized|shutdown|abort|join|close|drop)(?:_|$)", re.I)
     lifecycles: list[dict[str, Any]] = []
     for symbol in symbols:
-        if symbol["public_api"] and symbol["kind"] in {"function", "variant"} and lifecycle_verbs.search(symbol["name"]):
+        if symbol["public_api"] and symbol["kind"] == "function" and lifecycle_verbs.search(symbol["name"]):
             lifecycles.append({
                 "lifecycle_id": stable_id("life", symbol["symbol_id"]), "operation": symbol["qualified_name"],
                 "source_state": "unknown", "trigger": symbol["name"], "guard": "unknown", "action": symbol["summary"],
@@ -1375,10 +1486,13 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
             })
     behaviors: list[dict[str, Any]] = []
     for test in tests:
+        test_text = git_bytes(state["snapshot"], test["path"]).decode("utf-8", errors="replace")
+        test_lines = test_text.splitlines()
+        test_body = "\n".join(test_lines[test["lines"][0] - 1:test["lines"][1]])
         behaviors.append({
             "behavior_id": stable_id("behavior", test["test_id"]), "name": test["behavior_under_test"],
             "domain": domain_for_path(test["path"]), "classification": "TESTED", "entry_points": test["production_symbols"],
-            "steps": [{"operation": call} for call in call_tokens(git_bytes(state["snapshot"], test["path"]).decode("utf-8", errors="replace"))[:100]],
+            "steps": [{"operation": call} for call in call_tokens(test_body)[:100]],
             "errors": test["failure_expectation"], "tests": [test["test_id"]], "status": "analyzed",
             "documentation_status": "pending", "evidence": test["evidence"],
         })
@@ -1391,17 +1505,122 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
             "documentation_status": "pending", "evidence": lifecycle["evidence"],
         })
     protocols: list[dict[str, Any]] = []
-    for symbol in symbols:
-        if not symbol["public_api"]:
-            continue
-        path = symbol["source_file"]
-        if path.startswith(("src/abi/", "include/", "src/connector/")) or symbol["kind"] == "macro":
-            protocols.append({
-                "protocol_id": stable_id("protocol", symbol["symbol_id"]), "name": symbol["qualified_name"],
-                "kind": "ffi" if path.startswith(("src/abi/", "include/")) else "connector_or_extension_contract",
-                "symbol_id": symbol["symbol_id"], "status": "analyzed", "documentation_status": "pending",
-                "evidence": symbol["evidence"],
-            })
+
+    def protocol_evidence(paths: list[str], tokens: list[str]) -> list[dict[str, Any]]:
+        evidence: list[dict[str, Any]] = []
+        for path in paths:
+            file_record = next((record for record in files if record["path"] == path), None)
+            if not file_record:
+                continue
+            text = git_bytes(state["snapshot"], path).decode("utf-8", errors="replace")
+            lines = text.splitlines()
+            matches = [
+                number for number, line in enumerate(lines, 1)
+                if any(token in line for token in tokens)
+            ]
+            if not matches:
+                continue
+            # Keep independent protocol declarations as separate precise spans
+            # instead of turning the whole protocol file into one proof blob.
+            for number in matches[:24]:
+                evidence.append({
+                    "path": path,
+                    "content_hash": file_record["sha256"],
+                    "lines": [max(1, number - 2), min(len(lines), number + 4)],
+                    "symbol": next((token for token in tokens if token in lines[number - 1]), None),
+                    "classification": "DIRECT",
+                })
+        return evidence
+
+    protocol_specs = [
+        {
+            "name": "sidecar-frame-v1",
+            "kind": "binary_process_protocol",
+            "paths": ["src/runtime/lifecycle/sidecar_protocol.rs"],
+            "tokens": ["MAGIC", "SIDECAR_PROTOCOL_MAJOR", "SidecarMessageKind", "SidecarProtocolLimits", "pub fn encode", "pub fn decode"],
+            "message_schema": "52-byte fixed header followed by signal-id, role, schema, and payload byte regions; kind, terminal flag, stream ID, sequence number, and timestamp are header fields.",
+            "encoding": "Magic PKSS; little-endian integers; UTF-8 signal/role/schema strings; length-prefixed payload regions.",
+            "decoding": "Rejects invalid magic/version/flags, unknown kinds, truncated or trailing bytes, UTF-8 failures, overflow, and per-field limit violations.",
+            "versioning": "SIDECAR_PROTOCOL_MAJOR=1 and SIDECAR_PROTOCOL_MINOR=0; decoder rejects unsupported versions.",
+            "limits": "Default maxima: signal ID 256 bytes, role 256 bytes, schema 1,024 bytes, payload 1,048,576 bytes; frame length is checked for overflow.",
+            "endpoints": ["SidecarMessage::encode", "SidecarMessage::decode"],
+            "lifecycle": "Hello/Manifest/Configure establish startup; Signal/Ready/Observation/Error carry work and state; Cancel/Close/Closed drive termination.",
+        },
+        {
+            "name": "connector-configuration-record-v1",
+            "kind": "binary_connector_protocol",
+            "paths": ["src/connector/transport.rs"],
+            "tokens": ["CONFIGURATION_MAGIC", "CONNECTOR_CONFIGURATION_RECORD_MAJOR", "ConnectorConfigurationRecord", "pub fn encode", "pub fn decode"],
+            "message_schema": "16-byte PKCC header plus repeated field entries containing UTF-8 name, one-byte value kind, reserved byte, length, and typed value bytes.",
+            "encoding": "Magic PKCC; little-endian version/count/length integers; value kinds cover text, Boolean, signed/unsigned integer, milliseconds, byte count, and secret.",
+            "decoding": "Validates magic, major/minor compatibility, reserved fields, field count, name/value lengths, UTF-8, value kind, duplicates, and trailing bytes.",
+            "versioning": "CONNECTOR_CONFIGURATION_RECORD_MAJOR=1 and MINOR=0; exact major and no-newer minor are required.",
+            "limits": "Field count and text/value sizes use MAX_CONNECTOR_CONFIGURATION_FIELDS and MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES.",
+            "endpoints": ["ConnectorConfigurationRecord::encode", "ConnectorConfigurationRecord::decode"],
+            "lifecycle": "Resolved host configuration is encoded before the bounded Configure handshake and decoded before connector preparation.",
+        },
+        {
+            "name": "connector-audio-record-v1",
+            "kind": "binary_connector_protocol",
+            "paths": ["src/connector/transport.rs"],
+            "tokens": ["const MAGIC", "CONNECTOR_AUDIO_RECORD_MAJOR", "ConnectorAudioRecord", "ConnectorAudioMetadata", "pub fn encode", "pub fn decode"],
+            "message_schema": "136-byte PKCA header carries version, flags, identities, lineage, sample format/rate/channels, port length, and sample count, followed by port UTF-8 and interleaved f32 samples.",
+            "encoding": "Magic PKCA; little-endian numeric fields and f32 sample bit patterns; optional connector identity is controlled by a header flag.",
+            "decoding": "Validates magic/version/reserved fields/flags, identifiers, port UTF-8, sample format, length arithmetic, channel alignment, and exact trailing length.",
+            "versioning": "CONNECTOR_AUDIO_RECORD_MAJOR=1 and MINOR=0; exact major and no-newer minor are required.",
+            "limits": "Port is limited by MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES and sample count by MAX_CONNECTOR_AUDIO_RECORD_SAMPLES.",
+            "endpoints": ["ConnectorAudioRecord::encode", "ConnectorAudioRecord::decode"],
+            "lifecycle": "A validated connector audio item is serialized for delivery and reconstructed with lineage intact at the receiving boundary.",
+        },
+        {
+            "name": "native-extension-c-abi-v1",
+            "kind": "c_abi",
+            "paths": ["src/abi/extension.rs", "src/abi/executable_extension.rs", "include/pocketstation.h"],
+            "tokens": ["PksExtensionAbiVersion", "PksExtensionDescriptor", "PksExtensionCallbacks", "pks_extension_abi_get_version", "pks_extension_library_v1"],
+            "message_schema": "repr(C) versioned descriptors, port records, callback table, UTF-8 views, signal views/buffers, opaque contexts, and stable status values declared by the unified C header.",
+            "encoding": "In-process C calling convention and repr(C) memory layout; pointer/length UTF-8 and signal buffers are borrowed or written according to each callback contract.",
+            "decoding": "Loader validates canonical library path, descriptor/function presence, struct sizes, pointer alignment, ABI major/minor, reserved fields, ports, and callback requirements.",
+            "versioning": "Extension ABI major/minor constants and struct_size_bytes prefixes gate compatible reads; incompatible major/newer minor values fail closed.",
+            "limits": "Structure-size prefixes and output buffer capacities bound reads/writes; port and registration constraints are validated before import.",
+            "endpoints": ["pks_extension_abi_get_version", "pks_extension_library_v1", "PksExtensionCallbacks"],
+            "lifecycle": "Validate configuration, create, prepare, process/consume/next, request stop, finish, and destroy callbacks; imported registrations roll back transactionally on failure.",
+        },
+        {
+            "name": "session-c-abi-v1",
+            "kind": "c_abi",
+            "paths": ["src/abi/session/abi.rs", "src/abi/session/runtime.rs", "include/pocketstation.h"],
+            "tokens": ["PksSessionAbiVersion", "PksSessionEngineConfig", "pks_session_abi_get_version", "pks_session_engine_create", "pks_session_engine_release"],
+            "message_schema": "repr(C) versioned engine configuration, UTF-8 views, opaque engine/session handles, callbacks, observations, outcomes, and stable PksSessionStatus codes.",
+            "encoding": "In-process C calling convention and repr(C) layout with explicit struct sizes, pointer/length views, opaque handles, and out parameters.",
+            "decoding": "ABI entrypoints validate handle liveness, pointer alignment, versioned record prefixes, UTF-8, sizes, runtime state, and output capacity before reading or writing.",
+            "versioning": "Session ABI version is returned by pks_session_abi_get_version; versioned records use struct_size_bytes and compatible major/minor checks.",
+            "limits": "Caller-provided lengths and struct sizes bound all reads/writes; status results report insufficient capacity or invalid arguments.",
+            "endpoints": ["pks_session_abi_get_version", "pks_session_engine_create", "pks_session_engine_release"],
+            "lifecycle": "Create engine, configure declarations, compile/prepare/start, observe/poll, request stop, inspect terminal outcomes, then release matching handles.",
+        },
+        {
+            "name": "opus-c-abi-v1",
+            "kind": "c_abi",
+            "paths": ["src/abi/codec.rs", "include/pocketstation.h"],
+            "tokens": ["PksOpusEncoder", "pks_opus_encoder_create", "pks_opus_encoder_destroy", "pks_opus_encoder_set_bitrate", "pks_encode_opus"],
+            "message_schema": "Opaque Opus encoder handle plus PCM input pointer/count and caller-owned encoded output pointer/capacity.",
+            "encoding": "C calling convention; interleaved f32 PCM is encoded into an Opus packet copied only when caller capacity is sufficient.",
+            "decoding": "Entry points validate sample rate, channels, bitrate, frame size, live/null handle rules, pointer validity, and output capacity.",
+            "versioning": "Published through the unified pocketstation.h ABI; no independent packet-protocol version is declared by these functions.",
+            "limits": "Accepted Opus frame sizes and OPUS_MAX_PACKET_BYTES bound input frames and encoded output; caller capacity is never silently truncated.",
+            "endpoints": ["pks_opus_encoder_create", "pks_opus_encoder_set_bitrate", "pks_encode_opus", "pks_opus_encoder_destroy"],
+            "lifecycle": "Create once, optionally change bitrate, encode sequential frames without concurrent use, and destroy exactly once; null handling follows each function contract.",
+        },
+    ]
+    for spec in protocol_specs:
+        evidence = protocol_evidence(spec.pop("paths"), spec.pop("tokens"))
+        protocols.append({
+            "protocol_id": stable_id("protocol", f"{state['snapshot']}:{spec['name']}"),
+            **spec,
+            "status": "analyzed",
+            "documentation_status": "pending",
+            "evidence": evidence,
+        })
     patterns: list[dict[str, Any]] = []
     pattern_terms = {
         "bounded_queue": ("bounded", "queue", "capacity"), "buffer_pool": ("pool", "buffer"),
@@ -1476,6 +1695,87 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
                     "evidence": [{"path": file_record["path"], "content_hash": file_record["sha256"],
                                   "lines": [1, max(1, text.count("\n") + 1)], "classification": "DIRECT"}],
                 })
+    workspace_checkpoint: dict[str, Any] = {
+        "name": "pks-single-engine-workspace-qualification",
+        "created_at": now(),
+        "target_snapshot": state["snapshot"],
+        "command": "bash scripts/check_pks_single_engine_boundary.sh",
+        "scope": "cross_repository_workspace_qualification",
+        "observed": False,
+        "passed": None,
+        "status": "not_observable",
+        "reason": "The sibling pks checkout is absent; the target repository cannot qualify the cross-repository ownership boundary in isolation.",
+    }
+    pks_root = ROOT.parent / "pks"
+    boundary_script = ROOT / "scripts" / "check_pks_single_engine_boundary.sh"
+    if (pks_root / "src").is_dir() and boundary_script.is_file():
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=pks_root, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+        ).stdout.strip()
+        dirty = subprocess.run(
+            ["git", "status", "--porcelain"], cwd=pks_root, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+        ).stdout.splitlines()
+        qualification = subprocess.run(
+            ["bash", str(boundary_script)], cwd=ROOT, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False,
+        )
+        output = qualification.stdout + qualification.stderr
+        violation_paths = sorted({
+            line.split(":", 1)[0].removeprefix(str(pks_root) + "/")
+            for line in output.splitlines()
+            if line.startswith(str(pks_root) + "/")
+        })
+        workspace_checkpoint.update({
+            "observed": True,
+            "passed": qualification.returncode == 0,
+            "status": "pass" if qualification.returncode == 0 else "conflicted",
+            "reason": (
+                "The sibling pks checkout satisfies the single-engine ownership boundary."
+                if qualification.returncode == 0
+                else "The sibling pks checkout imports PocketStation internal engine machinery and retains retired parallel command paths."
+            ),
+            "external_repository": "../pks",
+            "external_commit": commit,
+            "external_worktree_clean": not dirty,
+            "returncode": qualification.returncode,
+            "output_sha256": sha256_bytes(output.encode()),
+            "violation_occurrences": sum(line.startswith(str(pks_root) + "/") for line in output.splitlines()),
+            "violation_paths": violation_paths,
+            "terminal_message": output.splitlines()[-1] if output.splitlines() else "no command output",
+        })
+        if qualification.returncode != 0:
+            script_record = files_by_path["scripts/check_pks_single_engine_boundary.sh"]
+            conflicts.append({
+                "conflict_id": "conflict-pks-single-engine-workspace-boundary",
+                "kind": "cross_repository_qualification",
+                "summary": "The checked pks sibling still owns or imports PocketStation internal engine machinery, so the workspace single-engine boundary is not qualified.",
+                "status": "explicit_unresolved",
+                "sides": [
+                    f"PocketStation boundary contract at {state['snapshot']}",
+                    f"pks checkout at {commit or 'unknown commit'}",
+                ],
+                "external_repository": "../pks",
+                "external_commit": commit,
+                "violation_paths": violation_paths,
+                "checkpoint": ".doc-intel/checkpoints/workspace-qualification.json",
+                "evidence": [
+                    {
+                        "path": script_record["path"],
+                        "content_hash": script_record["sha256"],
+                        "lines": [4, 20],
+                        "classification": "DIRECT",
+                    },
+                    {
+                        "path": script_record["path"],
+                        "content_hash": script_record["sha256"],
+                        "lines": [37, 40],
+                        "classification": "DIRECT",
+                    },
+                ],
+            })
+    write_json(DB / "checkpoints" / "workspace-qualification.json", workspace_checkpoint)
     write_jsonl(DB / "tests.jsonl", sorted(tests, key=lambda record: record["test_id"]))
     write_jsonl(DB / "examples.jsonl", sorted(examples, key=lambda record: record["example_id"]))
     write_jsonl(DB / "errors.jsonl", sorted(errors, key=lambda record: record["error_id"]))
@@ -1563,6 +1863,7 @@ def cmd_review_model(_arguments: argparse.Namespace) -> None:
     if state.get("phase") not in {
         "capability-model", "information-architecture", "concept-documentation", "how-to-documentation",
         "api-reference", "failure-documentation", "documentation", "example-validation", "validation",
+        "final",
     }:
         raise CompilerError(f"model review is not available during phase {state.get('phase')!r}")
     files = read_jsonl(REPOSITORY_MANIFEST)
@@ -1751,7 +2052,8 @@ def editorial_page_failures(pages: list[dict[str, Any]]) -> list[str]:
         for snippet in PUBLICATION_BOILERPLATE:
             if snippet.lower() in text.lower():
                 failures.append(f"{page['page_id']}: prohibited generic publication text: {snippet[:72]}")
-        for raw in re.split(r"\n\s*\n", text):
+        prose_text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
+        for raw in re.split(r"\n\s*\n", prose_text):
             paragraph = re.sub(r"\s+", " ", raw).strip()
             if (
                 len(paragraph.split()) < 18
@@ -2062,6 +2364,23 @@ def normalize_link_target(target: str) -> str:
     return target.split("#", 1)[0].split("?", 1)[0]
 
 
+def markdown_heading_ids(path: Path) -> set[str]:
+    """Return the exact heading IDs emitted by ``build_documentation.py``."""
+    identifiers: set[str] = set()
+    used: set[str] = set()
+    for match in re.finditer(r"(?m)^#{1,6}\s+(.+?)\s*$", path.read_text()):
+        label = re.sub(r"[`*_]", "", match.group(1))
+        base = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-") or "section"
+        candidate = base
+        number = 2
+        while candidate in used:
+            candidate = f"{base}-{number}"
+            number += 1
+        used.add(candidate)
+        identifiers.add(candidate)
+    return identifiers
+
+
 def validate_internal_links(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     failures: list[dict[str, Any]] = []
     for page in pages:
@@ -2070,14 +2389,25 @@ def validate_internal_links(pages: list[dict[str, Any]]) -> list[dict[str, Any]]
             failures.append({"source": page["path"], "target": None, "reason": "source page absent"})
             continue
         for target in MARKDOWN_LINK.findall(source.read_text()):
-            if target.startswith(("http://", "https://", "mailto:", "#")):
+            if target.startswith(("http://", "https://", "mailto:")):
                 continue
             cleaned = normalize_link_target(target)
-            if not cleaned:
-                continue
-            destination = (ROOT / cleaned.lstrip("/")) if target.startswith("/") else (source.parent / cleaned)
+            destination = source if not cleaned else (
+                (ROOT / cleaned.lstrip("/"))
+                if target.startswith("/")
+                else (source.parent / cleaned)
+            )
             if not destination.exists():
                 failures.append({"source": page["path"], "target": target, "reason": "target absent"})
+                continue
+            fragment = target.partition("#")[2].partition("?")[0]
+            if fragment and destination.suffix.lower() == ".md":
+                if fragment not in markdown_heading_ids(destination):
+                    failures.append({
+                        "source": page["path"],
+                        "target": target,
+                        "reason": "anchor absent",
+                    })
     return failures
 
 
@@ -2277,17 +2607,45 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     pages = read_jsonl(PAGE_MANIFEST)
     claims = read_jsonl(DB / "claims.jsonl")
     doc_map = read_jsonl(DB / "doc-map.jsonl")
+    unknowns = read_jsonl(DB / "unknowns.jsonl")
     file_by_path = {record["path"]: record for record in files}
     dossier_quality = dossier_semantic_failures(files)
     native_doc_quality = native_documentation_failures(symbols)
     editorial_quality = editorial_page_failures(pages)
     claim_mapping_quality = claim_marker_failures(pages, claims)
+    strict_audit = run_strict_protocol_audit(
+        ROOT,
+        state,
+        files=files,
+        symbols=symbols,
+        edges=edges,
+        behaviors=behaviors,
+        errors=errors,
+        configuration=config,
+        lifecycles=lifecycles,
+        protocols=protocols,
+        pages=pages,
+        claims=claims,
+        unknowns=unknowns,
+    )
+    strict_audit["protocol_sha256"] = PROTOCOL_SHA256
+    strict_audit["contract_sha256"] = CONTRACT_SHA256
+    strict_audit["generated_at"] = now()
+    write_json(DB / "compliance-audit.json", strict_audit)
+
+    def strict_gate(number: int) -> list[str]:
+        return list(strict_audit.get("failures_by_gate", {}).get(str(number), []))
+
     gates: list[dict[str, Any]] = []
-    gates.append(gate_result(0, "Repository snapshot + manifest", frozen_manifest_failures(state, files)))
+    gates.append(gate_result(
+        0,
+        "Repository snapshot + manifest",
+        [*frozen_manifest_failures(state, files), *strict_gate(0)],
+    ))
     gates.append(gate_result(
         1,
         "Every semantic file analyzed",
-        [*dossier_failures(files, "discovered"), *dossier_quality],
+        [*dossier_failures(files, "discovered"), *dossier_quality, *strict_gate(1)],
     ))
     gate2_failures: list[str] = []
     if not symbols:
@@ -2318,6 +2676,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
             gate2_failures.append("symbol manifest count differs from rustdoc checkpoint")
         if checkpoint.get("intentionally_public_symbols") != sum(bool(record.get("public_api")) for record in symbols):
             gate2_failures.append("public-symbol denominator differs from rustdoc checkpoint")
+    gate2_failures.extend(strict_gate(2))
     gates.append(gate_result(2, "Every symbol extracted", gate2_failures))
     gate3_failures = dossier_failures(files, "relationships_resolved")
     if not edges:
@@ -2338,6 +2697,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
             gate3_failures.append(f"{edge.get('edge_id')}: resolved target is dangling")
         if edge.get("status") != "resolved" and not edge.get("mechanism"):
             gate3_failures.append(f"{edge.get('edge_id')}: non-resolved edge lacks mechanism")
+    gate3_failures.extend(strict_gate(3))
     gates.append(gate_result(3, "Relationship graph resolved", gate3_failures))
     gate4_failures = dossier_failures(files, "behavior_validated")
     required_ledgers = {
@@ -2377,6 +2737,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
         for field in ("problem", "how_implemented", "constraints", "tradeoffs", "failure_behavior"):
             if str(pattern.get(field, "")).strip().lower() in {"", "unknown"}:
                 gate4_failures.append(f"{pattern.get('pattern_id')}: {field} is unresolved without disposition")
+    gate4_failures.extend(strict_gate(4))
     gates.append(gate_result(4, "Behaviors, errors, lifecycles, and configuration extracted", gate4_failures))
     gate5_failures: list[str] = []
     if not capabilities:
@@ -2433,6 +2794,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     for gate_number, name in ((7, "Concept documentation"), (8, "How-to documentation")):
         target = [page for page in pages if page.get("gate") == gate_number]
         failures = editorial_page_failures(target)
+        failures.extend(strict_gate(gate_number))
         if not target:
             failures.append(f"no pages assigned to Gate {gate_number}")
         for page in target:
@@ -2476,6 +2838,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     for page in reference_pages:
         if page.get("status") not in {"authored", "validated"}:
             gate9_failures.append(f"{page.get('page_id')}: status {page.get('status')!r}")
+    gate9_failures.extend(strict_gate(9))
     gates.append(gate_result(9, "API reference", gate9_failures))
     gate10_failures: list[str] = []
     for name, records in (("error", errors), ("configuration", config), ("behavior", behaviors), ("lifecycle", lifecycles), ("protocol", protocols)):
@@ -2490,6 +2853,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     for page in target10:
         if page.get("status") not in {"authored", "validated"}:
             gate10_failures.append(f"{page.get('page_id')}: status {page.get('status')!r}")
+    gate10_failures.extend(strict_gate(10))
     gates.append(gate_result(10, "Troubleshooting, errors, and best practices", gate10_failures))
     gate11_failures: list[str] = []
     example_checkpoint, stale = checkpoint_current(DB / "checkpoints" / "examples.json", "source_digest", current_source_digest())
@@ -2531,6 +2895,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     gate12_failures.extend(claim_mapping_quality)
     gate12_failures.extend(dossier_quality)
     gate12_failures.extend(native_doc_quality)
+    gate12_failures.extend(strict_gate(12))
     gates.append(gate_result(12, "Documentation build + link validation", gate12_failures))
     capability_concept = {
         capability["capability_id"] for capability in capabilities
@@ -2563,6 +2928,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
         "total_claims": len(claims), "verified_or_explicit_claims": sum(record.get("status") in {"verified", "conflicted", "unknown_explicit"} for record in claims),
         "relationships": len(edges), "conflicts": len(read_jsonl(DB / "conflicts.jsonl")),
         "unknowns": len(read_jsonl(DB / "unknowns.jsonl")),
+        "strict_protocol_issues": len(strict_audit.get("issues", [])),
     }
     return gates, metrics
 

@@ -1,6 +1,6 @@
 # Release evidence boundary
 
-<!-- claims: CLM-DOC-036-CAP-001,CLM-DOC-036-SOURCE-001 -->
+<!-- claims: CLM-DOC-036-SCOPE-001,CLM-DOC-036-TEXT-001,CLM-DOC-036-TEXT-002,CLM-DOC-036-TEXT-003,CLM-DOC-036-TEXT-004,CLM-DOC-036-TEXT-005,CLM-DOC-036-TEXT-006,CLM-DOC-036-SOURCE-001 -->
 
 ## What it is
 
@@ -71,7 +71,7 @@ Executable evidence selected for **Release evidence boundary** is limited to eac
 
 The claims on **Release evidence boundary** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `.github/workflows/publish.yml:1-171` (`DIRECT`)
-- `scripts/publish.sh:1-69` (`DIRECT`)
+- `.github/workflows/publish.yml:1-21` (`DIRECT`)
+- `scripts/publish.sh:3-23` (`DIRECT`)
 
 For **Release evidence boundary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

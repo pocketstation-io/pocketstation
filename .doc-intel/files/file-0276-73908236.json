@@ -185,14 +185,40 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "c7c7fb8572d447716d386f43445de70b0acf2b8d37a13e984c1506d25f12d03c",
       "lines": [
-        1,
-        195
+        20,
+        69
       ],
-      "path": "tests/session_facade.rs",
-      "symbol": null
+      "path": "tests/session_facade.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "c7c7fb8572d447716d386f43445de70b0acf2b8d37a13e984c1506d25f12d03c",
+      "lines": [
+        122,
+        145
+      ],
+      "path": "tests/session_facade.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "c7c7fb8572d447716d386f43445de70b0acf2b8d37a13e984c1506d25f12d03c",
+      "lines": [
+        8,
+        20
+      ],
+      "path": "tests/session_facade.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "c7c7fb8572d447716d386f43445de70b0acf2b8d37a13e984c1506d25f12d03c",
+      "lines": [
+        69,
+        122
+      ],
+      "path": "tests/session_facade.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -228,11 +254,18 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "#[cfg(feature = \"conformance-fixtures\")]",
-    "pocketstation::SessionRecordingState",
-    "pocketstation::{Session, Source}",
-    "std::thread",
-    "std::time::{Duration, Instant}"
+    "Consumes configuration at tests/session_facade.rs:1.",
+    "Consumes configuration at tests/session_facade.rs:124.",
+    "Consumes configuration at tests/session_facade.rs:147.",
+    "Consumes configuration at tests/session_facade.rs:169.",
+    "Consumes configuration at tests/session_facade.rs:22.",
+    "Consumes configuration at tests/session_facade.rs:3.",
+    "Consumes configuration at tests/session_facade.rs:6.",
+    "Consumes configuration at tests/session_facade.rs:71.",
+    "Depends on `pocketstation::SessionRecordingState` through a declared Rust import.",
+    "Depends on `pocketstation::{Session, Source}` through a declared Rust import.",
+    "Depends on `std::thread` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -274,7 +307,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/session_facade.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

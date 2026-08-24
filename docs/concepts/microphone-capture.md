@@ -1,6 +1,6 @@
 # Microphone capture
 
-<!-- claims: CLM-DOC-009-CAP-001,CLM-DOC-009-SOURCE-001 -->
+<!-- claims: CLM-DOC-009-SCOPE-001,CLM-DOC-009-TEXT-001,CLM-DOC-009-TEXT-002,CLM-DOC-009-TEXT-003,CLM-DOC-009-TEXT-004,CLM-DOC-009-TEXT-005,CLM-DOC-009-TEXT-006,CLM-DOC-009-SOURCE-001 -->
 
 ## What it is
 
@@ -53,7 +53,7 @@ The scope of **Microphone capture** ends at the native contracts and executable 
 | `pocketstation::capture::query::LocalSourceProvider` | struct | Discovers and resolves capture sources through the target platform backend. | `src/capture/query.rs:52` |
 | `pocketstation::capture::authorization::ApplicationPolicyObservation` | enum | Classifies the observable application policy observation. | `src/capture/authorization.rs:231` |
 | `pocketstation::capture::authorization::CaptureCapabilityState` | enum | Selects the capture capability state used by PocketStation. | `src/capture/authorization.rs:145` |
-| `pocketstation::capture::authorization::CaptureError` | enum | Classifies failures reported as capture error. | `src/capture/authorization.rs:290` |
+| `pocketstation::capture::authorization::CaptureError` | enum | Classifies failures surfaced by capture operations. | `src/capture/authorization.rs:290` |
 
 ## Executable evidence
 
@@ -87,6 +87,6 @@ Executable evidence selected for **Microphone capture** is limited to each test'
 
 The claims on **Microphone capture** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/authorization.rs:1-318` (`DIRECT`)
+- `src/capture/authorization.rs:1-1` (`DECLARED`)
 
 For **Microphone capture**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

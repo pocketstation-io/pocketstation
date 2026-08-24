@@ -159,14 +159,31 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "9ed591a961c9a2989cea735fb54de3c7a3cacd0e5377d88ab902152dc0bf27af",
       "lines": [
-        1,
-        201
+        89,
+        133
       ],
-      "path": "tests/runtime_plan_router_alloc.rs",
-      "symbol": null
+      "path": "tests/runtime_plan_router_alloc.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "9ed591a961c9a2989cea735fb54de3c7a3cacd0e5377d88ab902152dc0bf27af",
+      "lines": [
+        53,
+        89
+      ],
+      "path": "tests/runtime_plan_router_alloc.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "9ed591a961c9a2989cea735fb54de3c7a3cacd0e5377d88ab902152dc0bf27af",
+      "lines": [
+        133,
+        200
+      ],
+      "path": "tests/runtime_plan_router_alloc.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -200,15 +217,15 @@
     "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, RealtimePlanExecutor, RealtimePlanRunner, }"
   ],
   "inputs": [
-    "assert_no_alloc::{assert_no_alloc, AllocDisabler}",
-    "pocketstation::internal::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
-    "pocketstation::internal::graph::compiler::Compiler",
-    "pocketstation::internal::graph::dsl::Pipeline",
-    "pocketstation::internal::graph::node::{NodeConfig, PrepareContext}",
-    "pocketstation::internal::graph::planner::RuntimePlanner",
-    "pocketstation::internal::graph::register_builtins",
-    "pocketstation::internal::graph::registry::NodeRegistry",
-    "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, RealtimePlanExecutor, RealtimePlanRunner, }"
+    "Depends on `assert_no_alloc::{assert_no_alloc, AllocDisabler}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::compiler::Compiler` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::dsl::Pipeline` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::node::{NodeConfig, PrepareContext}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::planner::RuntimePlanner` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::register_builtins` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::registry::NodeRegistry` through a declared Rust import.",
+    "Depends on `pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, RealtimePlanExecutor, RealtimePlanRunner, }` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -251,7 +268,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/runtime_plan_router_alloc.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-c7686b64ae95c87133d3",

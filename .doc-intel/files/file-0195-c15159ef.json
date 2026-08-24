@@ -9,6 +9,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/runtime/signal/edge.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/runtime/signal/operator.rs",
@@ -71,6 +72,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/runtime/signal/edge.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/runtime/signal/operator.rs",
@@ -237,19 +239,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "dd49d50146550a9dacdbc4c70c53e0133bcb62656cf693221d529bd2f97e1cb3",
       "lines": [
         1,
-        99
+        1
       ],
       "path": "src/runtime/signal/io.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::signal::io"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/runtime/signal/edge.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/runtime/signal/operator.rs",
@@ -275,6 +278,7 @@
   "generated_from": "not_applicable",
   "git_object": "122186c62fe7cd0eb1924247dade1c01c3995e2c",
   "implemented_by": [
+    "CALLS:src/runtime/signal/edge.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/runtime/signal/operator.rs",
@@ -288,6 +292,7 @@
     "AsyncOperatorInput"
   ],
   "imported_by": [
+    "CALLS:src/runtime/signal/edge.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/runtime/signal/operator.rs",
@@ -308,15 +313,23 @@
     "super::observations::AsyncOperatorObservationState"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::frame::AudioFrame",
-    "crate::graph::SignalEnvelope",
-    "crate::graph::{EdgeContract, EdgeId, MediaCaps, SignalSpec}",
-    "std::sync::Arc",
-    "std::sync::atomic::Ordering",
-    "super::edge::{ TypedEdgeBranchSpec, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }",
-    "super::edge::{SignalEdgeSendError, SignalEdgeSender}",
-    "super::observations::AsyncOperatorObservationState"
+    "Consumes configuration at src/runtime/signal/io.rs:10.",
+    "Consumes configuration at src/runtime/signal/io.rs:14.",
+    "Consumes configuration at src/runtime/signal/io.rs:19.",
+    "Consumes configuration at src/runtime/signal/io.rs:22.",
+    "Consumes configuration at src/runtime/signal/io.rs:28.",
+    "Consumes configuration at src/runtime/signal/io.rs:3.",
+    "Consumes configuration at src/runtime/signal/io.rs:33.",
+    "Consumes configuration at src/runtime/signal/io.rs:5.",
+    "Consumes configuration at src/runtime/signal/io.rs:8.",
+    "Depends on `crate::frame::AudioFrame` through a declared Rust import.",
+    "Depends on `crate::graph::SignalEnvelope` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, EdgeId, MediaCaps, SignalSpec}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::Ordering` through a declared Rust import.",
+    "Depends on `super::edge::{ TypedEdgeBranchSpec, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }` through a declared Rust import.",
+    "Depends on `super::edge::{SignalEdgeSendError, SignalEdgeSender}` through a declared Rust import.",
+    "Depends on `super::observations::AsyncOperatorObservationState` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -330,23 +343,23 @@
   "module": "pocketstation::runtime::signal::io",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::signal::io` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-982bdbfc24be82324dde"
   ],
   "outputs": [
-    "fn:send",
-    "fn:send_audio",
-    "struct:AsyncOperatorInput",
-    "struct:AsyncOperatorInputAccessError",
-    "struct:AsyncOperatorNamedOutput",
-    "struct:AsyncOperatorNamedOutputBranchSpec",
-    "struct:AsyncOperatorTypedInput",
-    "type:AsyncOperatorOutput",
-    "type:AsyncOperatorOutputBranchSpec",
-    "type:AsyncOperatorOutputObservationHandle",
-    "type:AsyncOperatorOutputObservations"
+    "Declares public fn `send_audio`.",
+    "Declares public fn `send`.",
+    "Declares public struct `AsyncOperatorInputAccessError`.",
+    "Declares public struct `AsyncOperatorInput`.",
+    "Declares public struct `AsyncOperatorNamedOutputBranchSpec`.",
+    "Declares public struct `AsyncOperatorNamedOutput`.",
+    "Declares public struct `AsyncOperatorTypedInput`.",
+    "Declares public type `AsyncOperatorOutputBranchSpec`.",
+    "Declares public type `AsyncOperatorOutputObservationHandle`.",
+    "Declares public type `AsyncOperatorOutputObservations`.",
+    "Declares public type `AsyncOperatorOutput`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/io.rs",
@@ -428,8 +441,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::signal::io responsibilities, including Carries typed input for async operator.; Reports a async operator input access error.; Sends a value through `AsyncOperatorInput`.."
+    "classification": "DECLARED",
+    "text": "Bounded operator ingress and named output contracts."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -486,6 +499,7 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/runtime/signal/edge.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/graph/ports.rs",
     "REFERENCES:src/graph/signal/envelope.rs",
@@ -506,27 +520,27 @@
   ],
   "responsibilities": [
     "pocketstation::runtime::signal::io::AsyncOperatorInput: Carries typed input for async operator.",
-    "pocketstation::runtime::signal::io::AsyncOperatorInputAccessError: Reports a async operator input access error.",
+    "pocketstation::runtime::signal::io::AsyncOperatorInputAccessError: Classifies failures surfaced by async operator input access operations.",
     "send: Sends a value through `AsyncOperatorInput`.",
-    "send_audio: Sends audio for `AsyncOperatorInput`.",
-    "pocketstation::runtime::signal::io::AsyncOperatorOutput: Names the async operator output type used by the public API.",
-    "pocketstation::runtime::signal::io::AsyncOperatorOutputObservationHandle: Names the async operator output observation handle type used by the public API.",
-    "pocketstation::runtime::signal::io::AsyncOperatorOutputBranchSpec: Names the async operator output branch spec type used by the public API.",
-    "pocketstation::runtime::signal::io::AsyncOperatorOutputObservations: Names the async operator output observations type used by the public API.",
+    "send_audio: Sends one audio signal through the bounded input owned by `AsyncOperatorInput`.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutput: Exposes `TypedEdgeReceiver` as the public `AsyncOperatorOutput` alias at this API boundary.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutputObservationHandle: Exposes `TypedEdgeObservationHandle` as the public `AsyncOperatorOutputObservationHandle` alias at this API boundary.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutputBranchSpec: Exposes `TypedEdgeBranchSpec` as the public `AsyncOperatorOutputBranchSpec` alias at this API boundary.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutputObservations: Exposes `TypedEdgeObservations` as the public `AsyncOperatorOutputObservations` alias at this API boundary.",
     "pocketstation::runtime::signal::io::AsyncOperatorTypedInput: Carries typed input for async operator typed.",
-    "AsyncOperatorTypedInput::port_name: Stores the port name used by `AsyncOperatorTypedInput`.",
-    "AsyncOperatorTypedInput::receiver: Stores the receiver used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::port_name: Stores the human-readable port used to identify `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::receiver: Owns the receiver endpoint through which `AsyncOperatorTypedInput` exchanges values.",
     "AsyncOperatorTypedInput::edge_id: Identifies the edge identifier recorded by `AsyncOperatorTypedInput`.",
-    "AsyncOperatorTypedInput::signal_spec: Stores the signal spec used by `AsyncOperatorTypedInput`.",
-    "AsyncOperatorTypedInput::media: Stores the media used by `AsyncOperatorTypedInput`.",
-    "AsyncOperatorTypedInput::edge_contract: Stores the edge contract used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::signal_spec: Declares the signal class and format accepted by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::media: Records the media selected for `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::edge_contract: References the edge contract participating in `AsyncOperatorTypedInput`.",
     "AsyncOperatorTypedInput::capacity_signals: Sets the capacity signals available to `AsyncOperatorTypedInput`.",
     "pocketstation::runtime::signal::io::AsyncOperatorNamedOutputBranchSpec: Configures async operator named output branch behavior at its owning API boundary.",
-    "AsyncOperatorNamedOutputBranchSpec::output_port: Stores the output port used by `AsyncOperatorNamedOutputBranchSpec`.",
-    "AsyncOperatorNamedOutputBranchSpec::branch: Stores the branch used by `AsyncOperatorNamedOutputBranchSpec`.",
+    "AsyncOperatorNamedOutputBranchSpec::output_port: References the output port participating in `AsyncOperatorNamedOutputBranchSpec`.",
+    "AsyncOperatorNamedOutputBranchSpec::branch: References the branch participating in `AsyncOperatorNamedOutputBranchSpec`.",
     "pocketstation::runtime::signal::io::AsyncOperatorNamedOutput: Carries typed output from async operator named.",
-    "AsyncOperatorNamedOutput::output_port: Stores the output port used by `AsyncOperatorNamedOutput`.",
-    "AsyncOperatorNamedOutput::receiver: Stores the receiver used by `AsyncOperatorNamedOutput`."
+    "AsyncOperatorNamedOutput::output_port: References the output port participating in `AsyncOperatorNamedOutput`.",
+    "AsyncOperatorNamedOutput::receiver: Owns the receiver endpoint through which `AsyncOperatorNamedOutput` exchanges values."
   ],
   "retry_behavior": [],
   "serialization": [],

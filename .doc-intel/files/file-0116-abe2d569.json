@@ -4,7 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/conformance.rs",
     "CONTAINS:src/lib.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/lib.rs",
     "REFERENCES:src/conformance.rs"
   ],
@@ -79,7 +81,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/conformance.rs",
     "CONTAINS:src/lib.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/lib.rs",
     "REFERENCES:src/conformance.rs"
   ],
@@ -420,11 +424,241 @@
       "classification": "DIRECT",
       "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
       "lines": [
-        1,
-        253
+        61,
+        65
       ],
       "path": "src/connector/mod.rs",
-      "symbol": null
+      "symbol": "Connector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        62,
+        62
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        63,
+        63
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "endpoint_factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        64,
+        64
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        68,
+        81
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        88,
+        105
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "with_driver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        112,
+        117
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "sidecar"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        119,
+        121
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        124,
+        124
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        125,
+        129
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "RegisteredConnector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        126,
+        126
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "session_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        127,
+        127
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        128,
+        128
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        132,
+        134
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "session_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        136,
+        138
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        140,
+        151
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "observation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        153,
+        157
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        159,
+        179
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "declare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        182,
+        184
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "ConnectorDefinition"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        183,
+        183
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        187,
+        189
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        191,
+        200
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "validate_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        204,
+        221
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "register_connector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        224,
+        224
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": "from"
     }
   ],
   "example_coverage_status": "linked",
@@ -432,7 +666,9 @@
     "example-937ee5ed9d4dfb93965f"
   ],
   "extended_by": [
+    "CALLS:src/conformance.rs",
     "CONTAINS:src/lib.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/lib.rs",
     "REFERENCES:src/conformance.rs"
   ],
@@ -455,7 +691,9 @@
   "generated_from": "not_applicable",
   "git_object": "4dc80571200e94c2ffa615e34c91e0b8f2b0d664",
   "implemented_by": [
+    "CALLS:src/conformance.rs",
     "CONTAINS:src/lib.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/lib.rs",
     "REFERENCES:src/conformance.rs"
   ],
@@ -466,7 +704,9 @@
     "Session"
   ],
   "imported_by": [
+    "CALLS:src/conformance.rs",
     "CONTAINS:src/lib.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/lib.rs",
     "REFERENCES:src/conformance.rs"
   ],
@@ -495,32 +735,30 @@
     "worker::{ ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorFactory, ConnectorInputDescriptor, ConnectorItem, ConnectorRunOutcome, ConnectorWorker, }"
   ],
   "inputs": [
-    ".map_err(|error| ConfigError::Invalid {",
-    "Configuration(#[from] ConnectorConfigurationError),",
-    "configuration::{ ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationError, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }",
-    "crate::graph::{ConfigError, NodeConfig, NodeDefinition}",
-    "crate::{EndpointDescriptor, EndpointDriverFactory, EndpointHandle, Session, SessionError}",
-    "error::{ ConnectorError, ConnectorErrorBuildError, ConnectorErrorCode, ConnectorErrorCodeError, ConnectorErrorStage, ConnectorRetryability, MAX_CONNECTOR_ERROR_CODE_BYTES, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
-    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
-    "manifest::{ ConnectorCapability, ConnectorManifest, ConnectorManifestError, ConnectorRequirement, CONNECTOR_API_REVISION, MAX_CONNECTOR_MANIFEST_ENTRIES, MAX_CONNECTOR_MANIFEST_TEXT_BYTES, }",
-    "module:configuration",
-    "module:error",
-    "module:manifest",
-    "module:observations",
-    "module:readiness",
-    "module:sidecar",
-    "module:status",
-    "module:transport",
-    "module:worker",
-    "observations::ConnectorObservationStore",
-    "observations::{ ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations, ConnectorRuntimeObservations, }",
-    "readiness::{ ConnectorReadinessPolicy, ConnectorReadinessPolicyError, MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT, }",
-    "sidecar::{ sidecar_connector_factory, SidecarConnectorDriverFactory, CONNECTOR_AUDIO_RECORD_SCHEMA, CONNECTOR_AUDIO_RECORD_SIGNAL_ID, }",
-    "status::{ ConnectorDeliveryReadiness, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }",
-    "std::sync::Arc",
-    "transport::{ ConnectorAudioMetadata, ConnectorAudioRecord, ConnectorAudioRecordError, ConnectorConfigurationRecord, ConnectorConfigurationRecordError, CONNECTOR_AUDIO_RECORD_MAJOR, CONNECTOR_AUDIO_RECORD_MINOR, CONNECTOR_CONFIGURATION_RECORD_MAJOR, CONNECTOR_CONFIGURATION_RECORD_MINOR, MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES, MAX_CONNECTOR_AUDIO_RECORD_SAMPLES, }",
-    "use crate::graph::{ConfigError, NodeConfig, NodeDefinition};",
-    "worker::{ ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorFactory, ConnectorInputDescriptor, ConnectorItem, ConnectorRunOutcome, ConnectorWorker, }"
+    "Consumes configuration at src/connector/mod.rs:13.",
+    "Consumes configuration at src/connector/mod.rs:191.",
+    "Consumes configuration at src/connector/mod.rs:196.",
+    "Consumes configuration at src/connector/mod.rs:240.",
+    "Depends on `configuration::{ ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationError, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }` through a declared Rust import.",
+    "Depends on `configuration` through a declared Rust import.",
+    "Depends on `crate::graph::{ConfigError, NodeConfig, NodeDefinition}` through a declared Rust import.",
+    "Depends on `crate::{EndpointDescriptor, EndpointDriverFactory, EndpointHandle, Session, SessionError}` through a declared Rust import.",
+    "Depends on `error::{ ConnectorError, ConnectorErrorBuildError, ConnectorErrorCode, ConnectorErrorCodeError, ConnectorErrorStage, ConnectorRetryability, MAX_CONNECTOR_ERROR_CODE_BYTES, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }` through a declared Rust import.",
+    "Depends on `error` through a declared Rust import.",
+    "Depends on `manifest::{ ConnectorCapability, ConnectorManifest, ConnectorManifestError, ConnectorRequirement, CONNECTOR_API_REVISION, MAX_CONNECTOR_MANIFEST_ENTRIES, MAX_CONNECTOR_MANIFEST_TEXT_BYTES, }` through a declared Rust import.",
+    "Depends on `manifest` through a declared Rust import.",
+    "Depends on `observations::ConnectorObservationStore` through a declared Rust import.",
+    "Depends on `observations::{ ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations, ConnectorRuntimeObservations, }` through a declared Rust import.",
+    "Depends on `observations` through a declared Rust import.",
+    "Depends on `readiness::{ ConnectorReadinessPolicy, ConnectorReadinessPolicyError, MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT, }` through a declared Rust import.",
+    "Depends on `readiness` through a declared Rust import.",
+    "Depends on `sidecar::{ sidecar_connector_factory, SidecarConnectorDriverFactory, CONNECTOR_AUDIO_RECORD_SCHEMA, CONNECTOR_AUDIO_RECORD_SIGNAL_ID, }` through a declared Rust import.",
+    "Depends on `sidecar` through a declared Rust import.",
+    "Depends on `status::{ ConnectorDeliveryReadiness, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }` through a declared Rust import.",
+    "Depends on `status` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `transport` through a declared Rust import.",
+    "Depends on `worker` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -534,29 +772,29 @@
   "module": "pocketstation::connector",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-31b76706228fd84bfc03",
     "pattern-92384c9a4e85cd5fa74e"
   ],
   "outputs": [
-    "enum:ConnectorDeclarationError",
-    "enum:ConnectorObservationLookupError",
-    "enum:ConnectorRegistrationError",
-    "fn:declare",
-    "fn:manifest",
-    "fn:new",
-    "fn:observation",
-    "fn:observations",
-    "fn:register_connector",
-    "fn:session_id",
-    "fn:sidecar",
-    "fn:with_driver",
-    "return Err(ConnectorDeclarationError::WrongSession {",
-    "return Err(ConnectorObservationLookupError::WrongSession {",
-    "struct:Connector",
-    "struct:RegisteredConnector"
+    "Creates a typed failure at src/connector/mod.rs:145.",
+    "Creates a typed failure at src/connector/mod.rs:166.",
+    "Declares public enum `ConnectorDeclarationError`.",
+    "Declares public enum `ConnectorObservationLookupError`.",
+    "Declares public enum `ConnectorRegistrationError`.",
+    "Declares public fn `declare`.",
+    "Declares public fn `manifest`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observation`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `register_connector`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `sidecar`.",
+    "Declares public fn `with_driver`.",
+    "Declares public struct `Connector`.",
+    "Declares public struct `RegisteredConnector`."
   ],
   "package": "pocketstation",
   "path": "src/connector/mod.rs",
@@ -735,8 +973,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector responsibilities, including Types and operations for connector.; Declares a connector endpoint and the manifest-backed configuration used to instantiate it.; Creates a new `Connector`.."
+    "classification": "DIRECT",
+    "text": "Declares connector manifests, validated configuration, endpoint factories, sidecar-backed drivers, registrations, and observations."
   },
   "queues": [],
   "recovery_behavior": [
@@ -784,6 +1022,12 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/configuration.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
     "CONTAINS:src/connector/configuration.rs",
     "CONTAINS:src/connector/error.rs",
     "CONTAINS:src/connector/manifest.rs",
@@ -793,6 +1037,11 @@
     "CONTAINS:src/connector/status.rs",
     "CONTAINS:src/connector/transport.rs",
     "CONTAINS:src/connector/worker/mod.rs",
+    "IMPLEMENTS:src/connector/configuration.rs",
+    "IMPLEMENTS:src/connector/manifest.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/error.rs",
     "IMPORTS:src/connector/configuration.rs",
     "IMPORTS:src/connector/error.rs",
     "IMPORTS:src/connector/manifest.rs",
@@ -867,7 +1116,7 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::connector: Types and operations for connector.",
+    "pocketstation::connector: Connector manifests, configuration, workers, transport records, readiness, and observations.",
     "pocketstation::connector::Connector: Declares a connector endpoint and the manifest-backed configuration used to instantiate it.",
     "new: Creates a new `Connector`.",
     "with_driver: Builds a connector whose bounded receiver loop is owned by Core.",
@@ -879,20 +1128,20 @@
     "observation: Returns the current observation exposed by `RegisteredConnector`.",
     "observations: Returns the observations exposed by `RegisteredConnector`.",
     "declare: Adds the declaration represented by `RegisteredConnector` to its Session.",
-    "register_connector: Registers connector for `Session`.",
-    "pocketstation::connector::ConnectorRegistrationError: Classifies failures reported as connector registration error.",
-    "pocketstation::connector::ConnectorRegistrationError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
-    "pocketstation::connector::ConnectorRegistrationError::Session: Reported when the owning operation encounters session.",
-    "pocketstation::connector::ConnectorDeclarationError: Classifies failures reported as connector declaration error.",
-    "pocketstation::connector::ConnectorDeclarationError::WrongSession: Reported when the owning operation encounters wrong session.",
-    "pocketstation::connector::ConnectorDeclarationError::WrongSession::registered: Stores the registered used by `WrongSession`.",
-    "pocketstation::connector::ConnectorDeclarationError::WrongSession::requested: Stores the requested used by `WrongSession`.",
-    "pocketstation::connector::ConnectorDeclarationError::Configuration: Reported when the owning operation encounters configuration.",
-    "pocketstation::connector::ConnectorDeclarationError::Session: Reported when the owning operation encounters session.",
-    "pocketstation::connector::ConnectorObservationLookupError: Classifies failures reported as connector observation lookup error.",
-    "pocketstation::connector::ConnectorObservationLookupError::WrongSession: Reported when the owning operation encounters wrong session.",
-    "pocketstation::connector::ConnectorObservationLookupError::WrongSession::registered: Stores the registered used by `WrongSession`.",
-    "pocketstation::connector::ConnectorObservationLookupError::WrongSession::requested: Stores the requested used by `WrongSession`."
+    "register_connector: Registers one connector implementation for use by `Session`.",
+    "pocketstation::connector::ConnectorRegistrationError: Classifies failures produced during connector registration.",
+    "pocketstation::connector::ConnectorRegistrationError::InvalidManifest: Reports that the supplied manifest is invalid.",
+    "pocketstation::connector::ConnectorRegistrationError::Session: Classifies a failure at the session stage or component of `ConnectorRegistrationError`.",
+    "pocketstation::connector::ConnectorDeclarationError: Classifies failures surfaced by connector declaration operations.",
+    "pocketstation::connector::ConnectorDeclarationError::WrongSession: Reports that session does not match the required identity or contract.",
+    "pocketstation::connector::ConnectorDeclarationError::WrongSession::registered: Stores the registered as a `SessionId` value in `WrongSession`.",
+    "pocketstation::connector::ConnectorDeclarationError::WrongSession::requested: Stores the requested as a `SessionId` value in `WrongSession`.",
+    "pocketstation::connector::ConnectorDeclarationError::Configuration: Classifies a failure at the configuration stage or component of `ConnectorDeclarationError`.",
+    "pocketstation::connector::ConnectorDeclarationError::Session: Classifies a failure at the session stage or component of `ConnectorDeclarationError`.",
+    "pocketstation::connector::ConnectorObservationLookupError: Classifies failures surfaced by connector observation lookup operations.",
+    "pocketstation::connector::ConnectorObservationLookupError::WrongSession: Reports that session does not match the required identity or contract.",
+    "pocketstation::connector::ConnectorObservationLookupError::WrongSession::registered: Stores the registered as a `SessionId` value in `WrongSession`.",
+    "pocketstation::connector::ConnectorObservationLookupError::WrongSession::requested: Stores the requested as a `SessionId` value in `WrongSession`."
   ],
   "retry_behavior": [],
   "serialization": [],

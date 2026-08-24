@@ -1,6 +1,6 @@
 # Terminal outcomes
 
-<!-- claims: CLM-DOC-042-CAP-001,CLM-DOC-042-CAP-002,CLM-DOC-042-SOURCE-001 -->
+<!-- claims: CLM-DOC-042-SCOPE-001,CLM-DOC-042-TEXT-001,CLM-DOC-042-TEXT-002,CLM-DOC-042-SOURCE-001 -->
 
 ## Scope
 
@@ -17,45 +17,35 @@ For **Terminal outcomes**, PocketStation keeps the declaration, compilation, pre
 
 | Operation | Trigger | Source state | Destination state | Evidence record |
 |---|---|---|---|---|
-| `pocketstation::session::lifecycle::observations::EndpointObservationStage::Finalized` | `Finalized` | stopping_or_completed | terminal | `life-079ba79743246d62b02e` |
-| `pocketstation::session::lifecycle::events::SessionLifecycleState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-0c83bede0af1826f5b6a` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-0eb9c8d45523705c071c` |
-| `pocketstation::session::lifecycle::control::SessionStartError::Cancelled` | `Cancelled` | prepared | running_or_start_failed | `life-14367931dacc2ea6803e` |
 | `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-1a59542c3bc90997a7e9` |
-| `pocketstation::session::prepare::prepare_session_runtime` | `prepare_session_runtime` | declared_or_compiled | prepared_or_prepare_failed | `life-1ff9bd824b35e4bd86a6` |
+| `pocketstation::session::prepare::prepare_session_runtime` | `prepare_session_runtime` | constructed_before_preparation | prepared_or_prepare_failed | `life-1ff9bd824b35e4bd86a6` |
 | `SourceDriver::close` | `close` | owned_or_running | closed_or_released | `life-24ac3bb4851827ee31fe` |
 | `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-26d46ffab4e997084bfb` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-277b4455fde06fca7361` |
 | `start` | `start` | prepared | running_or_start_failed | `life-27d61a4d665450e563d4` |
-| `pocketstation::session::lifecycle::running::start_prepared_session` | `start_prepared_session` | declared_or_compiled | prepared_or_prepare_failed | `life-2ad92f34c9423181c5be` |
+| `pocketstation::session::lifecycle::running::start_prepared_session` | `start_prepared_session` | constructed_before_preparation | prepared_or_prepare_failed | `life-2ad92f34c9423181c5be` |
 | `close` | `close` | owned_or_running | closed_or_released | `life-31fcaf8e4ff4dc364909` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-45188ad8c6a8dde207aa` |
 | `start_failure` | `start_failure` | prepared | running_or_start_failed | `life-4c39dbc19bad333c2912` |
 | `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-5a4d79d60befb5c0de67` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-5cdc4329bb39da70e765` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-5fb7a5014d6ffc5d4352` |
-| `pocketstation::session::lifecycle::events::SessionLifecycleState::Running` | `Running` | prepared | running_or_terminal | `life-68c28ff7b438b8f11879` |
-| `SourceDriver::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-6a6429930d687e6fac25` |
+| `SourceDriver::prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-6a6429930d687e6fac25` |
 | `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-6e9224a91062bb5ec713` |
 | `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-7e2e74712c52616d3c2c` |
-| `pocketstation::session::error_code::SessionStopCode::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-80e6f0ced6a8a0e4d47b` |
 | `drop_observations` | `drop_observations` | owned_or_running | closed_or_released | `life-87afb6dffef4ad5765d6` |
-| `prepare_session` | `prepare_session` | declared_or_compiled | prepared_or_prepare_failed | `life-8871b96155ed0020e00c` |
+| `prepare_session` | `prepare_session` | constructed_before_preparation | prepared_or_prepare_failed | `life-8871b96155ed0020e00c` |
 | `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-8b50910aa645c7069ac3` |
-| `stop` | `stop` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-8bb2a23671da67e30c1b` |
+| `stop` | `stop` | owning_state_before_operation | owning_state_after_returned_outcome | `life-8bb2a23671da67e30c1b` |
 | `start` | `start` | prepared | running_or_start_failed | `life-96cd11312a6f1461a2ca` |
 | `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-977aafa66864957cfcb4` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-a66c19cea3372c7a33d8` |
-| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | `start_prepared_session_cancellable` | declared_or_compiled | prepared_or_prepare_failed | `life-a8706f56832ee13271c9` |
-| `pocketstation::session::lifecycle::events::SessionTerminalState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-b5ed04fa91e839c293be` |
+| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | `start_prepared_session_cancellable` | constructed_before_preparation | prepared_or_prepare_failed | `life-a8706f56832ee13271c9` |
 | `join` | `join` | stopping_or_completed | terminal | `life-b5f9ab974b55c8f4b6c2` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-b65b53dd882678e7685b` |
 | `start` | `start` | prepared | running_or_start_failed | `life-b76642f17aa575a0757e` |
 | `close` | `close` | owned_or_running | closed_or_released | `life-b9b46198766a5efb68d8` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Start` | `Start` | prepared | running_or_start_failed | `life-cb5a740e84f51401ac95` |
 | `start` | `start` | prepared | running_or_start_failed | `life-e4d2a447d0f97df30948` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-f2d6afa474fb10373eb8` |
-| `prepare_context` | `prepare_context` | declared_or_compiled | prepared_or_prepare_failed | `life-f4c3e7122fc0dc984668` |
+| `prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-f2d6afa474fb10373eb8` |
+| `prepare_context` | `prepare_context` | constructed_before_preparation | prepared_or_prepare_failed | `life-f4c3e7122fc0dc984668` |
 
 ## Failure handling
 
@@ -93,6 +83,29 @@ Executable evidence selected for **Terminal outcomes** is limited to each test's
 
 The claims on **Terminal outcomes** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/events.rs:1-736` (`DIRECT`)
+- `src/session/lifecycle/events.rs:15-15` (`DIRECT`)
+- `src/session/lifecycle/events.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/events.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/events.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/events.rs:19-25` (`DIRECT`)
+- `src/session/lifecycle/events.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/events.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/events.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/events.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/events.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/events.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/events.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/events.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/events.rs:29-35` (`DIRECT`)
+- `src/session/lifecycle/events.rs:30-30` (`DIRECT`)
+- `src/session/lifecycle/events.rs:31-31` (`DIRECT`)
+- `src/session/lifecycle/events.rs:32-32` (`DIRECT`)
+- `src/session/lifecycle/events.rs:33-33` (`DIRECT`)
+- `src/session/lifecycle/events.rs:34-34` (`DIRECT`)
+- `src/session/lifecycle/events.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/events.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/events.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/events.rs:39-47` (`DIRECT`)
+- `src/session/lifecycle/events.rs:40-40` (`DIRECT`)
 
 For **Terminal outcomes**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

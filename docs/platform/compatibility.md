@@ -1,6 +1,6 @@
 # Platform support and evidence
 
-<!-- claims: CLM-DOC-043-CAP-001,CLM-DOC-043-CAP-002,CLM-DOC-043-CAP-003,CLM-DOC-043-CAP-004,CLM-DOC-043-CAP-005,CLM-DOC-043-SOURCE-001 -->
+<!-- claims: CLM-DOC-043-SCOPE-001,CLM-DOC-043-TEXT-001,CLM-DOC-043-TEXT-002,CLM-DOC-043-SOURCE-001 -->
 
 ## Scope
 
@@ -21,11 +21,11 @@ The scope of **Platform support and evidence** ends at the native contracts and 
 | `pocketstation::capture::platform::macos::session_backend::DesktopCaptureBackend` | struct | macOS adapter from the platform-neutral Session capture contract to the existing CoreAudio/input RAII owner. | `src/capture/platform/macos/session_backend.rs:11` |
 | `pocketstation::capture::platform::macos::input::discover_input_sources_native` | function | Discovers microphone input sources through the native macOS backend. | `src/capture/platform/macos/input.rs:263` |
 | `pocketstation::capture::authorization::CaptureCapabilityState::Unsupported` | variant | Reports that the requested operation is unsupported. | `src/capture/authorization.rs:148` |
-| `pocketstation::capture::authorization::CaptureError::ModeUnsupported` | variant | Reported when the owning operation encounters mode unsupported. | `src/capture/authorization.rs:310` |
-| `pocketstation::capture::authorization::CaptureError::NotSupported` | variant | Reported when the owning operation encounters not supported. | `src/capture/authorization.rs:292` |
+| `pocketstation::capture::authorization::CaptureError::ModeUnsupported` | variant | Reports that mode is unsupported by the active backend or contract. | `src/capture/authorization.rs:310` |
+| `pocketstation::capture::authorization::CaptureError::NotSupported` | variant | Reports that no t supported is available. | `src/capture/authorization.rs:292` |
 | `pocketstation::capture::authorization::SourceIdentityStrength::PlatformStableId` | variant | Represents the platform stable identifier alternative defined by `SourceIdentityStrength`. | `src/capture/authorization.rs:262` |
-| `pocketstation::capture::events::CaptureRuntimeFailureClass::PlatformStatus` | variant | Reported when the owning operation encounters platform status. | `src/capture/events.rs:42` |
-| `events::CaptureRuntimeFailureClass::PlatformStatus::status_code` | struct_field | Stores the status code used by `PlatformStatus`. | `src/capture/events.rs:42` |
+| `pocketstation::capture::events::CaptureRuntimeFailureClass::PlatformStatus` | variant | Classifies a failure at the platform status stage or component of `CaptureRuntimeFailureClass`. | `src/capture/events.rs:42` |
+| `events::CaptureRuntimeFailureClass::PlatformStatus::status_code` | struct_field | Preserves the platform or protocol status code reported by `PlatformStatus`. | `src/capture/events.rs:42` |
 | `authorization` | module | Explicit capture authorization evidence and open outcomes. | `src/capture/authorization.rs:1` |
 | `query` | module | Control-plane source discovery queries used by the first-party CLI. | `src/capture/query.rs:1` |
 | `pocketstation::capture::capture_owner::ActiveCaptureBackend` | trait | Native capture resources owned for exactly one active capture. | `src/capture/capture_owner.rs:100` |
@@ -77,7 +77,7 @@ Executable evidence selected for **Platform support and evidence** is limited to
 
 The claims on **Platform support and evidence** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/platform/mod.rs:1-7` (`DIRECT`)
-- `.github/workflows/ci.yml:1-63` (`DIRECT`)
+- `src/capture/platform/mod.rs:2-6` (`DIRECT`)
+- `.github/workflows/ci.yml:1-21` (`DIRECT`)
 
 For **Platform support and evidence**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

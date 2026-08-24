@@ -159,14 +159,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "2d156f4f84dfd66ad39194c3b730183942d164b866f3f41ae89555544967585f",
       "lines": [
         1,
-        70
+        1
       ],
       "path": "src/graph/signal/preparation.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::signal::preparation"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -218,10 +218,10 @@
     "std::pin::Pin"
   ],
   "inputs": [
-    "crate::graph::node::{NodeError, PortPrepareContext}",
-    "crate::graph::{ExecutionPartition, PortDirection}",
-    "std::future::Future",
-    "std::pin::Pin"
+    "Depends on `crate::graph::node::{NodeError, PortPrepareContext}` through a declared Rust import.",
+    "Depends on `crate::graph::{ExecutionPartition, PortDirection}` through a declared Rust import.",
+    "Depends on `std::future::Future` through a declared Rust import.",
+    "Depends on `std::pin::Pin` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -239,20 +239,21 @@
   "module": "pocketstation::graph::signal::preparation",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::signal::preparation` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-3b5770de79ba80fbb674"
   ],
   "outputs": [
-    "fn:execution_partition",
-    "fn:inputs",
-    "fn:new",
-    "fn:outputs",
-    "return Err(NodeError::Prepare(",
-    "struct:AsyncOperatorPrepareContext",
-    "type:AsyncNodeFuture",
-    "type:AsyncOperatorEdgePrepareContext"
+    "Creates a typed failure at src/graph/signal/preparation.rs:34.",
+    "Creates a typed failure at src/graph/signal/preparation.rs:47.",
+    "Declares public fn `execution_partition`.",
+    "Declares public fn `inputs`.",
+    "Declares public fn `new`.",
+    "Declares public fn `outputs`.",
+    "Declares public struct `AsyncOperatorPrepareContext`.",
+    "Declares public type `AsyncNodeFuture`.",
+    "Declares public type `AsyncOperatorEdgePrepareContext`."
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/preparation.rs",
@@ -310,8 +311,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::signal::preparation responsibilities, including Names the future returned by async node operations.; Exact bounded graph edge supplied to an asynchronous Operator at prepare time.; Complete graph-owned preparation contract for one asynchronous Operator.."
+    "classification": "DECLARED",
+    "text": "Signal-shaped asynchronous Operator preparation contracts."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -350,6 +351,7 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/partition.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/partition.rs"
   ],

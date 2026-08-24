@@ -22,20 +22,20 @@ pub struct OpusDecoder {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as opus decode error."]
+#[doc = "Classifies failures produced during opus decoding."]
 pub enum OpusDecodeError {
     #[error(
         "requested {requested_samples_per_channel} Opus samples per channel exceeds configured maximum {maximum_samples_per_channel}"
     )]
-    #[doc = "Reports frame duration exceeds configured maximum."]
+    #[doc = "Classifies a failure at the frame duration exceeds configured maximum stage or component of `OpusDecodeError`."]
     FrameDurationExceedsConfiguredMaximum {
-        #[doc = "Stores the requested samples per channel used by `FrameDurationExceedsConfiguredMaximum`."]
+        #[doc = "Records the requested frame length, in samples per channel, that caused `FrameDurationExceedsConfiguredMaximum`."]
         requested_samples_per_channel: usize,
-        #[doc = "Stores the maximum samples per channel used by `FrameDurationExceedsConfiguredMaximum`."]
+        #[doc = "Records the configured maximum frame length, in samples per channel, enforced by `FrameDurationExceedsConfiguredMaximum`."]
         maximum_samples_per_channel: usize,
     },
     #[error("Opus decode failed: {0}")]
-    #[doc = "Reports opus."]
+    #[doc = "Classifies a failure at the opus stage or component of `OpusDecodeError`."]
     Opus(#[from] opus::Error),
 }
 

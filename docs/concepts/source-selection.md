@@ -1,6 +1,6 @@
 # Source selection
 
-<!-- claims: CLM-DOC-007-CAP-001,CLM-DOC-007-SOURCE-001 -->
+<!-- claims: CLM-DOC-007-SCOPE-001,CLM-DOC-007-TEXT-001,CLM-DOC-007-TEXT-002,CLM-DOC-007-TEXT-003,CLM-DOC-007-TEXT-004,CLM-DOC-007-TEXT-005,CLM-DOC-007-TEXT-006,CLM-DOC-007-SOURCE-001 -->
 
 ## What it is
 
@@ -45,9 +45,9 @@ The scope of **Source selection** ends at the native contracts and executable co
 | `selection` | module | Capture selection semantics; control-plane only. | `src/capture/selection.rs:1` |
 | `pocketstation::capture::query::SourceProvider` | trait | Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract. | `src/capture/query.rs:48` |
 | `pocketstation::capture::query::LocalSourceProvider` | struct | Discovers and resolves capture sources through the target platform backend. | `src/capture/query.rs:52` |
-| `pocketstation::capture::query::SourceQuery` | enum | Enumerates the supported source query cases. | `src/capture/query.rs:13` |
+| `pocketstation::capture::query::SourceQuery` | enum | Describes the source kind and optional application or device selector used for discovery. | `src/capture/query.rs:13` |
 | `pocketstation::capture::selection::CaptureMode` | enum | Selects the capture mode used by PocketStation. | `src/capture/selection.rs:16` |
-| `pocketstation::capture::selection::InputDeviceSelector` | enum | Enumerates the supported input device selector cases. | `src/capture/selection.rs:9` |
+| `pocketstation::capture::selection::InputDeviceSelector` | enum | Selects either the default input device or one exact device identity. | `src/capture/selection.rs:9` |
 | `pocketstation::capture::selection::ProcessTreeScope` | enum | Selects the process tree scope used by PocketStation. | `src/capture/selection.rs:83` |
 | `pocketstation::capture::selection::SelectorPersistenceScope` | enum | Selects the selector persistence scope used by PocketStation. | `src/capture/selection.rs:73` |
 | `pocketstation::capture::query::discover_sources` | function | Discovers capture sources available from the local provider. | `src/capture/query.rs:85` |
@@ -85,7 +85,7 @@ Executable evidence selected for **Source selection** is limited to each test's 
 
 The claims on **Source selection** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/query.rs:1-137` (`DIRECT`)
-- `src/capture/selection.rs:1-89` (`DIRECT`)
+- `src/capture/query.rs:1-1` (`DECLARED`)
+- `src/capture/selection.rs:1-1` (`DECLARED`)
 
 For **Source selection**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -1,6 +1,6 @@
 # A capture source disappears
 
-<!-- claims: CLM-TRBL-005-CAP-001,CLM-TRBL-005-CAP-002,CLM-TRBL-005-CAP-003,CLM-TRBL-005-CAP-004,CLM-TRBL-005-CAP-005,CLM-TRBL-005-SOURCE-001 -->
+<!-- claims: CLM-TRBL-005-SCOPE-001,CLM-TRBL-005-TEXT-001,CLM-TRBL-005-TEXT-002,CLM-TRBL-005-TEXT-003,CLM-TRBL-005-TEXT-004,CLM-TRBL-005-TEXT-005,CLM-TRBL-005-TEXT-006,CLM-TRBL-005-TEXT-007,CLM-TRBL-005-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,7 +77,7 @@ A new generation requires a new source state; replay safety is not implied. Prev
 
 The claims on **A capture source disappears** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/events.rs:1-344` (`DIRECT`)
-- `src/capture/lifecycle_registry.rs:1-88` (`DIRECT`)
+- `src/capture/events.rs:1-1` (`DECLARED`)
+- `src/capture/lifecycle_registry.rs:1-1` (`DECLARED`)
 
 For **A capture source disappears**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

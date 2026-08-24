@@ -4,7 +4,11 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/audio_input/buffer.rs",
@@ -42,7 +46,11 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/audio_input/buffer.rs",
@@ -340,17 +348,251 @@
       "classification": "DIRECT",
       "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
       "lines": [
-        1,
-        152
+        16,
+        16
       ],
       "path": "src/session/extensions/audio_input/mod.rs",
-      "symbol": null
+      "symbol": "MAX_CAPACITY_FRAMES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "PCM_SOURCE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        22,
+        26
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "AudioInputConfig"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "sample_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "capacity_frames"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "frame_samples_per_channel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        29,
+        57
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        59,
+        61
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "sample_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        63,
+        65
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "capacity_frames"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        67,
+        69
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "frame_samples_per_channel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        71,
+        73
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "interleaved_samples_per_frame"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        76,
+        76
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        76,
+        76
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        76,
+        76
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        76,
+        76
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        77,
+        90
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "AudioInputConfigError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        79,
+        79
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "ZeroSampleRate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        81,
+        81
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "UnsupportedChannelCount"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        83,
+        83
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "UnsupportedSampleFormat"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        85,
+        85
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "InvalidCapacity"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        87,
+        87
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": "ZeroFrameSamples"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/audio_input/buffer.rs",
@@ -375,7 +617,11 @@
   "generated_from": "not_applicable",
   "git_object": "a9fbc63691865f9f2d453a723ae9e8e4dfedb8f8",
   "implemented_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/audio_input/buffer.rs",
@@ -387,7 +633,11 @@
     "fmt::Debug for AudioInput"
   ],
   "imported_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/audio_input/buffer.rs",
@@ -404,14 +654,14 @@
     "std::fmt"
   ],
   "inputs": [
-    "buffer::{ AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, }",
-    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
-    "crate::{SampleFormat, SampleSpec}",
-    "module:buffer",
-    "module:source",
-    "source::AudioInputFactory",
-    "source::{AudioInputError, PcmSource}",
-    "std::fmt"
+    "Depends on `buffer::{ AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, }` through a declared Rust import.",
+    "Depends on `buffer` through a declared Rust import.",
+    "Depends on `crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}` through a declared Rust import.",
+    "Depends on `crate::{SampleFormat, SampleSpec}` through a declared Rust import.",
+    "Depends on `source::AudioInputFactory` through a declared Rust import.",
+    "Depends on `source::{AudioInputError, PcmSource}` through a declared Rust import.",
+    "Depends on `source` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -433,34 +683,34 @@
   "module": "pocketstation::session::extensions::audio_input",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::audio_input` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-96012904b37b0f547c62"
   ],
   "outputs": [
-    "const:PCM_SOURCE_TYPE_ID",
-    "enum:AudioInputConfigError",
-    "fn:capacity_frames",
-    "fn:close",
-    "fn:frame_samples_per_channel",
-    "fn:interleaved_samples_per_frame",
-    "fn:into_pcm_source",
-    "fn:new",
-    "fn:observations",
-    "fn:output",
-    "fn:sample_spec",
-    "fn:source",
-    "fn:try_acquire",
-    "fn:try_send",
-    "fn:try_write",
-    "return Err(AudioInputConfigError::InvalidCapacity);",
-    "return Err(AudioInputConfigError::UnsupportedChannelCount);",
-    "return Err(AudioInputConfigError::UnsupportedSampleFormat);",
-    "return Err(AudioInputConfigError::ZeroFrameSamples);",
-    "return Err(AudioInputConfigError::ZeroSampleRate);",
-    "struct:AudioInput",
-    "struct:AudioInputConfig"
+    "Creates a typed failure at src/session/extensions/audio_input/mod.rs:35.",
+    "Creates a typed failure at src/session/extensions/audio_input/mod.rs:38.",
+    "Creates a typed failure at src/session/extensions/audio_input/mod.rs:41.",
+    "Creates a typed failure at src/session/extensions/audio_input/mod.rs:44.",
+    "Creates a typed failure at src/session/extensions/audio_input/mod.rs:47.",
+    "Declares public const `PCM_SOURCE_TYPE_ID`.",
+    "Declares public enum `AudioInputConfigError`.",
+    "Declares public fn `capacity_frames`.",
+    "Declares public fn `close`.",
+    "Declares public fn `frame_samples_per_channel`.",
+    "Declares public fn `interleaved_samples_per_frame`.",
+    "Declares public fn `into_pcm_source`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `output`.",
+    "Declares public fn `sample_spec`.",
+    "Declares public fn `source`.",
+    "Declares public fn `try_acquire`.",
+    "Declares public fn `try_send`.",
+    "Declares public fn `try_write`.",
+    "Declares public struct `AudioInputConfig`.",
+    "Declares public struct `AudioInput`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/audio_input/mod.rs",
@@ -609,8 +859,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::audio input responsibilities, including Stable runtime identity of the underlying PCM source implementation.; Configures audio input behavior at its owning API boundary.; Creates a new `AudioInputConfig`.."
+    "classification": "DECLARED",
+    "text": "Stable runtime identity of the underlying PCM source implementation. Configures audio input behavior at its owning API boundary. Creates a new `AudioInputConfig`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -673,6 +923,8 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
     "CONTAINS:src/session/extensions/audio_input/buffer.rs",
     "CONTAINS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/audio_input/buffer.rs",
@@ -690,13 +942,13 @@
     "sample_spec: Returns the sample spec held by `AudioInputConfig`.",
     "capacity_frames: Returns the capacity frames held by `AudioInputConfig`.",
     "frame_samples_per_channel: Returns the frame samples per channel associated with `AudioInputConfig`.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError: Classifies failures reported as audio input config error.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError::ZeroSampleRate: Reported when the owning operation encounters zero sample rate.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError::UnsupportedChannelCount: Reported when the owning operation encounters unsupported channel count.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError::UnsupportedSampleFormat: Reported when the owning operation encounters unsupported sample format.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError::InvalidCapacity: Reported when the owning operation encounters invalid capacity.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError::ZeroFrameSamples: Reported when the owning operation encounters zero frame samples.",
-    "pocketstation::session::extensions::audio_input::AudioInputConfigError::FrameSampleCountOverflow: Reported when the owning operation encounters frame sample count overflow.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError: Classifies failures surfaced by audio input config operations.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::ZeroSampleRate: Reports that sample rate must be greater than zero.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::UnsupportedChannelCount: Reports that the requested channel count is unsupported.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::UnsupportedSampleFormat: Reports that the requested sample format is unsupported.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::InvalidCapacity: Reports that the supplied capacity is invalid.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::ZeroFrameSamples: Reports that frame samples must be greater than zero.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::FrameSampleCountOverflow: Reports that frame sample count exceeds its numeric range.",
     "pocketstation::session::extensions::audio_input::AudioInput: Intent-first fa\u00e7ade for feeding audio already owned by the embedding",
     "source: Returns the source held by `AudioInput`.",
     "output: Returns the output held by `AudioInput`.",

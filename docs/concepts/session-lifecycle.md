@@ -1,6 +1,6 @@
 # Session lifecycle
 
-<!-- claims: CLM-DOC-016-CAP-001,CLM-DOC-016-SOURCE-001 -->
+<!-- claims: CLM-DOC-016-SCOPE-001,CLM-DOC-016-TEXT-001,CLM-DOC-016-TEXT-002,CLM-DOC-016-TEXT-003,CLM-DOC-016-TEXT-004,CLM-DOC-016-TEXT-005,CLM-DOC-016-TEXT-006,CLM-DOC-016-SOURCE-001 -->
 
 ## What it is
 
@@ -47,13 +47,13 @@ The scope of **Session lifecycle** ends at the native contracts and executable c
 | `pocketstation::session::lifecycle::engine::SessionEngine` | struct | Canonical production composition path for one safe Rust Session engine. | `src/session/lifecycle/engine.rs:202` |
 | `pocketstation::session::lifecycle::engine::SessionEngineBuilder` | struct | Registers the components and runtime configuration for one Session. | `src/session/lifecycle/engine.rs:30` |
 | `pocketstation::session::lifecycle::running::RunningSession` | struct | Owns a started Session together with event, polling, recording, trace, and stop resources. | `src/session/lifecycle/running.rs:173` |
-| `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError` | enum | Classifies failures reported as endpoint extension registration error. | `src/session/lifecycle/engine.rs:305` |
-| `pocketstation::session::lifecycle::engine::SessionEngineBuildError` | enum | Classifies failures reported as session engine build error. | `src/session/lifecycle/engine.rs:295` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError` | enum | Classifies failures reported as session engine start error. | `src/session/lifecycle/engine.rs:315` |
+| `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError` | enum | Classifies failures produced during endpoint extension registration. | `src/session/lifecycle/engine.rs:305` |
+| `pocketstation::session::lifecycle::engine::SessionEngineBuildError` | enum | Classifies failures produced during session engine construction and input validation. | `src/session/lifecycle/engine.rs:295` |
+| `pocketstation::session::lifecycle::engine::SessionEngineStartError` | enum | Classifies failures produced during session engine lifecycle start. | `src/session/lifecycle/engine.rs:315` |
 | `pocketstation::session::lifecycle::running::start_prepared_session` | function | Starts prepared session for `running`. | `src/session/lifecycle/running.rs:627` |
 | `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | function | Starts prepared session cancellable for `running`. | `src/session/lifecycle/running.rs:643` |
-| `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::ConflictingDefinition` | variant | Reported when the owning operation encounters conflicting definition. | `src/session/lifecycle/engine.rs:311` |
-| `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Definition` | variant | Reported when the owning operation encounters definition. | `src/session/lifecycle/engine.rs:307` |
+| `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::ConflictingDefinition` | variant | Reports that definition conflicts with an existing registration or declaration. | `src/session/lifecycle/engine.rs:311` |
+| `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Definition` | variant | Classifies a failure at the definition stage or component of `EndpointExtensionRegistrationError`. | `src/session/lifecycle/engine.rs:307` |
 
 ## Executable evidence
 
@@ -87,7 +87,53 @@ Executable evidence selected for **Session lifecycle** is limited to each test's
 
 The claims on **Session lifecycle** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/engine.rs:1-396` (`DIRECT`)
-- `src/session/lifecycle/running.rs:1-2625` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:30-40` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:31-31` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:32-32` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:33-33` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:34-34` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:36-36` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:39-39` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:43-64` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:66-72` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:74-85` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:91-112` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:114-120` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:125-140` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:146-167` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:171-173` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:176-194` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:202-212` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:203-203` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:204-204` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:205-205` (`DIRECT`)
+- `src/session/lifecycle/engine.rs:206-206` (`DIRECT`)
+- `src/session/lifecycle/running.rs:59-63` (`DIRECT`)
+- `src/session/lifecycle/running.rs:60-60` (`DIRECT`)
+- `src/session/lifecycle/running.rs:61-61` (`DIRECT`)
+- `src/session/lifecycle/running.rs:62-62` (`DIRECT`)
+- `src/session/lifecycle/running.rs:65-68` (`DIRECT`)
+- `src/session/lifecycle/running.rs:66-66` (`DIRECT`)
+- `src/session/lifecycle/running.rs:67-67` (`DIRECT`)
+- `src/session/lifecycle/running.rs:70-76` (`DIRECT`)
+- `src/session/lifecycle/running.rs:71-71` (`DIRECT`)
+- `src/session/lifecycle/running.rs:72-72` (`DIRECT`)
+- `src/session/lifecycle/running.rs:73-73` (`DIRECT`)
+- `src/session/lifecycle/running.rs:74-74` (`DIRECT`)
+- `src/session/lifecycle/running.rs:75-75` (`DIRECT`)
+- `src/session/lifecycle/running.rs:78-78` (`DIRECT`)
+- `src/session/lifecycle/running.rs:79-87` (`DIRECT`)
+- `src/session/lifecycle/running.rs:80-80` (`DIRECT`)
+- `src/session/lifecycle/running.rs:81-81` (`DIRECT`)
+- `src/session/lifecycle/running.rs:82-82` (`DIRECT`)
+- `src/session/lifecycle/running.rs:83-83` (`DIRECT`)
+- `src/session/lifecycle/running.rs:84-84` (`DIRECT`)
+- `src/session/lifecycle/running.rs:85-85` (`DIRECT`)
+- `src/session/lifecycle/running.rs:86-86` (`DIRECT`)
+- `src/session/lifecycle/running.rs:89-92` (`DIRECT`)
+- `src/session/lifecycle/running.rs:90-90` (`DIRECT`)
 
 For **Session lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

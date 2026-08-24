@@ -220,14 +220,58 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
       "lines": [
-        1,
-        214
+        106,
+        123
       ],
-      "path": "tests/native_extension_library.rs",
-      "symbol": null
+      "path": "tests/native_extension_library.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+      "lines": [
+        123,
+        190
+      ],
+      "path": "tests/native_extension_library.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+      "lines": [
+        77,
+        91
+      ],
+      "path": "tests/native_extension_library.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+      "lines": [
+        91,
+        106
+      ],
+      "path": "tests/native_extension_library.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+      "lines": [
+        190,
+        213
+      ],
+      "path": "tests/native_extension_library.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+      "lines": [
+        65,
+        77
+      ],
+      "path": "tests/native_extension_library.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -305,16 +349,16 @@
     "tempfile::TempDir"
   ],
   "inputs": [
-    "CARGO_MANIFEST_DIR",
-    "pocketstation::native_extension::{ NativeExtensionKind, NativeExtensionLibraryErrorCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, }",
-    "pocketstation::{ EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, SourceConfiguration, SourceTypeId, }",
-    "std::env::consts::DLL_PREFIX,",
-    "std::env::consts::DLL_SUFFIX",
-    "std::fs",
-    "std::path::{Path, PathBuf}",
-    "std::process::Command",
-    "std::time::{Duration, Instant}",
-    "tempfile::TempDir"
+    "Consumes configuration at tests/native_extension_library.rs:30.",
+    "Consumes configuration at tests/native_extension_library.rs:32.",
+    "Depends on `pocketstation::native_extension::{ NativeExtensionKind, NativeExtensionLibraryErrorCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, }` through a declared Rust import.",
+    "Depends on `pocketstation::{ EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, SourceConfiguration, SourceTypeId, }` through a declared Rust import.",
+    "Depends on `std::fs` through a declared Rust import.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::process::Command` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import.",
+    "Depends on `tempfile::TempDir` through a declared Rust import.",
+    "Reads process environment variable `CARGO_MANIFEST_DIR`."
   ],
   "invariants": [
     {
@@ -373,7 +417,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/native_extension_library.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

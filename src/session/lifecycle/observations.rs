@@ -141,9 +141,9 @@ impl SessionMetricsSnapshot {
 pub struct SessionSourceMetrics {
     #[doc = "Identifies the stem identifier recorded by `SessionSourceMetrics`."]
     pub stem_id: StemId,
-    #[doc = "Stores the capture used by `SessionSourceMetrics`."]
+    #[doc = "Stores the capture as a `CaptureOwnerObservations` value in `SessionSourceMetrics`."]
     pub capture: CaptureOwnerObservations,
-    #[doc = "Stores the ingress used by `SessionSourceMetrics`."]
+    #[doc = "Contains the ingress owned or reported by `SessionSourceMetrics`."]
     pub ingress: PlanSourceInputObservations,
 }
 
@@ -154,7 +154,7 @@ pub struct SessionExternalSourceMetrics {
     pub source_instance_id: SourceInstanceId,
     #[doc = "Identifies the source identifier recorded by `SessionExternalSourceMetrics`."]
     pub source_id: SourceId,
-    #[doc = "Stores the runtime used by `SessionExternalSourceMetrics`."]
+    #[doc = "Stores the runtime as a `SourceRuntimeObservations` value in `SessionExternalSourceMetrics`."]
     pub runtime: SourceRuntimeObservations,
 }
 
@@ -164,7 +164,7 @@ pub struct SessionExternalSourceMetrics {
 pub struct SessionSidecarMetrics {
     #[doc = "Identifies the sidecar identifier recorded by `SessionSidecarMetrics`."]
     pub sidecar_id: u64,
-    #[doc = "Stores the host used by `SessionSidecarMetrics`."]
+    #[doc = "Stores the host as a `SidecarHostSnapshot` value in `SessionSidecarMetrics`."]
     pub host: SidecarHostSnapshot,
 }
 
@@ -175,11 +175,11 @@ pub struct SessionRouteMetrics {
     pub route_id: RouteId,
     #[doc = "Identifies the endpoint identifier recorded by `SessionRouteMetrics`."]
     pub endpoint_id: EndpointId,
-    #[doc = "Stores the edge used by `SessionRouteMetrics`."]
+    #[doc = "References the edge participating in `SessionRouteMetrics`."]
     pub edge: EdgeObservations,
-    #[doc = "Stores the endpoint used by `SessionRouteMetrics`."]
+    #[doc = "References the endpoint participating in `SessionRouteMetrics`."]
     pub endpoint: Option<EndpointDriverObservations>,
-    #[doc = "Stores the endpoint observation stage used by `SessionRouteMetrics`."]
+    #[doc = "References the endpoint observation stage participating in `SessionRouteMetrics`."]
     pub endpoint_observation_stage: EndpointObservationStage,
     #[doc = "Counts the total number of endpoint finalization failures observed by `SessionRouteMetrics`."]
     pub endpoint_finalization_failures_total: u64,
@@ -197,7 +197,7 @@ pub enum SessionRouteObservationInterval {
 pub struct SessionRouteDropObservations {
     #[doc = "Identifies the route identifier recorded by `SessionRouteDropObservations`."]
     pub route_id: RouteId,
-    #[doc = "Stores the interval used by `SessionRouteDropObservations`."]
+    #[doc = "Stores the interval as a `SessionRouteObservationInterval` value in `SessionRouteDropObservations`."]
     pub interval: SessionRouteObservationInterval,
     #[doc = "Counts the total number of frames dropped observed by `SessionRouteDropObservations`."]
     pub frames_dropped_total: u64,
@@ -233,9 +233,9 @@ impl SessionRouteDropObservations {
 pub struct SessionRouteLatencyObservations {
     #[doc = "Identifies the route identifier recorded by `SessionRouteLatencyObservations`."]
     pub route_id: RouteId,
-    #[doc = "Stores the boundary used by `SessionRouteLatencyObservations`."]
+    #[doc = "Stores the boundary as a `SessionRouteLatencyBoundary` value in `SessionRouteLatencyObservations`."]
     pub boundary: SessionRouteLatencyBoundary,
-    #[doc = "Stores the unit used by `SessionRouteLatencyObservations`."]
+    #[doc = "Stores the unit as a `SessionRouteLatencyUnit` value in `SessionRouteLatencyObservations`."]
     pub unit: SessionRouteLatencyUnit,
     #[doc = "Counts the total number of samples observed by `SessionRouteLatencyObservations`."]
     pub samples_total: u64,
@@ -254,14 +254,14 @@ pub struct SessionRouteLatencyObservations {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[doc = "Enumerates the supported session route latency boundary cases."]
+#[doc = "Identifies the route boundary at which Session latency was observed."]
 pub enum SessionRouteLatencyBoundary {
     #[doc = "Represents the source monotonic timestamp to route receive case of `SessionRouteLatencyBoundary`."]
     SourceMonotonicTimestampToRouteReceive,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[doc = "Enumerates the supported session route latency unit cases."]
+#[doc = "Declares the unit used by a Session route-latency observation."]
 pub enum SessionRouteLatencyUnit {
     #[doc = "Represents the nanoseconds case of `SessionRouteLatencyUnit`."]
     Nanoseconds,
@@ -308,9 +308,9 @@ impl SessionRouteMetrics {
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[doc = "Reports the session operator input metrics collected at an observation boundary."]
 pub struct SessionOperatorInputMetrics {
-    #[doc = "Stores the port name used by `SessionOperatorInputMetrics`."]
+    #[doc = "Stores the human-readable port used to identify `SessionOperatorInputMetrics`."]
     pub port_name: String,
-    #[doc = "Stores the edge used by `SessionOperatorInputMetrics`."]
+    #[doc = "References the edge participating in `SessionOperatorInputMetrics`."]
     pub edge: EdgeObservations,
 }
 
@@ -481,7 +481,7 @@ pub struct SessionOperatorMetrics {
     /// Exact per-port input accounting. `input_edge` is the compatibility
     /// aggregate across this slice.
     pub input_ports: Box<[SessionOperatorInputMetrics]>,
-    #[doc = "Stores the worker used by `SessionOperatorMetrics`."]
+    #[doc = "Stores the worker as a `AsyncOperatorObservations` value in `SessionOperatorMetrics`."]
     pub worker: AsyncOperatorObservations,
     #[doc = "Counts the total number of finalization failures observed by `SessionOperatorMetrics`."]
     pub finalization_failures_total: u64,
@@ -537,9 +537,9 @@ pub struct SessionDerivedRouteMetrics {
     pub endpoint_id: EndpointId,
     #[doc = "Carries the output produced by `SessionDerivedRouteMetrics`."]
     pub output: AsyncOperatorOutputObservations,
-    #[doc = "Stores the endpoint used by `SessionDerivedRouteMetrics`."]
+    #[doc = "References the endpoint participating in `SessionDerivedRouteMetrics`."]
     pub endpoint: Option<EndpointDriverObservations>,
-    #[doc = "Stores the endpoint observation stage used by `SessionDerivedRouteMetrics`."]
+    #[doc = "References the endpoint observation stage participating in `SessionDerivedRouteMetrics`."]
     pub endpoint_observation_stage: EndpointObservationStage,
     #[doc = "Counts the total number of endpoint finalization failures observed by `SessionDerivedRouteMetrics`."]
     pub endpoint_finalization_failures_total: u64,

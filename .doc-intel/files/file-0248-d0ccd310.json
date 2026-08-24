@@ -168,11 +168,241 @@
       "classification": "DIRECT",
       "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
       "lines": [
-        1,
-        99
+        3,
+        3
       ],
       "path": "src/timing/domain.rs",
-      "symbol": null
+      "symbol": "NANOSECOND_TICKS_PER_SECOND"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        7,
+        11
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ClockDomainKind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "Unspecified"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ProcessMonotonic"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ProviderDefined"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        15,
+        19
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ClockDomainOrigin"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "Unspecified"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ProcessStart"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ProviderDefined"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        23,
+        28
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "ClockDomainDescriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "kind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "origin"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "tick_rate_hz"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        31,
+        33
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": "id"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -210,9 +440,9 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::ClockDomainId",
-    "super::*"
+    "Consumes configuration at src/timing/domain.rs:77.",
+    "Depends on `crate::frame::ClockDomainId` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -226,20 +456,20 @@
   "module": "pocketstation::timing::domain",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::timing::domain` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-1c4f8caf42f0daa086f7"
   ],
   "outputs": [
-    "enum:ClockDomainKind",
-    "enum:ClockDomainOrigin",
-    "fn:describe_clock_domain",
-    "fn:id",
-    "fn:kind",
-    "fn:origin",
-    "fn:tick_rate_hz",
-    "struct:ClockDomainDescriptor"
+    "Declares public enum `ClockDomainKind`.",
+    "Declares public enum `ClockDomainOrigin`.",
+    "Declares public fn `describe_clock_domain`.",
+    "Declares public fn `id`.",
+    "Declares public fn `kind`.",
+    "Declares public fn `origin`.",
+    "Declares public fn `tick_rate_hz`.",
+    "Declares public struct `ClockDomainDescriptor`."
   ],
   "package": "pocketstation",
   "path": "src/timing/domain.rs",
@@ -322,8 +552,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::timing::domain responsibilities, including The authority that defines timestamps carried by one clock-domain ID.; Selects unspecified behavior for `ClockDomainKind`.; Selects process monotonic behavior for `ClockDomainKind`.."
+    "classification": "DECLARED",
+    "text": "The authority that defines timestamps carried by one clock-domain ID. Identifies timestamps as belonging to the unspecified clock domain. Identifies timestamps as belonging to the process monotonic clock domain."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -352,9 +582,9 @@
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::timing::domain::ClockDomainKind: The authority that defines timestamps carried by one clock-domain ID.",
-    "pocketstation::timing::domain::ClockDomainKind::Unspecified: Selects unspecified behavior for `ClockDomainKind`.",
-    "pocketstation::timing::domain::ClockDomainKind::ProcessMonotonic: Selects process monotonic behavior for `ClockDomainKind`.",
-    "pocketstation::timing::domain::ClockDomainKind::ProviderDefined: Selects provider defined behavior for `ClockDomainKind`.",
+    "pocketstation::timing::domain::ClockDomainKind::Unspecified: Identifies timestamps as belonging to the unspecified clock domain.",
+    "pocketstation::timing::domain::ClockDomainKind::ProcessMonotonic: Identifies timestamps as belonging to the process monotonic clock domain.",
+    "pocketstation::timing::domain::ClockDomainKind::ProviderDefined: Identifies timestamps as belonging to the provider defined clock domain.",
     "pocketstation::timing::domain::ClockDomainOrigin: The origin against which timestamps in one clock domain are measured.",
     "pocketstation::timing::domain::ClockDomainOrigin::Unspecified: Represents the unspecified alternative defined by `ClockDomainOrigin`.",
     "pocketstation::timing::domain::ClockDomainOrigin::ProcessStart: Represents the process start alternative defined by `ClockDomainOrigin`.",

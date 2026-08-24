@@ -1,6 +1,6 @@
 # Run the examples
 
-<!-- claims: CLM-DOC-004-CAP-001,CLM-DOC-004-CAP-002,CLM-DOC-004-CAP-003,CLM-DOC-004-SOURCE-001 -->
+<!-- claims: CLM-DOC-004-SCOPE-001,CLM-DOC-004-TEXT-001,CLM-DOC-004-TEXT-002,CLM-DOC-004-TEXT-003,CLM-DOC-004-SOURCE-001 -->
 
 ## Compile the examples
 
@@ -59,7 +59,7 @@ Executable evidence selected for **Run the examples** is limited to each test's 
 
 The claims on **Run the examples** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
-- `examples/product_quickstart.rs:1-61` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
+- `examples/product_quickstart.rs:1-21` (`DIRECT`)
 
 For **Run the examples**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

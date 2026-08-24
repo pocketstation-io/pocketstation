@@ -17,6 +17,13 @@
     }
   ],
   "called_by": [
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/signal/io.rs",
+    "CALLS:src/runtime/signal/operator.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/endpoint/contract.rs",
@@ -173,6 +180,13 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/signal/io.rs",
+    "CALLS:src/runtime/signal/operator.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/endpoint/contract.rs",
@@ -819,16 +833,253 @@
       "classification": "DIRECT",
       "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
       "lines": [
-        1,
-        651
+        15,
+        15
       ],
       "path": "src/runtime/signal/edge.rs",
-      "symbol": null
+      "symbol": "MAX_TYPED_EDGE_CAPACITY_SIGNALS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        18,
+        28
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "SignalEdgeObservationState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "capacity_signals"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "max_payload_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "maximum_buffered_payload_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "depth_signals"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "peak_depth_signals"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "enqueued_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "received_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "delivered_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "dropped_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        31,
+        46
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "SignalEdgeObservations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "capacity_signals"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "max_payload_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "maximum_buffered_payload_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "depth_signals"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "peak_depth_signals"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "enqueued_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "received_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        44,
+        44
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": "delivered_total"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/signal/io.rs",
+    "CALLS:src/runtime/signal/operator.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/endpoint/contract.rs",
@@ -857,6 +1108,13 @@
   "generated_from": "not_applicable",
   "git_object": "b59341121b764ff3a1bc092583c0567668f52c69",
   "implemented_by": [
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/signal/io.rs",
+    "CALLS:src/runtime/signal/operator.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/endpoint/contract.rs",
@@ -879,6 +1137,13 @@
     "TypedEdgeFanout"
   ],
   "imported_by": [
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/signal/io.rs",
+    "CALLS:src/runtime/signal/operator.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/endpoint/contract.rs",
@@ -906,22 +1171,27 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "(2 * crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES) as u64",
-    "crate::frame::AudioFrame",
-    "crate::frame::{AudioBufferPool, ClockDomainId, SessionId, SourceId, StreamId}",
-    "crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES as u64",
-    "crate::graph::SignalPayload",
-    "crate::graph::{EdgeContract, LossPolicy, SignalEnvelope, SignalEnvelopeError}",
-    "crate::graph::{EventFormat, SignalLineage, SignalSpec, SignalTiming}",
-    "rtrb::{Consumer, Producer, RingBuffer}",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::mpsc",
-    "std::sync::{Arc, OnceLock}",
-    "std::thread::Thread",
-    "std::time::Duration",
-    "super::*"
+    "Consumes configuration at src/runtime/signal/edge.rs:163.",
+    "Consumes configuration at src/runtime/signal/edge.rs:170.",
+    "Consumes configuration at src/runtime/signal/edge.rs:182.",
+    "Consumes configuration at src/runtime/signal/edge.rs:227.",
+    "Consumes configuration at src/runtime/signal/edge.rs:425.",
+    "Consumes configuration at src/runtime/signal/edge.rs:524.",
+    "Consumes configuration at src/runtime/signal/edge.rs:528.",
+    "Consumes configuration at src/runtime/signal/edge.rs:7.",
+    "Consumes configuration at src/runtime/signal/edge.rs:9.",
+    "Depends on `crate::frame::AudioFrame` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, ClockDomainId, SessionId, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::SignalPayload` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, LossPolicy, SignalEnvelope, SignalEnvelopeError}` through a declared Rust import.",
+    "Depends on `crate::graph::{EventFormat, SignalLineage, SignalSpec, SignalTiming}` through a declared Rust import.",
+    "Depends on `rtrb::{Consumer, Producer, RingBuffer}` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::mpsc` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, OnceLock}` through a declared Rust import.",
+    "Depends on `std::thread::Thread` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -971,7 +1241,7 @@
   "module": "pocketstation::runtime::signal::edge",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::signal::edge` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-15e11aedb6404d924aa5",
@@ -980,45 +1250,45 @@
     "pattern-f85ed10ad602540000dd"
   ],
   "outputs": [
-    "Err(SignalEdgeSendError { rejected: item })",
-    "Err(error) => {",
-    "Err(frame)",
-    "Err(rtrb::PushError::Full(item)) => {",
-    "const:MAX_TYPED_EDGE_CAPACITY_SIGNALS",
-    "enum:TypedEdgeBuildError",
-    "fn:bounded",
-    "fn:dropped_count",
-    "fn:into_rejected",
-    "fn:is_abandoned",
-    "fn:is_full",
-    "fn:new",
-    "fn:observation_handle",
-    "fn:observations",
-    "fn:publish",
-    "fn:recv",
-    "fn:register_current_thread",
-    "fn:send",
-    "fn:send_audio",
-    "fn:snapshot",
-    "fn:try_send",
-    "return Err(TypedEdgeBuildError::CapacityTooLarge {",
-    "return Err(TypedEdgeBuildError::MissingPayloadLimit);",
-    "return Err(TypedEdgeBuildError::NoBranches);",
-    "return Err(TypedEdgeBuildError::PayloadLimitTooLarge {",
-    "return Err(TypedEdgeBuildError::ZeroCapacity);",
-    "return Err(TypedEdgeBuildError::ZeroPayloadLimit);",
-    "struct:SignalEdge",
-    "struct:SignalEdgeObservationHandle",
-    "struct:SignalEdgeObservations",
-    "struct:SignalEdgeReceiver",
-    "struct:SignalEdgeSendError",
-    "struct:SignalEdgeSender",
-    "struct:TypedEdgeBranchSpec",
-    "struct:TypedEdgeFanout",
-    "struct:TypedEdgePublishReport",
-    "type:TypedEdgeObservationHandle",
-    "type:TypedEdgeObservations",
-    "type:TypedEdgeReceiver"
+    "Creates a typed failure at src/runtime/signal/edge.rs:147.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:150.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:194.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:198.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:268.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:274.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:277.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:283.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:286.",
+    "Creates a typed failure at src/runtime/signal/edge.rs:289.",
+    "Declares public const `MAX_TYPED_EDGE_CAPACITY_SIGNALS`.",
+    "Declares public enum `TypedEdgeBuildError`.",
+    "Declares public fn `bounded`.",
+    "Declares public fn `dropped_count`.",
+    "Declares public fn `into_rejected`.",
+    "Declares public fn `is_abandoned`.",
+    "Declares public fn `is_full`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observation_handle`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `publish`.",
+    "Declares public fn `recv`.",
+    "Declares public fn `register_current_thread`.",
+    "Declares public fn `send_audio`.",
+    "Declares public fn `send`.",
+    "Declares public fn `snapshot`.",
+    "Declares public fn `try_send`.",
+    "Declares public struct `SignalEdgeObservationHandle`.",
+    "Declares public struct `SignalEdgeObservations`.",
+    "Declares public struct `SignalEdgeReceiver`.",
+    "Declares public struct `SignalEdgeSendError`.",
+    "Declares public struct `SignalEdgeSender`.",
+    "Declares public struct `SignalEdge`.",
+    "Declares public struct `TypedEdgeBranchSpec`.",
+    "Declares public struct `TypedEdgeFanout`.",
+    "Declares public struct `TypedEdgePublishReport`.",
+    "Declares public type `TypedEdgeObservationHandle`.",
+    "Declares public type `TypedEdgeObservations`.",
+    "Declares public type `TypedEdgeReceiver`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/edge.rs",
@@ -1310,8 +1580,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::signal::edge responsibilities, including Reports the signal edge observations collected at an observation boundary.; Sets the capacity signals available to `SignalEdgeObservations`.; Limits payload storage for `SignalEdgeObservations`, in bytes.."
+    "classification": "DECLARED",
+    "text": "Reports the signal edge observations collected at an observation boundary. Sets the capacity signals available to `SignalEdgeObservations`. Limits payload storage for `SignalEdgeObservations`, in bytes."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1368,6 +1638,11 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/signal/io.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/graph/ports.rs",
     "REFERENCES:src/graph/signal/envelope.rs"
@@ -1453,42 +1728,42 @@
     "SignalEdgeObservations::received_total: Counts the total number of received observed by `SignalEdgeObservations`.",
     "SignalEdgeObservations::delivered_total: Compatibility alias for `enqueued_total`.",
     "SignalEdgeObservations::dropped_total: Counts the total number of dropped observed by `SignalEdgeObservations`.",
-    "pocketstation::runtime::signal::edge::SignalEdgeObservationHandle: Owns bounded access to signal edge observation.",
+    "pocketstation::runtime::signal::edge::SignalEdgeObservationHandle: Holds the ownership or bounded access represented by signal edge observation handle.",
     "pocketstation::runtime::signal::edge::SignalEdgeSendError: Reports a signal edge send error.",
     "into_rejected: Converts `SignalEdgeSendError` into rejected.",
     "pocketstation::runtime::signal::edge::SignalEdgeReceiver: Receives signal edge values across its declared ownership boundary.",
-    "pocketstation::runtime::signal::edge::TypedEdgeReceiver: Names the typed edge receiver type used by the public API.",
-    "pocketstation::runtime::signal::edge::TypedEdgeObservations: Names the typed edge observations type used by the public API.",
-    "pocketstation::runtime::signal::edge::TypedEdgeObservationHandle: Names the typed edge observation handle type used by the public API.",
+    "pocketstation::runtime::signal::edge::TypedEdgeReceiver: Exposes `SignalEdgeReceiver` as the public `TypedEdgeReceiver` alias at this API boundary.",
+    "pocketstation::runtime::signal::edge::TypedEdgeObservations: Exposes `SignalEdgeObservations` as the public `TypedEdgeObservations` alias at this API boundary.",
+    "pocketstation::runtime::signal::edge::TypedEdgeObservationHandle: Exposes `SignalEdgeObservationHandle` as the public `TypedEdgeObservationHandle` alias at this API boundary.",
     "pocketstation::runtime::signal::edge::TypedEdgeBranchSpec: Configures typed edge branch behavior at its owning API boundary.",
     "TypedEdgeBranchSpec::capacity_signals: Sets the capacity signals available to `TypedEdgeBranchSpec`.",
-    "TypedEdgeBranchSpec::edge_contract: Stores the edge contract used by `TypedEdgeBranchSpec`.",
+    "TypedEdgeBranchSpec::edge_contract: References the edge contract participating in `TypedEdgeBranchSpec`.",
     "pocketstation::runtime::signal::edge::TypedEdgeFanout: Publishes one immutable signal envelope to the bounded branches of a compiled fan-out edge.",
     "new: Creates a new `TypedEdgeFanout`.",
     "publish: Publishes its owned operation for `TypedEdgeFanout`.",
     "pocketstation::runtime::signal::edge::TypedEdgePublishReport: Reports how many fan-out branches accepted or dropped one published signal.",
     "TypedEdgePublishReport::delivered_total: Counts the total number of delivered observed by `TypedEdgePublishReport`.",
     "TypedEdgePublishReport::dropped_total: Counts the total number of dropped observed by `TypedEdgePublishReport`.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError: Classifies failures reported as typed edge build error.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::NoBranches: Reported when the owning operation encounters no branches.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::ZeroCapacity: Reported when the owning operation encounters zero capacity.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::CapacityTooLarge: Reported when the owning operation encounters capacity too large.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError: Classifies failures produced during typed edge construction and input validation.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::NoBranches: Reports that no branches is available.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::ZeroCapacity: Reports that capacity must be greater than zero.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::CapacityTooLarge: Reports that capacity exceeds the supported size limit.",
     "TypedEdgeBuildError::CapacityTooLarge::capacity_signals: Sets the capacity signals available to `CapacityTooLarge`.",
     "TypedEdgeBuildError::CapacityTooLarge::maximum: Sets the inclusive maximum accepted by `CapacityTooLarge`.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::MissingPayloadLimit: Reported when the owning operation encounters missing payload limit.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::ZeroPayloadLimit: Reported when the owning operation encounters zero payload limit.",
-    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::PayloadLimitTooLarge: Reported when the owning operation encounters payload limit too large.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::MissingPayloadLimit: Reports that the required payload limit is missing.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::ZeroPayloadLimit: Reports that payload limit must be greater than zero.",
+    "pocketstation::runtime::signal::edge::TypedEdgeBuildError::PayloadLimitTooLarge: Reports that payload limit exceeds the supported size limit.",
     "TypedEdgeBuildError::PayloadLimitTooLarge::max_payload_bytes: Limits payload storage for `PayloadLimitTooLarge`, in bytes.",
     "TypedEdgeBuildError::PayloadLimitTooLarge::maximum: Sets the inclusive maximum accepted by `PayloadLimitTooLarge`.",
-    "pocketstation::runtime::signal::edge::TypedEdgePublishError: Classifies failures reported as typed edge publish error.",
-    "pocketstation::runtime::signal::edge::TypedEdgePublishError::NoBranches: Reported when the owning operation encounters no branches.",
-    "pocketstation::runtime::signal::edge::TypedEdgePublishError::InvalidEnvelope: Reported when the owning operation encounters invalid envelope.",
-    "pocketstation::runtime::signal::edge::TypedEdgePublishError::PayloadTooLarge: Reported when the owning operation encounters payload too large.",
-    "TypedEdgePublishError::PayloadTooLarge::branch_index: Stores the branch index used by `PayloadTooLarge`.",
+    "pocketstation::runtime::signal::edge::TypedEdgePublishError: Classifies failures surfaced by typed edge publish operations.",
+    "pocketstation::runtime::signal::edge::TypedEdgePublishError::NoBranches: Reports that no branches is available.",
+    "pocketstation::runtime::signal::edge::TypedEdgePublishError::InvalidEnvelope: Reports that the supplied envelope is invalid.",
+    "pocketstation::runtime::signal::edge::TypedEdgePublishError::PayloadTooLarge: Reports that payload exceeds the supported size limit.",
+    "TypedEdgePublishError::PayloadTooLarge::branch_index: Identifies the branch index position within `PayloadTooLarge`.",
     "TypedEdgePublishError::PayloadTooLarge::payload_bytes: Stores the payload size for `PayloadTooLarge`, in bytes.",
     "TypedEdgePublishError::PayloadTooLarge::max_payload_bytes: Limits payload storage for `PayloadTooLarge`, in bytes.",
-    "TypedEdgePublishError::RequiredBranchFull::branch_index: Stores the branch index used by `RequiredBranchFull`.",
-    "pocketstation::runtime::signal::edge::TypedEdgePublishError::RequiredBranchFull: Reported when the owning operation encounters required branch full."
+    "TypedEdgePublishError::RequiredBranchFull::branch_index: Identifies the branch index position within `RequiredBranchFull`.",
+    "pocketstation::runtime::signal::edge::TypedEdgePublishError::RequiredBranchFull: Reports that the bounded required branch has no remaining capacity."
   ],
   "retry_behavior": [],
   "serialization": [],

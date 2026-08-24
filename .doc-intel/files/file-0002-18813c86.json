@@ -37,11 +37,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "327e739b0207e016ac187a203d2a55b92c6c45450989dfda09490a4b916c74b4",
       "lines": [
         1,
-        46
+        9
       ],
       "path": ".github/PULL_REQUEST_TEMPLATE.md",
       "symbol": null
@@ -86,7 +86,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`.github/PULL_REQUEST_TEMPLATE.md` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

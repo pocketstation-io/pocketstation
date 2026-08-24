@@ -63,14 +63,13 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "cfd013a7b9d0767f917c7ebf594eca2a5140e902c78848b951dbb9c8769c376f",
       "lines": [
-        1,
-        38
+        25,
+        37
       ],
-      "path": "tests/connector_grouping_public_surface.rs",
-      "symbol": null
+      "path": "tests/connector_grouping_public_surface.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -98,7 +97,7 @@
     "pocketstation::{ EndpointDriverFactory, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, OperatorConfiguration, PreparedEndpointDriver, RouteId, }"
   ],
   "inputs": [
-    "pocketstation::{ EndpointDriverFactory, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, OperatorConfiguration, PreparedEndpointDriver, RouteId, }"
+    "Depends on `pocketstation::{ EndpointDriverFactory, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, OperatorConfiguration, PreparedEndpointDriver, RouteId, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -107,7 +106,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/connector_grouping_public_surface.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

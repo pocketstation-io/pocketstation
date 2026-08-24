@@ -1,6 +1,6 @@
 # Map source time into the Session timeline
 
-<!-- claims: CLM-GUIDE-029-CAP-001,CLM-GUIDE-029-CAP-002,CLM-GUIDE-029-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-029-SCOPE-001,CLM-GUIDE-029-TEXT-001,CLM-GUIDE-029-TEXT-002,CLM-GUIDE-029-TEXT-003,CLM-GUIDE-029-TEXT-004,CLM-GUIDE-029-TEXT-005,CLM-GUIDE-029-TEXT-006,CLM-GUIDE-029-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,25 @@ A stable source clock-domain ID, source timestamp, Session timestamp, and discon
 3. Map into the Session domain.
 4. Observe drift and discontinuity without rewriting lineage.
 5. Apply correction only through evidenced controller bounds.
+
+## Concrete repository example
+
+The executable repository test `given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved` (`test-8e4d29c9c42209f5f7a1`) shows the concrete API sequence and asserted outcome at `src/timing/timeline_mapping.rs:35`.
+
+```rust
+    }
+
+    #[test]
+    fn given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved() {
+        let mapping = TimelineMapping::new(1_000, 4_000);
+
+        assert_eq!(mapping.normalize_timestamp_ns(750), Some(3_750));
+    }
+```
+
+```bash
+cargo test --all-features given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved
+```
 
 ## Important consequence
 
@@ -82,6 +101,13 @@ Executable evidence selected for **Map source time into the Session timeline** i
 
 The claims on **Map source time into the Session timeline** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/timing/timeline_mapping.rs:1-51` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:1-1` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:1-1` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:1-1` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:2-5` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:3-3` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:4-4` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:8-13` (`DIRECT`)
+- `src/timing/timeline_mapping.rs:15-23` (`DIRECT`)
 
 For **Map source time into the Session timeline**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

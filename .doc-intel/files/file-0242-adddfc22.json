@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/prepare/mod.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -103,6 +105,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/prepare/mod.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -505,19 +509,21 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "b4761f58fc7c3f5ffd081f4cbfa6d667684d35dca7d3277d6771e3f523c06338",
       "lines": [
         1,
-        272
+        1
       ],
       "path": "src/session/prepare/mappings.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::prepare::mappings"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/prepare/mod.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -541,6 +547,8 @@
   "generated_from": "not_applicable",
   "git_object": "b468c76f6dec2097566cb59882fe6f4939ad21dc",
   "implemented_by": [
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/prepare/mod.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -556,6 +564,8 @@
     "PreparedWorkerMapping"
   ],
   "imported_by": [
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/prepare/mod.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -574,15 +584,24 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::endpoint::OperatorId",
-    "crate::frame::SampleSpec",
-    "crate::frame::{ConnectorId, EndpointId, RouteId, SourceId, StemId, StreamId}",
-    "crate::graph::{ AsyncOperatorFactory, EdgeContract, EdgeId, MediaCaps, NodeConfig, NodeId, NodeTypeId, PrepareContext, SignalSpec, }",
-    "crate::runtime::{ AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanSourceSender, TypedEdgeBranchSpec, }",
-    "crate::session::declaration::OperatorInstanceId",
-    "crate::session::{SourceConfiguration, SourceInstanceId, SourceTypeId}",
-    "std::sync::Arc"
+    "Consumes configuration at src/session/prepare/mappings.rs:144.",
+    "Consumes configuration at src/session/prepare/mappings.rs:149.",
+    "Consumes configuration at src/session/prepare/mappings.rs:154.",
+    "Consumes configuration at src/session/prepare/mappings.rs:218.",
+    "Consumes configuration at src/session/prepare/mappings.rs:223.",
+    "Consumes configuration at src/session/prepare/mappings.rs:228.",
+    "Consumes configuration at src/session/prepare/mappings.rs:24.",
+    "Consumes configuration at src/session/prepare/mappings.rs:242.",
+    "Consumes configuration at src/session/prepare/mappings.rs:247.",
+    "Consumes configuration at src/session/prepare/mappings.rs:29.",
+    "Depends on `crate::endpoint::OperatorId` through a declared Rust import.",
+    "Depends on `crate::frame::SampleSpec` through a declared Rust import.",
+    "Depends on `crate::frame::{ConnectorId, EndpointId, RouteId, SourceId, StemId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AsyncOperatorFactory, EdgeContract, EdgeId, MediaCaps, NodeConfig, NodeId, NodeTypeId, PrepareContext, SignalSpec, }` through a declared Rust import.",
+    "Depends on `crate::runtime::{ AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanSourceSender, TypedEdgeBranchSpec, }` through a declared Rust import.",
+    "Depends on `crate::session::declaration::OperatorInstanceId` through a declared Rust import.",
+    "Depends on `crate::session::{SourceConfiguration, SourceInstanceId, SourceTypeId}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -591,35 +610,35 @@
   "module": "pocketstation::session::prepare::mappings",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::prepare::mappings` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:PreparedExternalSourceTarget",
-    "enum:PreparedOperatorInputMapping",
-    "enum:PreparedOperatorOutputTarget",
-    "enum:PreparedTypedInputOrigin",
-    "enum:PreparedWorkerOrigin",
-    "fn:endpoint_id",
-    "fn:node_configuration",
-    "fn:node_id",
-    "fn:output_count",
-    "fn:receiver_observations",
-    "fn:route_id",
-    "fn:sender_observations",
-    "fn:signal_routes",
-    "fn:stem_id",
-    "struct:PreparedExternalAudioIngress",
-    "struct:PreparedExternalOperatorInput",
-    "struct:PreparedExternalSourceBranch",
-    "struct:PreparedExternalSourceMapping",
-    "struct:PreparedExternalTypedRoute",
-    "struct:PreparedGeneratedAudioIngress",
-    "struct:PreparedOperatorMapping",
-    "struct:PreparedOperatorOutputMapping",
-    "struct:PreparedSignalRouteMapping",
-    "struct:PreparedSourceMapping",
-    "struct:PreparedWorkerMapping"
+    "Declares public enum `PreparedExternalSourceTarget`.",
+    "Declares public enum `PreparedOperatorInputMapping`.",
+    "Declares public enum `PreparedOperatorOutputTarget`.",
+    "Declares public enum `PreparedTypedInputOrigin`.",
+    "Declares public enum `PreparedWorkerOrigin`.",
+    "Declares public fn `endpoint_id`.",
+    "Declares public fn `node_configuration`.",
+    "Declares public fn `node_id`.",
+    "Declares public fn `output_count`.",
+    "Declares public fn `receiver_observations`.",
+    "Declares public fn `route_id`.",
+    "Declares public fn `sender_observations`.",
+    "Declares public fn `signal_routes`.",
+    "Declares public fn `stem_id`.",
+    "Declares public struct `PreparedExternalAudioIngress`.",
+    "Declares public struct `PreparedExternalOperatorInput`.",
+    "Declares public struct `PreparedExternalSourceBranch`.",
+    "Declares public struct `PreparedExternalSourceMapping`.",
+    "Declares public struct `PreparedExternalTypedRoute`.",
+    "Declares public struct `PreparedGeneratedAudioIngress`.",
+    "Declares public struct `PreparedOperatorMapping`.",
+    "Declares public struct `PreparedOperatorOutputMapping`.",
+    "Declares public struct `PreparedSignalRouteMapping`.",
+    "Declares public struct `PreparedSourceMapping`.",
+    "Declares public struct `PreparedWorkerMapping`."
   ],
   "package": "pocketstation",
   "path": "src/session/prepare/mappings.rs",
@@ -821,8 +840,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::prepare::mappings responsibilities, including Correlates the prepared identities and runtime resources for prepared source.; Returns the stem identifier held by `PreparedSourceMapping`.; Returns the sender observations held by `PreparedSourceMapping`.."
+    "classification": "DECLARED",
+    "text": "Typed resource mappings between a compiled graph and runtime preparation."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -924,7 +943,7 @@
     "endpoint_id: Returns the endpoint identifier held by `PreparedWorkerMapping`.",
     "node_configuration: Returns the node configuration held by `PreparedWorkerMapping`.",
     "receiver_observations: Returns the receiver observations held by `PreparedWorkerMapping`.",
-    "prepare_context: Prepares context for `PreparedWorkerMapping`."
+    "prepare_context: Returns the immutable preparation context retained by `PreparedWorkerMapping`."
   ],
   "retry_behavior": [],
   "serialization": [],

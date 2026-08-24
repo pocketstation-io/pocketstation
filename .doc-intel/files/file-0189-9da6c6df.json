@@ -4,7 +4,12 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -190,7 +195,12 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -899,17 +909,252 @@
       "classification": "DIRECT",
       "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
       "lines": [
-        1,
-        734
+        13,
+        13
       ],
       "path": "src/runtime/lifecycle/sidecar_host.rs",
-      "symbol": null
+      "symbol": "LENGTH_PREFIX_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "CONTROL_CAPACITY_MESSAGES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "WRITER_POLL_INTERVAL"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "PROCESS_POLL_INTERVAL"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "CONTROL_SIGNAL_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        21,
+        33
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "SidecarState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Spawned"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Hello"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Configure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Ready"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Running"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Cancelling"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Closing"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Closed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Reaped"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "Failed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        36,
+        50
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "from_u8"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        53,
+        53
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        53,
+        53
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        53,
+        53
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": "eq"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -947,7 +1192,12 @@
   "generated_from": "not_applicable",
   "git_object": "8ecfc2a8e5199c9e1a9a52507acf263c9793c2b4",
   "implemented_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -967,7 +1217,12 @@
     "Drop for SidecarHost"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -990,20 +1245,20 @@
     "super::{SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits}"
   ],
   "inputs": [
-    "3 => Self::Configure,",
-    "Configure = 3,",
-    "SidecarMessageKind::Configure,",
-    "self.set_state(SidecarState::Configure);",
-    "std::ffi::OsString",
-    "std::io::{Read, Write}",
-    "std::path::PathBuf",
-    "std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio}",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
-    "std::sync::mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError}",
-    "std::thread::{self, JoinHandle}",
-    "std::time::{Duration, Instant}",
-    "super::{SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits}"
+    "Consumes configuration at src/runtime/lifecycle/sidecar_host.rs:25.",
+    "Consumes configuration at src/runtime/lifecycle/sidecar_host.rs:338.",
+    "Consumes configuration at src/runtime/lifecycle/sidecar_host.rs:341.",
+    "Consumes configuration at src/runtime/lifecycle/sidecar_host.rs:41.",
+    "Depends on `std::ffi::OsString` through a declared Rust import.",
+    "Depends on `std::io::{Read, Write}` through a declared Rust import.",
+    "Depends on `std::path::PathBuf` through a declared Rust import.",
+    "Depends on `std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError}` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import.",
+    "Depends on `super::{SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1021,42 +1276,43 @@
   "module": "pocketstation::runtime::lifecycle::sidecar_host",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::lifecycle::sidecar_host` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-8ee222320eebc514677c",
     "pattern-f465baa7d79f09df2c2c"
   ],
   "outputs": [
-    "Err(SidecarHostError::DataQueueFull)",
-    "Err(TrySendError::Full(_)) => {",
-    "Err(error) => {",
-    "const:CONTROL_SIGNAL_ID",
-    "enum:SidecarHostError",
-    "enum:SidecarState",
-    "fn:cancel_and_reap",
-    "fn:close_and_reap",
-    "fn:id",
-    "fn:new",
-    "fn:observations",
-    "fn:receive_signal",
-    "fn:snapshot",
-    "fn:spawn",
-    "fn:state",
-    "fn:try_receive_signal",
-    "fn:try_send_signal",
-    "fn:visited",
-    "if let Err(error) = handshake {",
-    "return Err(SidecarHostError::InvalidDataKind(message.kind));",
-    "return Err(SidecarHostError::InvalidState {",
-    "return Err(SidecarHostError::MissingPipe(\"stdin\"));",
-    "return Err(SidecarHostError::MissingPipe(\"stdout\"));",
-    "return Err(error);",
-    "struct:SidecarDeadlines",
-    "struct:SidecarHost",
-    "struct:SidecarHostObservations",
-    "struct:SidecarHostSnapshot",
-    "struct:SidecarProcessSpec"
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:185.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:189.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:219.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:225.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:245.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:248.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:267.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:273.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:288.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_host.rs:293.",
+    "Declares public const `CONTROL_SIGNAL_ID`.",
+    "Declares public enum `SidecarHostError`.",
+    "Declares public enum `SidecarState`.",
+    "Declares public fn `cancel_and_reap`.",
+    "Declares public fn `close_and_reap`.",
+    "Declares public fn `id`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `receive_signal`.",
+    "Declares public fn `snapshot`.",
+    "Declares public fn `spawn`.",
+    "Declares public fn `state`.",
+    "Declares public fn `try_receive_signal`.",
+    "Declares public fn `try_send_signal`.",
+    "Declares public fn `visited`.",
+    "Declares public struct `SidecarDeadlines`.",
+    "Declares public struct `SidecarHostObservations`.",
+    "Declares public struct `SidecarHostSnapshot`.",
+    "Declares public struct `SidecarHost`.",
+    "Declares public struct `SidecarProcessSpec`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/lifecycle/sidecar_host.rs",
@@ -1414,8 +1670,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::lifecycle::sidecar host responsibilities, including Selects the sidecar state used by PocketStation.; Identifies the spawned state or stage represented by `SidecarState`.; Identifies the hello state or stage represented by `SidecarState`.."
+    "classification": "DECLARED",
+    "text": "Selects the sidecar state used by PocketStation. Identifies the spawned state or stage represented by `SidecarState`. Identifies the hello state or stage represented by `SidecarState`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1472,6 +1728,13 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_protocol.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_protocol.rs",
     "REFERENCES:src/runtime/lifecycle/sidecar_protocol.rs"
   ],
   "resource_ownership": [
@@ -1539,22 +1802,22 @@
     "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Failed: Identifies the failed state or stage represented by `SidecarState`.",
     "pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines: Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process.",
     "SidecarDeadlines::ready: Indicates whether ready applies to `SidecarDeadlines`.",
-    "SidecarDeadlines::processing: Stores the processing used by `SidecarDeadlines`.",
-    "SidecarDeadlines::shutdown: Stores the shutdown used by `SidecarDeadlines`.",
+    "SidecarDeadlines::processing: Sets the processing duration enforced by `SidecarDeadlines`.",
+    "SidecarDeadlines::shutdown: Sets the shutdown duration enforced by `SidecarDeadlines`.",
     "default: Returns the default `SidecarDeadlines` value.",
     "pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec: Configures sidecar process behavior at its owning API boundary.",
     "SidecarProcessSpec::id: Identifies the id recorded by `SidecarProcessSpec`.",
-    "SidecarProcessSpec::program: Stores the program used by `SidecarProcessSpec`.",
-    "SidecarProcessSpec::arguments: Stores the arguments used by `SidecarProcessSpec`.",
-    "SidecarProcessSpec::configuration: Stores the configuration used by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::program: Points to the executable launched for `SidecarProcessSpec`.",
+    "SidecarProcessSpec::arguments: Contains the arguments owned or reported by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::configuration: Contains the serialized configuration passed to `SidecarProcessSpec`.",
     "SidecarProcessSpec::data_capacity_messages: Sets the data capacity messages available to `SidecarProcessSpec`.",
-    "SidecarProcessSpec::protocol_limits: Stores the protocol limits used by `SidecarProcessSpec`.",
-    "SidecarProcessSpec::deadlines: Stores the deadlines used by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::protocol_limits: Contains the protocol limits owned or reported by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::deadlines: Contains the deadlines owned or reported by `SidecarProcessSpec`.",
     "new: Creates a new `SidecarProcessSpec`.",
     "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostObservations: Reports the sidecar host observations collected at an observation boundary.",
     "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot: Reports the sidecar host snapshot collected at an observation boundary.",
-    "SidecarHostSnapshot::state: Stores the state used by `SidecarHostSnapshot`.",
-    "SidecarHostSnapshot::state_transitions: Stores the state transitions used by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::state: Records the state selected for `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::state_transitions: Contains the state transitions owned or reported by `SidecarHostSnapshot`.",
     "SidecarHostSnapshot::data_enqueued_total: Counts the total number of data enqueued observed by `SidecarHostSnapshot`.",
     "SidecarHostSnapshot::data_received_total: Counts the total number of data received observed by `SidecarHostSnapshot`.",
     "SidecarHostSnapshot::data_dropped_total: Counts the total number of data dropped observed by `SidecarHostSnapshot`.",
@@ -1570,35 +1833,35 @@
     "observations: Returns the observations exposed by `SidecarHost`.",
     "try_send_signal: Attempts to send signal through `SidecarHost`.",
     "try_receive_signal: Attempts to receive signal through `SidecarHost`.",
-    "receive_signal: Receives signal for `SidecarHost`.",
+    "receive_signal: Receives and decodes the next signal message from `SidecarHost`.",
     "cancel_and_reap: Cancels and reap for `SidecarHost`.",
     "close_and_reap: Closes `SidecarHost` and reaps its child process.",
     "drop: Releases resources owned by `SidecarHost`.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError: Classifies failures reported as sidecar host error.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidConfiguration: Reported when the owning operation encounters invalid configuration.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Spawn: Reported when the owning operation encounters spawn.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ThreadSpawn: Reported when the owning operation encounters thread spawn.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::MissingPipe: Reported when the owning operation encounters missing pipe.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Io: Reported when the owning operation encounters I/O.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Protocol: Reported when the owning operation encounters protocol.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::FrameTooLarge: Reported when the owning operation encounters frame too large.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::DataQueueFull: Reported when the owning operation encounters data queue full.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ControlQueueFull: Reported when the owning operation encounters control queue full.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError: Classifies failures surfaced by sidecar host operations.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidConfiguration: Reports that the supplied configuration is invalid.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Spawn: Classifies a failure at the spawn stage or component of `SidecarHostError`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ThreadSpawn: Classifies a failure at the thread spawn stage or component of `SidecarHostError`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::MissingPipe: Reports that the required pipe is missing.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Io: Reports an operating-system or filesystem I/O failure.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Protocol: Classifies a failure at the protocol stage or component of `SidecarHostError`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::FrameTooLarge: Reports that frame exceeds the supported size limit.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::DataQueueFull: Reports that the bounded data queue has no remaining capacity.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ControlQueueFull: Reports that the bounded control queue has no remaining capacity.",
     "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Closed: Reports that the underlying channel or resource is closed.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnexpectedEof: Reported when the owning operation encounters unexpected eof.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnexpectedMessage: Reported when the owning operation encounters unexpected message.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnexpectedEof: Reports that eof is not valid in the current protocol or lifecycle state.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnexpectedMessage: Reports that message is not valid in the current protocol or lifecycle state.",
     "SidecarHostError::UnexpectedMessage::expected: Records the value expected by `UnexpectedMessage`.",
     "SidecarHostError::UnexpectedMessage::actual: Records the value observed by `UnexpectedMessage`.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Timeout: Reported when the owning operation encounters timeout.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout: Reported when the owning operation encounters processing timeout.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidState: Reported when the owning operation encounters invalid state.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Timeout: Reports that the operation exceeded its deadline.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout: Reports that processing exceeded its deadline.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidState: Reports that the supplied state is invalid.",
     "SidecarHostError::InvalidState::expected: Records the value expected by `InvalidState`.",
     "SidecarHostError::InvalidState::actual: Records the value observed by `InvalidState`.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidDataKind: Reported when the owning operation encounters invalid data kind.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Wait: Reported when the owning operation encounters wait.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Kill: Reported when the owning operation encounters kill.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::AlreadyReaped: Reported when the owning operation encounters already reaped.",
-    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnknownSidecar: Reported when the owning operation encounters unknown sidecar."
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidDataKind: Reports that the supplied data kind is invalid.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Wait: Classifies a failure at the wait stage or component of `SidecarHostError`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Kill: Classifies a failure at the kill stage or component of `SidecarHostError`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::AlreadyReaped: Reports that reaped already occurred before this operation.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnknownSidecar: Reports that the referenced sidecar is not declared or registered."
   ],
   "retry_behavior": [],
   "serialization": [

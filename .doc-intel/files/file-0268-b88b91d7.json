@@ -418,8 +418,8 @@
       "classification": "DIRECT",
       "content_hash": "7630cd50ad37a736d2d0b0234e1c9b572e6725e2639387420f62879a279eb22e",
       "lines": [
-        1,
-        427
+        3,
+        23
       ],
       "path": "tests/fixtures/native_extension_plugin.rs",
       "symbol": null
@@ -521,12 +521,12 @@
     "std::mem::size_of"
   ],
   "inputs": [
-    "#[cfg(not(no_entrypoint))]",
-    "PKS_FIXTURE_MARKER",
-    "std::ffi::c_void",
-    "std::fs::OpenOptions",
-    "std::io::Write",
-    "std::mem::size_of"
+    "Consumes configuration at tests/fixtures/native_extension_plugin.rs:407.",
+    "Depends on `std::ffi::c_void` through a declared Rust import.",
+    "Depends on `std::fs::OpenOptions` through a declared Rust import.",
+    "Depends on `std::io::Write` through a declared Rust import.",
+    "Depends on `std::mem::size_of` through a declared Rust import.",
+    "Reads process environment variable `PKS_FIXTURE_MARKER`."
   ],
   "invariants": [],
   "language": "Rust",
@@ -535,7 +535,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/fixtures/native_extension_plugin.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

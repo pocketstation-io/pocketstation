@@ -1,6 +1,6 @@
 # Session compilation
 
-<!-- claims: CLM-DOC-014-CAP-001,CLM-DOC-014-SOURCE-001 -->
+<!-- claims: CLM-DOC-014-SCOPE-001,CLM-DOC-014-TEXT-001,CLM-DOC-014-TEXT-002,CLM-DOC-014-TEXT-003,CLM-DOC-014-TEXT-004,CLM-DOC-014-TEXT-005,CLM-DOC-014-TEXT-006,CLM-DOC-014-SOURCE-001 -->
 
 ## What it is
 
@@ -44,14 +44,14 @@ The scope of **Session compilation** ends at the native contracts and executable
 |---|---|---|---|
 | `pocketstation::session::compile::SessionCompiler` | struct | Compiles an immutable Session declaration into a validated graph and runtime plan. | `src/session/compile/mod.rs:41` |
 | `pocketstation::graph::compile::resolve::Compiler` | struct | Runs the ordered graph-validation passes that resolve a graph specification into executable IR. | `src/graph/compile/resolve.rs:444` |
-| `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures reported as compile error. | `src/graph/compile/resolve.rs:26` |
+| `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures surfaced by compile operations. | `src/graph/compile/resolve.rs:26` |
 | `compile` | function | Compiles its owned operation for `Compiler`. | `src/graph/compile/resolve.rs:464` |
 | `compile` | function | Compiles its owned operation for `SessionCompiler`. | `src/session/compile/mod.rs:103` |
 | `default` | function | Returns the default `Compiler` value. | `src/graph/compile/resolve.rs:513` |
 | `new` | function | Creates a new `Compiler`. | `src/graph/compile/resolve.rs:449` |
 | `new` | function | Creates a new `SessionCompiler`. | `src/session/compile/mod.rs:77` |
-| `pocketstation::graph::compile::resolve::CompileError::AdapterUnavailable` | variant | Reported when the owning operation encounters adapter unavailable. | `src/graph/compile/resolve.rs:62` |
-| `pocketstation::graph::compile::resolve::CompileError::ClockDomainMismatch` | variant | Reported when the owning operation encounters clock domain mismatch. | `src/graph/compile/resolve.rs:38` |
+| `pocketstation::graph::compile::resolve::CompileError::AdapterUnavailable` | variant | Reports that adapter is unavailable. | `src/graph/compile/resolve.rs:62` |
+| `pocketstation::graph::compile::resolve::CompileError::ClockDomainMismatch` | variant | Reports that clock domain does not match the expected contract. | `src/graph/compile/resolve.rs:38` |
 
 ## Executable evidence
 
@@ -85,6 +85,29 @@ Executable evidence selected for **Session compilation** is limited to each test
 
 The claims on **Session compilation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/compile/mod.rs:1-790` (`DIRECT`)
+- `src/session/compile/mod.rs:25-25` (`DIRECT`)
+- `src/session/compile/mod.rs:26-26` (`DIRECT`)
+- `src/session/compile/mod.rs:28-28` (`DIRECT`)
+- `src/session/compile/mod.rs:29-29` (`DIRECT`)
+- `src/session/compile/mod.rs:30-30` (`DIRECT`)
+- `src/session/compile/mod.rs:32-39` (`DIRECT`)
+- `src/session/compile/mod.rs:33-33` (`DIRECT`)
+- `src/session/compile/mod.rs:34-34` (`DIRECT`)
+- `src/session/compile/mod.rs:35-35` (`DIRECT`)
+- `src/session/compile/mod.rs:36-36` (`DIRECT`)
+- `src/session/compile/mod.rs:37-37` (`DIRECT`)
+- `src/session/compile/mod.rs:38-38` (`DIRECT`)
+- `src/session/compile/mod.rs:41-46` (`DIRECT`)
+- `src/session/compile/mod.rs:42-42` (`DIRECT`)
+- `src/session/compile/mod.rs:43-43` (`DIRECT`)
+- `src/session/compile/mod.rs:44-44` (`DIRECT`)
+- `src/session/compile/mod.rs:45-45` (`DIRECT`)
+- `src/session/compile/mod.rs:51-73` (`DIRECT`)
+- `src/session/compile/mod.rs:52-56` (`DIRECT`)
+- `src/session/compile/mod.rs:58-64` (`DIRECT`)
+- `src/session/compile/mod.rs:66-72` (`DIRECT`)
+- `src/session/compile/mod.rs:77-87` (`DIRECT`)
+- `src/session/compile/mod.rs:89-101` (`DIRECT`)
+- `src/session/compile/mod.rs:103-119` (`DIRECT`)
 
 For **Session compilation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

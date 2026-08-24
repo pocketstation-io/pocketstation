@@ -262,11 +262,211 @@
       "classification": "DIRECT",
       "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
       "lines": [
-        1,
-        267
+        15,
+        22
       ],
       "path": "src/codec/decoder.rs",
-      "symbol": null
+      "symbol": "OpusDecoder"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "inner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "channels"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "maximum_frame_samples_per_channel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        25,
+        35
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "OpusDecodeError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        29,
+        32
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "FrameDurationExceedsConfiguredMaximum"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "requested_samples_per_channel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "maximum_samples_per_channel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "Opus"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        39,
+        41
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        44,
+        46
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "with_channels"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        53,
+        66
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "with_max_frame_duration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        81,
+        109
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "decode_into"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        116,
+        150
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "decode_plc_into"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        153,
+        172
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "decode_packet"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        175,
+        177
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": "default"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -309,14 +509,14 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "/// Configured for 48 000 Hz, mono per AUDIO-012.",
-    "crate::codec::constants::OPUS_FRAME_SAMPLES",
-    "crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ}",
-    "crate::codec::encoder::OpusEncoder",
-    "crate::codec::encoder::{OpusChannels, OpusFrameDuration}",
-    "opus::{Channels, Decoder}",
-    "super::*"
+    "Consumes configuration at src/codec/decoder.rs:180.",
+    "Consumes configuration at src/codec/decoder.rs:8.",
+    "Depends on `crate::codec::constants::OPUS_FRAME_SAMPLES` through a declared Rust import.",
+    "Depends on `crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ}` through a declared Rust import.",
+    "Depends on `crate::codec::encoder::OpusEncoder` through a declared Rust import.",
+    "Depends on `crate::codec::encoder::{OpusChannels, OpusFrameDuration}` through a declared Rust import.",
+    "Depends on `opus::{Channels, Decoder}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -338,20 +538,20 @@
   "module": "pocketstation::codec::decoder",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::codec::decoder` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-77966d84ef15c5f4836c"
   ],
   "outputs": [
-    "enum:OpusDecodeError",
-    "fn:decode_into",
-    "fn:decode_plc_into",
-    "fn:new",
-    "fn:with_channels",
-    "fn:with_max_frame_duration",
-    "return Err(OpusDecodeError::FrameDurationExceedsConfiguredMaximum {",
-    "struct:OpusDecoder"
+    "Creates a typed failure at src/codec/decoder.rs:124.",
+    "Declares public enum `OpusDecodeError`.",
+    "Declares public fn `decode_into`.",
+    "Declares public fn `decode_plc_into`.",
+    "Declares public fn `new`.",
+    "Declares public fn `with_channels`.",
+    "Declares public fn `with_max_frame_duration`.",
+    "Declares public struct `OpusDecoder`."
   ],
   "package": "pocketstation",
   "path": "src/codec/decoder.rs",
@@ -458,8 +658,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::codec::decoder responsibilities, including Real Opus decoder wrapping libopus via the `opus` crate.; Classifies failures reported as opus decode error.; Reported when the owning operation encounters frame duration exceeds configured maximum.."
+    "classification": "DECLARED",
+    "text": "Real Opus decoder wrapping libopus via the `opus` crate. Classifies failures produced during opus decoding. Classifies a failure at the frame duration exceeds configured maximum stage or component of `OpusDecodeError`."
   },
   "queues": [],
   "recovery_behavior": [
@@ -490,16 +690,17 @@
     "docs/troubleshooting/opus.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs",
     "REFERENCES:src/codec/encoder.rs"
   ],
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::codec::decoder::OpusDecoder: Real Opus decoder wrapping libopus via the `opus` crate.",
-    "pocketstation::codec::decoder::OpusDecodeError: Classifies failures reported as opus decode error.",
-    "pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum: Reported when the owning operation encounters frame duration exceeds configured maximum.",
-    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::requested_samples_per_channel: Stores the requested samples per channel used by `FrameDurationExceedsConfiguredMaximum`.",
-    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::maximum_samples_per_channel: Stores the maximum samples per channel used by `FrameDurationExceedsConfiguredMaximum`.",
-    "pocketstation::codec::decoder::OpusDecodeError::Opus: Reported when the owning operation encounters opus.",
+    "pocketstation::codec::decoder::OpusDecodeError: Classifies failures produced during opus decoding.",
+    "pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum: Classifies a failure at the frame duration exceeds configured maximum stage or component of `OpusDecodeError`.",
+    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::requested_samples_per_channel: Records the requested frame length, in samples per channel, that caused `FrameDurationExceedsConfiguredMaximum`.",
+    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::maximum_samples_per_channel: Records the configured maximum frame length, in samples per channel, enforced by `FrameDurationExceedsConfiguredMaximum`.",
+    "pocketstation::codec::decoder::OpusDecodeError::Opus: Classifies a failure at the opus stage or component of `OpusDecodeError`.",
     "new: Mono decoder (48 kHz). Back-compatible default for the existing pipeline.",
     "with_channels: Decoder for an explicit channel layout and a maximum 20 ms packet.",
     "with_max_frame_duration: Decoder with an explicit maximum packet duration.",

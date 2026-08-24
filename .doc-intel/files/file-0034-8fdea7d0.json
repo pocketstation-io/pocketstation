@@ -87,7 +87,7 @@
       "content_hash": "046f901a228064149db7403719cd4be4173e7e9bf57af7521253a539550c6250",
       "lines": [
         1,
-        61
+        21
       ],
       "path": "examples/product_quickstart.rs",
       "symbol": null
@@ -126,10 +126,10 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "pocketstation as pks",
-    "std::collections::BTreeMap",
-    "std::error::Error",
-    "std::time::{Duration, Instant}"
+    "Depends on `pocketstation as pks` through a declared Rust import.",
+    "Depends on `std::collections::BTreeMap` through a declared Rust import.",
+    "Depends on `std::error::Error` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -138,15 +138,15 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/product_quickstart.rs` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [
     "pattern-382a459c91458f67937e"
   ],
   "outputs": [
-    "return Err(\"PocketStation Session did not finalize cleanly\".into());",
-    "return Err(\"PocketStation multistem recording did not complete\".into());",
-    "return Err(\"application and microphone media were not both observed\".into());"
+    "Creates a typed failure at examples/product_quickstart.rs:43.",
+    "Creates a typed failure at examples/product_quickstart.rs:48.",
+    "Creates a typed failure at examples/product_quickstart.rs:57."
   ],
   "package": "pocketstation",
   "path": "examples/product_quickstart.rs",

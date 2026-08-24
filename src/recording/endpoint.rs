@@ -21,9 +21,9 @@ use crate::recording::{
 };
 
 const SESSION_RECORDER_IDLE_WAIT_MS: u64 = 1;
-#[doc = "Defines the public multistem group configuration key value."]
+#[doc = "Defines multistem group configuration key as `\"recording_group_id\"` for the owning public contract."]
 pub const MULTISTEM_GROUP_CONFIGURATION_KEY: &str = "recording_group_id";
-#[doc = "Defines the public multistem name configuration key value."]
+#[doc = "Defines multistem name configuration key as `\"stem_name\"` for the owning public contract."]
 pub const MULTISTEM_NAME_CONFIGURATION_KEY: &str = "stem_name";
 
 #[derive(Clone)]

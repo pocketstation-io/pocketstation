@@ -64,14 +64,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "a71d9ec16e1f7f4c28d0bd8a7f383098ae99b1b22ac014f88b1f65e1a780de6e",
       "lines": [
         1,
-        41
+        5
       ],
       "path": "benches/session_lifecycle.rs",
-      "symbol": null
+      "symbol": "not_applicable"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -98,8 +98,8 @@
     "pocketstation::{ApplicationSelector, Source}"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
-    "pocketstation::{ApplicationSelector, Source}"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion}` through a declared Rust import.",
+    "Depends on `pocketstation::{ApplicationSelector, Source}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -113,7 +113,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/session_lifecycle.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -139,8 +139,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/session lifecycle boundary."
+    "classification": "DECLARED",
+    "text": "Measures session lifecycle by repeatedly exercising ApplicationSelector::name, Source::application, Source::microphone_default, bench_function."
   },
   "queues": [],
   "recovery_behavior": [],

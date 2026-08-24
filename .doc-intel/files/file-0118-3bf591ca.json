@@ -180,11 +180,221 @@
       "classification": "DIRECT",
       "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
       "lines": [
-        1,
-        67
+        3,
+        3
       ],
       "path": "src/connector/readiness.rs",
-      "symbol": null
+      "symbol": "MAX_CONNECTOR_READINESS_THRESHOLD"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        4,
+        4
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "MAX_CONNECTOR_READINESS_TIMEOUT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        7,
+        12
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "ConnectorReadinessPolicy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "startup_timeout"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "probe_interval"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "success_threshold"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "failure_threshold"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        15,
+        41
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        43,
+        45
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "startup_timeout"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        47,
+        49
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "probe_interval"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        51,
+        53
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "success_threshold"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        55,
+        57
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "failure_threshold"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        60,
+        60
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        60,
+        60
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        60,
+        60
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        60,
+        60
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        61,
+        66
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "ConnectorReadinessPolicyError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        63,
+        63
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "InvalidDeadline"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        65,
+        65
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": "InvalidThreshold"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -233,7 +443,7 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "std::time::Duration"
+    "Depends on `std::time::Duration` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -251,23 +461,23 @@
   "module": "pocketstation::connector::readiness",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::readiness` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-27751c9a9086fb67f577"
   ],
   "outputs": [
-    "const:MAX_CONNECTOR_READINESS_THRESHOLD",
-    "const:MAX_CONNECTOR_READINESS_TIMEOUT",
-    "enum:ConnectorReadinessPolicyError",
-    "fn:failure_threshold",
-    "fn:new",
-    "fn:probe_interval",
-    "fn:startup_timeout",
-    "fn:success_threshold",
-    "return Err(ConnectorReadinessPolicyError::InvalidDeadline);",
-    "return Err(ConnectorReadinessPolicyError::InvalidThreshold);",
-    "struct:ConnectorReadinessPolicy"
+    "Creates a typed failure at src/connector/readiness.rs:26.",
+    "Creates a typed failure at src/connector/readiness.rs:33.",
+    "Declares public const `MAX_CONNECTOR_READINESS_THRESHOLD`.",
+    "Declares public const `MAX_CONNECTOR_READINESS_TIMEOUT`.",
+    "Declares public enum `ConnectorReadinessPolicyError`.",
+    "Declares public fn `failure_threshold`.",
+    "Declares public fn `new`.",
+    "Declares public fn `probe_interval`.",
+    "Declares public fn `startup_timeout`.",
+    "Declares public fn `success_threshold`.",
+    "Declares public struct `ConnectorReadinessPolicy`."
   ],
   "package": "pocketstation",
   "path": "src/connector/readiness.rs",
@@ -337,8 +547,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::readiness responsibilities, including Sets the maximum supported connector readiness threshold.; Sets the maximum supported connector readiness timeout.; Configures connector readiness behavior at its owning API boundary.."
+    "classification": "DECLARED",
+    "text": "Sets the maximum supported connector readiness threshold. Sets the maximum supported connector readiness timeout. Configures connector readiness behavior at its owning API boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -391,9 +601,9 @@
     "probe_interval: Returns the probe interval held by `ConnectorReadinessPolicy`.",
     "success_threshold: Returns the success threshold held by `ConnectorReadinessPolicy`.",
     "failure_threshold: Returns the failure threshold held by `ConnectorReadinessPolicy`.",
-    "pocketstation::connector::readiness::ConnectorReadinessPolicyError: Classifies failures reported as connector readiness policy error.",
-    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidDeadline: Selects invalid deadline behavior for `ConnectorReadinessPolicyError`.",
-    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidThreshold: Selects invalid threshold behavior for `ConnectorReadinessPolicyError`."
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError: Classifies failures surfaced by connector readiness policy operations.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidDeadline: Reports that the connector readiness invalid deadline value is invalid.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidThreshold: Reports that the connector readiness invalid threshold value is invalid."
   ],
   "retry_behavior": [],
   "serialization": [],

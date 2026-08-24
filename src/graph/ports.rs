@@ -16,24 +16,24 @@ pub const MAX_ASYNC_PAYLOAD_BYTES: usize = 16_777_216;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the media kind used by PocketStation."]
 pub enum MediaKind {
-    #[doc = "Selects audio PCM behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries audio PCM media."]
     AudioPcm,
-    #[doc = "Selects audio encoded behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries audio encoded media."]
     AudioEncoded,
-    #[doc = "Selects text behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries text media."]
     Text,
-    #[doc = "Selects event behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries event media."]
     Event,
-    #[doc = "Selects metrics behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries metrics media."]
     Metrics,
-    #[doc = "Selects control behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries control media."]
     Control,
-    #[doc = "Selects binary behavior for `MediaKind`."]
+    #[doc = "Declares that the signal carries binary media."]
     Binary,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported channel layout cases."]
+#[doc = "Declares the number and arrangement of channels in an audio signal."]
 pub enum ChannelLayout {
     #[doc = "Represents the mono case of `ChannelLayout`."]
     Mono,
@@ -53,7 +53,7 @@ impl ChannelLayout {
         }
     }
 
-    #[doc = "Returns whether compatible with applies to `ChannelLayout`."]
+    #[doc = "Reports whether compatible with is true for `ChannelLayout`."]
     pub fn is_compatible_with(self, other: ChannelLayout) -> bool {
         matches!(self, Self::Any) || matches!(other, Self::Any) || self == other
     }
@@ -64,16 +64,16 @@ impl ChannelLayout {
 pub struct AudioCaps {
     #[doc = "Stores the sample rate value for `AudioCaps`, in hertz."]
     pub sample_rate_hz: Option<u32>, // None = any rate accepted
-    #[doc = "Stores the frame samples used by `AudioCaps`."]
+    #[doc = "Contains the frame samples owned or reported by `AudioCaps`."]
     pub frame_samples: Option<usize>, // None = any frame length accepted
-    #[doc = "Stores the channel layout used by `AudioCaps`."]
+    #[doc = "Declares the channel arrangement accepted by `AudioCaps`."]
     pub channel_layout: ChannelLayout,
-    #[doc = "Stores the format used by `AudioCaps`."]
+    #[doc = "Records the format selected for `AudioCaps`."]
     pub format: SampleFormat,
 }
 
 impl AudioCaps {
-    #[doc = "Returns whether compatible with applies to `AudioCaps`."]
+    #[doc = "Reports whether compatible with is true for `AudioCaps`."]
     pub fn is_compatible_with(&self, other: &AudioCaps) -> bool {
         Self::scalar_compatible(self.sample_rate_hz, other.sample_rate_hz)
             && Self::scalar_compatible(self.frame_samples, other.frame_samples)
@@ -103,7 +103,7 @@ impl AudioCaps {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported media caps cases."]
+#[doc = "Declares the media capabilities accepted by a graph port."]
 pub enum MediaCaps {
     #[doc = "Represents the audio case of `MediaCaps`."]
     Audio(AudioCaps),
@@ -138,7 +138,7 @@ impl MediaCaps {
         }
     }
 
-    #[doc = "Returns whether compatible with applies to `MediaCaps`."]
+    #[doc = "Reports whether compatible with is true for `MediaCaps`."]
     pub fn is_compatible_with(&self, other: &MediaCaps) -> bool {
         match (self, other) {
             (Self::Any, _) | (_, Self::Any) => true,
@@ -172,7 +172,7 @@ impl MediaCaps {
         }
     }
 
-    #[doc = "Returns whether supports signal applies to `MediaCaps`."]
+    #[doc = "Reports whether supports signal is true for `MediaCaps`."]
     pub fn supports_signal(&self, signal: &SignalSpec) -> bool {
         match (&signal.class, self) {
             (_, Self::Any) | (SignalClass::Any, _) => true,
@@ -196,14 +196,14 @@ impl MediaCaps {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[doc = "Selects the port direction used by PocketStation."]
 pub enum PortDirection {
-    #[doc = "Selects input behavior for `PortDirection`."]
+    #[doc = "Declares a graph port as input."]
     Input,
-    #[doc = "Selects output behavior for `PortDirection`."]
+    #[doc = "Declares a graph port as output."]
     Output,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported multiplicity cases."]
+#[doc = "Declares whether a graph port accepts one edge or multiple edges."]
 pub enum Multiplicity {
     #[doc = "Represents the one case of `Multiplicity`."]
     One,
@@ -284,21 +284,21 @@ impl PortSpec {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as port spec error."]
+#[doc = "Classifies failures surfaced by port spec operations."]
 pub enum PortSpecError {
     #[error("port name cannot be empty")]
-    #[doc = "Reports empty name."]
+    #[doc = "Reports that name is empty."]
     EmptyName,
     #[error("port SignalSpec is invalid")]
-    #[doc = "Reports invalid signal."]
+    #[doc = "Reports that the supplied signal is invalid."]
     InvalidSignal,
     #[error("port signal and media representation are incompatible")]
-    #[doc = "Reports signal media mismatch."]
+    #[doc = "Reports that signal media does not match the expected contract."]
     SignalMediaMismatch,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported clock domain cases."]
+#[doc = "Identifies the clock used to interpret signal timestamps."]
 pub enum ClockDomain {
     #[doc = "Represents the capture case of `ClockDomain`."]
     Capture,
@@ -313,7 +313,7 @@ pub enum ClockDomain {
 }
 
 impl ClockDomain {
-    #[doc = "Returns whether realtime applies to `ClockDomain`."]
+    #[doc = "Reports whether realtime is true for `ClockDomain`."]
     pub fn is_realtime(self) -> bool {
         matches!(self, Self::Capture | Self::Playback)
     }
@@ -322,13 +322,13 @@ impl ClockDomain {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the backpressure policy used by PocketStation."]
 pub enum BackpressurePolicy {
-    #[doc = "Selects drop newest behavior for `BackpressurePolicy`."]
+    #[doc = "Handles bounded queue pressure using the drop newest policy."]
     DropNewest, // shed the incoming frame; preserves already-queued order
-    #[doc = "Selects drop oldest behavior for `BackpressurePolicy`."]
+    #[doc = "Handles bounded queue pressure using the drop oldest policy."]
     DropOldest, // evict head to admit newest; freshest-wins for realtime audio
-    #[doc = "Selects bounded queue behavior for `BackpressurePolicy`."]
+    #[doc = "Handles bounded queue pressure using the bounded queue policy."]
     BoundedQueue, // block producer only via capacity; never drops silently
-    #[doc = "Selects block forbidden behavior for `BackpressurePolicy`."]
+    #[doc = "Handles bounded queue pressure using the block forbidden policy."]
     BlockForbidden, // producer must never block; overflow is a hard error upstream
 }
 
@@ -346,31 +346,31 @@ pub enum DeliverySemantics {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the copy policy used by PocketStation."]
 pub enum CopyPolicy {
-    #[doc = "Selects move exclusive behavior for `CopyPolicy`."]
+    #[doc = "Applies the move exclusive storage-sharing policy to routed values."]
     MoveExclusive,
-    #[doc = "Selects share read only behavior for `CopyPolicy`."]
+    #[doc = "Applies the share read only storage-sharing policy to routed values."]
     ShareReadOnly,
-    #[doc = "Selects copy to branch pool behavior for `CopyPolicy`."]
+    #[doc = "Applies the copy to branch pool storage-sharing policy to routed values."]
     CopyToBranchPool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the loss policy used by PocketStation."]
 pub enum LossPolicy {
-    #[doc = "Selects conceal for audio behavior for `LossPolicy`."]
+    #[doc = "Handles delivery loss using the conceal for audio policy."]
     ConcealForAudio, // PLC-eligible; dropped audio is concealed downstream
-    #[doc = "Selects must deliver or fail behavior for `LossPolicy`."]
+    #[doc = "Handles delivery loss using the must deliver or fail policy."]
     MustDeliverOrFail, // terminal output must be delivered or the branch fails visibly
-    #[doc = "Selects drop allowed behavior for `LossPolicy`."]
+    #[doc = "Handles delivery loss using the drop allowed policy."]
     DropAllowed,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the edge observability level used by PocketStation."]
 pub enum EdgeObservabilityLevel {
-    #[doc = "Selects off behavior for `EdgeObservabilityLevel`."]
+    #[doc = "Exposes off observations for a graph edge."]
     Off,
-    #[doc = "Selects counters behavior for `EdgeObservabilityLevel`."]
+    #[doc = "Exposes counters observations for a graph edge."]
     Counters,
     #[doc = "Reports that bounded capacity is full."]
     Full,

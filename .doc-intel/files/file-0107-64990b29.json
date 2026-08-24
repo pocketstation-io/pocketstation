@@ -100,11 +100,51 @@
       "classification": "DIRECT",
       "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
       "lines": [
-        1,
-        17
+        2,
+        2
       ],
       "path": "src/codec/constants.rs",
-      "symbol": null
+      "symbol": "OPUS_SAMPLE_RATE_HZ"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/codec/constants.rs",
+      "symbol": "OPUS_FRAME_SAMPLES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/codec/constants.rs",
+      "symbol": "VOICE_AGENT_FRAME_SAMPLES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/codec/constants.rs",
+      "symbol": "OPUS_MAX_PACKET_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/codec/constants.rs",
+      "symbol": "I16_SCALE"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -146,15 +186,15 @@
   "module": "pocketstation::codec::constants",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::codec::constants` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "const:I16_SCALE",
-    "const:OPUS_FRAME_SAMPLES",
-    "const:OPUS_MAX_PACKET_BYTES",
-    "const:OPUS_SAMPLE_RATE_HZ",
-    "const:VOICE_AGENT_FRAME_SAMPLES"
+    "Declares public const `I16_SCALE`.",
+    "Declares public const `OPUS_FRAME_SAMPLES`.",
+    "Declares public const `OPUS_MAX_PACKET_BYTES`.",
+    "Declares public const `OPUS_SAMPLE_RATE_HZ`.",
+    "Declares public const `VOICE_AGENT_FRAME_SAMPLES`."
   ],
   "package": "pocketstation",
   "path": "src/codec/constants.rs",
@@ -200,8 +240,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::codec::constants responsibilities, including 48 000 Hz, mono, VOIP application profile (AUDIO-012 default).; 20 ms frame = 960 samples at 48 kHz (AUDIO-012).; 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 \u00a73.1).."
+    "classification": "DECLARED",
+    "text": "48 000 Hz, mono, VOIP application profile (AUDIO-012 default). 20 ms frame = 960 samples at 48 kHz (AUDIO-012). 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 \u00a73.1)."
   },
   "queues": [],
   "recovery_behavior": [],

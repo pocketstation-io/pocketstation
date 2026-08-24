@@ -350,14 +350,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "ba15d6c382d78b5cc8b8e235647b8317b090f0d4f423a4a53c11c8c9074e8599",
       "lines": [
         1,
-        457
+        9
       ],
       "path": "src/abi/codec.rs",
-      "symbol": null
+      "symbol": "pocketstation::abi::codec"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -503,12 +503,12 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::codec::{OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder}",
-    "std::f32::consts::PI",
-    "std::os::raw::{c_int, c_uchar, c_uint}",
-    "std::panic::{catch_unwind, AssertUnwindSafe}",
-    "super::*"
+    "Consumes configuration at src/abi/codec.rs:218.",
+    "Depends on `crate::codec::{OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder}` through a declared Rust import.",
+    "Depends on `std::f32::consts::PI` through a declared Rust import.",
+    "Depends on `std::os::raw::{c_int, c_uchar, c_uint}` through a declared Rust import.",
+    "Depends on `std::panic::{catch_unwind, AssertUnwindSafe}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -642,22 +642,23 @@
   "module": "pocketstation::abi::codec",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::codec` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "Err(OpusEncodeError::InvalidFrameSampleCount { .. }) => {",
-    "Err(OpusEncodeError::Opus(_)) => PksCodecErrorCode::Encode.as_c_int(),",
-    "Err(OpusEncodeError::Opus(_)) => {",
-    "Err(_) => PksCodecErrorCode::Encode.as_c_int(),",
-    "Err(_) => std::ptr::null_mut(),",
-    "enum:PksCodecErrorCode",
-    "fn:pks_encode_opus",
-    "fn:pks_opus_encoder_create",
-    "fn:pks_opus_encoder_destroy",
-    "fn:pks_opus_encoder_set_bitrate",
-    "fn:pks_opus_max_packet_bytes",
-    "struct:PksOpusEncoder"
+    "Creates a typed failure at src/abi/codec.rs:144.",
+    "Creates a typed failure at src/abi/codec.rs:186.",
+    "Creates a typed failure at src/abi/codec.rs:189.",
+    "Creates a typed failure at src/abi/codec.rs:210.",
+    "Creates a typed failure at src/abi/codec.rs:213.",
+    "Creates a typed failure at src/abi/codec.rs:99.",
+    "Declares public enum `PksCodecErrorCode`.",
+    "Declares public fn `pks_encode_opus`.",
+    "Declares public fn `pks_opus_encoder_create`.",
+    "Declares public fn `pks_opus_encoder_destroy`.",
+    "Declares public fn `pks_opus_encoder_set_bitrate`.",
+    "Declares public fn `pks_opus_max_packet_bytes`.",
+    "Declares public struct `PksOpusEncoder`."
   ],
   "package": "pocketstation",
   "path": "src/abi/codec.rs",
@@ -836,8 +837,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::codec responsibilities, including codec; clone; fmt."
+    "classification": "DECLARED",
+    "text": "C compatibility boundary for the PocketStation Opus codec. This is not the Session engine ABI. The checked header is the unified `include/pocketstation.h`. Canonical SDK copies use the same `pocketstation.h` name. Swift usage: import via module.modulemap in sdk-ios (AUDIO-001). AUDIO-001: platform callback writes f32 PCM \u2192 Rust Opus encode \u2192 Swift WebRTC send."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -872,6 +873,7 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs",
     "REFERENCES:src/codec/encoder.rs"
   ],
   "resource_ownership": [

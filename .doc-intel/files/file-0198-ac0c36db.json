@@ -425,6 +425,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -823,6 +826,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -1998,16 +2004,249 @@
       "classification": "DIRECT",
       "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
       "lines": [
-        1,
-        2573
+        31,
+        31
       ],
       "path": "src/runtime/signal/operator.rs",
-      "symbol": null
+      "symbol": "ASYNC_OPERATOR_IDLE_POLL_INTERVAL"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        33,
+        44
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "AsyncOperatorWorkerSource"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "Direct"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        36,
+        39
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "Compiled"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "receiver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "lineage"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        40,
+        43
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "Typed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "port_name"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "receiver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        46,
+        52
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "SessionOperatorInput"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        47,
+        50
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "Compiled"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        48,
+        48
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "receiver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "contract"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        51,
+        51
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        51,
+        51
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "Typed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        55,
+        86
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "prepare_edge"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        88,
+        99
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "into_source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        102,
+        102
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        102,
+        102
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        102,
+        102
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        103,
+        114
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "CompiledOperatorInputContract"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        104,
+        104
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "edge_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        105,
+        105
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": "operator_node"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -2028,6 +2267,9 @@
   "generated_from": "not_applicable",
   "git_object": "8448e04c1d473d1dd3d4edaf128c1eb12fe8ed3a",
   "implemented_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -2043,6 +2285,9 @@
     "AsyncNode for PrepareCaptureNode"
   ],
   "imported_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/signal/mod.rs",
     "IMPORTS:src/runtime/signal/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -2071,28 +2316,36 @@
     "tokio::task::JoinHandle"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
-    "crate::frame::{SessionId, SourceId, StemId}",
-    "crate::graph::compile::{Compiler, RuntimePlanner}",
-    "crate::graph::{ AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, EdgeContract, MediaCaps, NodeConfig, NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PortDirection, SignalEnvelope, SignalPayload, SignalSpec, }",
-    "crate::graph::{ register_builtins, AudioCaps, BinaryFormat, ChannelLayout, ConfigError, EventFormat, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError, NodeRegistry, NodeTypeId, OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalDerivation, SignalLineage, SignalSpec, SignalTiming, TextFormat, }",
-    "crate::graph::{EdgeId, NodeId}",
-    "crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver}",
-    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
-    "crate::runtime::{TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver}",
-    "std::sync::Arc",
-    "std::sync::Mutex",
-    "std::sync::atomic::AtomicUsize",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::time::Duration",
-    "super::*",
-    "super::error::AsyncOperatorWorkerError",
-    "super::io::{ AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, }",
-    "super::io::{ AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, }",
-    "super::observations::{AsyncOperatorObservationHandle, AsyncOperatorObservationState}",
-    "tokio::sync::Notify",
-    "tokio::task::JoinHandle"
+    "Consumes configuration at src/runtime/signal/operator.rs:119.",
+    "Consumes configuration at src/runtime/signal/operator.rs:165.",
+    "Consumes configuration at src/runtime/signal/operator.rs:17.",
+    "Consumes configuration at src/runtime/signal/operator.rs:174.",
+    "Consumes configuration at src/runtime/signal/operator.rs:188.",
+    "Consumes configuration at src/runtime/signal/operator.rs:251.",
+    "Consumes configuration at src/runtime/signal/operator.rs:259.",
+    "Consumes configuration at src/runtime/signal/operator.rs:27.",
+    "Consumes configuration at src/runtime/signal/operator.rs:34.",
+    "Consumes configuration at src/runtime/signal/operator.rs:358.",
+    "Depends on `crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `crate::frame::{SessionId, SourceId, StemId}` through a declared Rust import.",
+    "Depends on `crate::graph::compile::{Compiler, RuntimePlanner}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, EdgeContract, MediaCaps, NodeConfig, NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PortDirection, SignalEnvelope, SignalPayload, SignalSpec, }` through a declared Rust import.",
+    "Depends on `crate::graph::{ register_builtins, AudioCaps, BinaryFormat, ChannelLayout, ConfigError, EventFormat, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError, NodeRegistry, NodeTypeId, OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalDerivation, SignalLineage, SignalSpec, SignalTiming, TextFormat, }` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeId, NodeId}` through a declared Rust import.",
+    "Depends on `crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver}` through a declared Rust import.",
+    "Depends on `crate::runtime::{SignalEdge, SignalEdgeReceiver}` through a declared Rust import.",
+    "Depends on `crate::runtime::{TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::Mutex` through a declared Rust import.",
+    "Depends on `std::sync::atomic::AtomicUsize` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, Ordering}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `super::error::AsyncOperatorWorkerError` through a declared Rust import.",
+    "Depends on `super::io::{ AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, }` through a declared Rust import.",
+    "Depends on `super::io::{ AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, }` through a declared Rust import.",
+    "Depends on `super::observations::{AsyncOperatorObservationHandle, AsyncOperatorObservationState}` through a declared Rust import.",
+    "Depends on `tokio::sync::Notify` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -2243,7 +2496,7 @@
   "module": "pocketstation::runtime::signal::operator",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::signal::operator` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-28e3a66d111ab9caa0b0",
@@ -2252,25 +2505,28 @@
     "pattern-ed20125623009d38bfb6"
   ],
   "outputs": [
-    "Err(AsyncOperatorWorkerError::InvalidPlanInput { kind: \"shared\" })",
-    "Err(shared) => {",
-    "enum:SessionOperatorInput",
-    "fn:cancel_and_join",
-    "fn:finish_and_join",
-    "fn:input_mut",
-    "fn:observations",
-    "fn:prepare_and_spawn_from_plan_edge",
-    "fn:prepare_and_spawn_session_composed",
-    "fn:spawn",
-    "fn:spawn_composed",
-    "fn:spawn_with_context",
-    "return Err(AsyncOperatorWorkerError::OutputSignalMismatch);",
-    "return Err(AsyncOperatorWorkerError::PlanInputLineageMismatch);",
-    "return Err(AsyncOperatorWorkerError::SharedAudioTypedInput);",
-    "return Err(NodeError::Prepare(",
-    "return Err(NodeError::Prepare(format!(",
-    "struct:AsyncOperatorWorker",
-    "struct:CompiledOperatorInputContract"
+    "Creates a typed failure at src/runtime/signal/operator.rs:133.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:138.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:146.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:148.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:221.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:269.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:289.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:331.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:369.",
+    "Creates a typed failure at src/runtime/signal/operator.rs:61.",
+    "Declares public enum `SessionOperatorInput`.",
+    "Declares public fn `cancel_and_join`.",
+    "Declares public fn `finish_and_join`.",
+    "Declares public fn `input_mut`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `prepare_and_spawn_from_plan_edge`.",
+    "Declares public fn `prepare_and_spawn_session_composed`.",
+    "Declares public fn `spawn_composed`.",
+    "Declares public fn `spawn_with_context`.",
+    "Declares public fn `spawn`.",
+    "Declares public struct `AsyncOperatorWorker`.",
+    "Declares public struct `CompiledOperatorInputContract`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/operator.rs",
@@ -2919,8 +3175,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::signal::operator responsibilities, including Declares the validated constraints applied to compiled operator input.; Identifies the edge identifier recorded by `CompiledOperatorInputContract`.; Stores the operator node used by `CompiledOperatorInputContract`.."
+    "classification": "DECLARED",
+    "text": "Declares the validated constraints applied to compiled operator input. Identifies the edge identifier recorded by `CompiledOperatorInputContract`. References the operator node participating in `CompiledOperatorInputContract`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2977,6 +3233,15 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/payload.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/signal/edge.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/ports.rs",
@@ -3457,19 +3722,19 @@
   "responsibilities": [
     "pocketstation::runtime::signal::operator::CompiledOperatorInputContract: Declares the validated constraints applied to compiled operator input.",
     "CompiledOperatorInputContract::edge_id: Identifies the edge identifier recorded by `CompiledOperatorInputContract`.",
-    "CompiledOperatorInputContract::operator_node: Stores the operator node used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::operator_node: References the operator node participating in `CompiledOperatorInputContract`.",
     "CompiledOperatorInputContract::session_id: Identifies the session identifier recorded by `CompiledOperatorInputContract`.",
     "CompiledOperatorInputContract::stem_id: Identifies the stem identifier recorded by `CompiledOperatorInputContract`.",
     "CompiledOperatorInputContract::source_id: Identifies the source identifier recorded by `CompiledOperatorInputContract`.",
-    "CompiledOperatorInputContract::input_port: Stores the input port used by `CompiledOperatorInputContract`.",
-    "CompiledOperatorInputContract::signal_spec: Stores the signal spec used by `CompiledOperatorInputContract`.",
-    "CompiledOperatorInputContract::media: Stores the media used by `CompiledOperatorInputContract`.",
-    "CompiledOperatorInputContract::edge_contract: Stores the edge contract used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::input_port: References the input port participating in `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::signal_spec: Declares the signal class and format accepted by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::media: Records the media selected for `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::edge_contract: References the edge contract participating in `CompiledOperatorInputContract`.",
     "CompiledOperatorInputContract::capacity_signals: Sets the capacity signals available to `CompiledOperatorInputContract`.",
     "pocketstation::runtime::signal::operator::AsyncOperatorWorker: Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result.",
     "spawn: Spawns its owned operation for `AsyncOperatorWorker`.",
     "spawn_with_context: Starts a directly-fed worker with an already negotiated signal-shaped",
-    "spawn_composed: Spawns composed for `AsyncOperatorWorker`.",
+    "spawn_composed: Spawns `AsyncOperatorWorker` with the supplied typed input and fan-out outputs.",
     "prepare_and_spawn_from_plan_edge: Prepares and spawn from plan edge for `AsyncOperatorWorker`.",
     "input_mut: Returns the input mut associated with `AsyncOperatorWorker`.",
     "observations: Returns the observations exposed by `AsyncOperatorWorker`.",

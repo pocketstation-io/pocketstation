@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/timing/mod.rs",
     "IMPORTS:src/timing/mod.rs",
     "REFERENCES:src/capture/platform/macos/macos_tap.rs",
@@ -30,6 +32,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/timing/mod.rs",
     "IMPORTS:src/timing/mod.rs",
     "REFERENCES:src/capture/platform/macos/macos_tap.rs",
@@ -120,15 +124,87 @@
       "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
       "lines": [
         1,
-        51
+        1
       ],
       "path": "src/timing/timeline_mapping.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        1,
+        1
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        1,
+        1
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        2,
+        5
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "TimelineMapping"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "source_origin_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        4,
+        4
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "session_origin_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        8,
+        13
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        15,
+        23
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": "normalize_timestamp_ns"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/timing/mod.rs",
     "IMPORTS:src/timing/mod.rs",
     "REFERENCES:src/capture/platform/macos/macos_tap.rs",
@@ -148,6 +224,8 @@
   "generated_from": "not_applicable",
   "git_object": "ee74d9b23c0ac19459b247b09431ad920c089245",
   "implemented_by": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/timing/mod.rs",
     "IMPORTS:src/timing/mod.rs",
     "REFERENCES:src/capture/platform/macos/macos_tap.rs",
@@ -157,6 +235,8 @@
     "TimelineMapping"
   ],
   "imported_by": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/timing/mod.rs",
     "IMPORTS:src/timing/mod.rs",
     "REFERENCES:src/capture/platform/macos/macos_tap.rs",
@@ -166,8 +246,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/timing/timeline_mapping.rs:26.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -176,13 +256,13 @@
   "module": "pocketstation::timing::timeline_mapping",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::timing::timeline_mapping` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:new",
-    "fn:normalize_timestamp_ns",
-    "struct:TimelineMapping"
+    "Declares public fn `new`.",
+    "Declares public fn `normalize_timestamp_ns`.",
+    "Declares public struct `TimelineMapping`."
   ],
   "package": "pocketstation",
   "path": "src/timing/timeline_mapping.rs",
@@ -241,8 +321,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::timing::timeline mapping responsibilities, including Correlates the prepared identities and runtime resources for timeline.; Stores the source origin value for `TimelineMapping`, in nanoseconds.; Stores the session origin value for `TimelineMapping`, in nanoseconds.."
+    "classification": "DECLARED",
+    "text": "Correlates the prepared identities and runtime resources for timeline. Stores the source origin value for `TimelineMapping`, in nanoseconds. Stores the session origin value for `TimelineMapping`, in nanoseconds."
   },
   "queues": [],
   "recovery_behavior": [],

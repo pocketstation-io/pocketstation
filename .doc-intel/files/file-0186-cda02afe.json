@@ -40,14 +40,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "75f5222d46291dccd6af108b8d92127308da8356d8b49bdf57ce5189c96f9cf2",
       "lines": [
         1,
-        7
+        1
       ],
       "path": "src/runtime/bridge/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::bridge"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -84,9 +84,9 @@
     "module:audio"
   ],
   "inputs": [
-    "audio::GeneratedAudioBridgeObservations",
-    "audio::{GeneratedAudioBridge, GeneratedAudioBridgeSpec}",
-    "module:audio"
+    "Depends on `audio::GeneratedAudioBridgeObservations` through a declared Rust import.",
+    "Depends on `audio::{GeneratedAudioBridge, GeneratedAudioBridgeSpec}` through a declared Rust import.",
+    "Depends on `audio` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -95,7 +95,7 @@
   "module": "pocketstation::runtime::bridge",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::bridge` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -121,8 +121,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::bridge responsibilities, including bridge."
+    "classification": "DECLARED",
+    "text": "Explicit bounded crossings between execution partitions."
   },
   "queues": [],
   "recovery_behavior": [],

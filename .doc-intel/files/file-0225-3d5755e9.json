@@ -609,14 +609,31 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "9161ccec6a90d420a59ffe7c809e8e6e6915da8594e19833937fe3c3ae27068e",
       "lines": [
-        1,
-        907
+        823,
+        906
       ],
-      "path": "src/session/extensions/tests/runtime.rs",
-      "symbol": null
+      "path": "src/session/extensions/tests/runtime.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "9161ccec6a90d420a59ffe7c809e8e6e6915da8594e19833937fe3c3ae27068e",
+      "lines": [
+        734,
+        823
+      ],
+      "path": "src/session/extensions/tests/runtime.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "9161ccec6a90d420a59ffe7c809e8e6e6915da8594e19833937fe3c3ae27068e",
+      "lines": [
+        644,
+        734
+      ],
+      "path": "src/session/extensions/tests/runtime.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -662,17 +679,19 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,",
-    "crate::capture::{CallbackCaptureBackend, CaptureError, CaptureMode, PreparedCaptureBackend}",
-    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointInputOrigin, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
-    "crate::frame::{AudioBufferPool, AudioFrame, ClockDomainId, SampleFormat, SampleSpec}",
-    "crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, PrepareContext, SafetyContract, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, }",
-    "crate::session::{ CaptureBackendSet, EndpointConfiguration, EndpointDescriptor, OperatorId, Session, SessionEngineBuilder, SessionStartOptions, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceSessionContext, SourceTypeId, }",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "fn validate_config(&self, _configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::time::{Duration, Instant}"
+    "Consumes configuration at src/session/extensions/tests/runtime.rs:134.",
+    "Consumes configuration at src/session/extensions/tests/runtime.rs:14.",
+    "Consumes configuration at src/session/extensions/tests/runtime.rs:173.",
+    "Consumes configuration at src/session/extensions/tests/runtime.rs:405.",
+    "Consumes configuration at src/session/extensions/tests/runtime.rs:449.",
+    "Depends on `crate::capture::{CallbackCaptureBackend, CaptureError, CaptureMode, PreparedCaptureBackend}` through a declared Rust import.",
+    "Depends on `crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointInputOrigin, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, ClockDomainId, SampleFormat, SampleSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, PrepareContext, SafetyContract, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, }` through a declared Rust import.",
+    "Depends on `crate::session::{ CaptureBackendSet, EndpointConfiguration, EndpointDescriptor, OperatorId, Session, SessionEngineBuilder, SessionStartOptions, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceSessionContext, SourceTypeId, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -734,7 +753,7 @@
   "module": "pocketstation::session::extensions::tests::runtime",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::tests::runtime` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-0e401638b1f6b8cd709e",
@@ -742,8 +761,10 @@
     "pattern-9bfd8d8649a3833a2f7f"
   ],
   "outputs": [
-    "return Err(EndpointFailure::new(",
-    "return Err(SourceDriverError::Failed("
+    "Creates a typed failure at src/session/extensions/tests/runtime.rs:245.",
+    "Creates a typed failure at src/session/extensions/tests/runtime.rs:477.",
+    "Creates a typed failure at src/session/extensions/tests/runtime.rs:509.",
+    "Creates a typed failure at src/session/extensions/tests/runtime.rs:68."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/tests/runtime.rs",
@@ -1105,7 +1126,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::tests::runtime responsibilities, including the src/session/extensions/tests/runtime boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::session::extensions::tests::runtime`."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -42,23 +42,23 @@ pub enum SourceLifecycleEventKind {
 #[serde(rename_all = "kebab-case")]
 #[doc = "Selects the source recovery requirement used by PocketStation."]
 pub enum SourceRecoveryRequirement {
-    #[doc = "Selects explicit rediscovery and new session behavior for `SourceRecoveryRequirement`."]
+    #[doc = "Requires explicit rediscovery and new session recovery after source loss."]
     ExplicitRediscoveryAndNewSession,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported capture runtime failure class cases."]
+#[doc = "Classifies the platform, permission, source, or worker cause of a capture failure."]
 pub enum CaptureRuntimeFailureClass {
-    #[doc = "Reports source instance exited."]
+    #[doc = "Classifies a failure at the source instance exited stage or component of `CaptureRuntimeFailureClass`."]
     SourceInstanceExited,
-    #[doc = "Reports platform status."]
+    #[doc = "Classifies a failure at the platform status stage or component of `CaptureRuntimeFailureClass`."]
     PlatformStatus {
-        #[doc = "Stores the status code used by `PlatformStatus`."]
+        #[doc = "Preserves the platform or protocol status code reported by `PlatformStatus`."]
         status_code: i32,
     },
-    #[doc = "Reports backend class."]
+    #[doc = "Classifies a failure at the backend class stage or component of `CaptureRuntimeFailureClass`."]
     BackendClass {
-        #[doc = "Stores the class used by `BackendClass`."]
+        #[doc = "Contains the class owned or reported by `BackendClass`."]
         class: String,
     },
 }
@@ -66,9 +66,9 @@ pub enum CaptureRuntimeFailureClass {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Reports a capture runtime failure."]
 pub struct CaptureRuntimeFailure {
-    #[doc = "Stores the operation used by `CaptureRuntimeFailure`."]
+    #[doc = "Names the operation that produced `CaptureRuntimeFailure`."]
     pub operation: &'static str,
-    #[doc = "Stores the error class used by `CaptureRuntimeFailure`."]
+    #[doc = "Contains the error class owned or reported by `CaptureRuntimeFailure`."]
     pub error_class: CaptureRuntimeFailureClass,
 }
 
@@ -79,9 +79,9 @@ pub enum SourceRuntimeEvent {
     SourceUnavailable {
         #[doc = "Identifies the stable identifier recorded by `SourceUnavailable`."]
         stable_id: StableSourceId,
-        #[doc = "Stores the generation used by `SourceUnavailable`."]
+        #[doc = "Identifies the generation of the resource represented by `SourceUnavailable`."]
         generation: SourceGeneration,
-        #[doc = "Stores the recovery requirement used by `SourceUnavailable`."]
+        #[doc = "Declares the recovery action required after the source event in `SourceUnavailable`."]
         recovery_requirement: SourceRecoveryRequirement,
         #[doc = "Carries the failure reported by `SourceUnavailable`."]
         failure: CaptureRuntimeFailure,
@@ -90,7 +90,7 @@ pub enum SourceRuntimeEvent {
     BackendFailure {
         #[doc = "Identifies the stable identifier recorded by `BackendFailure`."]
         stable_id: StableSourceId,
-        #[doc = "Stores the generation used by `BackendFailure`."]
+        #[doc = "Identifies the generation of the resource represented by `BackendFailure`."]
         generation: SourceGeneration,
         #[doc = "Carries the failure reported by `BackendFailure`."]
         failure: CaptureRuntimeFailure,
@@ -126,7 +126,7 @@ impl SourceRuntimeEvent {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported source runtime event delivery cases."]
+#[doc = "Reports whether a source-runtime event was delivered, dropped, or rejected."]
 pub enum SourceRuntimeEventDelivery {
     #[doc = "Indicates the enqueued state for `SourceRuntimeEventDelivery`."]
     Enqueued,
@@ -139,7 +139,7 @@ pub enum SourceRuntimeEventDelivery {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported source runtime event receive cases."]
+#[doc = "Reports the outcome of receiving a source-runtime event."]
 pub enum SourceRuntimeEventReceive {
     #[doc = "Identifies the event state or stage represented by `SourceRuntimeEventReceive`."]
     Event(SourceRuntimeEvent),
@@ -249,7 +249,7 @@ struct QueuedSourceRuntimeEvent {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Owns bounded access to source runtime event observation."]
+#[doc = "Holds the ownership or bounded access represented by source runtime event observation handle."]
 pub struct SourceRuntimeEventObservationHandle {
     counters: Arc<SourceRuntimeEventCounters>,
 }

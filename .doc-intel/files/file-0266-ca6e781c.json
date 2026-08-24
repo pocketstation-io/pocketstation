@@ -143,14 +143,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "3c210d5f758f8f3288808ff722442c48a8a97c48d5db8739649a45e74a7af57f",
       "lines": [
-        1,
-        119
+        74,
+        105
       ],
-      "path": "tests/core_extension.rs",
-      "symbol": null
+      "path": "tests/core_extension.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "3c210d5f758f8f3288808ff722442c48a8a97c48d5db8739649a45e74a7af57f",
+      "lines": [
+        105,
+        118
+      ],
+      "path": "tests/core_extension.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -179,7 +187,7 @@
     "pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }"
   ],
   "inputs": [
-    "pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }"
+    "Depends on `pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -188,7 +196,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/core_extension.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

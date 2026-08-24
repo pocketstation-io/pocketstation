@@ -1,6 +1,6 @@
 # Load extensions from trusted absolute paths
 
-<!-- claims: CLM-BEST-006-CAP-001,CLM-BEST-006-CAP-002,CLM-BEST-006-SOURCE-001 -->
+<!-- claims: CLM-BEST-006-SCOPE-001,CLM-BEST-006-TEXT-001,CLM-BEST-006-TEXT-002,CLM-BEST-006-TEXT-003,CLM-BEST-006-TEXT-004,CLM-BEST-006-TEXT-005,CLM-BEST-006-TEXT-006,CLM-BEST-006-SOURCE-001 -->
 
 ## Problem
 
@@ -58,6 +58,12 @@ Executable evidence selected for **Load extensions from trusted absolute paths**
 
 The claims on **Load extensions from trusted absolute paths** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/native_extension/library.rs:1-272` (`DIRECT`)
+- `src/native_extension/library.rs:19-19` (`DIRECT`)
+- `src/native_extension/library.rs:21-24` (`DIRECT`)
+- `src/native_extension/library.rs:22-22` (`DIRECT`)
+- `src/native_extension/library.rs:23-23` (`DIRECT`)
+- `src/native_extension/library.rs:33-230` (`DIRECT`)
+- `src/native_extension/library.rs:232-263` (`DIRECT`)
+- `src/native_extension/library.rs:265-271` (`DIRECT`)
 
 For **Load extensions from trusted absolute paths**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

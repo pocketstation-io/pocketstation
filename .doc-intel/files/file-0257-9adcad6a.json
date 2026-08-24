@@ -437,14 +437,49 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "d339c59aeb9c176d3c200070462e6bb014c68c5c9b8351b1c86e1cc6aa52d07a",
       "lines": [
-        1,
-        659
+        73,
+        155
       ],
-      "path": "tests/audio_input.rs",
-      "symbol": null
+      "path": "tests/audio_input.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d339c59aeb9c176d3c200070462e6bb014c68c5c9b8351b1c86e1cc6aa52d07a",
+      "lines": [
+        351,
+        427
+      ],
+      "path": "tests/audio_input.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d339c59aeb9c176d3c200070462e6bb014c68c5c9b8351b1c86e1cc6aa52d07a",
+      "lines": [
+        155,
+        210
+      ],
+      "path": "tests/audio_input.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d339c59aeb9c176d3c200070462e6bb014c68c5c9b8351b1c86e1cc6aa52d07a",
+      "lines": [
+        427,
+        591
+      ],
+      "path": "tests/audio_input.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d339c59aeb9c176d3c200070462e6bb014c68c5c9b8351b1c86e1cc6aa52d07a",
+      "lines": [
+        37,
+        73
+      ],
+      "path": "tests/audio_input.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -481,14 +516,16 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "#[cfg(feature = \"conformance-fixtures\")]",
-    "ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity,",
-    "fn validate_config(&self, _configuration: &OperatorConfiguration) -> Result<(), ConfigError> {",
-    "pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputWriteErrorKind, CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, SafetyContract, SampleFormat, SampleSpec, Session, SessionRecordingState, SignalDerivation, SignalEnvelope, SignalPayload, SignalSpec, }",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::{Arc, Mutex}",
-    "std::thread",
-    "std::time::{Duration, Instant}"
+    "Consumes configuration at tests/audio_input.rs:10.",
+    "Consumes configuration at tests/audio_input.rs:289.",
+    "Consumes configuration at tests/audio_input.rs:473.",
+    "Consumes configuration at tests/audio_input.rs:554.",
+    "Consumes configuration at tests/audio_input.rs:631.",
+    "Depends on `pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputWriteErrorKind, CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, SafetyContract, SampleFormat, SampleSpec, Session, SessionRecordingState, SignalDerivation, SignalEnvelope, SignalPayload, SignalSpec, }` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex}` through a declared Rust import.",
+    "Depends on `std::thread` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -588,17 +625,17 @@
     }
   ],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/audio_input.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-edf69dcaea64764c5f09"
   ],
   "outputs": [
-    "Err(AudioInputBufferAcquireError::Closed)",
-    "Err(AudioInputBufferAcquireError::Full) if Instant::now() < deadline => {",
-    "Err(error)",
-    "Err(error) => panic!(\"PCM frame was not accepted before deadline: {error}\"),",
-    "return Err(NodeError::Process("
+    "Creates a typed failure at tests/audio_input.rs:153.",
+    "Creates a typed failure at tests/audio_input.rs:330.",
+    "Creates a typed failure at tests/audio_input.rs:601.",
+    "Creates a typed failure at tests/audio_input.rs:618.",
+    "Creates a typed failure at tests/audio_input.rs:626."
   ],
   "package": "pocketstation",
   "path": "tests/audio_input.rs",

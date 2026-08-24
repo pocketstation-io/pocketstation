@@ -1,6 +1,6 @@
 # Stop, drain, and finalization
 
-<!-- claims: CLM-DOC-041-CAP-001,CLM-DOC-041-CAP-002,CLM-DOC-041-CAP-003,CLM-DOC-041-CAP-004,CLM-DOC-041-SOURCE-001 -->
+<!-- claims: CLM-DOC-041-SCOPE-001,CLM-DOC-041-TEXT-001,CLM-DOC-041-TEXT-002,CLM-DOC-041-SOURCE-001 -->
 
 ## Scope
 
@@ -19,90 +19,64 @@ For **Stop, drain, and finalization**, PocketStation keeps the declaration, comp
 
 | Operation | Trigger | Source state | Destination state | Evidence record |
 |---|---|---|---|---|
-| `pocketstation::endpoint::runtime::EndpointFailureStage::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-0035b1e153638a1cc7d0` |
-| `pocketstation::session::lifecycle::observations::EndpointObservationStage::Finalized` | `Finalized` | stopping_or_completed | terminal | `life-079ba79743246d62b02e` |
-| `pocketstation::session::lifecycle::events::SessionLifecycleState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-0c83bede0af1826f5b6a` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-0eb9c8d45523705c071c` |
-| `pocketstation::session::lifecycle::control::SessionStartError::Cancelled` | `Cancelled` | prepared | running_or_start_failed | `life-14367931dacc2ea6803e` |
 | `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-1a59542c3bc90997a7e9` |
 | `cancel_and_join` | `cancel_and_join` | preparing_or_running | cancellation_requested_or_cancelled | `life-1b6e541aba4cc6f4cdfb` |
-| `PreparedEndpointDriver::cancel_preparation` | `cancel_preparation` | declared_or_compiled | prepared_or_prepare_failed | `life-1d26961a6a50c8cac4c0` |
+| `PreparedEndpointDriver::cancel_preparation` | `cancel_preparation` | constructed_before_preparation | prepared_or_prepare_failed | `life-1d26961a6a50c8cac4c0` |
 | `ConnectorDriver::start` | `start` | prepared | running_or_start_failed | `life-1dbc57771bfe56e7548f` |
-| `ConnectorFactory::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-1ff88f416559bf11bdac` |
-| `pocketstation::session::prepare::prepare_session_runtime` | `prepare_session_runtime` | declared_or_compiled | prepared_or_prepare_failed | `life-1ff9bd824b35e4bd86a6` |
+| `ConnectorFactory::prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-1ff88f416559bf11bdac` |
+| `pocketstation::session::prepare::prepare_session_runtime` | `prepare_session_runtime` | constructed_before_preparation | prepared_or_prepare_failed | `life-1ff9bd824b35e4bd86a6` |
 | `close_and_reap` | `close_and_reap` | owned_or_running | closed_or_released | `life-227c49c48f136eb6305f` |
 | `SourceDriver::close` | `close` | owned_or_running | closed_or_released | `life-24ac3bb4851827ee31fe` |
 | `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-26d46ffab4e997084bfb` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-277b4455fde06fca7361` |
 | `start` | `start` | prepared | running_or_start_failed | `life-27d61a4d665450e563d4` |
-| `pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::Start` | `Start` | prepared | running_or_start_failed | `life-28b94670f06967d2fccc` |
-| `pocketstation::session::lifecycle::running::start_prepared_session` | `start_prepared_session` | declared_or_compiled | prepared_or_prepare_failed | `life-2ad92f34c9423181c5be` |
+| `pocketstation::session::lifecycle::running::start_prepared_session` | `start_prepared_session` | constructed_before_preparation | prepared_or_prepare_failed | `life-2ad92f34c9423181c5be` |
 | `close` | `close` | owned_or_running | closed_or_released | `life-31fcaf8e4ff4dc364909` |
-| `pocketstation::endpoint::runtime::EndpointShutdownMode::Drain` | `Drain` | stopping | drained_or_drain_failed | `life-35e9693b28f1c3fa2acd` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Cancel` | `Cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-361d2b8d8a09134c7799` |
-| `PreparedEndpointDriver::start` | `start` | declared_or_compiled | prepared_or_prepare_failed | `life-39ecdc10c277612b83d3` |
-| `shutdown_mode` | `shutdown_mode` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-420e3f6a3744e7966769` |
+| `PreparedEndpointDriver::start` | `start` | constructed_before_preparation | prepared_or_prepare_failed | `life-39ecdc10c277612b83d3` |
+| `shutdown_mode` | `shutdown_mode` | owning_state_before_operation | owning_state_after_returned_outcome | `life-420e3f6a3744e7966769` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-45188ad8c6a8dde207aa` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-456533bd456a4ee124a1` |
-| `ConnectorDriver::shutdown` | `shutdown` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-47a5209dc72a75e14d0e` |
-| `pocketstation::connector::error::ConnectorErrorStage::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-48fe06c2d3971b741172` |
+| `prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-456533bd456a4ee124a1` |
+| `ConnectorDriver::shutdown` | `shutdown` | owning_state_before_operation | owning_state_after_returned_outcome | `life-47a5209dc72a75e14d0e` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-4b2edb4fb23deb5bd0b4` |
 | `start_failure` | `start_failure` | prepared | running_or_start_failed | `life-4c39dbc19bad333c2912` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-53a5c0c438b0534a2964` |
 | `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-572fd1fca97f08fe449b` |
 | `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-5a4d79d60befb5c0de67` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-5cdc4329bb39da70e765` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-5fb7a5014d6ffc5d4352` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-612b1ec3290de460d553` |
-| `ConnectorDriverFactory::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-61c13ae2e22de07eb8d2` |
-| `prepare_and_spawn_from_plan_edge` | `prepare_and_spawn_from_plan_edge` | declared_or_compiled | prepared_or_prepare_failed | `life-62a217a84804d5de5e4c` |
-| `pocketstation::session::lifecycle::events::SessionLifecycleState::Running` | `Running` | prepared | running_or_terminal | `life-68c28ff7b438b8f11879` |
-| `SourceDriver::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-6a6429930d687e6fac25` |
+| `ConnectorDriverFactory::prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-61c13ae2e22de07eb8d2` |
+| `prepare_and_spawn_from_plan_edge` | `prepare_and_spawn_from_plan_edge` | constructed_before_preparation | prepared_or_prepare_failed | `life-62a217a84804d5de5e4c` |
+| `SourceDriver::prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-6a6429930d687e6fac25` |
 | `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-6e9224a91062bb5ec713` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Close` | `Close` | owned_or_running | closed_or_released | `life-720bc3672572da603047` |
-| `pocketstation::runtime::audio::runner::PlanSourceSendError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-78031521ad3200204b7a` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-7ad869dbd8b68d3da850` |
 | `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-7e2e74712c52616d3c2c` |
-| `pocketstation::connector::error::ConnectorErrorStage::Join` | `Join` | stopping_or_completed | terminal | `life-7e86b437a163ad590318` |
-| `pocketstation::session::error_code::SessionStopCode::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-80e6f0ced6a8a0e4d47b` |
 | `drop_observations` | `drop_observations` | owned_or_running | closed_or_released | `life-87afb6dffef4ad5765d6` |
-| `prepare_session` | `prepare_session` | declared_or_compiled | prepared_or_prepare_failed | `life-8871b96155ed0020e00c` |
+| `prepare_session` | `prepare_session` | constructed_before_preparation | prepared_or_prepare_failed | `life-8871b96155ed0020e00c` |
 | `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-8b50910aa645c7069ac3` |
-| `stop` | `stop` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-8bb2a23671da67e30c1b` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-8c21429f0258a9da8a51` |
-| `EndpointDriverFactory::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-8c8f0c911ad98635dd0a` |
+| `stop` | `stop` | owning_state_before_operation | owning_state_after_returned_outcome | `life-8bb2a23671da67e30c1b` |
+| `prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-8c21429f0258a9da8a51` |
+| `EndpointDriverFactory::prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-8c8f0c911ad98635dd0a` |
 | `RunningEndpointDriver::join_and_finalize` | `join_and_finalize` | stopping_or_completed | terminal | `life-8d739322439f0c50adb3` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Join` | `Join` | stopping_or_completed | terminal | `life-93b4a56b42d1f44497bf` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Cancel` | `Cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-9472a597b8db5b6c3d01` |
 | `start` | `start` | prepared | running_or_start_failed | `life-96cd11312a6f1461a2ca` |
 | `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-977aafa66864957cfcb4` |
-| `shutdown` | `shutdown` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-9be9144874aff9e686bd` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-a08adc009d9bab5b3fcf` |
+| `shutdown` | `shutdown` | owning_state_before_operation | owning_state_after_returned_outcome | `life-9be9144874aff9e686bd` |
 | `ConnectorWorker::cancel_preparation` | `cancel_preparation` | preparing_or_running | cancellation_requested_or_cancelled | `life-a49e6e14d1ed4a8899e8` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-a66c19cea3372c7a33d8` |
-| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | `start_prepared_session_cancellable` | declared_or_compiled | prepared_or_prepare_failed | `life-a8706f56832ee13271c9` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-a8eaed56ee8a1b310d36` |
+| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | `start_prepared_session_cancellable` | constructed_before_preparation | prepared_or_prepare_failed | `life-a8706f56832ee13271c9` |
+| `prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-a8eaed56ee8a1b310d36` |
 | `cancel_and_join` | `cancel_and_join` | preparing_or_running | cancellation_requested_or_cancelled | `life-ab1d9f74cf7c8203e8b4` |
-| `pocketstation::session::lifecycle::events::SessionTerminalState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-b5ed04fa91e839c293be` |
 | `join` | `join` | stopping_or_completed | terminal | `life-b5f9ab974b55c8f4b6c2` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-b65b53dd882678e7685b` |
 | `start` | `start` | prepared | running_or_start_failed | `life-b76642f17aa575a0757e` |
 | `close` | `close` | owned_or_running | closed_or_released | `life-b9b46198766a5efb68d8` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-b9c3e073905015b85207` |
 | `ConnectorWorker::run` | `run` | prepared | running_or_terminal | `life-ca3efc8111c30110b7af` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Start` | `Start` | prepared | running_or_start_failed | `life-cb5a740e84f51401ac95` |
 | `cancel_and_reap` | `cancel_and_reap` | preparing_or_running | cancellation_requested_or_cancelled | `life-e16c2f3cc3e18a861647` |
 | `ConnectorDriver::cancel_preparation` | `cancel_preparation` | preparing_or_running | cancellation_requested_or_cancelled | `life-e1ee69c2428e8bd186d6` |
-| `pocketstation::connector::error::ConnectorErrorStage::Shutdown` | `Shutdown` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-e2c27602d2c6957f4523` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Running` | `Running` | prepared | running_or_terminal | `life-e3721811066c7fdb3dd7` |
 | `start` | `start` | prepared | running_or_start_failed | `life-e4d2a447d0f97df30948` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Close` | `Close` | owned_or_running | closed_or_released | `life-ea7544a0b40b7b99d4c0` |
-| `pocketstation::endpoint::runtime::EndpointFailureStage::Start` | `Start` | prepared | running_or_start_failed | `life-ec9f478dcc691891d4d0` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-f2d6afa474fb10373eb8` |
+| `prepare` | `prepare` | constructed_before_preparation | prepared_or_prepare_failed | `life-f2d6afa474fb10373eb8` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-f39c0d7ab0cd31705e26` |
-| `prepare_context` | `prepare_context` | declared_or_compiled | prepared_or_prepare_failed | `life-f4c3e7122fc0dc984668` |
+| `prepare_context` | `prepare_context` | constructed_before_preparation | prepared_or_prepare_failed | `life-f4c3e7122fc0dc984668` |
 | `drop` | `drop` | owned_or_running | closed_or_released | `life-fb0f164096fe9b9fc25e` |
-| `pocketstation::endpoint::runtime::EndpointShutdownMode::Abort` | `Abort` | owned_or_running | closed_or_released | `life-fc45361e700b9c489b0f` |
 
 ## Failure handling
 
@@ -140,7 +114,53 @@ Executable evidence selected for **Stop, drain, and finalization** is limited to
 
 The claims on **Stop, drain, and finalization** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/running.rs:1-2625` (`DIRECT`)
-- `src/endpoint/runtime.rs:1-531` (`DIRECT`)
+- `src/session/lifecycle/running.rs:59-63` (`DIRECT`)
+- `src/session/lifecycle/running.rs:60-60` (`DIRECT`)
+- `src/session/lifecycle/running.rs:61-61` (`DIRECT`)
+- `src/session/lifecycle/running.rs:62-62` (`DIRECT`)
+- `src/session/lifecycle/running.rs:65-68` (`DIRECT`)
+- `src/session/lifecycle/running.rs:66-66` (`DIRECT`)
+- `src/session/lifecycle/running.rs:67-67` (`DIRECT`)
+- `src/session/lifecycle/running.rs:70-76` (`DIRECT`)
+- `src/session/lifecycle/running.rs:71-71` (`DIRECT`)
+- `src/session/lifecycle/running.rs:72-72` (`DIRECT`)
+- `src/session/lifecycle/running.rs:73-73` (`DIRECT`)
+- `src/session/lifecycle/running.rs:74-74` (`DIRECT`)
+- `src/session/lifecycle/running.rs:75-75` (`DIRECT`)
+- `src/session/lifecycle/running.rs:78-78` (`DIRECT`)
+- `src/session/lifecycle/running.rs:79-87` (`DIRECT`)
+- `src/session/lifecycle/running.rs:80-80` (`DIRECT`)
+- `src/session/lifecycle/running.rs:81-81` (`DIRECT`)
+- `src/session/lifecycle/running.rs:82-82` (`DIRECT`)
+- `src/session/lifecycle/running.rs:83-83` (`DIRECT`)
+- `src/session/lifecycle/running.rs:84-84` (`DIRECT`)
+- `src/session/lifecycle/running.rs:85-85` (`DIRECT`)
+- `src/session/lifecycle/running.rs:86-86` (`DIRECT`)
+- `src/session/lifecycle/running.rs:89-92` (`DIRECT`)
+- `src/session/lifecycle/running.rs:90-90` (`DIRECT`)
+- `src/endpoint/runtime.rs:12-12` (`DIRECT`)
+- `src/endpoint/runtime.rs:12-12` (`DIRECT`)
+- `src/endpoint/runtime.rs:12-12` (`DIRECT`)
+- `src/endpoint/runtime.rs:13-15` (`DIRECT`)
+- `src/endpoint/runtime.rs:14-14` (`DIRECT`)
+- `src/endpoint/runtime.rs:18-22` (`DIRECT`)
+- `src/endpoint/runtime.rs:24-26` (`DIRECT`)
+- `src/endpoint/runtime.rs:30-30` (`DIRECT`)
+- `src/endpoint/runtime.rs:30-30` (`DIRECT`)
+- `src/endpoint/runtime.rs:30-30` (`DIRECT`)
+- `src/endpoint/runtime.rs:31-40` (`DIRECT`)
+- `src/endpoint/runtime.rs:32-32` (`DIRECT`)
+- `src/endpoint/runtime.rs:32-32` (`DIRECT`)
+- `src/endpoint/runtime.rs:34-34` (`DIRECT`)
+- `src/endpoint/runtime.rs:35-39` (`DIRECT`)
+- `src/endpoint/runtime.rs:36-36` (`DIRECT`)
+- `src/endpoint/runtime.rs:37-37` (`DIRECT`)
+- `src/endpoint/runtime.rs:38-38` (`DIRECT`)
+- `src/endpoint/runtime.rs:43-43` (`DIRECT`)
+- `src/endpoint/runtime.rs:43-43` (`DIRECT`)
+- `src/endpoint/runtime.rs:43-43` (`DIRECT`)
+- `src/endpoint/runtime.rs:44-47` (`DIRECT`)
+- `src/endpoint/runtime.rs:45-45` (`DIRECT`)
+- `src/endpoint/runtime.rs:46-46` (`DIRECT`)
 
 For **Stop, drain, and finalization**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

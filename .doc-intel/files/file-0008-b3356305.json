@@ -71,11 +71,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "e04ae695193dae9dfe5bc3bac00579839381ae52ecd3c4a482eb4904ca00c90b",
       "lines": [
         1,
-        188
+        9
       ],
       "path": "README.md",
       "symbol": null
@@ -107,9 +107,9 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "cargo clippy --all-targets --all-features --locked -- -D warnings",
-    "cargo test --all-targets --all-features --locked",
-    "pocketstation = { version = \"1.1.2\", default-features = false }"
+    "Consumes configuration at README.md:175.",
+    "Consumes configuration at README.md:176.",
+    "Consumes configuration at README.md:53."
   ],
   "invariants": [
     {
@@ -144,7 +144,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`README.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

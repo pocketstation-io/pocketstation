@@ -70,16 +70,16 @@ impl ConnectorInputDescriptor {
 pub enum ConnectorItem<'a> {
     #[doc = "Represents the audio case of `ConnectorItem`."]
     Audio {
-        #[doc = "Stores the input used by `Audio`."]
+        #[doc = "References the input participating in `Audio`."]
         input: &'a ConnectorInputDescriptor,
-        #[doc = "Stores the frame used by `Audio`."]
+        #[doc = "Stores the frame as a `EndpointAudioFrame` value in `Audio`."]
         frame: EndpointAudioFrame,
     },
     #[doc = "Represents the signal case of `ConnectorItem`."]
     Signal {
-        #[doc = "Stores the input used by `Signal`."]
+        #[doc = "References the input participating in `Signal`."]
         input: &'a ConnectorInputDescriptor,
-        #[doc = "Stores the signal used by `Signal`."]
+        #[doc = "Stores the signal component of `Signal`."]
         signal: Arc<SignalEnvelope>,
     },
 }
@@ -134,7 +134,7 @@ pub trait ConnectorDriver: Send + 'static {
         Ok(())
     }
 
-    #[doc = "Cancels preparation for `ConnectorDriver`."]
+    #[doc = "Cancels resources created while preparing `ConnectorDriver`."]
     fn cancel_preparation(self: Box<Self>) -> Result<(), ConnectorError> {
         drop(self);
         Ok(())

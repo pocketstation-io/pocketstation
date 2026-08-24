@@ -1,6 +1,6 @@
 # Instrument a Session
 
-<!-- claims: CLM-GUIDE-021-CAP-001,CLM-GUIDE-021-CAP-002,CLM-GUIDE-021-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-021-SCOPE-001,CLM-GUIDE-021-TEXT-001,CLM-GUIDE-021-TEXT-002,CLM-GUIDE-021-TEXT-003,CLM-GUIDE-021-TEXT-004,CLM-GUIDE-021-TEXT-005,CLM-GUIDE-021-TEXT-006,CLM-GUIDE-021-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,46 @@ Observation handles acquired before the interval you need to diagnose and a writ
 3. Record versioned SessionTraceRecord values for durable lifecycle and component-failure evidence.
 4. Stop and include SessionTraceTerminal plus the independent recording outcome.
 5. Validate trace structure before diagnosis.
+
+## Concrete repository example
+
+The executable repository test `given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons` (`test-1402ef12bbb47b0d009a`) shows the concrete API sequence and asserted outcome at `src/session/lifecycle/observations.rs:576`.
+
+```rust
+    use super::*;
+
+    #[test]
+    fn given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons() {
+        let route = SessionRouteMetrics {
+            route_id: RouteId(7),
+            endpoint_id: EndpointId(8),
+            edge: EdgeObservations {
+                frames_enqueued_total: 3,
+                frames_dropped_total: 1,
+                queue_full_drops_total: 1,
+                ..EdgeObservations::default()
+            },
+            endpoint: None,
+            endpoint_observation_stage: EndpointObservationStage::Unavailable,
+            endpoint_finalization_failures_total: 0,
+        };
+
+        let drops = route.drop_observations();
+        assert_eq!(drops.route_id, RouteId(7));
+        assert_eq!(drops.frames_dropped_total, 1);
+        assert_eq!(drops.frames_attempted_total, 4);
+        assert_eq!(drops.queue_full_drops_total, 1);
+        assert_eq!(
+            drops.interval,
+            SessionRouteObservationInterval::RouteLifetimeToSnapshot
+        );
+        assert!((drops.drop_rate_pct() - 25.0).abs() < f64::EPSILON);
+    }
+```
+
+```bash
+cargo test --all-features given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons
+```
 
 ## Important consequence
 
@@ -88,7 +128,53 @@ Executable evidence selected for **Instrument a Session** is limited to each tes
 
 The claims on **Instrument a Session** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
-- `src/session/lifecycle/trace.rs:1-1179` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:17-29` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:19-19` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:25-25` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:27-27` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:36-44` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:39-39` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:40-40` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:41-41` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:17-17` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:19-19` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:27-52` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:28-30` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:29-29` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:31-33` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:32-32` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:34-38` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:36-36` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:39-41` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:40-40` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:42-44` (`DIRECT`)
 
 For **Instrument a Session**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

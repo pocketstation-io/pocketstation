@@ -82,11 +82,211 @@
       "classification": "DIRECT",
       "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
       "lines": [
-        1,
-        72
+        3,
+        3
       ],
       "path": "src/abi/session/error.rs",
-      "symbol": null
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        4,
+        35
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "AbiError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "NullArgument"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "UnsupportedAbiMajor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "UnsupportedAbiMinor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "InvalidStructSize"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "InvalidHandle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "StaleHandle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "NoCapacity"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "MisalignedPointer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "InvalidArgument"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "ForeignHandle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "InvalidLifecycleState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "WouldBlock"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "BackendFailure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "Cancelled"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "IndexOutOfRange"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        38,
+        70
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": "status"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -144,7 +344,7 @@
     "crate::abi::session::abi::{PksSessionStatus, PksSessionStatusCode}"
   ],
   "inputs": [
-    "crate::abi::session::abi::{PksSessionStatus, PksSessionStatusCode}"
+    "Depends on `crate::abi::session::abi::{PksSessionStatus, PksSessionStatusCode}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -153,14 +353,14 @@
   "module": "pocketstation::abi::session::error",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::session::error` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-dc166aa66c6c32cc09ec"
   ],
   "outputs": [
-    "enum:AbiError",
-    "fn:status"
+    "Declares public enum `AbiError`.",
+    "Declares public fn `status`."
   ],
   "package": "pocketstation",
   "path": "src/abi/session/error.rs",
@@ -190,7 +390,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::session::error responsibilities, including error; clone; fmt."
+    "text": "Owns the internal error module, clone function, fmt function, eq function used by `pocketstation::abi::session::error`."
   },
   "queues": [],
   "recovery_behavior": [],

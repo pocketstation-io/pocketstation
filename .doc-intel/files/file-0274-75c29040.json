@@ -107,14 +107,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "ce62e985f97d2bc2535a442ae2ade636f14a67fee0f442a94d6d82c95a06cb23",
       "lines": [
         1,
-        161
+        1
       ],
       "path": "tests/public_api_boundary.rs",
-      "symbol": null
+      "symbol": "not_applicable"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -160,10 +160,10 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "CARGO_MANIFEST_DIR",
-    "pocketstation::graph::SignalSpec",
-    "pocketstation::{ ActiveCaptureBackend, AsyncNode, AsyncOperatorFactory, AudioBufferHandle, AudioBufferPool, CallbackCaptureBackend, CaptureDelivery, EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointSignalReceiver, NodeDefinition, PolledAudioBatchLease, PolledAudioPollError, PreparedCaptureBackend, PreparedEndpointDriver, RunningEndpointDriver, RunningSession, Session, SessionComponentId, SessionLifecycleState, SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal, SharedAudioBufferHandle, SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream, }",
-    "std::sync::Arc"
+    "Depends on `pocketstation::graph::SignalSpec` through a declared Rust import.",
+    "Depends on `pocketstation::{ ActiveCaptureBackend, AsyncNode, AsyncOperatorFactory, AudioBufferHandle, AudioBufferPool, CallbackCaptureBackend, CaptureDelivery, EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointSignalReceiver, NodeDefinition, PolledAudioBatchLease, PolledAudioPollError, PreparedCaptureBackend, PreparedEndpointDriver, RunningEndpointDriver, RunningSession, Session, SessionComponentId, SessionLifecycleState, SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal, SharedAudioBufferHandle, SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Reads process environment variable `CARGO_MANIFEST_DIR`."
   ],
   "invariants": [
     {
@@ -201,7 +201,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/public_api_boundary.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-2973216be17e52591275",

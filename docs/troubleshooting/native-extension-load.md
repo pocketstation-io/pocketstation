@@ -1,6 +1,6 @@
 # A native extension does not load
 
-<!-- claims: CLM-TRBL-009-CAP-001,CLM-TRBL-009-CAP-002,CLM-TRBL-009-CAP-003,CLM-TRBL-009-SOURCE-001 -->
+<!-- claims: CLM-TRBL-009-SCOPE-001,CLM-TRBL-009-TEXT-001,CLM-TRBL-009-TEXT-002,CLM-TRBL-009-TEXT-003,CLM-TRBL-009-TEXT-004,CLM-TRBL-009-TEXT-005,CLM-TRBL-009-TEXT-006,CLM-TRBL-009-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,6 +78,12 @@ Do not repeatedly execute an untrusted or incompatible library. Failed registrat
 
 The claims on **A native extension does not load** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/native_extension/library.rs:1-272` (`DIRECT`)
+- `src/native_extension/library.rs:19-19` (`DIRECT`)
+- `src/native_extension/library.rs:21-24` (`DIRECT`)
+- `src/native_extension/library.rs:22-22` (`DIRECT`)
+- `src/native_extension/library.rs:23-23` (`DIRECT`)
+- `src/native_extension/library.rs:33-230` (`DIRECT`)
+- `src/native_extension/library.rs:232-263` (`DIRECT`)
+- `src/native_extension/library.rs:265-271` (`DIRECT`)
 
 For **A native extension does not load**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

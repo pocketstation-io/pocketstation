@@ -103,15 +103,15 @@ impl FrameLineage {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as frame lineage build error."]
+#[doc = "Classifies failures produced during frame lineage construction and input validation."]
 pub enum FrameLineageBuildError {
     #[error("frame lineage duration must be non-zero")]
-    #[doc = "Reports zero duration."]
+    #[doc = "Reports that duration must be greater than zero."]
     ZeroDuration,
     #[error("frame lineage source generation must be non-zero")]
-    #[doc = "Reports zero source generation."]
+    #[doc = "Reports that source generation must be greater than zero."]
     ZeroSourceGeneration,
     #[error("frame lineage timestamp range overflows u64 nanoseconds")]
-    #[doc = "Reports timestamp overflow."]
+    #[doc = "Reports that timestamp exceeds its numeric range."]
     TimestampOverflow,
 }

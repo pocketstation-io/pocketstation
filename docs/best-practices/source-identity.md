@@ -1,6 +1,6 @@
 # Preserve source identity
 
-<!-- claims: CLM-BEST-003-CAP-001,CLM-BEST-003-CAP-002,CLM-BEST-003-CAP-003,CLM-BEST-003-SOURCE-001 -->
+<!-- claims: CLM-BEST-003-SCOPE-001,CLM-BEST-003-TEXT-001,CLM-BEST-003-TEXT-002,CLM-BEST-003-TEXT-003,CLM-BEST-003-TEXT-004,CLM-BEST-003-TEXT-005,CLM-BEST-003-SOURCE-001 -->
 
 ## Problem
 
@@ -58,7 +58,7 @@ Executable evidence selected for **Preserve source identity** is limited to each
 
 The claims on **Preserve source identity** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/identity.rs:1-166` (`DIRECT`)
-- `src/frame/lineage.rs:1-101` (`DIRECT`)
+- `src/capture/identity.rs:1-1` (`DECLARED`)
+- `src/frame/lineage.rs:1-1` (`DECLARED`)
 
 For **Preserve source identity**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

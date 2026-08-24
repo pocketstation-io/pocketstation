@@ -78,14 +78,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "c7b4f09fcc373e8da67bfbbed7eb58580373069284889c50fd5ff368ad39a39d",
       "lines": [
         1,
-        26
+        4
       ],
       "path": "src/recording/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::recording"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -131,17 +131,17 @@
     "writer::{RECORDING_MANIFEST_FILE_NAME, RECORDING_MANIFEST_SCHEMA_VERSION}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }",
-    "endpoint::{ MultistemRecordingReceipt, SessionMultistemEndpointCoordinator, MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY, }",
-    "error_code::{recording_outcome_error_code, RecordingErrorCode}",
-    "module:config",
-    "module:endpoint",
-    "module:error_code",
-    "module:writer",
-    "writer::{ MultistemRecording, RecorderError, RecordingObservations, RecordingOutcome, RecordingState, RecordingStemOutcome, }",
-    "writer::{DiscontinuityKind, DiscontinuityRecord}",
-    "writer::{RECORDING_MANIFEST_FILE_NAME, RECORDING_MANIFEST_SCHEMA_VERSION}"
+    "Consumes configuration at src/recording/mod.rs:19.",
+    "Depends on `config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }` through a declared Rust import.",
+    "Depends on `config` through a declared Rust import.",
+    "Depends on `endpoint::{ MultistemRecordingReceipt, SessionMultistemEndpointCoordinator, MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY, }` through a declared Rust import.",
+    "Depends on `endpoint` through a declared Rust import.",
+    "Depends on `error_code::{recording_outcome_error_code, RecordingErrorCode}` through a declared Rust import.",
+    "Depends on `error_code` through a declared Rust import.",
+    "Depends on `writer::{ MultistemRecording, RecorderError, RecordingObservations, RecordingOutcome, RecordingState, RecordingStemOutcome, }` through a declared Rust import.",
+    "Depends on `writer::{DiscontinuityKind, DiscontinuityRecord}` through a declared Rust import.",
+    "Depends on `writer::{RECORDING_MANIFEST_FILE_NAME, RECORDING_MANIFEST_SCHEMA_VERSION}` through a declared Rust import.",
+    "Depends on `writer` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -150,7 +150,7 @@
   "module": "pocketstation::recording",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::recording` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -194,8 +194,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::recording responsibilities, including recording."
+    "classification": "DECLARED",
+    "text": "Multistem recording owned behind the generic Endpoint lifecycle. Session may offer convenience syntax, but recording policy, timeline, persistence, and finalization remain in this module."
   },
   "queues": [],
   "recovery_behavior": [],

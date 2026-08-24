@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/runtime/nodes.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -113,6 +114,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/runtime/nodes.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -512,16 +514,247 @@
       "classification": "DIRECT",
       "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
       "lines": [
-        1,
-        344
+        16,
+        16
       ],
       "path": "src/graph/builtins.rs",
-      "symbol": null
+      "symbol": "GAIN_CONFIGURATION_KEY"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "PASSTHROUGH_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "GAIN_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "MONO_MIX_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "MONO_CHANNEL_COUNT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "STEREO_CHANNEL_COUNT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "MONO_MIX_SCALE"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        24,
+        33
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "any_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        35,
+        49
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "audio_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        51,
+        65
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "mono_audio_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "PassthroughFactory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        70,
+        80
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        82,
+        84
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "validate_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        86,
+        92
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "instantiate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        95,
+        95
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "PassthroughNode"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        98,
+        100
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        102,
+        104
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "process"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        107,
+        107
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "GainFactory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        110,
+        120
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        122,
+        133
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "validate_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        135,
+        146
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "instantiate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        149,
+        151
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "GainNode"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        150,
+        150
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "gain_ratio"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        154,
+        156
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": "prepare"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/runtime/nodes.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -539,6 +772,7 @@
   "generated_from": "not_applicable",
   "git_object": "53cae8006fddf925fefbf18e1872f6f833dc4020",
   "implemented_by": [
+    "CALLS:src/runtime/nodes.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -551,6 +785,7 @@
     "RuntimeNode for MonoMixNode"
   ],
   "imported_by": [
+    "CALLS:src/runtime/nodes.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -567,25 +802,26 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    ".map_err(|err| ConfigError::Invalid {",
-    ".ok_or_else(|| ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned()))?;",
-    "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,",
-    "None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),",
-    "assert!(matches!(result, Err(ConfigError::Invalid { .. })));",
-    "assert!(matches!(result, Err(ConfigError::Missing(_))));",
-    "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
-    "crate::frame::{AudioFrame, SampleFormat}",
-    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
-    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
-    "crate::graph::ports::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, }",
-    "crate::graph::registry::{NodeFactory, NodeRegistry}",
-    "crate::graph::runtime_node::RuntimeNode",
-    "crate::graph::signal::SignalSpec",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::sync::Arc",
-    "super::*"
+    "Consumes configuration at src/graph/builtins.rs:122.",
+    "Consumes configuration at src/graph/builtins.rs:124.",
+    "Consumes configuration at src/graph/builtins.rs:128.",
+    "Consumes configuration at src/graph/builtins.rs:143.",
+    "Consumes configuration at src/graph/builtins.rs:181.",
+    "Consumes configuration at src/graph/builtins.rs:229.",
+    "Consumes configuration at src/graph/builtins.rs:255.",
+    "Consumes configuration at src/graph/builtins.rs:263.",
+    "Consumes configuration at src/graph/builtins.rs:6.",
+    "Consumes configuration at src/graph/builtins.rs:82.",
+    "Depends on `crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioFrame, SampleFormat}` through a declared Rust import.",
+    "Depends on `crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }` through a declared Rust import.",
+    "Depends on `crate::graph::partition::{ExecutionPartition, SafetyContract}` through a declared Rust import.",
+    "Depends on `crate::graph::ports::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, }` through a declared Rust import.",
+    "Depends on `crate::graph::registry::{NodeFactory, NodeRegistry}` through a declared Rust import.",
+    "Depends on `crate::graph::runtime_node::RuntimeNode` through a declared Rust import.",
+    "Depends on `crate::graph::signal::SignalSpec` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -623,27 +859,27 @@
   "module": "pocketstation::graph::builtins",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::builtins` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-6df4af5874cc801c4344",
     "pattern-f7a0f2b8559c49e92e8a"
   ],
   "outputs": [
-    "None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),",
-    "assert!(matches!(result, Err(ConfigError::Invalid { .. })));",
-    "assert!(matches!(result, Err(ConfigError::Missing(_))));",
-    "const:GAIN_CONFIGURATION_KEY",
-    "const:GAIN_NODE_TYPE_ID",
-    "const:MONO_MIX_NODE_TYPE_ID",
-    "const:PASSTHROUGH_NODE_TYPE_ID",
-    "fn:register_builtins",
-    "struct:GainFactory",
-    "struct:GainNode",
-    "struct:MonoMixFactory",
-    "struct:MonoMixNode",
-    "struct:PassthroughFactory",
-    "struct:PassthroughNode"
+    "Creates a typed failure at src/graph/builtins.rs:124.",
+    "Creates a typed failure at src/graph/builtins.rs:255.",
+    "Creates a typed failure at src/graph/builtins.rs:263.",
+    "Declares public const `GAIN_CONFIGURATION_KEY`.",
+    "Declares public const `GAIN_NODE_TYPE_ID`.",
+    "Declares public const `MONO_MIX_NODE_TYPE_ID`.",
+    "Declares public const `PASSTHROUGH_NODE_TYPE_ID`.",
+    "Declares public fn `register_builtins`.",
+    "Declares public struct `GainFactory`.",
+    "Declares public struct `GainNode`.",
+    "Declares public struct `MonoMixFactory`.",
+    "Declares public struct `MonoMixNode`.",
+    "Declares public struct `PassthroughFactory`.",
+    "Declares public struct `PassthroughNode`."
   ],
   "package": "pocketstation",
   "path": "src/graph/builtins.rs",
@@ -924,8 +1160,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::builtins responsibilities, including Constructs passthrough implementations from validated declarations.; Returns the descriptor associated with `PassthroughFactory`.; Validates config for `PassthroughFactory`.."
+    "classification": "DECLARED",
+    "text": "Constructs passthrough implementations from validated declarations. Returns the descriptor associated with `PassthroughFactory`. Validates supplied node configuration against the schema declared by `PassthroughFactory`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -964,6 +1200,11 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
+    "IMPLEMENTS:src/graph/runtime_node.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/ports.rs",
@@ -1015,26 +1256,26 @@
   "responsibilities": [
     "pocketstation::graph::builtins::PassthroughFactory: Constructs passthrough implementations from validated declarations.",
     "descriptor: Returns the descriptor associated with `PassthroughFactory`.",
-    "validate_config: Validates config for `PassthroughFactory`.",
+    "validate_config: Validates supplied node configuration against the schema declared by `PassthroughFactory`.",
     "instantiate: Instantiates the runtime node described by `PassthroughFactory`.",
-    "pocketstation::graph::builtins::PassthroughNode: Executes the graph-node behavior defined for passthrough.",
+    "pocketstation::graph::builtins::PassthroughNode: Represents the executable graph node for passthrough.",
     "prepare: Prepares resources required by `PassthroughNode`.",
     "process: Processes an input value through `PassthroughNode`.",
     "pocketstation::graph::builtins::GainFactory: Constructs gain implementations from validated declarations.",
     "descriptor: Returns the descriptor associated with `GainFactory`.",
-    "validate_config: Validates config for `GainFactory`.",
+    "validate_config: Validates supplied node configuration against the schema declared by `GainFactory`.",
     "instantiate: Instantiates the runtime node described by `GainFactory`.",
-    "pocketstation::graph::builtins::GainNode: Executes the graph-node behavior defined for gain.",
+    "pocketstation::graph::builtins::GainNode: Represents the executable graph node for gain.",
     "prepare: Prepares resources required by `GainNode`.",
     "process: Processes an input value through `GainNode`.",
     "pocketstation::graph::builtins::MonoMixFactory: Constructs mono mix implementations from validated declarations.",
     "descriptor: Returns the descriptor associated with `MonoMixFactory`.",
-    "validate_config: Validates config for `MonoMixFactory`.",
+    "validate_config: Validates supplied node configuration against the schema declared by `MonoMixFactory`.",
     "instantiate: Instantiates the runtime node described by `MonoMixFactory`.",
-    "pocketstation::graph::builtins::MonoMixNode: Executes the graph-node behavior defined for mono mix.",
+    "pocketstation::graph::builtins::MonoMixNode: Represents the executable graph node for mono mix.",
     "prepare: Prepares resources required by `MonoMixNode`.",
     "process: Processes an input value through `MonoMixNode`.",
-    "pocketstation::graph::builtins::register_builtins: Registers builtins for `builtins`."
+    "pocketstation::graph::builtins::register_builtins: Registers the passthrough, gain, and mono-mix node factories in the supplied registry."
   ],
   "retry_behavior": [],
   "serialization": [],

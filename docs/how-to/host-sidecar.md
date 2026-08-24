@@ -1,6 +1,6 @@
 # Host a managed-process sidecar
 
-<!-- claims: CLM-GUIDE-020-CAP-001,CLM-GUIDE-020-CAP-002,CLM-GUIDE-020-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-020-SCOPE-001,CLM-GUIDE-020-TEXT-001,CLM-GUIDE-020-TEXT-002,CLM-GUIDE-020-TEXT-003,CLM-GUIDE-020-TEXT-004,CLM-GUIDE-020-TEXT-005,CLM-GUIDE-020-TEXT-006,CLM-GUIDE-020-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,45 @@ A bounded `SidecarProcessSpec`, declared message kinds, and explicit startup and
 3. Exchange only declared message kinds.
 4. Apply cancellation, drain, or abort through lifecycle state.
 5. Inspect host snapshot and terminal error before restart.
+
+## Concrete repository example
+
+The executable repository test `given_sidecar_host_errors_when_classified_then_retryability_is_preserved` (`test-72a5c76707ff849957fa`) shows the concrete API sequence and asserted outcome at `src/connector/sidecar.rs:286`.
+
+```rust
+    }
+
+    #[test]
+    fn given_sidecar_host_errors_when_classified_then_retryability_is_preserved() {
+        let invalid = sidecar_error(
+            "core.sidecar.prepare",
+            ConnectorErrorStage::Prepare,
+            SidecarHostError::InvalidConfiguration("invalid"),
+        );
+        assert_eq!(invalid.retryability(), ConnectorRetryability::Never);
+
+        let missing = sidecar_error(
+            "core.sidecar.prepare",
+            ConnectorErrorStage::Prepare,
+            SidecarHostError::Spawn("missing".to_owned()),
+        );
+        assert_eq!(
+            missing.retryability(),
+            ConnectorRetryability::RetryAfterReconfiguration
+        );
+
+        let transient = sidecar_error(
+            "core.sidecar.delivery",
+            ConnectorErrorStage::Delivery,
+            SidecarHostError::Closed,
+        );
+        assert_eq!(transient.retryability(), ConnectorRetryability::Retryable);
+    }
+```
+
+```bash
+cargo test --all-features given_sidecar_host_errors_when_classified_then_retryability_is_preserved
+```
 
 ## Important consequence
 
@@ -65,12 +104,12 @@ Executable evidence selected for **Host a managed-process sidecar** is limited t
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | Configures sidecar process behavior at its owning API boundary. | `src/runtime/lifecycle/sidecar_host.rs:71` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout` | variant | Reported when the owning operation encounters processing timeout. | `src/runtime/lifecycle/sidecar_host.rs:717` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout` | variant | Reports that processing exceeded its deadline. | `src/runtime/lifecycle/sidecar_host.rs:717` |
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines` | struct | Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process. | `src/runtime/lifecycle/sidecar_host.rs:54` |
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarHost` | struct | Owns the resources and lifecycle for sidecar. | `src/runtime/lifecycle/sidecar_host.rs:157` |
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostObservations` | struct | Reports the sidecar host observations collected at an observation boundary. | `src/runtime/lifecycle/sidecar_host.rs:109` |
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot` | struct | Reports the sidecar host snapshot collected at an observation boundary. | `src/runtime/lifecycle/sidecar_host.rs:133` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures reported as sidecar host error. | `src/runtime/lifecycle/sidecar_host.rs:686` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures surfaced by sidecar host operations. | `src/runtime/lifecycle/sidecar_host.rs:686` |
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | Selects the sidecar state used by PocketStation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
 
 ## Related documentation
@@ -88,6 +127,29 @@ Executable evidence selected for **Host a managed-process sidecar** is limited t
 
 The claims on **Host a managed-process sidecar** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/lifecycle/sidecar_host.rs:1-734` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:13-13` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:14-14` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:15-15` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:16-16` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:17-17` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:21-33` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:22-22` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:23-23` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:24-24` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:25-25` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:26-26` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:27-27` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:28-28` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:29-29` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:30-30` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:31-31` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:32-32` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:36-50` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
 
 For **Host a managed-process sidecar**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

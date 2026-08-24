@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/capture/capture_owner.rs",
@@ -130,6 +131,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/capture/capture_owner.rs",
@@ -922,16 +924,247 @@
       "classification": "DIRECT",
       "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
       "lines": [
-        1,
-        636
+        6,
+        6
       ],
       "path": "src/frame/audio.rs",
-      "symbol": null
+      "symbol": "SAMPLE_RATE_HZ"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "POOL_SLOT_SAMPLES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        13,
+        15
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "SampleFormat"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "F32Interleaved"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        18,
+        22
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "SampleSpec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "sample_rate_hz"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "channels"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "format"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        25,
+        31
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        33,
+        35
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "frame_samples_for_duration_ms"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        39,
+        48
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "AudioFrame"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        40,
+        40
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "stream_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "source_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "sample_rate_hz"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "channels"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        44,
+        44
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "format"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": "timestamp_ns"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/capture/capture_owner.rs",
@@ -979,6 +1212,7 @@
   "generated_from": "not_applicable",
   "git_object": "0bd9b4b0ad1f8257bbfd568ec755b1e404508548",
   "implemented_by": [
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/capture/capture_owner.rs",
@@ -1018,6 +1252,7 @@
     "SharedLineagedAudioFrame"
   ],
   "imported_by": [
+    "CALLS:src/recording/writer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/capture/capture_owner.rs",
@@ -1057,13 +1292,14 @@
     "super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\", target_os = \"linux\"))]",
-    "#[cfg(test)]",
-    "crate::frame::{ClockDomainId, SessionId, StemId}",
-    "crate::frame::{FrameLineage, SourceId, StreamId}",
-    "std::sync::Arc",
-    "super::*",
-    "super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle}"
+    "Consumes configuration at src/frame/audio.rs:343.",
+    "Consumes configuration at src/frame/audio.rs:7.",
+    "Consumes configuration at src/frame/audio.rs:9.",
+    "Depends on `crate::frame::{ClockDomainId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::frame::{FrameLineage, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1141,7 +1377,7 @@
   "module": "pocketstation::frame::audio",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::frame::audio` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-0311869ce2fb5212a274",
@@ -1149,34 +1385,34 @@
     "pattern-ee39cfb6b1913e9744d4"
   ],
   "outputs": [
-    "assert!(matches!(result, Err(FrameLineageError::Source)));",
-    "const:POOL_SLOT_SAMPLES",
-    "const:SAMPLE_RATE_HZ",
-    "enum:AudioFrameBuildError",
-    "enum:SampleFormat",
-    "fn:channels",
-    "fn:copy_to_pool",
-    "fn:format",
-    "fn:frame_samples_for_duration_ms",
-    "fn:freeze",
-    "fn:new",
-    "fn:sample_rate_hz",
-    "fn:samples",
-    "fn:sequence_number",
-    "fn:source_id",
-    "fn:stream_id",
-    "fn:timestamp_ns",
-    "fn:try_clone",
-    "fn:try_new",
-    "return Err(AudioFrameBuildError::MisalignedSamples {",
-    "return Err(AudioFrameBuildError::ZeroChannels);",
-    "return Err(AudioFrameBuildError::ZeroSampleRate);",
-    "return Err(FrameLineageError::SequenceNumber);",
-    "return Err(FrameLineageError::Source);",
-    "return Err(FrameLineageError::Timestamp);",
-    "struct:AudioFrame",
-    "struct:SampleSpec",
-    "struct:SharedAudioFrame"
+    "Creates a typed failure at src/frame/audio.rs:332.",
+    "Creates a typed failure at src/frame/audio.rs:335.",
+    "Creates a typed failure at src/frame/audio.rs:338.",
+    "Creates a typed failure at src/frame/audio.rs:535.",
+    "Creates a typed failure at src/frame/audio.rs:70.",
+    "Creates a typed failure at src/frame/audio.rs:73.",
+    "Creates a typed failure at src/frame/audio.rs:79.",
+    "Declares public const `POOL_SLOT_SAMPLES`.",
+    "Declares public const `SAMPLE_RATE_HZ`.",
+    "Declares public enum `AudioFrameBuildError`.",
+    "Declares public enum `SampleFormat`.",
+    "Declares public fn `channels`.",
+    "Declares public fn `copy_to_pool`.",
+    "Declares public fn `format`.",
+    "Declares public fn `frame_samples_for_duration_ms`.",
+    "Declares public fn `freeze`.",
+    "Declares public fn `new`.",
+    "Declares public fn `sample_rate_hz`.",
+    "Declares public fn `samples`.",
+    "Declares public fn `sequence_number`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `stream_id`.",
+    "Declares public fn `timestamp_ns`.",
+    "Declares public fn `try_clone`.",
+    "Declares public fn `try_new`.",
+    "Declares public struct `AudioFrame`.",
+    "Declares public struct `SampleSpec`.",
+    "Declares public struct `SharedAudioFrame`."
   ],
   "package": "pocketstation",
   "path": "src/frame/audio.rs",
@@ -1565,8 +1801,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::frame::audio responsibilities, including Types and operations for audio.; Defines the public sample rate hertz value.; Defines the public pool slot samples value.."
+    "classification": "DECLARED",
+    "text": "Realtime audio routing, execution, plan-runner, and runtime observation types. Defines sample rate hertz as `48_000` for the owning public contract. Defines pool slot samples as `960` for the owning public contract."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1599,6 +1835,9 @@
     "docs/best-practices/source-identity.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/recording/writer.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/frame/lineage.rs",
     "REFERENCES:src/frame/pool.rs"
@@ -1618,24 +1857,24 @@
     }
   ],
   "responsibilities": [
-    "audio: Types and operations for audio.",
-    "pocketstation::frame::audio::SAMPLE_RATE_HZ: Defines the public sample rate hertz value.",
-    "pocketstation::frame::audio::POOL_SLOT_SAMPLES: Defines the public pool slot samples value.",
+    "audio: Realtime audio routing, execution, plan-runner, and runtime observation types.",
+    "pocketstation::frame::audio::SAMPLE_RATE_HZ: Defines sample rate hertz as `48_000` for the owning public contract.",
+    "pocketstation::frame::audio::POOL_SLOT_SAMPLES: Defines pool slot samples as `960` for the owning public contract.",
     "pocketstation::frame::audio::SampleFormat: Selects the sample format used by PocketStation.",
-    "pocketstation::frame::audio::SampleFormat::F32Interleaved: Selects f32 interleaved behavior for `SampleFormat`.",
+    "pocketstation::frame::audio::SampleFormat::F32Interleaved: Declares PCM samples in f32 interleaved format.",
     "pocketstation::frame::audio::SampleSpec: Configures sample behavior at its owning API boundary.",
     "audio::SampleSpec::sample_rate_hz: Stores the sample rate value for `SampleSpec`, in hertz.",
-    "audio::SampleSpec::channels: Stores the channels used by `SampleSpec`.",
-    "audio::SampleSpec::format: Stores the format used by `SampleSpec`.",
+    "audio::SampleSpec::channels: Contains the channels owned or reported by `SampleSpec`.",
+    "audio::SampleSpec::format: Records the format selected for `SampleSpec`.",
     "new: Creates a new `SampleSpec`.",
     "frame_samples_for_duration_ms: Returns the frame samples for duration milliseconds held by `SampleSpec`.",
     "pocketstation::frame::audio::AudioFrame: Carries one audio payload together with its declared metadata.",
-    "pocketstation::frame::audio::AudioFrameBuildError: Classifies failures reported as audio frame build error.",
-    "pocketstation::frame::audio::AudioFrameBuildError::ZeroSampleRate: Reported when the owning operation encounters zero sample rate.",
-    "pocketstation::frame::audio::AudioFrameBuildError::ZeroChannels: Reported when the owning operation encounters zero channels.",
-    "audio::AudioFrameBuildError::MisalignedSamples::samples: Stores the samples used by `MisalignedSamples`.",
-    "audio::AudioFrameBuildError::MisalignedSamples::channels: Stores the channels used by `MisalignedSamples`.",
-    "pocketstation::frame::audio::AudioFrameBuildError::MisalignedSamples: Reported when the owning operation encounters misaligned samples.",
+    "pocketstation::frame::audio::AudioFrameBuildError: Classifies failures produced during audio frame construction and input validation.",
+    "pocketstation::frame::audio::AudioFrameBuildError::ZeroSampleRate: Reports that sample rate must be greater than zero.",
+    "pocketstation::frame::audio::AudioFrameBuildError::ZeroChannels: Reports that channels must be greater than zero.",
+    "audio::AudioFrameBuildError::MisalignedSamples::samples: Contains the samples owned or reported by `MisalignedSamples`.",
+    "audio::AudioFrameBuildError::MisalignedSamples::channels: Contains the channels owned or reported by `MisalignedSamples`.",
+    "pocketstation::frame::audio::AudioFrameBuildError::MisalignedSamples: Reports that samples does not satisfy the required alignment.",
     "try_new: Creates a new `AudioFrame` after validating its inputs.",
     "stream_id: Returns the stream identifier held by `AudioFrame`.",
     "source_id: Returns the source identifier held by `AudioFrame`.",
@@ -1657,10 +1896,10 @@
     "samples: Returns the audio samples held by `SharedAudioFrame`.",
     "try_clone: Attempts to clone through `SharedAudioFrame`.",
     "copy_to_pool: Copies the shared frame into storage acquired from the supplied pool for `SharedAudioFrame`.",
-    "pocketstation::frame::audio::FrameLineageError: Classifies failures reported as frame lineage error.",
-    "pocketstation::frame::audio::FrameLineageError::Source: Reported when the owning operation encounters source.",
-    "pocketstation::frame::audio::FrameLineageError::SequenceNumber: Reported when the owning operation encounters sequence number.",
-    "pocketstation::frame::audio::FrameLineageError::Timestamp: Reported when the owning operation encounters timestamp.",
+    "pocketstation::frame::audio::FrameLineageError: Classifies failures surfaced by frame lineage operations.",
+    "pocketstation::frame::audio::FrameLineageError::Source: Classifies a failure at the source stage or component of `FrameLineageError`.",
+    "pocketstation::frame::audio::FrameLineageError::SequenceNumber: Classifies a failure at the sequence number stage or component of `FrameLineageError`.",
+    "pocketstation::frame::audio::FrameLineageError::Timestamp: Classifies a failure at the timestamp stage or component of `FrameLineageError`.",
     "pocketstation::frame::audio::LineagedAudioFrame: An exclusive audio frame and the immutable lineage snapshot captured before",
     "new: Creates a new `LineagedAudioFrame`.",
     "frame: Returns the frame held by `LineagedAudioFrame`.",

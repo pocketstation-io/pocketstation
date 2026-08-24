@@ -9,6 +9,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -48,6 +49,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -356,19 +358,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "58965121cba639eb88e43de8a7e83b77941a1143e7bf504b40a8341e0221ff8b",
       "lines": [
         1,
-        167
+        1
       ],
       "path": "src/graph/signal/lineage.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::signal::lineage"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -388,6 +391,7 @@
   "generated_from": "not_applicable",
   "git_object": "66f1ac1feef66b5a349b6280fa845b86d9f092ba",
   "implemented_by": [
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -398,6 +402,7 @@
     "SignalDerivation"
   ],
   "imported_by": [
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -409,9 +414,9 @@
     "crate::graph::signal::SignalTiming"
   ],
   "inputs": [
-    "crate::frame::{ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId}",
-    "crate::graph::operator::OperatorId",
-    "crate::graph::signal::SignalTiming"
+    "Depends on `crate::frame::{ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::operator::OperatorId` through a declared Rust import.",
+    "Depends on `crate::graph::signal::SignalTiming` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -429,38 +434,38 @@
   "module": "pocketstation::graph::signal::lineage",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::signal::lineage` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-8f3b868f3807b8fa1bb0",
     "pattern-a3b63deea50d29fb3d03"
   ],
   "outputs": [
-    "enum:SignalDerivationError",
-    "enum:SignalLineageError",
-    "fn:clock_id",
-    "fn:connector_id",
-    "fn:discontinuity_epoch",
-    "fn:from_frame",
-    "fn:new",
-    "fn:operator_generation",
-    "fn:operator_id",
-    "fn:operator_revision",
-    "fn:policy_epoch",
-    "fn:sequence_number",
-    "fn:session_id",
-    "fn:source_generation",
-    "fn:source_id",
-    "fn:stream_id",
-    "fn:try_new",
-    "fn:upstream_lineage",
-    "fn:upstream_timing",
-    "return Err(SignalDerivationError::EmptyOperatorId);",
-    "return Err(SignalDerivationError::InvalidTimestampRange);",
-    "return Err(SignalDerivationError::ZeroOperatorVersion);",
-    "return Err(SignalLineageError::ZeroSourceGeneration);",
-    "struct:SignalDerivation",
-    "struct:SignalLineage"
+    "Creates a typed failure at src/graph/signal/lineage.rs:116.",
+    "Creates a typed failure at src/graph/signal/lineage.rs:119.",
+    "Creates a typed failure at src/graph/signal/lineage.rs:126.",
+    "Creates a typed failure at src/graph/signal/lineage.rs:32.",
+    "Declares public enum `SignalDerivationError`.",
+    "Declares public enum `SignalLineageError`.",
+    "Declares public fn `clock_id`.",
+    "Declares public fn `connector_id`.",
+    "Declares public fn `discontinuity_epoch`.",
+    "Declares public fn `from_frame`.",
+    "Declares public fn `new`.",
+    "Declares public fn `operator_generation`.",
+    "Declares public fn `operator_id`.",
+    "Declares public fn `operator_revision`.",
+    "Declares public fn `policy_epoch`.",
+    "Declares public fn `sequence_number`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `source_generation`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `stream_id`.",
+    "Declares public fn `try_new`.",
+    "Declares public fn `upstream_lineage`.",
+    "Declares public fn `upstream_timing`.",
+    "Declares public struct `SignalDerivation`.",
+    "Declares public struct `SignalLineage`."
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/lineage.rs",
@@ -602,8 +607,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::signal::lineage responsibilities, including Preserves source, stream, generation, discontinuity, and policy identity across signal processing.; Creates a new `SignalLineage` after validating its inputs.; Creates `SignalLineage` from frame.."
+    "classification": "DECLARED",
+    "text": "Source-independent signal lineage and derivation."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -642,6 +647,7 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/signal/timing.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/frame/lineage.rs",
     "REFERENCES:src/graph/operator.rs",
@@ -660,8 +666,8 @@
     "source_generation: Returns the source generation associated with `SignalLineage`.",
     "discontinuity_epoch: Returns the discontinuity epoch associated with `SignalLineage`.",
     "policy_epoch: Returns the policy epoch associated with `SignalLineage`.",
-    "pocketstation::graph::signal::lineage::SignalLineageError: Classifies failures reported as signal lineage error.",
-    "pocketstation::graph::signal::lineage::SignalLineageError::ZeroSourceGeneration: Reported when the owning operation encounters zero source generation.",
+    "pocketstation::graph::signal::lineage::SignalLineageError: Classifies failures surfaced by signal lineage operations.",
+    "pocketstation::graph::signal::lineage::SignalLineageError::ZeroSourceGeneration: Reports that source generation must be greater than zero.",
     "pocketstation::graph::signal::lineage::SignalDerivation: Source-independent record of the signal consumed by an operator.",
     "new: Creates a new `SignalDerivation`.",
     "upstream_lineage: Returns the upstream lineage held by `SignalDerivation`.",
@@ -670,10 +676,10 @@
     "operator_revision: Returns the operator revision held by `SignalDerivation`.",
     "operator_generation: Returns the operator generation associated with `SignalDerivation`.",
     "connector_id: Returns the connector identifier held by `SignalDerivation`.",
-    "pocketstation::graph::signal::lineage::SignalDerivationError: Classifies failures reported as signal derivation error.",
-    "pocketstation::graph::signal::lineage::SignalDerivationError::InvalidTimestampRange: Reported when the owning operation encounters invalid timestamp range.",
-    "pocketstation::graph::signal::lineage::SignalDerivationError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
-    "pocketstation::graph::signal::lineage::SignalDerivationError::ZeroOperatorVersion: Reported when the owning operation encounters zero operator version."
+    "pocketstation::graph::signal::lineage::SignalDerivationError: Classifies failures surfaced by signal derivation operations.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError::InvalidTimestampRange: Reports that the supplied timestamp range is invalid.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError::EmptyOperatorId: Reports that operator identifier is empty.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError::ZeroOperatorVersion: Reports that operator version must be greater than zero."
   ],
   "retry_behavior": [],
   "serialization": [],

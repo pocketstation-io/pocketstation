@@ -24,9 +24,9 @@ const MAX_OUTSTANDING_LEASES: usize = 64;
 pub struct PolledAudioEndpointConfig {
     #[doc = "Sets the queue capacity frames available to `PolledAudioEndpointConfig`."]
     pub queue_capacity_frames: usize,
-    #[doc = "Stores the max batch frames used by `PolledAudioEndpointConfig`."]
+    #[doc = "Contains the max batch frames owned or reported by `PolledAudioEndpointConfig`."]
     pub max_batch_frames: usize,
-    #[doc = "Stores the max outstanding leases used by `PolledAudioEndpointConfig`."]
+    #[doc = "Contains the max outstanding leases owned or reported by `PolledAudioEndpointConfig`."]
     pub max_outstanding_leases: usize,
 }
 
@@ -42,32 +42,32 @@ impl Default for PolledAudioEndpointConfig {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as polled audio endpoint config error."]
+#[doc = "Classifies failures surfaced by polled audio endpoint config operations."]
 pub enum PolledAudioEndpointConfigError {
     #[error("polled-audio queue capacity must be greater than zero frames")]
-    #[doc = "Reports zero queue capacity."]
+    #[doc = "Reports that queue capacity must be greater than zero."]
     ZeroQueueCapacity,
     #[error("polled-audio batch capacity must be greater than zero frames")]
-    #[doc = "Reports zero batch capacity."]
+    #[doc = "Reports that batch capacity must be greater than zero."]
     ZeroBatchCapacity,
     #[error("polled-audio lease capacity must be greater than zero")]
-    #[doc = "Reports zero lease capacity."]
+    #[doc = "Reports that lease capacity must be greater than zero."]
     ZeroLeaseCapacity,
     #[error("polled-audio queue capacity exceeds {MAX_QUEUE_CAPACITY_FRAMES} frames")]
-    #[doc = "Reports queue capacity too large."]
+    #[doc = "Reports that queue capacity exceeds the supported size limit."]
     QueueCapacityTooLarge,
     #[error("polled-audio batch capacity exceeds {MAX_BATCH_CAPACITY_FRAMES} frames")]
-    #[doc = "Reports batch capacity too large."]
+    #[doc = "Reports that batch capacity exceeds the supported size limit."]
     BatchCapacityTooLarge,
     #[error("polled-audio lease capacity exceeds {MAX_OUTSTANDING_LEASES}")]
-    #[doc = "Reports lease capacity too large."]
+    #[doc = "Reports that lease capacity exceeds the supported size limit."]
     LeaseCapacityTooLarge,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports the polled audio observations collected at an observation boundary."]
 pub struct PolledAudioObservations {
-    #[doc = "Stores the registered endpoints used by `PolledAudioObservations`."]
+    #[doc = "References the registered endpoints participating in `PolledAudioObservations`."]
     pub registered_endpoints: u64,
     #[doc = "Sets the queue capacity frames available to `PolledAudioObservations`."]
     pub queue_capacity_frames: u64,
@@ -87,7 +87,7 @@ pub struct PolledAudioObservations {
     pub invalid_ownership_drops_total: u64,
     #[doc = "Sets the lease capacity count available to `PolledAudioObservations`."]
     pub lease_capacity_count: u64,
-    #[doc = "Stores the outstanding leases used by `PolledAudioObservations`."]
+    #[doc = "Contains the outstanding leases owned or reported by `PolledAudioObservations`."]
     pub outstanding_leases: u64,
     #[doc = "Counts the total number of lease exhausted observed by `PolledAudioObservations`."]
     pub lease_exhausted_total: u64,
@@ -98,16 +98,16 @@ pub struct PolledAudioObservations {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as polled audio poll error."]
+#[doc = "Classifies failures surfaced by polled audio poll operations."]
 pub enum PolledAudioPollError {
     #[error("polled-audio queue is empty")]
     #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("polled-audio lease capacity is exhausted")]
-    #[doc = "Reports lease capacity exhausted."]
+    #[doc = "Reports that the available lease capacity range or capacity is exhausted."]
     LeaseCapacityExhausted,
     #[error("polled-audio receipt state is poisoned")]
-    #[doc = "Reports state poisoned."]
+    #[doc = "Reports that shared state became unavailable after a panic while locked."]
     StatePoisoned,
 }
 
@@ -249,7 +249,7 @@ impl PolledAudioReceipt {
     }
 }
 
-#[doc = "Owns bounded access to polled audio batch."]
+#[doc = "Holds the ownership or bounded access represented by polled audio batch lease."]
 pub struct PolledAudioBatchLease {
     shared: Arc<ReceiptShared>,
     frames: Option<Vec<DeliveredAudioFrame>>,

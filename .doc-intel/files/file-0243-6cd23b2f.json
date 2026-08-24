@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
     "IMPORTS:src/session/mod.rs"
   ],
@@ -127,6 +128,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
     "IMPORTS:src/session/mod.rs"
   ],
@@ -403,16 +405,147 @@
       "classification": "DIRECT",
       "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
       "lines": [
-        1,
-        1331
+        33,
+        92
       ],
       "path": "src/session/prepare/mod.rs",
-      "symbol": null
+      "symbol": "prepare_session_runtime"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        94,
+        175
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "prepare_generated_audio_ingresses"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        178,
+        446
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "prepare_external_sources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        448,
+        466
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "external_audio_stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        468,
+        503
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "prepare_sources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        505,
+        511
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "WorkerMappingContext"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        506,
+        506
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        507,
+        507
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "graph_ir"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        508,
+        508
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "runtime_plan"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        509,
+        509
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "bindings"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        510,
+        510
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "node_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        513,
+        1300
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "map_worker_receivers"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        1302,
+        1318
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "prepare_context_for_media"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9fb96f1e86e7649a4f609c048b4d59824fe2f680a3ea0f529453897aa750e4a1",
+      "lines": [
+        1320,
+        1327
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": "required_node_binding"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
     "IMPORTS:src/session/mod.rs"
   ],
@@ -430,11 +563,13 @@
   "generated_from": "not_applicable",
   "git_object": "130e24a044c0d0a1c090f1c731dafeb6cb49d622",
   "implemented_by": [
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
     "IMPORTS:src/session/mod.rs"
   ],
   "implements": [],
   "imported_by": [
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
     "IMPORTS:src/session/mod.rs"
   ],
@@ -459,25 +594,25 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::StemId",
-    "crate::frame::{SampleFormat, SampleSpec}",
-    "crate::graph::ir::GraphIr",
-    "crate::graph::{ChannelLayout, MediaCaps}",
-    "crate::graph::{EdgeContract, NodeId, NodeRegistry, NodeTypeId, PrepareContext}",
-    "crate::runtime::{ plan_source_channel, AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor, TypedEdgeBranchSpec, }",
-    "crate::session::compile::{CompiledNodeBinding, CompiledSessionBindings}",
-    "crate::session::{CompiledSession, ConnectionTarget, SessionSpec, StreamOrigin}",
-    "error::SessionPrepareError",
-    "mappings::{ PreparedExternalAudioIngress, PreparedExternalOperatorInput, PreparedExternalSourceBranch, PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedExternalTypedRoute, PreparedGeneratedAudioIngress, PreparedOperatorInputMapping, PreparedOperatorOutputMapping, PreparedOperatorOutputTarget, PreparedTypedInputOrigin, PreparedWorkerOrigin, }",
-    "mappings::{ PreparedOperatorMapping, PreparedSignalRouteMapping, PreparedSourceMapping, PreparedWorkerMapping, }",
-    "module:error",
-    "module:mappings",
-    "module:prepared",
-    "module:tests",
-    "prepared::PreparedSession",
-    "std::collections::{HashMap, HashSet}",
-    "std::sync::Arc"
+    "Consumes configuration at src/session/prepare/mod.rs:1329.",
+    "Depends on `crate::frame::StemId` through a declared Rust import.",
+    "Depends on `crate::frame::{SampleFormat, SampleSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::ir::GraphIr` through a declared Rust import.",
+    "Depends on `crate::graph::{ChannelLayout, MediaCaps}` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, NodeId, NodeRegistry, NodeTypeId, PrepareContext}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ plan_source_channel, AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor, TypedEdgeBranchSpec, }` through a declared Rust import.",
+    "Depends on `crate::session::compile::{CompiledNodeBinding, CompiledSessionBindings}` through a declared Rust import.",
+    "Depends on `crate::session::{CompiledSession, ConnectionTarget, SessionSpec, StreamOrigin}` through a declared Rust import.",
+    "Depends on `error::SessionPrepareError` through a declared Rust import.",
+    "Depends on `error` through a declared Rust import.",
+    "Depends on `mappings::{ PreparedExternalAudioIngress, PreparedExternalOperatorInput, PreparedExternalSourceBranch, PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedExternalTypedRoute, PreparedGeneratedAudioIngress, PreparedOperatorInputMapping, PreparedOperatorOutputMapping, PreparedOperatorOutputTarget, PreparedTypedInputOrigin, PreparedWorkerOrigin, }` through a declared Rust import.",
+    "Depends on `mappings::{ PreparedOperatorMapping, PreparedSignalRouteMapping, PreparedSourceMapping, PreparedWorkerMapping, }` through a declared Rust import.",
+    "Depends on `mappings` through a declared Rust import.",
+    "Depends on `prepared::PreparedSession` through a declared Rust import.",
+    "Depends on `prepared` through a declared Rust import.",
+    "Depends on `std::collections::{HashMap, HashSet}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -486,19 +621,23 @@
   "module": "pocketstation::session::prepare",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::prepare` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-fbbd504eb283c375cff0"
   ],
   "outputs": [
-    "fn:prepare_session_runtime",
-    "return Err(SessionPrepareError::DuplicateSourceNode { stem_id: stem.id() });",
-    "return Err(SessionPrepareError::IncompatibleNodeBinding {",
-    "return Err(SessionPrepareError::InvalidExternalAudioMedia {",
-    "return Err(SessionPrepareError::InvalidGeneratedAudioMedia {",
-    "return Err(SessionPrepareError::OperatorDeclarationMismatch {",
-    "return Err(SessionPrepareError::OperatorDeclarationMismatch { node_id: node.id() });"
+    "Creates a typed failure at src/session/prepare/mod.rs:138.",
+    "Creates a typed failure at src/session/prepare/mod.rs:146.",
+    "Creates a typed failure at src/session/prepare/mod.rs:154.",
+    "Creates a typed failure at src/session/prepare/mod.rs:224.",
+    "Creates a typed failure at src/session/prepare/mod.rs:242.",
+    "Creates a typed failure at src/session/prepare/mod.rs:488.",
+    "Creates a typed failure at src/session/prepare/mod.rs:570.",
+    "Creates a typed failure at src/session/prepare/mod.rs:578.",
+    "Creates a typed failure at src/session/prepare/mod.rs:611.",
+    "Creates a typed failure at src/session/prepare/mod.rs:642.",
+    "Declares public fn `prepare_session_runtime`."
   ],
   "package": "pocketstation",
   "path": "src/session/prepare/mod.rs",
@@ -593,8 +732,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::prepare responsibilities, including Prepares session runtime for `prepare`.."
+    "classification": "DIRECT",
+    "text": "Prepares generated-audio ingresses, external and captured sources, operators, endpoints, recordings, and their runtime identity mappings before Session start."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -658,6 +797,18 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/graph/spec.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/session/compile/compiled.rs",
+    "CALLS:src/session/prepare/mappings.rs",
     "CONTAINS:src/session/prepare/error.rs",
     "CONTAINS:src/session/prepare/mappings.rs",
     "CONTAINS:src/session/prepare/prepared.rs",

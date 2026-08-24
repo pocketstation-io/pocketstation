@@ -27,11 +27,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "74dd50e5a85c99dd0055b3e8ede9ae91e0104e830259119488068a29b7c8ce14",
       "lines": [
         1,
-        37
+        9
       ],
       "path": "examples/whisper-transcribe/README.md",
       "symbol": null
@@ -67,7 +67,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/whisper-transcribe/README.md` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [],
   "outputs": [

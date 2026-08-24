@@ -145,14 +145,13 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "953d3fb4a96f7b33a042e19152f28959ba77594a6639f3a583b6e5d780582b98",
       "lines": [
-        1,
-        123
+        51,
+        122
       ],
-      "path": "src/graph/source.rs",
-      "symbol": null
+      "path": "src/graph/source.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -189,12 +188,12 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,",
-    "crate::frame::SampleFormat",
-    "crate::graph::compile::{Compiler, RuntimePlanner}",
-    "crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::sync::Arc"
+    "Consumes configuration at src/graph/source.rs:20.",
+    "Consumes configuration at src/graph/source.rs:6.",
+    "Depends on `crate::frame::SampleFormat` through a declared Rust import.",
+    "Depends on `crate::graph::compile::{Compiler, RuntimePlanner}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -225,7 +224,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::source` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-bca69e3fddd32d04a49b"
@@ -284,7 +283,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::source responsibilities, including the src/graph/source boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::graph::source`."
   },
   "queues": [],
   "recovery_behavior": [],

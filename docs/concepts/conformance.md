@@ -1,6 +1,6 @@
 # Conformance and qualification
 
-<!-- claims: CLM-DOC-035-CAP-001,CLM-DOC-035-SOURCE-001 -->
+<!-- claims: CLM-DOC-035-SCOPE-001,CLM-DOC-035-TEXT-001,CLM-DOC-035-TEXT-002,CLM-DOC-035-TEXT-003,CLM-DOC-035-TEXT-004,CLM-DOC-035-TEXT-005,CLM-DOC-035-TEXT-006,CLM-DOC-035-SOURCE-001 -->
 
 ## What it is
 
@@ -47,7 +47,7 @@ The scope of **Conformance and qualification** ends at the native contracts and 
 | `pocketstation::conformance` | module | Deterministic Session fixture for external conformance harnesses. | `src/conformance.rs:1` |
 | `pocketstation::conformance::ExtensionConformanceReport` | struct | Language-neutral outcome returned by the W20 fixture. | `src/conformance.rs:572` |
 | `pocketstation::conformance::ExtensionSignal` | struct | Owns one signal payload used by the native-extension conformance fixtures. | `src/conformance.rs:1180` |
-| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures reported as observed endpoint error. | `src/conformance.rs:344` |
+| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures surfaced by observed endpoint operations. | `src/conformance.rs:344` |
 | `pocketstation::conformance::observed_browser` | function | Declares and registers a deterministic native browser boundary used only by cross-language conformance harnesses. | `src/conformance.rs:334` |
 | `pocketstation::conformance::observed_connector` | function | Declares and registers a deterministic native connector used only by cross-language conformance harnesses. | `src/conformance.rs:273` |
 | `pocketstation::conformance::run_extension_vector` | function | Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint vector through the public Session. | `src/conformance.rs:1005` |
@@ -87,7 +87,8 @@ Executable evidence selected for **Conformance and qualification** is limited to
 
 The claims on **Conformance and qualification** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/conformance.rs:1-1251` (`DIRECT`)
-- `tests/protocol_compatibility.rs:1-55` (`DIRECT`)
+- `src/conformance.rs:1-4` (`DECLARED`)
+- `tests/protocol_compatibility.rs:12-35` (`TESTED`)
+- `tests/protocol_compatibility.rs:35-54` (`TESTED`)
 
 For **Conformance and qualification**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -555,14 +555,14 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "31e66adcfec65b8b5fa1265452b7714f9046c5bec39f41da63ba2864fe9c2e9d",
       "lines": [
         1,
-        445
+        4
       ],
       "path": "src/runtime/nodes.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::nodes"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -618,13 +618,14 @@
     "std::sync::{Arc, Mutex}"
   ],
   "inputs": [
-    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId}",
-    "crate::graph::{ register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SignalSpec, }",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,",
-    "rtrb::{Consumer, Producer, RingBuffer}",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::{Arc, Mutex}"
+    "Consumes configuration at src/runtime/nodes.rs:13.",
+    "Consumes configuration at src/runtime/nodes.rs:203.",
+    "Consumes configuration at src/runtime/nodes.rs:99.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::{ register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SignalSpec, }` through a declared Rust import.",
+    "Depends on `rtrb::{Consumer, Producer, RingBuffer}` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -659,34 +660,34 @@
   "module": "pocketstation::runtime::nodes",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::nodes` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-06b6cb48eb37e9925506",
     "pattern-7a6aa0a5f8b3d665473d"
   ],
   "outputs": [
-    "Err(_) => {",
-    "const:BRIDGE_ENDPOINT_NODE_TYPE_ID",
-    "const:SYSTEM_OUTPUT_NODE_TYPE_ID",
-    "fn:clipped_samples",
-    "fn:frames_captured",
-    "fn:frames_emitted",
-    "fn:frames_mixed",
-    "fn:frames_pushed",
-    "fn:lane_underruns",
-    "fn:new",
-    "fn:new_with_output_channels",
-    "fn:output_pool_exhaustions",
-    "fn:overrun_count",
-    "fn:register_runtime_nodes",
-    "fn:underrun_count",
-    "struct:BridgeSinkFactory",
-    "struct:BridgeSinkTelemetry",
-    "struct:MixerSourceNode",
-    "struct:MixerTelemetry",
-    "struct:SystemOutputSourceFactory",
-    "struct:SystemOutputTelemetry"
+    "Creates a typed failure at src/runtime/nodes.rs:142.",
+    "Declares public const `BRIDGE_ENDPOINT_NODE_TYPE_ID`.",
+    "Declares public const `SYSTEM_OUTPUT_NODE_TYPE_ID`.",
+    "Declares public fn `clipped_samples`.",
+    "Declares public fn `frames_captured`.",
+    "Declares public fn `frames_emitted`.",
+    "Declares public fn `frames_mixed`.",
+    "Declares public fn `frames_pushed`.",
+    "Declares public fn `lane_underruns`.",
+    "Declares public fn `new_with_output_channels`.",
+    "Declares public fn `new`.",
+    "Declares public fn `output_pool_exhaustions`.",
+    "Declares public fn `overrun_count`.",
+    "Declares public fn `register_runtime_nodes`.",
+    "Declares public fn `underrun_count`.",
+    "Declares public struct `BridgeSinkFactory`.",
+    "Declares public struct `BridgeSinkTelemetry`.",
+    "Declares public struct `MixerSourceNode`.",
+    "Declares public struct `MixerTelemetry`.",
+    "Declares public struct `SystemOutputSourceFactory`.",
+    "Declares public struct `SystemOutputTelemetry`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/nodes.rs",
@@ -955,8 +956,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::nodes responsibilities, including First-party CLI realtime nodes retained behind `internal-testing`.; Registers runtime nodes for `nodes`.; Reports the counters and terminal facts collected for system output.."
+    "classification": "DECLARED",
+    "text": "First-party CLI realtime nodes retained behind `internal-testing`. These concrete bounded nodes execute on the realtime plan; they are not a second runtime and are not part of the stable SDK surface."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1013,6 +1014,11 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
+    "IMPLEMENTS:src/graph/runtime_node.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/frame/pool.rs",
@@ -1121,7 +1127,7 @@
     "pocketstation::runtime::nodes::SystemOutputSourceFactory: Constructs system output source implementations from validated declarations.",
     "new: Creates a new `SystemOutputSourceFactory`.",
     "descriptor: Returns the descriptor associated with `SystemOutputSourceFactory`.",
-    "validate_config: Validates config for `SystemOutputSourceFactory`.",
+    "validate_config: Validates supplied node configuration against the schema declared by `SystemOutputSourceFactory`.",
     "instantiate: Instantiates the runtime node described by `SystemOutputSourceFactory`.",
     "pocketstation::runtime::nodes::BridgeSinkTelemetry: Reports the counters and terminal facts collected for bridge sink.",
     "frames_pushed: Returns the frames pushed associated with `BridgeSinkTelemetry`.",
@@ -1129,14 +1135,14 @@
     "pocketstation::runtime::nodes::BridgeSinkFactory: Constructs bridge sink implementations from validated declarations.",
     "new: Creates a new `BridgeSinkFactory`.",
     "descriptor: Returns the descriptor associated with `BridgeSinkFactory`.",
-    "validate_config: Validates config for `BridgeSinkFactory`.",
+    "validate_config: Validates supplied node configuration against the schema declared by `BridgeSinkFactory`.",
     "instantiate: Instantiates the runtime node described by `BridgeSinkFactory`.",
     "pocketstation::runtime::nodes::MixerTelemetry: Reports the counters and terminal facts collected for mixer.",
     "frames_mixed: Returns the frames mixed associated with `MixerTelemetry`.",
     "lane_underruns: Returns the lane underruns associated with `MixerTelemetry`.",
     "clipped_samples: Returns the clipped samples held by `MixerTelemetry`.",
     "output_pool_exhaustions: Returns the output pool exhaustions associated with `MixerTelemetry`.",
-    "pocketstation::runtime::nodes::MixerSourceNode: Executes the graph-node behavior defined for mixer source.",
+    "pocketstation::runtime::nodes::MixerSourceNode: Represents the executable graph node for mixer source.",
     "new_with_output_channels: Creates `MixerSourceNode` with the supplied output channels.",
     "prepare: Prepares resources required by `MixerSourceNode`.",
     "process: Processes an input value through `MixerSourceNode`."

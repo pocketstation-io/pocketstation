@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs"
@@ -59,6 +60,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs"
@@ -390,16 +392,247 @@
       "classification": "DIRECT",
       "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
       "lines": [
-        1,
-        316
+        7,
+        7
       ],
       "path": "src/abi/extension.rs",
-      "symbol": null
+      "symbol": "PKS_EXTENSION_ABI_MAJOR"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "PKS_EXTENSION_ABI_MINOR"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "MAX_PORTS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "MAX_IDENTIFIER_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        14,
+        18
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "PksExtensionAbiVersion"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "struct_size_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "abi_major"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "abi_minor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        21,
+        27
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "current"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        32,
+        36
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "PksExtensionKind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "Source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "Operator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "Endpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        40,
+        43
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "PksExtensionPortDirection"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3eb78606fa006cbdce13bd0f6f5404d4bdb8b531e97b8eb50496b739958ba8f",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/abi/extension.rs",
+      "symbol": "Input"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs"
@@ -455,6 +688,7 @@
   "generated_from": "not_applicable",
   "git_object": "2b39b9a3f504a72d78758dfc4681dcc0cff908b2",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs"
@@ -464,6 +698,7 @@
     "ExtensionAbiError"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs"
@@ -476,12 +711,12 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8}",
-    "std::mem::{align_of, size_of}",
-    "std::panic::{catch_unwind, AssertUnwindSafe}",
-    "std::slice",
-    "super::*"
+    "Consumes configuration at src/abi/extension.rs:277.",
+    "Depends on `crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8}` through a declared Rust import.",
+    "Depends on `std::mem::{align_of, size_of}` through a declared Rust import.",
+    "Depends on `std::panic::{catch_unwind, AssertUnwindSafe}` through a declared Rust import.",
+    "Depends on `std::slice` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -503,27 +738,32 @@
   "module": "pocketstation::abi::extension",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::extension` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-1b73fadd9864530431a5"
   ],
   "outputs": [
-    "Err(ExtensionAbiError::InvalidArgument)",
-    "Err(_) => PksSessionStatus::new(PksSessionStatusCode::InternalPanic, 0),",
-    "Ok(Err(error)) => error.status(),",
-    "_ => return Err(ExtensionAbiError::InvalidArgument),",
-    "const:PKS_EXTENSION_ABI_MAJOR",
-    "const:PKS_EXTENSION_ABI_MINOR",
-    "enum:PksExtensionKind",
-    "enum:PksExtensionPortDirection",
-    "fn:pks_extension_abi_get_version",
-    "fn:pks_extension_abi_is_compatible",
-    "fn:pks_extension_descriptor_validate",
-    "return Err(ExtensionAbiError::InvalidArgument);",
-    "struct:PksExtensionAbiVersion",
-    "struct:PksExtensionDescriptor",
-    "struct:PksExtensionPort"
+    "Creates a typed failure at src/abi/extension.rs:137.",
+    "Creates a typed failure at src/abi/extension.rs:141.",
+    "Creates a typed failure at src/abi/extension.rs:153.",
+    "Creates a typed failure at src/abi/extension.rs:162.",
+    "Creates a typed failure at src/abi/extension.rs:170.",
+    "Creates a typed failure at src/abi/extension.rs:176.",
+    "Creates a typed failure at src/abi/extension.rs:182.",
+    "Creates a typed failure at src/abi/extension.rs:185.",
+    "Creates a typed failure at src/abi/extension.rs:195.",
+    "Creates a typed failure at src/abi/extension.rs:196.",
+    "Declares public const `PKS_EXTENSION_ABI_MAJOR`.",
+    "Declares public const `PKS_EXTENSION_ABI_MINOR`.",
+    "Declares public enum `PksExtensionKind`.",
+    "Declares public enum `PksExtensionPortDirection`.",
+    "Declares public fn `pks_extension_abi_get_version`.",
+    "Declares public fn `pks_extension_abi_is_compatible`.",
+    "Declares public fn `pks_extension_descriptor_validate`.",
+    "Declares public struct `PksExtensionAbiVersion`.",
+    "Declares public struct `PksExtensionDescriptor`.",
+    "Declares public struct `PksExtensionPort`."
   ],
   "package": "pocketstation",
   "path": "src/abi/extension.rs",
@@ -690,8 +930,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::extension responsibilities, including Defines the major version of extension ABI.; Defines the minor version of extension ABI.; Carries the major and minor native-extension ABI versions checked during loading.."
+    "classification": "DECLARED",
+    "text": "Defines the major version of extension ABI. Defines the minor version of extension ABI. Carries the major and minor native-extension ABI versions checked during loading."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -726,6 +966,9 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "REFERENCES:src/abi/session/abi.rs"
   ],
   "resource_ownership": [],
@@ -737,31 +980,31 @@
     "PksExtensionAbiVersion::abi_major: Stores the major ABI version expected by `PksExtensionAbiVersion`.",
     "PksExtensionAbiVersion::abi_minor: Stores the minor ABI version expected by `PksExtensionAbiVersion`.",
     "pocketstation::abi::extension::PksExtensionKind: Selects the extension kind used by PocketStation.",
-    "pocketstation::abi::extension::PksExtensionKind::Source: Selects source behavior for `PksExtensionKind`.",
-    "pocketstation::abi::extension::PksExtensionKind::Operator: Selects operator behavior for `PksExtensionKind`.",
-    "pocketstation::abi::extension::PksExtensionKind::Endpoint: Selects endpoint behavior for `PksExtensionKind`.",
+    "pocketstation::abi::extension::PksExtensionKind::Source: Registers the native extension as a source implementation.",
+    "pocketstation::abi::extension::PksExtensionKind::Operator: Registers the native extension as a operator implementation.",
+    "pocketstation::abi::extension::PksExtensionKind::Endpoint: Registers the native extension as a endpoint implementation.",
     "pocketstation::abi::extension::PksExtensionPortDirection: Selects the extension port direction used by PocketStation.",
-    "pocketstation::abi::extension::PksExtensionPortDirection::Input: Selects input behavior for `PksExtensionPortDirection`.",
-    "pocketstation::abi::extension::PksExtensionPortDirection::Output: Selects output behavior for `PksExtensionPortDirection`.",
-    "pocketstation::abi::extension::PksExtensionDescriptor: Describes the extension descriptor contract.",
+    "pocketstation::abi::extension::PksExtensionPortDirection::Input: Declares a native-extension port as input.",
+    "pocketstation::abi::extension::PksExtensionPortDirection::Output: Declares a native-extension port as output.",
+    "pocketstation::abi::extension::PksExtensionDescriptor: Declares a native extension's ABI version, library callbacks, and registration entrypoint.",
     "PksExtensionDescriptor::struct_size_bytes: Stores the byte size of the `PksExtensionDescriptor` ABI structure.",
     "PksExtensionDescriptor::abi_major: Stores the major ABI version expected by `PksExtensionDescriptor`.",
     "PksExtensionDescriptor::abi_minor: Stores the minor ABI version expected by `PksExtensionDescriptor`.",
-    "PksExtensionDescriptor::kind: Stores the kind used by `PksExtensionDescriptor`.",
-    "PksExtensionDescriptor::revision: Stores the revision used by `PksExtensionDescriptor`.",
-    "PksExtensionDescriptor::generation: Stores the generation used by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::kind: Records the kind selected for `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::revision: Stores the revision component of `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::generation: Identifies the generation of the resource represented by `PksExtensionDescriptor`.",
     "PksExtensionDescriptor::port_count: Stores the number of port represented by `PksExtensionDescriptor`.",
     "PksExtensionDescriptor::extension_id: Identifies the extension identifier recorded by `PksExtensionDescriptor`.",
     "pocketstation::abi::extension::PksExtensionPort: Describes one native-extension port across the C ABI, including direction and signal metadata.",
     "PksExtensionPort::struct_size_bytes: Stores the byte size of the `PksExtensionPort` ABI structure.",
     "PksExtensionPort::abi_major: Stores the major ABI version expected by `PksExtensionPort`.",
     "PksExtensionPort::abi_minor: Stores the minor ABI version expected by `PksExtensionPort`.",
-    "PksExtensionPort::direction: Stores the direction used by `PksExtensionPort`.",
+    "PksExtensionPort::direction: Records the direction selected for `PksExtensionPort`.",
     "PksExtensionPort::required: Indicates whether required applies to `PksExtensionPort`.",
-    "PksExtensionPort::name: Stores the name used by `PksExtensionPort`.",
+    "PksExtensionPort::name: Stores the human-readable name used to identify `PksExtensionPort`.",
     "PksExtensionPort::signal_id: Identifies the signal identifier recorded by `PksExtensionPort`.",
-    "PksExtensionPort::semantic_role: Stores the semantic role used by `PksExtensionPort`.",
-    "PksExtensionPort::schema: Stores the schema used by `PksExtensionPort`."
+    "PksExtensionPort::semantic_role: Names the semantic role assigned to the extension port in `PksExtensionPort`.",
+    "PksExtensionPort::schema: Records the schema selected for `PksExtensionPort`."
   ],
   "retry_behavior": [],
   "serialization": [],

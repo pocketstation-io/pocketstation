@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs"
   ],
@@ -185,6 +187,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs"
   ],
@@ -984,16 +988,248 @@
       "classification": "DIRECT",
       "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
       "lines": [
-        1,
-        1346
+        31,
+        34
       ],
       "path": "src/abi/session/mod.rs",
-      "symbol": null
+      "symbol": "runtime_state"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        36,
+        43
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "register_executable_extension"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        45,
+        52
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "create_executable_extension_session"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        54,
+        61
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "executable_extension_metrics"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        63,
+        71
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "guard_abi_version"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        73,
+        78
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "guard_record_size"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        80,
+        88
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "guard_pointer_alignment"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        90,
+        95
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "read_record"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        98,
+        98
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        99,
+        103
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "VersionedRecordHeader"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        100,
+        100
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "struct_size_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        101,
+        101
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "abi_major"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        102,
+        102
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "abi_minor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        105,
+        115
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "read_versioned_record"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        117,
+        123
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "write_record"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        125,
+        138
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "copy_utf8"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        140,
+        168
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "engine_options"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        170,
+        176
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "abi_call"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        185,
+        194
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "pks_session_abi_get_version"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        197,
+        210
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "pks_session_abi_is_compatible"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        219,
+        232
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "pks_session_engine_create"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        235,
+        240
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "pks_session_engine_destroy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        248,
+        259
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "pks_session_engine_is_live"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c2f867f5e1dae3cad544f25190ac23b0e85ffe8d6b339ae6bf7447671ddfd9df",
+      "lines": [
+        269,
+        285
+      ],
+      "path": "src/abi/session/mod.rs",
+      "symbol": "pks_session_create_app_mic"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs"
   ],
@@ -1318,6 +1554,8 @@
   "generated_from": "not_applicable",
   "git_object": "129ed25582ed6d84bfd9cda8efd4e0021f2ab735",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs"
   ],
@@ -1331,6 +1569,8 @@
     "PreparedCaptureBackend for BlockingPreparedCapture"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
     "CONTAINS:src/abi/mod.rs",
     "IMPORTS:src/abi/mod.rs"
   ],
@@ -1362,33 +1602,29 @@
     "super::{ abi_call, pks_session_abi_get_version, pks_session_abi_is_compatible, pks_session_audio_batch_frame, pks_session_audio_batch_release, pks_session_audio_poll, pks_session_compile, pks_session_create_app_mic, pks_session_destroy, pks_session_engine_create, pks_session_engine_destroy, pks_session_engine_is_live, pks_session_get_state, pks_session_metrics_poll, pks_session_route_metrics_at, pks_session_route_metrics_count, pks_session_source_metrics_at, pks_session_source_metrics_count, pks_session_start, pks_session_stop, runtime_state, PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch, PksSessionAudioFrame, PksSessionEngineConfig, PksSessionHandle, PksSessionLifecycleState, PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSampleFormat, PksSessionSourceMetrics, PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }"
   ],
   "inputs": [
-    "#[cfg(feature = \"conformance-fixtures\")]",
-    "#[cfg(test)]",
-    "abi::PksSessionStatusCode::InternalPanic",
-    "abi::{ PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch, PksSessionAudioFrame, PksSessionEndpointObservationStage, PksSessionEngineConfig, PksSessionEvent, PksSessionHandle, PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSourceMetrics, PksSessionStatus, PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }",
-    "abi::{PksSessionLifecycleState, PksSessionSampleFormat}",
-    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
-    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
-    "crate::graph::PrepareContext",
-    "crate::session::{ NativeSessionEngineHostOptions, PolledAudioEndpointConfig, SampleFormat, SampleSpec, SessionStartOptions, }",
-    "crate::session::{ PolledAudioEndpointConfig, SessionEngineHostBuilder, SessionStartOptions, }",
-    "error::AbiError",
-    "module:abi",
-    "module:conformance_fixture",
-    "module:error",
-    "module:handle",
-    "module:runtime",
-    "runtime::RuntimeState",
-    "std::mem::{align_of, size_of}",
-    "std::mem::{offset_of, size_of}",
-    "std::panic::{catch_unwind, AssertUnwindSafe}",
-    "std::slice",
-    "std::str",
-    "std::sync::OnceLock",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::sync::{Arc, Condvar, Mutex}",
-    "std::time::{Duration, Instant}",
-    "super::{ abi_call, pks_session_abi_get_version, pks_session_abi_is_compatible, pks_session_audio_batch_frame, pks_session_audio_batch_release, pks_session_audio_poll, pks_session_compile, pks_session_create_app_mic, pks_session_destroy, pks_session_engine_create, pks_session_engine_destroy, pks_session_engine_is_live, pks_session_get_state, pks_session_metrics_poll, pks_session_route_metrics_at, pks_session_route_metrics_count, pks_session_source_metrics_at, pks_session_source_metrics_count, pks_session_start, pks_session_stop, runtime_state, PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch, PksSessionAudioFrame, PksSessionEngineConfig, PksSessionHandle, PksSessionLifecycleState, PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSampleFormat, PksSessionSourceMetrics, PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }"
+    "Consumes configuration at src/abi/session/mod.rs:14.",
+    "Consumes configuration at src/abi/session/mod.rs:2.",
+    "Consumes configuration at src/abi/session/mod.rs:664.",
+    "Depends on `abi::PksSessionStatusCode::InternalPanic` through a declared Rust import.",
+    "Depends on `abi::{ PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch, PksSessionAudioFrame, PksSessionEndpointObservationStage, PksSessionEngineConfig, PksSessionEvent, PksSessionHandle, PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSourceMetrics, PksSessionStatus, PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }` through a declared Rust import.",
+    "Depends on `abi::{PksSessionLifecycleState, PksSessionSampleFormat}` through a declared Rust import.",
+    "Depends on `abi` through a declared Rust import.",
+    "Depends on `conformance_fixture` through a declared Rust import.",
+    "Depends on `crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::PrepareContext` through a declared Rust import.",
+    "Depends on `crate::session::{ NativeSessionEngineHostOptions, PolledAudioEndpointConfig, SampleFormat, SampleSpec, SessionStartOptions, }` through a declared Rust import.",
+    "Depends on `crate::session::{ PolledAudioEndpointConfig, SessionEngineHostBuilder, SessionStartOptions, }` through a declared Rust import.",
+    "Depends on `error::AbiError` through a declared Rust import.",
+    "Depends on `error` through a declared Rust import.",
+    "Depends on `handle` through a declared Rust import.",
+    "Depends on `runtime::RuntimeState` through a declared Rust import.",
+    "Depends on `runtime` through a declared Rust import.",
+    "Depends on `std::mem::{align_of, size_of}` through a declared Rust import.",
+    "Depends on `std::mem::{offset_of, size_of}` through a declared Rust import.",
+    "Depends on `std::panic::{catch_unwind, AssertUnwindSafe}` through a declared Rust import.",
+    "Depends on `std::slice` through a declared Rust import.",
+    "Depends on `std::str` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1507,44 +1743,45 @@
   "module": "pocketstation::abi::session",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::session` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-796af7f8b2fa015d666c",
     "pattern-96698d9df68517671d53"
   ],
   "outputs": [
-    "Err(_) => PksSessionStatus::new(InternalPanic, 0),",
-    "Ok(Err(error)) => error.status(),",
-    "fn:create_executable_extension_session",
-    "fn:executable_extension_metrics",
-    "fn:pks_session_abi_get_version",
-    "fn:pks_session_abi_is_compatible",
-    "fn:pks_session_audio_batch_frame",
-    "fn:pks_session_audio_batch_release",
-    "fn:pks_session_audio_poll",
-    "fn:pks_session_compile",
-    "fn:pks_session_create_app_mic",
-    "fn:pks_session_destroy",
-    "fn:pks_session_engine_create",
-    "fn:pks_session_engine_destroy",
-    "fn:pks_session_engine_is_live",
-    "fn:pks_session_event_poll",
-    "fn:pks_session_get_state",
-    "fn:pks_session_metrics_poll",
-    "fn:pks_session_route_metrics_at",
-    "fn:pks_session_route_metrics_count",
-    "fn:pks_session_source_metrics_at",
-    "fn:pks_session_source_metrics_count",
-    "fn:pks_session_start",
-    "fn:pks_session_stop",
-    "fn:register_executable_extension",
-    "return Err(AbiError::InvalidArgument);",
-    "return Err(AbiError::InvalidStructSize);",
-    "return Err(AbiError::MisalignedPointer);",
-    "return Err(AbiError::NullArgument);",
-    "return Err(AbiError::UnsupportedAbiMajor);",
-    "return Err(AbiError::UnsupportedAbiMinor);"
+    "Creates a typed failure at src/abi/session/mod.rs:127.",
+    "Creates a typed failure at src/abi/session/mod.rs:135.",
+    "Creates a typed failure at src/abi/session/mod.rs:173.",
+    "Creates a typed failure at src/abi/session/mod.rs:174.",
+    "Creates a typed failure at src/abi/session/mod.rs:65.",
+    "Creates a typed failure at src/abi/session/mod.rs:68.",
+    "Creates a typed failure at src/abi/session/mod.rs:75.",
+    "Creates a typed failure at src/abi/session/mod.rs:82.",
+    "Creates a typed failure at src/abi/session/mod.rs:85.",
+    "Declares public fn `create_executable_extension_session`.",
+    "Declares public fn `executable_extension_metrics`.",
+    "Declares public fn `pks_session_abi_get_version`.",
+    "Declares public fn `pks_session_abi_is_compatible`.",
+    "Declares public fn `pks_session_audio_batch_frame`.",
+    "Declares public fn `pks_session_audio_batch_release`.",
+    "Declares public fn `pks_session_audio_poll`.",
+    "Declares public fn `pks_session_compile`.",
+    "Declares public fn `pks_session_create_app_mic`.",
+    "Declares public fn `pks_session_destroy`.",
+    "Declares public fn `pks_session_engine_create`.",
+    "Declares public fn `pks_session_engine_destroy`.",
+    "Declares public fn `pks_session_engine_is_live`.",
+    "Declares public fn `pks_session_event_poll`.",
+    "Declares public fn `pks_session_get_state`.",
+    "Declares public fn `pks_session_metrics_poll`.",
+    "Declares public fn `pks_session_route_metrics_at`.",
+    "Declares public fn `pks_session_route_metrics_count`.",
+    "Declares public fn `pks_session_source_metrics_at`.",
+    "Declares public fn `pks_session_source_metrics_count`.",
+    "Declares public fn `pks_session_start`.",
+    "Declares public fn `pks_session_stop`.",
+    "Declares public fn `register_executable_extension`."
   ],
   "package": "pocketstation",
   "path": "src/abi/session/mod.rs",
@@ -2009,7 +2246,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::session responsibilities, including session; runtime state; register executable extension."
+    "text": "Owns the internal session module, runtime state function, register executable extension function, create executable extension session function used by `pocketstation::abi::session`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2044,6 +2281,11 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_protocol.rs",
+    "CALLS:src/session/lifecycle/observations.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/abi/session/abi.rs",
     "CONTAINS:src/abi/session/conformance_fixture.rs",
     "CONTAINS:src/abi/session/error.rs",

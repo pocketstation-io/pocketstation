@@ -135,14 +135,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "2536959aaae73ee6105b9a0167438f18d535f8149f756ffb31490691ccc0eb07",
       "lines": [
         1,
-        50
+        4
       ],
       "path": "src/session/extensions/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::extensions"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -195,26 +195,28 @@
     "source::{SourceOutputReceiver, SourceRuntimeError}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,",
-    "audio_input::AudioInputFactory",
-    "audio_input::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, PCM_SOURCE_TYPE_ID, }",
-    "builtins::SessionGraphRegistrationError",
-    "builtins::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
-    "module:audio_input",
-    "module:builtins",
-    "module:composition",
-    "module:native_library",
-    "module:polled_audio",
-    "module:recording",
-    "module:registry",
-    "module:runtime",
-    "module:source",
-    "recording::{ RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
-    "recording::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }",
-    "source::{ PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
-    "source::{SourceOutputReceiver, SourceRuntimeError}"
+    "Consumes configuration at src/session/extensions/mod.rs:20.",
+    "Consumes configuration at src/session/extensions/mod.rs:27.",
+    "Consumes configuration at src/session/extensions/mod.rs:30.",
+    "Consumes configuration at src/session/extensions/mod.rs:41.",
+    "Consumes configuration at src/session/extensions/mod.rs:44.",
+    "Depends on `audio_input::AudioInputFactory` through a declared Rust import.",
+    "Depends on `audio_input::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, PCM_SOURCE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `audio_input` through a declared Rust import.",
+    "Depends on `builtins::SessionGraphRegistrationError` through a declared Rust import.",
+    "Depends on `builtins::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `builtins` through a declared Rust import.",
+    "Depends on `composition` through a declared Rust import.",
+    "Depends on `native_library` through a declared Rust import.",
+    "Depends on `polled_audio` through a declared Rust import.",
+    "Depends on `recording::{ RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }` through a declared Rust import.",
+    "Depends on `recording::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }` through a declared Rust import.",
+    "Depends on `recording` through a declared Rust import.",
+    "Depends on `registry` through a declared Rust import.",
+    "Depends on `runtime` through a declared Rust import.",
+    "Depends on `source::{ PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, }` through a declared Rust import.",
+    "Depends on `source::{SourceOutputReceiver, SourceRuntimeError}` through a declared Rust import.",
+    "Depends on `source` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -223,12 +225,12 @@
   "module": "pocketstation::session::extensions",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "mod:builtins",
-    "mod:source"
+    "Declares public mod `builtins`.",
+    "Declares public mod `source`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/mod.rs",
@@ -305,8 +307,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions responsibilities, including extensions."
+    "classification": "DECLARED",
+    "text": "Session extension integration. Registration contracts live here; extension implementation and provider policy remain outside the core Session lifecycle."
   },
   "queues": [],
   "recovery_behavior": [],

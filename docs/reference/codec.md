@@ -1,6 +1,6 @@
 # Opus codec API
 
-<!-- claims: CLM-REF-016-CAP-001,CLM-REF-016-SOURCE-001 -->
+<!-- claims: CLM-REF-016-SCOPE-001,CLM-REF-016-TEXT-001,CLM-REF-016-TEXT-002,CLM-REF-016-SOURCE-001 -->
 
 ## Scope
 
@@ -20,13 +20,13 @@ For **Opus codec API**, the generated [docs.rs API](https://docs.rs/pocketstatio
 | sym-2a520fd0f59b0d4e8007 | `pocketstation::codec::constants::OPUS_MAX_PACKET_BYTES` | constant | Maximum number of bytes the Opus encoder can emit per 20 ms frame. libopus guarantees this upper bound. | `src/codec/constants.rs:13` |
 | sym-a09db02191ca16a128fa | `pocketstation::codec::constants::OPUS_SAMPLE_RATE_HZ` | constant | 48 000 Hz, mono, VOIP application profile (AUDIO-012 default). | `src/codec/constants.rs:2` |
 | sym-0873bf4291fe4840e3c7 | `pocketstation::codec::constants::VOICE_AGENT_FRAME_SAMPLES` | constant | 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 §3.1). Ten milliseconds of mono PCM at 48 kHz. | `src/codec/constants.rs:9` |
-| sym-222549994b61881e820d | `pocketstation::codec::decoder::OpusDecodeError` | enum | Classifies failures reported as opus decode error. | `src/codec/decoder.rs:25` |
+| sym-222549994b61881e820d | `pocketstation::codec::decoder::OpusDecodeError` | enum | Classifies failures produced during opus decoding. | `src/codec/decoder.rs:25` |
 | sym-8a3a4031d3f6082ba4c1 | `pocketstation::codec::encoder::OpusApplication` | enum | Selects the Opus encoder mode used to tune speech or general audio. | `src/codec/encoder.rs:58` |
 | sym-9226f5cf30a6da6fae37 | `pocketstation::codec::encoder::OpusChannels` | enum | Typed channel count for Opus — prevents silent u8 misuse. | `src/codec/encoder.rs:27` |
-| sym-184d3f010be6d087cba0 | `pocketstation::codec::encoder::OpusEncodeError` | enum | Classifies failures reported as opus encode error. | `src/codec/encoder.rs:131` |
+| sym-184d3f010be6d087cba0 | `pocketstation::codec::encoder::OpusEncodeError` | enum | Classifies failures produced during opus encoding. | `src/codec/encoder.rs:131` |
 | sym-4a458387887842682d94 | `pocketstation::codec::encoder::OpusFrameDuration` | enum | Supported Opus frame duration at 48 kHz. | `src/codec/encoder.rs:7` |
 | sym-8cbe8e70763fec07c936 | `pocketstation::codec::encoder::OpusSampleRate` | enum | Typed sample rate. Opus internally always uses 48 kHz; this type makes the constraint explicit rather than hiding it behind a `u32` constant. | `src/codec/encoder.rs:44` |
-| sym-292549adb1d699be0ee1 | `pocketstation::codec::profile::StreamProfile` | enum | Enumerates the supported stream profile cases. | `src/codec/profile.rs:11` |
+| sym-292549adb1d699be0ee1 | `pocketstation::codec::profile::StreamProfile` | enum | Selects the supported Opus stream profile used for codec validation. | `src/codec/profile.rs:11` |
 | sym-6f89da131606829b0842 | `application` | function | Returns the application held by `StreamProfile`. | `src/codec/profile.rs:41` |
 | sym-8f2182e0218cb6561476 | `bitrate_kbps` | function | Returns the bitrate kbps associated with `StreamProfile`. | `src/codec/profile.rs:51` |
 | sym-c488d4533e942b4a7698 | `channels` | function | Returns the channel count represented by `StreamProfile`. | `src/codec/profile.rs:21` |
@@ -41,7 +41,7 @@ For **Opus codec API**, the generated [docs.rs API](https://docs.rs/pocketstatio
 | sym-b49dc5d31d95b5b4cddc | `frame_ms` | function | Returns the frame milliseconds held by `StreamProfile`. | `src/codec/profile.rs:60` |
 | sym-ed540708783254c6310f | `from_config` | function | Create an encoder from an explicit OpusConfig. | `src/codec/encoder.rs:173` |
 | sym-951ac3ec1d62f3926c6c | `hz` | function | Returns the hz associated with `OpusSampleRate`. | `src/codec/encoder.rs:49` |
-| sym-fa0244c5440eb6e18364 | `is_stereo` | function | Returns whether stereo applies to `StreamProfile`. | `src/codec/profile.rs:69` |
+| sym-fa0244c5440eb6e18364 | `is_stereo` | function | Reports whether stereo is true for `StreamProfile`. | `src/codec/profile.rs:69` |
 | sym-83741bae354adc93a18c | `new` | function | Mono decoder (48 kHz). Back-compatible default for the existing pipeline. | `src/codec/decoder.rs:39` |
 | sym-f69c5522aea4db917a27 | `new` | function | Create a new encoder with default config (48 kHz, mono, Voip, 20 ms). | `src/codec/encoder.rs:168` |
 | sym-af5e48f013d42753aaaf | `opus_config` | function | Returns the opus config held by `StreamProfile`. | `src/codec/profile.rs:73` |
@@ -65,20 +65,20 @@ For **Opus codec API**, the generated [docs.rs API](https://docs.rs/pocketstatio
 | sym-a834c990f442972720d1 | `OpusConfig::fec` | struct_field | In-band forward error correction. | `src/codec/encoder.rs:88` |
 | sym-261d6440732347b21057 | `OpusConfig::frame_duration` | struct_field | Frame duration. Default: 20 ms (AUDIO-012). | `src/codec/encoder.rs:78` |
 | sym-658cc1d8211b18ff7a02 | `OpusConfig::sample_rate` | struct_field | Sample rate. Opus only supports 48 kHz internally. | `src/codec/encoder.rs:74` |
-| sym-8689ac88deced0826cdd | `OpusDecodeError::FrameDurationExceedsConfiguredMaximum::maximum_samples_per_channel` | struct_field | Stores the maximum samples per channel used by `FrameDurationExceedsConfiguredMaximum`. | `src/codec/decoder.rs:31` |
-| sym-f7da454cbdb2d87e5835 | `OpusDecodeError::FrameDurationExceedsConfiguredMaximum::requested_samples_per_channel` | struct_field | Stores the requested samples per channel used by `FrameDurationExceedsConfiguredMaximum`. | `src/codec/decoder.rs:30` |
-| sym-280c69ee026bde4fe5d3 | `OpusEncodeError::InvalidFrameSampleCount::channels` | struct_field | Stores the channels used by `InvalidFrameSampleCount`. | `src/codec/encoder.rs:137` |
+| sym-8689ac88deced0826cdd | `OpusDecodeError::FrameDurationExceedsConfiguredMaximum::maximum_samples_per_channel` | struct_field | Records the configured maximum frame length, in samples per channel, enforced by `FrameDurationExceedsConfiguredMaximum`. | `src/codec/decoder.rs:31` |
+| sym-f7da454cbdb2d87e5835 | `OpusDecodeError::FrameDurationExceedsConfiguredMaximum::requested_samples_per_channel` | struct_field | Records the requested frame length, in samples per channel, that caused `FrameDurationExceedsConfiguredMaximum`. | `src/codec/decoder.rs:30` |
+| sym-280c69ee026bde4fe5d3 | `OpusEncodeError::InvalidFrameSampleCount::channels` | struct_field | Contains the channels owned or reported by `InvalidFrameSampleCount`. | `src/codec/encoder.rs:137` |
 | sym-ed3451897f9409138985 | `OpusEncodeError::InvalidFrameSampleCount::expected_sample_count` | struct_field | Stores the number of expected sample represented by `InvalidFrameSampleCount`. | `src/codec/encoder.rs:138` |
 | sym-58d3176756f862642135 | `OpusEncodeError::InvalidFrameSampleCount::sample_count` | struct_field | Stores the number of sample represented by `InvalidFrameSampleCount`. | `src/codec/encoder.rs:136` |
-| sym-6360a1745e73e35a1ee9 | `pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum` | variant | Reported when the owning operation encounters frame duration exceeds configured maximum. | `src/codec/decoder.rs:29` |
-| sym-d1e880d40246e0d56838 | `pocketstation::codec::decoder::OpusDecodeError::Opus` | variant | Reported when the owning operation encounters opus. | `src/codec/decoder.rs:34` |
+| sym-6360a1745e73e35a1ee9 | `pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum` | variant | Classifies a failure at the frame duration exceeds configured maximum stage or component of `OpusDecodeError`. | `src/codec/decoder.rs:29` |
+| sym-d1e880d40246e0d56838 | `pocketstation::codec::decoder::OpusDecodeError::Opus` | variant | Classifies a failure at the opus stage or component of `OpusDecodeError`. | `src/codec/decoder.rs:34` |
 | sym-f4f8b8b6ade7b3bcb55e | `pocketstation::codec::encoder::OpusApplication::Audio` | variant | Optimised for audio quality (music/broadcast). | `src/codec/encoder.rs:64` |
 | sym-623597840615b67edfeb | `pocketstation::codec::encoder::OpusApplication::LowDelay` | variant | Optimised for low algorithmic delay. Use for real-time voice agents. | `src/codec/encoder.rs:62` |
 | sym-8d3176b17cebeed6a833 | `pocketstation::codec::encoder::OpusApplication::Voip` | variant | Optimised for voice (VOIP). Default for PocketStation broadcast. | `src/codec/encoder.rs:60` |
 | sym-b70ca21af71a48b9f225 | `pocketstation::codec::encoder::OpusChannels::Mono` | variant | Represents the mono alternative defined by `OpusChannels`. | `src/codec/encoder.rs:28` |
 | sym-83fd05f9f594d0f8ffa2 | `pocketstation::codec::encoder::OpusChannels::Stereo` | variant | Represents the stereo alternative defined by `OpusChannels`. | `src/codec/encoder.rs:29` |
-| sym-acc7fcb0b9445e901454 | `pocketstation::codec::encoder::OpusEncodeError::InvalidFrameSampleCount` | variant | Reported when the owning operation encounters invalid frame sample count. | `src/codec/encoder.rs:135` |
-| sym-4dfe2a1585087596cbf4 | `pocketstation::codec::encoder::OpusEncodeError::Opus` | variant | Reported when the owning operation encounters opus. | `src/codec/encoder.rs:141` |
+| sym-acc7fcb0b9445e901454 | `pocketstation::codec::encoder::OpusEncodeError::InvalidFrameSampleCount` | variant | Reports that the supplied frame sample count is invalid. | `src/codec/encoder.rs:135` |
+| sym-4dfe2a1585087596cbf4 | `pocketstation::codec::encoder::OpusEncodeError::Opus` | variant | Classifies a failure at the opus stage or component of `OpusEncodeError`. | `src/codec/encoder.rs:141` |
 | sym-d470ca3d4a4d83df93be | `pocketstation::codec::encoder::OpusFrameDuration::Ms10` | variant | Represents the ms10 alternative defined by `OpusFrameDuration`. | `src/codec/encoder.rs:8` |
 | sym-0a66371187b386d36cec | `pocketstation::codec::encoder::OpusFrameDuration::Ms20` | variant | Represents the ms20 alternative defined by `OpusFrameDuration`. | `src/codec/encoder.rs:9` |
 | sym-c6c7a8575e6bf02d6e24 | `pocketstation::codec::encoder::OpusFrameDuration::Ms40` | variant | Represents the ms40 alternative defined by `OpusFrameDuration`. | `src/codec/encoder.rs:10` |
@@ -110,6 +110,6 @@ The **Opus codec API** inventory records compiler-visible or extracted evidence 
 
 The claims on **Opus codec API** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/codec/mod.rs:1-20` (`DIRECT`)
+- `src/codec/mod.rs:1-4` (`DECLARED`)
 
 For **Opus codec API**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

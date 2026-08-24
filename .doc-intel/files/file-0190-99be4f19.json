@@ -4,7 +4,21 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/transport.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/timing/mod.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_host.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
     "REFERENCES:src/lib.rs",
@@ -90,7 +104,21 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/transport.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/timing/mod.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_host.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
     "REFERENCES:src/lib.rs",
@@ -445,16 +473,260 @@
       "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
       "lines": [
         1,
-        374
+        1
       ],
       "path": "src/runtime/lifecycle/sidecar_protocol.rs",
-      "symbol": null
+      "symbol": "MAGIC"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        2,
+        2
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "HEADER_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        4,
+        4
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "SIDECAR_PROTOCOL_MAJOR"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "SIDECAR_PROTOCOL_MINOR"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        9,
+        20
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "SidecarMessageKind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Signal"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Ready"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Cancel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Close"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Hello"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Configure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Observation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Closed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "Error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        25,
+        39
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "try_from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        43,
+        48
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": "SidecarProtocolLimits"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/transport.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/timing/mod.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_host.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
     "REFERENCES:src/lib.rs",
@@ -475,7 +747,21 @@
   "generated_from": "not_applicable",
   "git_object": "afcb288cdb6a8c2fb522bcce64c6f9cd8ded2be2",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/transport.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/timing/mod.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_host.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
     "REFERENCES:src/lib.rs",
@@ -489,7 +775,21 @@
     "SidecarMessage"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/transport.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/timing/mod.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_host.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
     "REFERENCES:src/lib.rs",
@@ -500,10 +800,10 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "8 => Ok(Self::Configure),",
-    "Configure = 8,",
-    "super::*"
+    "Consumes configuration at src/runtime/lifecycle/sidecar_protocol.rs:17.",
+    "Consumes configuration at src/runtime/lifecycle/sidecar_protocol.rs:325.",
+    "Consumes configuration at src/runtime/lifecycle/sidecar_protocol.rs:34.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -521,33 +821,33 @@
   "module": "pocketstation::runtime::lifecycle::sidecar_protocol",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::lifecycle::sidecar_protocol` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-8e20e712bfc478b0a055",
     "pattern-a0b53d2c9580d1339c1f"
   ],
   "outputs": [
-    "_ => Err(SidecarProtocolError::UnknownMessageKind(value)),",
-    "const:SIDECAR_PROTOCOL_MAJOR",
-    "const:SIDECAR_PROTOCOL_MINOR",
-    "enum:SidecarMessageKind",
-    "enum:SidecarProtocolError",
-    "fn:decode",
-    "fn:encode",
-    "fn:max_frame_bytes",
-    "fn:validate",
-    "return Err(SidecarProtocolError::EmptySignalId);",
-    "return Err(SidecarProtocolError::FrameTooLarge);",
-    "return Err(SidecarProtocolError::InvalidMagic);",
-    "return Err(SidecarProtocolError::ReservedFieldSet);",
-    "return Err(SidecarProtocolError::Truncated);",
-    "return Err(SidecarProtocolError::UnsupportedMajor(major));",
-    "return Err(SidecarProtocolError::UnsupportedMinor(minor));",
-    "return Err(if expected > input.len() {",
-    "struct:SidecarMessage",
-    "struct:SidecarProtocolLimits",
-    "value => return Err(SidecarProtocolError::InvalidTerminal(value)),"
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:126.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:129.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:134.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:137.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:143.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:146.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:166.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:175.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:37.",
+    "Creates a typed failure at src/runtime/lifecycle/sidecar_protocol.rs:98.",
+    "Declares public const `SIDECAR_PROTOCOL_MAJOR`.",
+    "Declares public const `SIDECAR_PROTOCOL_MINOR`.",
+    "Declares public enum `SidecarMessageKind`.",
+    "Declares public enum `SidecarProtocolError`.",
+    "Declares public fn `decode`.",
+    "Declares public fn `encode`.",
+    "Declares public fn `max_frame_bytes`.",
+    "Declares public fn `validate`.",
+    "Declares public struct `SidecarMessage`.",
+    "Declares public struct `SidecarProtocolLimits`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/lifecycle/sidecar_protocol.rs",
@@ -714,8 +1014,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::lifecycle::sidecar protocol responsibilities, including Selects the sidecar message kind used by PocketStation.; Selects signal behavior for `SidecarMessageKind`.; Selects ready behavior for `SidecarMessageKind`.."
+    "classification": "DECLARED",
+    "text": "Selects the sidecar message kind used by PocketStation. Identifies a sidecar protocol message carrying or representing signal. Identifies a sidecar protocol message carrying or representing ready."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -771,19 +1071,21 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/connector/transport.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind: Selects the sidecar message kind used by PocketStation.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Signal: Selects signal behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Ready: Selects ready behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Error: Selects error behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Cancel: Selects cancel behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Close: Selects close behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Hello: Selects hello behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Manifest: Selects manifest behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Configure: Selects configure behavior for `SidecarMessageKind`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Observation: Selects observation behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Signal: Identifies a sidecar protocol message carrying or representing signal.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Ready: Identifies a sidecar protocol message carrying or representing ready.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Error: Identifies a sidecar protocol message carrying or representing error.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Cancel: Identifies a sidecar protocol message carrying or representing cancel.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Close: Identifies a sidecar protocol message carrying or representing close.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Hello: Identifies a sidecar protocol message carrying or representing hello.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Manifest: Identifies a sidecar protocol message carrying or representing manifest.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Configure: Identifies a sidecar protocol message carrying or representing configure.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Observation: Identifies a sidecar protocol message carrying or representing observation.",
     "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Closed: Reports that the underlying channel or resource is closed.",
     "Error: Specifies the error type returned by `SidecarMessageKind` operations.",
     "try_from: Attempts to from through `SidecarMessageKind`.",
@@ -795,35 +1097,35 @@
     "default: Returns the default `SidecarProtocolLimits` value.",
     "max_frame_bytes: Returns the max frame bytes held by `SidecarProtocolLimits`.",
     "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessage: Carries one typed control or signal message across the sidecar protocol.",
-    "SidecarMessage::kind: Stores the kind used by `SidecarMessage`.",
+    "SidecarMessage::kind: Records the kind selected for `SidecarMessage`.",
     "SidecarMessage::terminal: Indicates whether terminal applies to `SidecarMessage`.",
     "SidecarMessage::stream_id: Identifies the stream identifier recorded by `SidecarMessage`.",
-    "SidecarMessage::sequence_number: Stores the sequence number used by `SidecarMessage`.",
+    "SidecarMessage::sequence_number: Orders `SidecarMessage` within its protocol or stream sequence.",
     "SidecarMessage::timestamp_ns: Stores the timestamp value for `SidecarMessage`, in nanoseconds.",
     "SidecarMessage::signal_id: Identifies the signal identifier recorded by `SidecarMessage`.",
-    "SidecarMessage::role: Stores the role used by `SidecarMessage`.",
-    "SidecarMessage::schema: Stores the schema used by `SidecarMessage`.",
-    "SidecarMessage::payload: Stores the payload used by `SidecarMessage`.",
+    "SidecarMessage::role: Records the role selected for `SidecarMessage`.",
+    "SidecarMessage::schema: Records the schema selected for `SidecarMessage`.",
+    "SidecarMessage::payload: Contains the encoded message body carried by `SidecarMessage`.",
     "encode: Encodes input through `SidecarMessage`.",
     "decode: Decodes input through `SidecarMessage`.",
     "validate: Validates `SidecarMessage` against its declared contract.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError: Classifies failures reported as sidecar protocol error.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::Truncated: Reported when the owning operation encounters truncated.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::TrailingBytes: Reported when the owning operation encounters trailing bytes.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidMagic: Reported when the owning operation encounters invalid magic.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnsupportedMajor: Reported when the owning operation encounters unsupported major.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnsupportedMinor: Reported when the owning operation encounters unsupported minor.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnknownMessageKind: Reported when the owning operation encounters unknown message kind.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidTerminal: Reported when the owning operation encounters invalid terminal.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::ReservedFieldSet: Reported when the owning operation encounters reserved field set.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::EmptySignalId: Reported when the owning operation encounters empty signal identifier.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FieldTooLarge: Reported when the owning operation encounters field too large.",
-    "SidecarProtocolError::FieldTooLarge::field: Stores the field used by `FieldTooLarge`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError: Classifies failures produced during sidecar protocol parsing and state transitions.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::Truncated: Reports that the encoded input ended before the complete record was available.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::TrailingBytes: Reports that bytes remain after decoding the complete record.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidMagic: Reports that the supplied magic is invalid.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnsupportedMajor: Reports that the requested major is unsupported.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnsupportedMinor: Reports that the requested minor is unsupported.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnknownMessageKind: Reports that the referenced message kind is not declared or registered.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidTerminal: Reports that the supplied terminal is invalid.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::ReservedFieldSet: Reports that a reserved compatibility field contains a nonzero value.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::EmptySignalId: Reports that signal identifier is empty.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FieldTooLarge: Reports that field exceeds the supported size limit.",
+    "SidecarProtocolError::FieldTooLarge::field: Stores the field component of `FieldTooLarge`.",
     "SidecarProtocolError::FieldTooLarge::actual: Records the value observed by `FieldTooLarge`.",
     "SidecarProtocolError::FieldTooLarge::maximum: Sets the inclusive maximum accepted by `FieldTooLarge`.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidUtf8: Reported when the owning operation encounters invalid UTF-8.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FrameLengthOverflow: Reported when the owning operation encounters frame length overflow.",
-    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FrameTooLarge: Reported when the owning operation encounters frame too large."
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidUtf8: Reports that the supplied utf8 is invalid.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FrameLengthOverflow: Reports that frame length exceeds its numeric range.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FrameTooLarge: Reports that frame exceeds the supported size limit."
   ],
   "retry_behavior": [],
   "serialization": [

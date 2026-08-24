@@ -215,14 +215,49 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "4b41cfa7c74c8c4e9edb5093cde81c16e2f31289735f24861d892f41e12095f4",
       "lines": [
-        1,
-        220
+        150,
+        179
       ],
-      "path": "tests/capture_callback_source_contract.rs",
-      "symbol": null
+      "path": "tests/capture_callback_source_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "4b41cfa7c74c8c4e9edb5093cde81c16e2f31289735f24861d892f41e12095f4",
+      "lines": [
+        120,
+        150
+      ],
+      "path": "tests/capture_callback_source_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "4b41cfa7c74c8c4e9edb5093cde81c16e2f31289735f24861d892f41e12095f4",
+      "lines": [
+        179,
+        219
+      ],
+      "path": "tests/capture_callback_source_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "4b41cfa7c74c8c4e9edb5093cde81c16e2f31289735f24861d892f41e12095f4",
+      "lines": [
+        85,
+        99
+      ],
+      "path": "tests/capture_callback_source_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "4b41cfa7c74c8c4e9edb5093cde81c16e2f31289735f24861d892f41e12095f4",
+      "lines": [
+        99,
+        120
+      ],
+      "path": "tests/capture_callback_source_contract.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -281,7 +316,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/capture_callback_source_contract.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-282bcea11f3184c9135b"

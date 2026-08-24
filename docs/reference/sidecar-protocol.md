@@ -1,6 +1,6 @@
 # Sidecar protocol
 
-<!-- claims: CLM-REF-011-CAP-001,CLM-REF-011-SOURCE-001 -->
+<!-- claims: CLM-REF-011-SCOPE-001,CLM-REF-011-TEXT-001,CLM-REF-011-TEXT-002,CLM-REF-011-SOURCE-001 -->
 
 ## Scope
 
@@ -21,58 +21,58 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-4d9191cba5863424f902 | `pocketstation::connector::configuration::MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES` | constant | Sets the maximum supported connector configuration text bytes. | `src/connector/configuration.rs:8` |
 | sym-924e23cbd531280ca555 | `pocketstation::connector::error::MAX_CONNECTOR_ERROR_CODE_BYTES` | constant | Sets the maximum supported connector error code bytes. | `src/connector/error.rs:6` |
 | sym-9e444653483fa4f02fa0 | `pocketstation::connector::error::MAX_CONNECTOR_ERROR_MESSAGE_BYTES` | constant | Sets the maximum supported connector error message bytes. | `src/connector/error.rs:7` |
-| sym-757c38dcb30074da8581 | `pocketstation::connector::manifest::CONNECTOR_API_REVISION` | constant | Defines the public connector API revision value. | `src/connector/manifest.rs:7` |
+| sym-757c38dcb30074da8581 | `pocketstation::connector::manifest::CONNECTOR_API_REVISION` | constant | Defines connector API revision as `1` for the owning public contract. | `src/connector/manifest.rs:7` |
 | sym-f0d13b3a5e8fa03517d4 | `pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_ENTRIES` | constant | Sets the maximum supported connector manifest entries. | `src/connector/manifest.rs:8` |
 | sym-8c599603d4781320e76d | `pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_TEXT_BYTES` | constant | Sets the maximum supported connector manifest text bytes. | `src/connector/manifest.rs:9` |
 | sym-5c81b5fa9bc04f842d85 | `pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_THRESHOLD` | constant | Sets the maximum supported connector readiness threshold. | `src/connector/readiness.rs:3` |
 | sym-aec7604fe15b924867aa | `pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_TIMEOUT` | constant | Sets the maximum supported connector readiness timeout. | `src/connector/readiness.rs:4` |
-| sym-422d9d058d7efb3d7df3 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA` | constant | Defines the public connector audio record schema value. | `src/connector/sidecar.rs:16` |
-| sym-ebefb51273c068a49190 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID` | constant | Defines the public connector audio record signal identifier value. | `src/connector/sidecar.rs:15` |
+| sym-422d9d058d7efb3d7df3 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA` | constant | Defines connector audio record schema as `"urn:pocketstation:connector:audio-record:v1"` for the owning public contract. | `src/connector/sidecar.rs:16` |
+| sym-ebefb51273c068a49190 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID` | constant | Defines connector audio record signal identifier as `"io.pocketstation.connector.audio-record.v1"` for the owning public contract. | `src/connector/sidecar.rs:15` |
 | sym-49c977d37090f05fdc4f | `pocketstation::connector::transport::CONNECTOR_AUDIO_RECORD_MAJOR` | constant | Defines the major version of connector audio record. | `src/connector/transport.rs:19` |
 | sym-8df8d2d405c7a4341c3b | `pocketstation::connector::transport::CONNECTOR_AUDIO_RECORD_MINOR` | constant | Defines the minor version of connector audio record. | `src/connector/transport.rs:20` |
 | sym-d5023e4750724b6eb269 | `pocketstation::connector::transport::CONNECTOR_CONFIGURATION_RECORD_MAJOR` | constant | Defines the major version of connector configuration record. | `src/connector/transport.rs:35` |
 | sym-3623310c7f84b4a816da | `pocketstation::connector::transport::CONNECTOR_CONFIGURATION_RECORD_MINOR` | constant | Defines the minor version of connector configuration record. | `src/connector/transport.rs:36` |
 | sym-8fa3ab71f953b0df2d48 | `pocketstation::connector::transport::MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES` | constant | Sets the maximum supported connector audio record port bytes. | `src/connector/transport.rs:21` |
 | sym-267083f78abe7e48cdc2 | `pocketstation::connector::transport::MAX_CONNECTOR_AUDIO_RECORD_SAMPLES` | constant | Sets the maximum supported connector audio record samples. | `src/connector/transport.rs:22` |
-| sym-8dbc9bd88b1575dd438d | `pocketstation::connector::ConnectorDeclarationError` | enum | Classifies failures reported as connector declaration error. | `src/connector/mod.rs:233` |
-| sym-a78af2f1f714d50e5fb2 | `pocketstation::connector::ConnectorObservationLookupError` | enum | Classifies failures reported as connector observation lookup error. | `src/connector/mod.rs:246` |
-| sym-c609c374fa8e6866eeee | `pocketstation::connector::ConnectorRegistrationError` | enum | Classifies failures reported as connector registration error. | `src/connector/mod.rs:225` |
-| sym-13750a98063d811df25f | `pocketstation::connector::configuration::ConnectorConfigurationConstraint` | enum | Enumerates the supported connector configuration constraint cases. | `src/connector/configuration.rs:159` |
-| sym-4c8ab28f0ba8c890be55 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` | enum | Enumerates the supported connector configuration error code cases. | `src/connector/configuration.rs:568` |
+| sym-8dbc9bd88b1575dd438d | `pocketstation::connector::ConnectorDeclarationError` | enum | Classifies failures surfaced by connector declaration operations. | `src/connector/mod.rs:233` |
+| sym-a78af2f1f714d50e5fb2 | `pocketstation::connector::ConnectorObservationLookupError` | enum | Classifies failures surfaced by connector observation lookup operations. | `src/connector/mod.rs:246` |
+| sym-c609c374fa8e6866eeee | `pocketstation::connector::ConnectorRegistrationError` | enum | Classifies failures produced during connector registration. | `src/connector/mod.rs:225` |
+| sym-13750a98063d811df25f | `pocketstation::connector::configuration::ConnectorConfigurationConstraint` | enum | Classifies validation constraints applied to connector configuration fields. | `src/connector/configuration.rs:159` |
+| sym-4c8ab28f0ba8c890be55 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` | enum | Provides stable categories for connector configuration validation failures. | `src/connector/configuration.rs:568` |
 | sym-a40cb5d8365f9ea24105 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement` | enum | Selects the connector configuration requirement used by PocketStation. | `src/connector/configuration.rs:152` |
-| sym-6966c55cb774b54182be | `pocketstation::connector::configuration::ConnectorConfigurationValue` | enum | Enumerates the supported connector configuration value cases. | `src/connector/configuration.rs:66` |
+| sym-6966c55cb774b54182be | `pocketstation::connector::configuration::ConnectorConfigurationValue` | enum | Carries one validated connector configuration value in its declared scalar or secret form. | `src/connector/configuration.rs:66` |
 | sym-80830e3822c869f170f3 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind` | enum | Selects the connector configuration value kind used by PocketStation. | `src/connector/configuration.rs:55` |
-| sym-936b382b77b874531096 | `pocketstation::connector::error::ConnectorErrorBuildError` | enum | Classifies failures reported as connector error build error. | `src/connector/error.rs:184` |
-| sym-736ab1f377099246ab6c | `pocketstation::connector::error::ConnectorErrorCodeError` | enum | Classifies failures reported as connector error code error. | `src/connector/error.rs:50` |
+| sym-936b382b77b874531096 | `pocketstation::connector::error::ConnectorErrorBuildError` | enum | Classifies failures produced during connector error construction and input validation. | `src/connector/error.rs:184` |
+| sym-736ab1f377099246ab6c | `pocketstation::connector::error::ConnectorErrorCodeError` | enum | Classifies failures surfaced by connector error code operations. | `src/connector/error.rs:50` |
 | sym-a833cb405d6b510ca450 | `pocketstation::connector::error::ConnectorErrorStage` | enum | Selects the connector error stage used by PocketStation. | `src/connector/error.rs:60` |
-| sym-47fa722e871287abe9c1 | `pocketstation::connector::error::ConnectorRetryability` | enum | Enumerates the supported connector retryability cases. | `src/connector/error.rs:72` |
-| sym-eb9a6bafd07d87b6d706 | `pocketstation::connector::manifest::ConnectorManifestError` | enum | Classifies failures reported as connector manifest error. | `src/connector/manifest.rs:231` |
-| sym-a62dc6612ed60bf01537 | `pocketstation::connector::observations::ConnectorObservationError` | enum | Classifies failures reported as connector observation error. | `src/connector/observations.rs:175` |
-| sym-0c5d86ed5e47145073e6 | `pocketstation::connector::readiness::ConnectorReadinessPolicyError` | enum | Classifies failures reported as connector readiness policy error. | `src/connector/readiness.rs:61` |
-| sym-57a90efe5d877dea505e | `pocketstation::connector::status::ConnectorDeliveryReadiness` | enum | Enumerates the supported connector delivery readiness cases. | `src/connector/status.rs:4` |
-| sym-95843fa35c7fe6258767 | `pocketstation::connector::status::ConnectorHealth` | enum | Enumerates the supported connector health cases. | `src/connector/status.rs:17` |
-| sym-2e6f8e216a5a39ba1c46 | `pocketstation::connector::status::ConnectorRecovery` | enum | Enumerates the supported connector recovery cases. | `src/connector/status.rs:24` |
-| sym-a8e9c6600f9fddcb4ca9 | `pocketstation::connector::transport::ConnectorAudioRecordError` | enum | Classifies failures reported as connector audio record error. | `src/connector/transport.rs:568` |
-| sym-26e401bc8ce6686aafa5 | `pocketstation::connector::transport::ConnectorConfigurationRecordError` | enum | Classifies failures reported as connector configuration record error. | `src/connector/transport.rs:251` |
+| sym-47fa722e871287abe9c1 | `pocketstation::connector::error::ConnectorRetryability` | enum | Declares whether a connector failure may be retried under the connector contract. | `src/connector/error.rs:72` |
+| sym-eb9a6bafd07d87b6d706 | `pocketstation::connector::manifest::ConnectorManifestError` | enum | Classifies failures surfaced by connector manifest operations. | `src/connector/manifest.rs:231` |
+| sym-a62dc6612ed60bf01537 | `pocketstation::connector::observations::ConnectorObservationError` | enum | Classifies failures surfaced by connector observation operations. | `src/connector/observations.rs:175` |
+| sym-0c5d86ed5e47145073e6 | `pocketstation::connector::readiness::ConnectorReadinessPolicyError` | enum | Classifies failures surfaced by connector readiness policy operations. | `src/connector/readiness.rs:61` |
+| sym-57a90efe5d877dea505e | `pocketstation::connector::status::ConnectorDeliveryReadiness` | enum | Reports whether connector delivery is ready, degraded, or unavailable. | `src/connector/status.rs:4` |
+| sym-95843fa35c7fe6258767 | `pocketstation::connector::status::ConnectorHealth` | enum | Reports the current operational health of a connector worker. | `src/connector/status.rs:17` |
+| sym-2e6f8e216a5a39ba1c46 | `pocketstation::connector::status::ConnectorRecovery` | enum | Declares the recovery state exposed after a connector failure. | `src/connector/status.rs:24` |
+| sym-a8e9c6600f9fddcb4ca9 | `pocketstation::connector::transport::ConnectorAudioRecordError` | enum | Classifies failures surfaced by connector audio record operations. | `src/connector/transport.rs:568` |
+| sym-26e401bc8ce6686aafa5 | `pocketstation::connector::transport::ConnectorConfigurationRecordError` | enum | Classifies failures surfaced by connector configuration record operations. | `src/connector/transport.rs:251` |
 | sym-c61e48a0b277b7e058f2 | `pocketstation::connector::worker::driver::ConnectorDeliveryOutcome` | enum | Explicit delivery result used for Core-owned accounting. | `src/connector/worker/driver.rs:83` |
 | sym-5d275693e8d66effdd4e | `pocketstation::connector::worker::driver::ConnectorItem` | enum | One bounded item delivered by Core to a connector driver. | `src/connector/worker/driver.rs:62` |
-| sym-bd4cddc024bdfa04c794 | `pocketstation::runtime::audio::executor::ExecError` | enum | Classifies failures reported as exec error. | `src/runtime/audio/executor.rs:20` |
-| sym-957ab9d17e2a69e24822 | `pocketstation::runtime::audio::router::PlanEdgeFrame` | enum | Enumerates the supported plan edge frame cases. | `src/runtime/audio/router.rs:29` |
-| sym-0f3e073889a85f550e76 | `pocketstation::runtime::audio::router::PlanRouterError` | enum | Classifies failures reported as plan router error. | `src/runtime/audio/router.rs:17` |
+| sym-bd4cddc024bdfa04c794 | `pocketstation::runtime::audio::executor::ExecError` | enum | Classifies failures surfaced by exec operations. | `src/runtime/audio/executor.rs:20` |
+| sym-957ab9d17e2a69e24822 | `pocketstation::runtime::audio::router::PlanEdgeFrame` | enum | Carries either one routed frame or a terminal marker through a plan edge. | `src/runtime/audio/router.rs:29` |
+| sym-0f3e073889a85f550e76 | `pocketstation::runtime::audio::router::PlanRouterError` | enum | Classifies failures surfaced by plan router operations. | `src/runtime/audio/router.rs:17` |
 | sym-8077ac938f560668fc7d | `pocketstation::runtime::audio::runner::PlanRunnerDrainPolicy` | enum | Selects the plan runner drain policy used by PocketStation. | `src/runtime/audio/runner.rs:16` |
-| sym-56de2f851fe07b9e1f22 | `pocketstation::runtime::audio::runner::PlanRunnerError` | enum | Classifies failures reported as plan runner error. | `src/runtime/audio/runner.rs:256` |
-| sym-635213208855f982fdd1 | `pocketstation::runtime::audio::runner::PlanSourceSendError` | enum | Classifies failures reported as plan source send error. | `src/runtime/audio/runner.rs:116` |
+| sym-56de2f851fe07b9e1f22 | `pocketstation::runtime::audio::runner::PlanRunnerError` | enum | Classifies failures surfaced by plan runner operations. | `src/runtime/audio/runner.rs:256` |
+| sym-635213208855f982fdd1 | `pocketstation::runtime::audio::runner::PlanSourceSendError` | enum | Classifies failures surfaced by plan source send operations. | `src/runtime/audio/runner.rs:116` |
 | sym-48efb656489fafc8bcc9 | `pocketstation::runtime::audio::runner::PlanSourceSendOutcome` | enum | Classifies the observable plan source send outcome. | `src/runtime/audio/runner.rs:123` |
-| sym-993f5a91b8567d32c584 | `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures reported as generated audio bridge start error. | `src/runtime/bridge/audio.rs:46` |
-| sym-71cc7e43e02a571de594 | `pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError` | enum | Classifies failures reported as async runtime host error. | `src/runtime/lifecycle/async_host.rs:10` |
-| sym-9de7ba3ad4ec47b816ed | `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures reported as sidecar host error. | `src/runtime/lifecycle/sidecar_host.rs:686` |
+| sym-993f5a91b8567d32c584 | `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures produced during generated audio bridge lifecycle start. | `src/runtime/bridge/audio.rs:46` |
+| sym-71cc7e43e02a571de594 | `pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError` | enum | Classifies failures surfaced by async runtime host operations. | `src/runtime/lifecycle/async_host.rs:10` |
+| sym-9de7ba3ad4ec47b816ed | `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures surfaced by sidecar host operations. | `src/runtime/lifecycle/sidecar_host.rs:686` |
 | sym-92b3ea8c30f09567053c | `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | Selects the sidecar state used by PocketStation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
 | sym-0e7efaeba01d4c9b9389 | `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind` | enum | Selects the sidecar message kind used by PocketStation. | `src/runtime/lifecycle/sidecar_protocol.rs:9` |
-| sym-87edea404c6ffea054be | `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` | enum | Classifies failures reported as sidecar protocol error. | `src/runtime/lifecycle/sidecar_protocol.rs:292` |
-| sym-aaff16dc9808b1b8fbf9 | `pocketstation::runtime::signal::edge::TypedEdgeBuildError` | enum | Classifies failures reported as typed edge build error. | `src/runtime/signal/edge.rs:386` |
-| sym-dbb372137f3276f38eb7 | `pocketstation::runtime::signal::edge::TypedEdgePublishError` | enum | Classifies failures reported as typed edge publish error. | `src/runtime/signal/edge.rs:408` |
-| sym-d8829db8dadb99f939cb | `pocketstation::runtime::signal::error::AsyncOperatorWorkerError` | enum | Classifies failures reported as async operator worker error. | `src/runtime/signal/error.rs:6` |
-| sym-116294235e95d6969503 | `ConnectorDriver::cancel_preparation` | function | Cancels preparation for `ConnectorDriver`. | `src/connector/worker/driver.rs:116` |
+| sym-87edea404c6ffea054be | `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` | enum | Classifies failures produced during sidecar protocol parsing and state transitions. | `src/runtime/lifecycle/sidecar_protocol.rs:292` |
+| sym-aaff16dc9808b1b8fbf9 | `pocketstation::runtime::signal::edge::TypedEdgeBuildError` | enum | Classifies failures produced during typed edge construction and input validation. | `src/runtime/signal/edge.rs:386` |
+| sym-dbb372137f3276f38eb7 | `pocketstation::runtime::signal::edge::TypedEdgePublishError` | enum | Classifies failures surfaced by typed edge publish operations. | `src/runtime/signal/edge.rs:408` |
+| sym-d8829db8dadb99f939cb | `pocketstation::runtime::signal::error::AsyncOperatorWorkerError` | enum | Classifies failures surfaced by async operator worker operations. | `src/runtime/signal/error.rs:6` |
+| sym-116294235e95d6969503 | `ConnectorDriver::cancel_preparation` | function | Cancels resources created while preparing `ConnectorDriver`. | `src/connector/worker/driver.rs:116` |
 | sym-c3743aa2faf26b1ae2ba | `ConnectorDriver::deliver` | function | Delivers the next input through `ConnectorDriver`. | `src/connector/worker/driver.rs:98` |
 | sym-a015cd11b00099f1959b | `ConnectorDriver::idle` | function | Advances `ConnectorDriver` while no input is available. | `src/connector/worker/driver.rs:104` |
 | sym-be0022e2a56f799fb3e7 | `ConnectorDriver::shutdown` | function | Shuts down `ConnectorDriver` according to its lifecycle contract. | `src/connector/worker/driver.rs:108` |
@@ -81,10 +81,10 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-f83e889dd44a61772bbe | `ConnectorDriverFactory::prepare` | function | Prepares resources required by `ConnectorDriverFactory`. | `src/connector/worker/driver.rs:132` |
 | sym-4825cbede5c6ebfaec8f | `ConnectorFactory::preparation_group` | function | Returns the preparation group associated with `ConnectorFactory`. | `src/connector/worker/mod.rs:18` |
 | sym-6015b5e7fee5a0b0c418 | `ConnectorFactory::prepare` | function | Prepares resources required by `ConnectorFactory`. | `src/connector/worker/mod.rs:26` |
-| sym-832954574d8962ffafee | `ConnectorWorker::cancel_preparation` | function | Cancels preparation for `ConnectorWorker`. | `src/connector/worker/mod.rs:35` |
+| sym-832954574d8962ffafee | `ConnectorWorker::cancel_preparation` | function | Cancels resources created while preparing `ConnectorWorker`. | `src/connector/worker/mod.rs:35` |
 | sym-b9c16a875bf523033d20 | `ConnectorWorker::run` | function | Runs `ConnectorWorker` until completion or cancellation. | `src/connector/worker/mod.rs:33` |
-| sym-42a8e5c4d0cbc083c502 | `accepts_delivery` | function | Returns whether accepts delivery applies to `ConnectorDeliveryReadiness`. | `src/connector/status.rs:10` |
-| sym-8d570ccfcc6f8f22adb8 | `accepts_delivery` | function | Returns whether accepts delivery applies to `ConnectorServiceStatus`. | `src/connector/status.rs:74` |
+| sym-42a8e5c4d0cbc083c502 | `accepts_delivery` | function | Reports whether accepts delivery is true for `ConnectorDeliveryReadiness`. | `src/connector/status.rs:10` |
+| sym-8d570ccfcc6f8f22adb8 | `accepts_delivery` | function | Reports whether accepts delivery is true for `ConnectorServiceStatus`. | `src/connector/status.rs:74` |
 | sym-e9973a9598777cbaefb0 | `api_revision` | function | Returns the API revision held by `ConnectorManifest`. | `src/connector/manifest.rs:124` |
 | sym-ecb602e99c0dba24af4f | `as_str` | function | Returns the stable string representation of `ConnectorConfigurationErrorCode`. | `src/connector/configuration.rs:585` |
 | sym-f5caa543ea9c940cafb1 | `as_str` | function | Returns the stable string representation of `ConnectorErrorCode`. | `src/connector/error.rs:29` |
@@ -132,7 +132,7 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-0c5da44a14691ca38d74 | `endpoint_id` | function | Returns the endpoint identifier held by `ConnectorInputDescriptor`. | `src/connector/worker/driver.rs:28` |
 | sym-575cacd62461aa3cdc9c | `endpoint_observations` | function | Returns the endpoint observations held by `ConnectorContext`. | `src/connector/worker/coordination.rs:139` |
 | sym-dbccbe698db48a061ebe | `execute` | function | Executes its owned operation for `AsyncRuntimeHost`. | `src/runtime/lifecycle/async_host.rs:65` |
-| sym-b1658414197792b94c5b | `execute_from` | function | Executes from for `RealtimePlanExecutor`. | `src/runtime/audio/executor.rs:149` |
+| sym-b1658414197792b94c5b | `execute_from` | function | Executes one lineaged frame from the named source node through `RealtimePlanExecutor`. | `src/runtime/audio/executor.rs:149` |
 | sym-b9d0e20afe7dce1858a4 | `expose_secret` | function | Exposes the secret to the owning connector during setup or worker use. | `src/connector/configuration.rs:37` |
 | sym-d55e9dc582b914e1a93b | `failure` | function | Returns the failure held by `ConnectorRunOutcome`. | `src/connector/worker/mod.rs:55` |
 | sym-56df668f46edc7d9e40d | `failure_threshold` | function | Returns the failure threshold held by `ConnectorReadinessPolicy`. | `src/connector/readiness.rs:55` |
@@ -170,11 +170,11 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-7108c905ca4780df696b | `into_configuration` | function | Converts `ConnectorConfigurationRecord` into configuration. | `src/connector/transport.rs:57` |
 | sym-b74082477b551771a0a0 | `into_endpoint_failure` | function | Converts `ConnectorError` into endpoint failure. | `src/connector/error.rs:125` |
 | sym-64dbb4a8d0ef710f8861 | `into_rejected` | function | Converts `SignalEdgeSendError` into rejected. | `src/runtime/signal/edge.rs:123` |
-| sym-d3b35a7e7b9712ddaea7 | `is_abandoned` | function | Returns whether abandoned applies to `PlanEdgeReceiver`. | `src/runtime/audio/router.rs:574` |
-| sym-0eefd4234befb8a34c61 | `is_abort_requested` | function | Returns whether abort requested applies to `ConnectorContext`. | `src/connector/worker/coordination.rs:36` |
+| sym-d3b35a7e7b9712ddaea7 | `is_abandoned` | function | Reports whether abandoned is true for `PlanEdgeReceiver`. | `src/runtime/audio/router.rs:574` |
+| sym-0eefd4234befb8a34c61 | `is_abort_requested` | function | Reports whether abort requested is true for `ConnectorContext`. | `src/connector/worker/coordination.rs:36` |
 | sym-104b3bac350417f37f40 | `is_empty` | function | Returns whether `ConnectorConfiguration` contains no values. | `src/connector/configuration.rs:146` |
-| sym-4a925d7654caf42d1a2a | `is_requested` | function | Returns whether requested applies to `PlanRunnerCancellation`. | `src/runtime/audio/runner.rs:104` |
-| sym-1440b0574deddcb13357 | `is_stop_requested` | function | Returns whether stop requested applies to `ConnectorContext`. | `src/connector/worker/coordination.rs:28` |
+| sym-4a925d7654caf42d1a2a | `is_requested` | function | Reports whether requested is true for `PlanRunnerCancellation`. | `src/runtime/audio/runner.rs:104` |
+| sym-1440b0574deddcb13357 | `is_stop_requested` | function | Reports whether stop requested is true for `ConnectorContext`. | `src/connector/worker/coordination.rs:28` |
 | sym-77a3c9fd80fed3c3b18f | `iter` | function | Iterates over the values held by `ConnectorConfiguration`. | `src/connector/configuration.rs:138` |
 | sym-d8cf73924fb51e8b2b8e | `iter` | function | Iterates over the values held by `ResolvedConnectorConfiguration`. | `src/connector/configuration.rs:398` |
 | sym-e136b77b30dedf88de08 | `kind` | function | Returns the kind represented by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:77` |
@@ -250,16 +250,16 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-948e37a429ffcad3e1f3 | `publish` | function | Publishes its owned operation for `TypedEdgeFanout`. | `src/runtime/signal/edge.rs:308` |
 | sym-e60f163a42c86e627c15 | `readiness` | function | Returns the readiness held by `ConnectorManifest`. | `src/connector/manifest.rs:148` |
 | sym-14159ada749817248906 | `readiness_reason_code` | function | Returns the readiness reason code held by `ConnectorServiceStatus`. | `src/connector/status.rs:54` |
-| sym-1c56cd4861b4e8542db3 | `receive_signal` | function | Receives signal for `SidecarHost`. | `src/runtime/lifecycle/sidecar_host.rs:307` |
-| sym-cf9795799631aa59db4d | `record_discontinuity` | function | Records discontinuity for `ConnectorContext`. | `src/connector/worker/coordination.rs:126` |
-| sym-4db69bd3b958653d5a39 | `record_failure` | function | Records failure for `ConnectorContext`. | `src/connector/worker/coordination.rs:134` |
+| sym-1c56cd4861b4e8542db3 | `receive_signal` | function | Receives and decodes the next signal message from `SidecarHost`. | `src/runtime/lifecycle/sidecar_host.rs:307` |
+| sym-cf9795799631aa59db4d | `record_discontinuity` | function | Increments the discontinuity observation recorded by `ConnectorContext`. | `src/connector/worker/coordination.rs:126` |
+| sym-4db69bd3b958653d5a39 | `record_failure` | function | Records a connector failure and its retry classification in `ConnectorContext`. | `src/connector/worker/coordination.rs:134` |
 | sym-56b7d6a6b13ac312c206 | `record_frame_delivered` | function | Records frame delivered for `ConnectorContext`. | `src/connector/worker/coordination.rs:118` |
 | sym-5fdc554f555394e3829a | `record_frame_dropped` | function | Records frame dropped for `ConnectorContext`. | `src/connector/worker/coordination.rs:122` |
 | sym-fef19c653c5b665bfdb1 | `record_frame_received` | function | Records frame received for `ConnectorContext`. | `src/connector/worker/coordination.rs:114` |
-| sym-a45c024f475a58d1b180 | `record_retry` | function | Records retry for `ConnectorContext`. | `src/connector/worker/coordination.rs:130` |
+| sym-a45c024f475a58d1b180 | `record_retry` | function | Increments the retry-attempt observation recorded by `ConnectorContext`. | `src/connector/worker/coordination.rs:130` |
 | sym-e929ec8f8bd8d46681a3 | `recovery` | function | Returns the recovery held by `ConnectorServiceStatus`. | `src/connector/status.rs:50` |
 | sym-4e9f9c99a9cb2e52f040 | `recovery_reason_code` | function | Returns the recovery reason code held by `ConnectorServiceStatus`. | `src/connector/status.rs:62` |
-| sym-4a56bcf46740dc03c2d8 | `register_connector` | function | Registers connector for `Session`. | `src/connector/mod.rs:204` |
+| sym-4a56bcf46740dc03c2d8 | `register_connector` | function | Registers one connector implementation for use by `Session`. | `src/connector/mod.rs:204` |
 | sym-076cb297137035bb5445 | `report_readiness_failure` | function | Returns the report readiness failure held by `ConnectorContext`. | `src/connector/worker/coordination.rs:97` |
 | sym-d772a418c19fd77add1e | `report_readiness_success` | function | Records a successful readiness probe for `ConnectorContext`. | `src/connector/worker/coordination.rs:80` |
 | sym-4de7461e08a0662dfe4a | `request` | function | Requests the state transition represented by `PlanRunnerCancellation`. | `src/runtime/audio/runner.rs:100` |
@@ -277,7 +277,7 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-e2f0787e6e779bba80c2 | `samples` | function | Returns the audio samples held by `ConnectorAudioRecord`. | `src/connector/transport.rs:343` |
 | sym-35573b446bcfa5698752 | `samples` | function | Returns the audio samples held by `PlanEdgeFrame`. | `src/runtime/audio/router.rs:84` |
 | sym-aa0e0375e545c4bdc101 | `send` | function | Sends a value through `AsyncOperatorInput`. | `src/runtime/signal/io.rs:39` |
-| sym-0b2d138a7fc7e6ce5d71 | `send_audio` | function | Sends audio for `AsyncOperatorInput`. | `src/runtime/signal/io.rs:55` |
+| sym-0b2d138a7fc7e6ce5d71 | `send_audio` | function | Sends one audio signal through the bounded input owned by `AsyncOperatorInput`. | `src/runtime/signal/io.rs:55` |
 | sym-2352790cae6eb2f7b359 | `sequence_number` | function | Returns the sequence number held by `PlanEdgeFrame`. | `src/runtime/audio/router.rs:49` |
 | sym-98cd1bcf8ce5150f2a87 | `session_id` | function | Returns the session identifier held by `RegisteredConnector`. | `src/connector/mod.rs:132` |
 | sym-c16c1279a7c88497027f | `set_connected` | function | Sets the connected used by `ConnectorContext`. | `src/connector/worker/coordination.rs:74` |
@@ -298,7 +298,7 @@ For **Sidecar protocol**, the generated [docs.rs API](https://docs.rs/pocketstat
 | sym-e3ff3a0d7c299d5f93d1 | `spawn` | function | Spawns its owned operation for `GeneratedAudioBridge`. | `src/runtime/bridge/audio.rs:131` |
 | sym-36b9156f7e45336488f3 | `spawn` | function | Spawns its owned operation for `SidecarHost`. | `src/runtime/lifecycle/sidecar_host.rs:174` |
 | sym-1f34a59bc9b8a05605df | `spawn` | function | Spawns its owned operation for `AsyncOperatorWorker`. | `src/runtime/signal/operator.rs:536` |
-| sym-654334b47f76036a36df | `spawn_composed` | function | Spawns composed for `AsyncOperatorWorker`. | `src/runtime/signal/operator.rs:604` |
+| sym-654334b47f76036a36df | `spawn_composed` | function | Spawns `AsyncOperatorWorker` with the supplied typed input and fan-out outputs. | `src/runtime/signal/operator.rs:604` |
 | sym-cd0608562372467f8a3b | `spawn_with_context` | function | Starts a directly-fed worker with an already negotiated signal-shaped prepare context. Session-owned graph execution uses the compiled-edge path; this entry point exists for external harnesses that negotiate the boundary before constructing a full Session. | `src/runtime/signal/operator.rs:563` |
 | sym-cfddbe05a671a2b21449 | `stage` | function | Returns the stage held by `ConnectorError`. | `src/connector/error.rs:113` |
 | sym-89969574c9b15ca8049f | `startup_timeout` | function | Returns the startup timeout held by `ConnectorReadinessPolicy`. | `src/connector/readiness.rs:43` |
@@ -336,6 +336,29 @@ The **Sidecar protocol** inventory records compiler-visible or extracted evidenc
 
 The claims on **Sidecar protocol** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/lifecycle/sidecar_protocol.rs:1-374` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:1-1` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:2-2` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:4-4` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:5-5` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:7-7` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:7-7` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:7-7` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:9-20` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:10-10` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:11-11` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:12-12` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:13-13` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:14-14` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:15-15` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:16-16` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:17-17` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:18-18` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:23-23` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:25-39` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:42-42` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:42-42` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:42-42` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_protocol.rs:43-48` (`DIRECT`)
 
 For **Sidecar protocol**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

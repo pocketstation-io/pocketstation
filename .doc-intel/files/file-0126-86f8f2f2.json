@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -53,6 +55,8 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -249,16 +253,158 @@
       "classification": "DIRECT",
       "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
       "lines": [
-        1,
-        150
+        13,
+        13
       ],
       "path": "src/connector/worker/supervisor.rs",
-      "symbol": null
+      "symbol": "START_GATE_POLL_INTERVAL"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        16,
+        20
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "ConnectorWorkerState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "connector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "endpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "terminal_error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        23,
+        32
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        34,
+        36
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "connector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        38,
+        40
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "endpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        42,
+        66
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "record_terminal"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        68,
+        73
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "terminal_error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        75,
+        82
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "mark_stopping"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        85,
+        95
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "wait_for_start_gate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        97,
+        141
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "supervise_startup_readiness"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        143,
+        149
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": "internal_connector_error"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -278,6 +424,8 @@
   "generated_from": "not_applicable",
   "git_object": "a04fc6ba58397387734979ae3f4abccd2a370897",
   "implemented_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -287,6 +435,8 @@
     "ConnectorWorkerState"
   ],
   "imported_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -301,12 +451,12 @@
     "super::coordination::ConnectorStopToken"
   ],
   "inputs": [
-    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorStage, ConnectorObservationHandle, ConnectorReadinessPolicy, ConnectorRecovery, }",
-    "crate::endpoint::EndpointDriverObservationHandle",
-    "crate::{EndpointShutdownMode, EndpointStartGate}",
-    "std::sync::{Arc, Mutex}",
-    "std::time::{Duration, Instant}",
-    "super::coordination::ConnectorStopToken"
+    "Depends on `crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorStage, ConnectorObservationHandle, ConnectorReadinessPolicy, ConnectorRecovery, }` through a declared Rust import.",
+    "Depends on `crate::endpoint::EndpointDriverObservationHandle` through a declared Rust import.",
+    "Depends on `crate::{EndpointShutdownMode, EndpointStartGate}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex}` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import.",
+    "Depends on `super::coordination::ConnectorStopToken` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -328,22 +478,22 @@
   "module": "pocketstation::connector::worker::supervisor",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::worker::supervisor` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "Err(error) => {",
-    "const:START_GATE_POLL_INTERVAL",
-    "fn:connector",
-    "fn:endpoint",
-    "fn:internal_connector_error",
-    "fn:mark_stopping",
-    "fn:new",
-    "fn:record_terminal",
-    "fn:supervise_startup_readiness",
-    "fn:terminal_error",
-    "fn:wait_for_start_gate",
-    "struct:ConnectorWorkerState"
+    "Creates a typed failure at src/connector/worker/supervisor.rs:114.",
+    "Declares public const `START_GATE_POLL_INTERVAL`.",
+    "Declares public fn `connector`.",
+    "Declares public fn `endpoint`.",
+    "Declares public fn `internal_connector_error`.",
+    "Declares public fn `mark_stopping`.",
+    "Declares public fn `new`.",
+    "Declares public fn `record_terminal`.",
+    "Declares public fn `supervise_startup_readiness`.",
+    "Declares public fn `terminal_error`.",
+    "Declares public fn `wait_for_start_gate`.",
+    "Declares public struct `ConnectorWorkerState`."
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/supervisor.rs",
@@ -426,7 +576,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::worker::supervisor responsibilities, including supervisor; start gate poll interval; clone."
+    "text": "Owns the internal supervisor module, start gate poll interval constant, clone function, connector worker state struct used by `pocketstation::connector::worker::supervisor`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -469,6 +619,9 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/coordination.rs",
     "REFERENCES:src/connector/error.rs",
     "REFERENCES:src/connector/observations.rs",
     "REFERENCES:src/connector/readiness.rs",

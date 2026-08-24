@@ -1,6 +1,6 @@
 # Audio reentry
 
-<!-- claims: CLM-DOC-023-CAP-001,CLM-DOC-023-SOURCE-001 -->
+<!-- claims: CLM-DOC-023-SCOPE-001,CLM-DOC-023-TEXT-001,CLM-DOC-023-TEXT-002,CLM-DOC-023-TEXT-003,CLM-DOC-023-TEXT-004,CLM-DOC-023-TEXT-005,CLM-DOC-023-TEXT-006,CLM-DOC-023-SOURCE-001 -->
 
 ## What it is
 
@@ -45,12 +45,12 @@ The scope of **Audio reentry** ends at the native contracts and executable condi
 | `pocketstation::runtime::audio::executor::RealtimePlanExecutor` | struct | Executes realtime plan according to its compiled plan and cancellation contract. | `src/runtime/audio/executor.rs:54` |
 | `pocketstation::runtime::bridge::audio::GeneratedAudioBridge` | struct | Transfers generated audio across the bounded runtime boundary it owns. | `src/runtime/bridge/audio.rs:123` |
 | `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeSpec` | struct | Configures generated audio bridge behavior at its owning API boundary. | `src/runtime/bridge/audio.rs:19` |
-| `pocketstation::runtime::audio::executor::ExecError` | enum | Classifies failures reported as exec error. | `src/runtime/audio/executor.rs:20` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures reported as generated audio bridge start error. | `src/runtime/bridge/audio.rs:46` |
-| `pocketstation::runtime::audio::executor::ExecError::Node` | variant | Reported when the owning operation encounters node. | `src/runtime/audio/executor.rs:22` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots` | variant | Reported when the owning operation encounters invalid pool slots. | `src/runtime/bridge/audio.rs:52` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec` | variant | Reported when the owning operation encounters invalid sample spec. | `src/runtime/bridge/audio.rs:48` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart` | variant | Reported when the owning operation encounters thread start. | `src/runtime/bridge/audio.rs:54` |
+| `pocketstation::runtime::audio::executor::ExecError` | enum | Classifies failures surfaced by exec operations. | `src/runtime/audio/executor.rs:20` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures produced during generated audio bridge lifecycle start. | `src/runtime/bridge/audio.rs:46` |
+| `pocketstation::runtime::audio::executor::ExecError::Node` | variant | Reports that no de is available. | `src/runtime/audio/executor.rs:22` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots` | variant | Reports that the supplied pool slots is invalid. | `src/runtime/bridge/audio.rs:52` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec` | variant | Reports that the supplied sample spec is invalid. | `src/runtime/bridge/audio.rs:48` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart` | variant | Classifies a failure at the thread start stage or component of `GeneratedAudioBridgeStartError`. | `src/runtime/bridge/audio.rs:54` |
 
 ## Executable evidence
 
@@ -84,6 +84,29 @@ Executable evidence selected for **Audio reentry** is limited to each test's rec
 
 The claims on **Audio reentry** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/bridge/audio.rs:1-529` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:16-16` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:18-18` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:18-18` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:18-18` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:19-28` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:20-20` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:21-21` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:22-22` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:23-23` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:24-24` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:25-25` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:26-26` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:27-27` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:31-42` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:46-55` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:48-48` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:50-50` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:52-52` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:54-54` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:57-57` (`DIRECT`)
 
 For **Audio reentry**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/signal/spec.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -49,6 +50,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/signal/spec.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -179,16 +181,137 @@
       "classification": "DIRECT",
       "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
       "lines": [
-        1,
-        56
+        6,
+        6
       ],
       "path": "src/graph/operator.rs",
-      "symbol": null
+      "symbol": "OPERATOR_ID_SYNTAX_VERSION"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "serialize"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "deserialize"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "OperatorId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        19,
+        21
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        23,
+        25
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "as_str"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        31,
+        33
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "is_portable"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        35,
+        37
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": "syntax_version"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/signal/spec.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -220,6 +343,7 @@
   "generated_from": "not_applicable",
   "git_object": "80957e3640604adb6a051721aaba3e95763a27d1",
   "implemented_by": [
+    "CALLS:src/graph/signal/spec.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -241,6 +365,7 @@
     "OperatorId"
   ],
   "imported_by": [
+    "CALLS:src/graph/signal/spec.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -262,8 +387,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/graph/operator.rs:40.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -272,16 +397,16 @@
   "module": "pocketstation::graph::operator",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::operator` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "const:OPERATOR_ID_SYNTAX_VERSION",
-    "fn:as_str",
-    "fn:is_portable",
-    "fn:new",
-    "fn:syntax_version",
-    "struct:OperatorId"
+    "Declares public const `OPERATOR_ID_SYNTAX_VERSION`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `is_portable`.",
+    "Declares public fn `new`.",
+    "Declares public fn `syntax_version`.",
+    "Declares public struct `OperatorId`."
   ],
   "package": "pocketstation",
   "path": "src/graph/operator.rs",
@@ -346,8 +471,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::operator responsibilities, including Version of the serialized operator-identifier syntax.; Open identifier for a registered graph operator implementation.; Creates a new `OperatorId`.."
+    "classification": "DECLARED",
+    "text": "Version of the serialized operator-identifier syntax. Open identifier for a registered graph operator implementation. Creates a new `OperatorId`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -385,7 +510,11 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::graph::operator::OPERATOR_ID_SYNTAX_VERSION: Version of the serialized operator-identifier syntax.",

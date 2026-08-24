@@ -15,9 +15,9 @@ use crate::runtime::audio::{ExecError, PlanExecutionSummary, RealtimePlanExecuto
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the plan runner drain policy used by PocketStation."]
 pub enum PlanRunnerDrainPolicy {
-    #[doc = "Selects drain queued behavior for `PlanRunnerDrainPolicy`."]
+    #[doc = "Drains the runtime plan using the drain queued policy."]
     DrainQueued,
-    #[doc = "Selects discard queued behavior for `PlanRunnerDrainPolicy`."]
+    #[doc = "Drains the runtime plan using the discard queued policy."]
     DiscardQueued,
 }
 
@@ -116,7 +116,7 @@ impl PlanRunnerCancellation {
         !self.requested.swap(true, Ordering::AcqRel)
     }
 
-    #[doc = "Returns whether requested applies to `PlanRunnerCancellation`."]
+    #[doc = "Reports whether requested is true for `PlanRunnerCancellation`."]
     pub fn is_requested(&self) -> bool {
         self.requested.load(Ordering::Acquire)
     }
@@ -130,7 +130,7 @@ impl Default for PlanRunnerCancellation {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Classifies failures reported as plan source send error."]
+#[doc = "Classifies failures surfaced by plan source send operations."]
 pub enum PlanSourceSendError {
     #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
@@ -146,9 +146,9 @@ pub enum PlanSourceSendOutcome {
     Enqueued,
     #[doc = "Identifies the rejected state or stage represented by `PlanSourceSendOutcome`."]
     Rejected {
-        #[doc = "Stores the error used by `Rejected`."]
+        #[doc = "Stores the error as a `PlanSourceSendError` value in `Rejected`."]
         error: PlanSourceSendError,
-        #[doc = "Stores the frame used by `Rejected`."]
+        #[doc = "Stores the frame as a `LineagedAudioFrame` value in `Rejected`."]
         frame: LineagedAudioFrame,
     },
 }
@@ -161,7 +161,7 @@ pub struct PlanSourceSender {
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to plan source observation."]
+#[doc = "Holds the ownership or bounded access represented by plan source observation handle."]
 pub struct PlanSourceObservationHandle {
     telemetry: Arc<PlanSourceInputTelemetry>,
 }
@@ -289,28 +289,28 @@ pub fn plan_source_channel(
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as plan runner error."]
+#[doc = "Classifies failures surfaced by plan runner operations."]
 pub enum PlanRunnerError {
     #[error("source node {source_node_id} has zero input capacity")]
-    #[doc = "Reports zero source capacity."]
+    #[doc = "Reports that source capacity must be greater than zero."]
     ZeroSourceCapacity {
         #[doc = "Identifies the source node identifier recorded by `ZeroSourceCapacity`."]
         source_node_id: u32,
     },
     #[error("source node {source_node_id} is registered more than once")]
-    #[doc = "Reports duplicate source."]
+    #[doc = "Reports that source duplicates an existing declaration or record."]
     DuplicateSource {
         #[doc = "Identifies the source node identifier recorded by `DuplicateSource`."]
         source_node_id: u32,
     },
     #[error("runner work budget must be greater than zero")]
-    #[doc = "Reports zero work budget."]
+    #[doc = "Reports that work budget must be greater than zero."]
     ZeroWorkBudget,
     #[error("runner was already finished")]
-    #[doc = "Reports already finished."]
+    #[doc = "Reports that finished already occurred before this operation."]
     AlreadyFinished,
     #[error(transparent)]
-    #[doc = "Reports execution."]
+    #[doc = "Classifies a failure at the execution stage or component of `PlanRunnerError`."]
     Execution(#[from] ExecError),
 }
 
@@ -319,7 +319,7 @@ pub enum PlanRunnerError {
 pub struct PlanRunnerStepSummary {
     #[doc = "Counts the total number of source frames processed observed by `PlanRunnerStepSummary`."]
     pub source_frames_processed_total: u64,
-    #[doc = "Stores the execution used by `PlanRunnerStepSummary`."]
+    #[doc = "Records the execution selected for `PlanRunnerStepSummary`."]
     pub execution: PlanExecutionSummary,
 }
 
@@ -352,9 +352,9 @@ pub struct PlanRunnerFinishSummary {
     pub source_frames_processed_total: u64,
     #[doc = "Counts the total number of source frames discarded observed by `PlanRunnerFinishSummary`."]
     pub source_frames_discarded_total: u64,
-    #[doc = "Stores the drain budget exhausted used by `PlanRunnerFinishSummary`."]
+    #[doc = "Reports whether drain budget exhausted is true for `PlanRunnerFinishSummary`."]
     pub drain_budget_exhausted: bool,
-    #[doc = "Stores the execution used by `PlanRunnerFinishSummary`."]
+    #[doc = "Records the execution selected for `PlanRunnerFinishSummary`."]
     pub execution: PlanExecutionSummary,
 }
 

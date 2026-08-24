@@ -4,7 +4,13 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/polled_audio.rs",
@@ -128,7 +134,13 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/polled_audio.rs",
@@ -554,17 +566,253 @@
       "classification": "DIRECT",
       "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
       "lines": [
-        1,
-        396
+        30,
+        40
       ],
       "path": "src/session/lifecycle/engine.rs",
-      "symbol": null
+      "symbol": "SessionEngineBuilder"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "node_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "prepare_context"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "source_queue_capacity_frames"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "start_options"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "endpoint_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "source_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "graph_lowerers"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "sidecar_processes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "session_trace_recorder"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        43,
+        64
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        66,
+        72
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "set_session_trace"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        74,
+        85
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "register_audio_endpoint_driver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        91,
+        112
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "register_endpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        114,
+        120
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "register_async_operator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        125,
+        140
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "register_sidecar_process"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        146,
+        167
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "register_source_factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        171,
+        173
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "source_manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        176,
+        194
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "build"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        202,
+        212
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "SessionEngine"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        203,
+        203
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "node_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        204,
+        204
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "endpoint_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        205,
+        205
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "source_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9766c9c005c0eeb5dcdf613112cfbec8f23ae7d96ef965610eb2c759e7cf04a7",
+      "lines": [
+        206,
+        206
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": "graph_lowerers"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/polled_audio.rs",
@@ -587,7 +835,13 @@
   "generated_from": "not_applicable",
   "git_object": "f77750f4d2d7d554cd8a4ff3581cd0c1d6d5670b",
   "implemented_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/polled_audio.rs",
@@ -600,7 +854,13 @@
     "SessionEngineStartError"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/extensions/polled_audio.rs",
@@ -619,16 +879,20 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError}",
-    "crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeRegistry, NodeTypeId, PrepareContext, }",
-    "crate::runtime::{SidecarHost, SidecarHostError, SidecarProcessSpec}",
-    "crate::session::compile::SessionGraphLowerer",
-    "crate::session::extensions::builtins::{ audio_endpoint_boundary_definition, register_session_graph_nodes_with_sample_spec, }",
-    "crate::session::extensions::source::{ source_node_definition, SourceFactory, SourceRegistrationError, SourceRegistry, }",
-    "crate::session::extensions::source::{SourceManifest, SourceTypeId}",
-    "crate::session::{ prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession, Session, SessionCompileError, SessionCompiler, SessionError, SessionGraphRegistrationError, SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle, }",
-    "std::sync::Arc"
+    "Consumes configuration at src/session/lifecycle/engine.rs:17.",
+    "Consumes configuration at src/session/lifecycle/engine.rs:170.",
+    "Consumes configuration at src/session/lifecycle/engine.rs:216.",
+    "Consumes configuration at src/session/lifecycle/engine.rs:233.",
+    "Consumes configuration at src/session/lifecycle/engine.rs:283.",
+    "Depends on `crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeRegistry, NodeTypeId, PrepareContext, }` through a declared Rust import.",
+    "Depends on `crate::runtime::{SidecarHost, SidecarHostError, SidecarProcessSpec}` through a declared Rust import.",
+    "Depends on `crate::session::compile::SessionGraphLowerer` through a declared Rust import.",
+    "Depends on `crate::session::extensions::builtins::{ audio_endpoint_boundary_definition, register_session_graph_nodes_with_sample_spec, }` through a declared Rust import.",
+    "Depends on `crate::session::extensions::source::{ source_node_definition, SourceFactory, SourceRegistrationError, SourceRegistry, }` through a declared Rust import.",
+    "Depends on `crate::session::extensions::source::{SourceManifest, SourceTypeId}` through a declared Rust import.",
+    "Depends on `crate::session::{ prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession, Session, SessionCompileError, SessionCompiler, SessionError, SessionGraphRegistrationError, SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -678,40 +942,40 @@
   "module": "pocketstation::session::lifecycle::engine",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::engine` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-5ada9e33f908593228be",
     "pattern-6f17e22698374cc3efb2"
   ],
   "outputs": [
-    "Err(error) => {",
-    "Some(reason) => Err(SessionEngineBuildError::InvalidConfiguration { reason }),",
-    "enum:EndpointExtensionRegistrationError",
-    "enum:SessionEngineBuildError",
-    "enum:SessionEngineStartError",
-    "fn:build",
-    "fn:compile",
-    "fn:into_start_failure",
-    "fn:new",
-    "fn:register_async_operator",
-    "fn:register_audio_endpoint_driver",
-    "fn:register_endpoint",
-    "fn:register_sidecar_process",
-    "fn:register_source_factory",
-    "fn:set_session_trace",
-    "fn:source_manifest",
-    "fn:start",
-    "fn:start_compiled",
-    "fn:start_compiled_cancellable",
-    "fn:start_failure",
-    "return Err(EndpointExtensionRegistrationError::ConflictingDefinition {",
-    "return Err(SessionEngineBuildError::DuplicateSidecarId {",
-    "return Err(SessionEngineStartError::Sidecar(error));",
-    "return Err(SourceRegistrationError::DuplicateSourceType(source_type_id));",
-    "return Err(SourceRegistrationError::NodeTypeConflict(source_type_id));",
-    "struct:SessionEngine",
-    "struct:SessionEngineBuilder"
+    "Creates a typed failure at src/session/lifecycle/engine.rs:102.",
+    "Creates a typed failure at src/session/lifecycle/engine.rs:134.",
+    "Creates a typed failure at src/session/lifecycle/engine.rs:156.",
+    "Creates a typed failure at src/session/lifecycle/engine.rs:160.",
+    "Creates a typed failure at src/session/lifecycle/engine.rs:352.",
+    "Creates a typed failure at src/session/lifecycle/engine.rs:357.",
+    "Creates a typed failure at src/session/lifecycle/engine.rs:392.",
+    "Declares public enum `EndpointExtensionRegistrationError`.",
+    "Declares public enum `SessionEngineBuildError`.",
+    "Declares public enum `SessionEngineStartError`.",
+    "Declares public fn `build`.",
+    "Declares public fn `compile`.",
+    "Declares public fn `into_start_failure`.",
+    "Declares public fn `new`.",
+    "Declares public fn `register_async_operator`.",
+    "Declares public fn `register_audio_endpoint_driver`.",
+    "Declares public fn `register_endpoint`.",
+    "Declares public fn `register_sidecar_process`.",
+    "Declares public fn `register_source_factory`.",
+    "Declares public fn `set_session_trace`.",
+    "Declares public fn `source_manifest`.",
+    "Declares public fn `start_compiled_cancellable`.",
+    "Declares public fn `start_compiled`.",
+    "Declares public fn `start_failure`.",
+    "Declares public fn `start`.",
+    "Declares public struct `SessionEngineBuilder`.",
+    "Declares public struct `SessionEngine`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/engine.rs",
@@ -871,8 +1135,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::engine responsibilities, including Registers the components and runtime configuration for one Session.; Creates a new `SessionEngineBuilder`.; Sets the session trace used by `SessionEngineBuilder`.."
+    "classification": "DECLARED",
+    "text": "Registers the components and runtime configuration for one Session. Creates a new `SessionEngineBuilder`. Sets the session trace used by `SessionEngineBuilder`."
   },
   "queues": [],
   "recovery_behavior": [
@@ -938,6 +1202,23 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
+    "IMPLEMENTS:src/runtime/lifecycle/sidecar_host.rs",
+    "IMPLEMENTS:src/session/compile/error.rs",
+    "IMPLEMENTS:src/session/error.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
+    "IMPLEMENTS:src/session/prepare/error.rs",
     "REFERENCES:src/endpoint/contract.rs",
     "REFERENCES:src/endpoint/registry.rs",
     "REFERENCES:src/graph/node.rs",
@@ -1009,27 +1290,27 @@
     "pocketstation::session::lifecycle::engine::SessionEngine: Canonical production composition path for one safe Rust Session engine.",
     "source_manifest: Returns the validated source manifest retained by this engine.",
     "compile: Compiles its owned operation for `SessionEngine`.",
-    "start_compiled: Starts compiled for `SessionEngine`.",
+    "start_compiled: Starts a previously compiled Session through `SessionEngine`.",
     "start_compiled_cancellable: Starts compiled cancellable for `SessionEngine`.",
     "start: Starts the lifecycle represented by `SessionEngine`.",
-    "pocketstation::session::lifecycle::engine::SessionEngineBuildError: Classifies failures reported as session engine build error.",
-    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::StructuralNodeRegistration: Reported when the owning operation encounters structural node registration.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError: Classifies failures produced during session engine construction and input validation.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::StructuralNodeRegistration: Classifies a failure at the structural node registration stage or component of `SessionEngineBuildError`.",
     "SessionEngineBuildError::InvalidConfiguration::reason: Carries the reason reported by `InvalidConfiguration`.",
-    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::InvalidConfiguration: Reported when the owning operation encounters invalid configuration.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::InvalidConfiguration: Reports that the supplied configuration is invalid.",
     "SessionEngineBuildError::DuplicateSidecarId::sidecar_id: Identifies the sidecar identifier recorded by `DuplicateSidecarId`.",
-    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::DuplicateSidecarId: Reported when the owning operation encounters duplicate sidecar identifier.",
-    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError: Classifies failures reported as endpoint extension registration error.",
-    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Definition: Reported when the owning operation encounters definition.",
-    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Driver: Reported when the owning operation encounters driver.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::DuplicateSidecarId: Reports that sidecar identifier duplicates an existing declaration or record.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError: Classifies failures produced during endpoint extension registration.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Definition: Classifies a failure at the definition stage or component of `EndpointExtensionRegistrationError`.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Driver: Classifies a failure at the driver stage or component of `EndpointExtensionRegistrationError`.",
     "EndpointExtensionRegistrationError::ConflictingDefinition::node_type_id: Identifies the node type identifier recorded by `ConflictingDefinition`.",
-    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::ConflictingDefinition: Reported when the owning operation encounters conflicting definition.",
-    "pocketstation::session::lifecycle::engine::SessionEngineStartError: Classifies failures reported as session engine start error.",
-    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Freeze: Reported when the owning operation encounters freeze.",
-    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Compile: Reported when the owning operation encounters compile.",
-    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare: Reported when the owning operation encounters prepare.",
-    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Start: Reported when the owning operation encounters start.",
-    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Sidecar: Reported when the owning operation encounters sidecar.",
-    "start_failure: Starts failure for `SessionEngineStartError`.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::ConflictingDefinition: Reports that definition conflicts with an existing registration or declaration.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError: Classifies failures produced during session engine lifecycle start.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Freeze: Classifies a failure at the freeze stage or component of `SessionEngineStartError`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Compile: Classifies a failure at the compile stage or component of `SessionEngineStartError`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare: Classifies a failure at the prepare stage or component of `SessionEngineStartError`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Start: Classifies a failure at the start stage or component of `SessionEngineStartError`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Sidecar: Classifies a failure at the sidecar stage or component of `SessionEngineStartError`.",
+    "start_failure: Returns the transactional start failure carried by `SessionEngineStartError`, if this error represents one.",
     "into_start_failure: Converts `SessionEngineStartError` into start failure."
   ],
   "retry_behavior": [],

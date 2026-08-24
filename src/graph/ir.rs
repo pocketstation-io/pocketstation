@@ -7,11 +7,11 @@ use crate::graph::ports::{EdgeContract, MediaCaps};
 use crate::graph::spec::{EdgeSpec, NodeId, NodeSpec};
 
 #[derive(Debug, Clone)]
-#[doc = "Executes the graph-node behavior defined for resolved."]
+#[doc = "Represents the executable graph node for resolved."]
 pub struct ResolvedNode {
-    #[doc = "Stores the spec used by `ResolvedNode`."]
+    #[doc = "Stores the spec as a `NodeSpec` value in `ResolvedNode`."]
     pub spec: NodeSpec,
-    #[doc = "Stores the descriptor used by `ResolvedNode`."]
+    #[doc = "Stores the descriptor as a `NodeDescriptor` value in `ResolvedNode`."]
     pub descriptor: NodeDescriptor,
 }
 
@@ -29,22 +29,22 @@ impl ResolvedNode {
 #[derive(Debug, Clone)]
 #[doc = "Binds one compiled graph edge to its resolved source, destination, and contract."]
 pub struct ResolvedEdge {
-    #[doc = "Stores the spec used by `ResolvedEdge`."]
+    #[doc = "Stores the spec as a `EdgeSpec` value in `ResolvedEdge`."]
     pub spec: EdgeSpec,
-    #[doc = "Stores the media used by `ResolvedEdge`."]
+    #[doc = "Records the media selected for `ResolvedEdge`."]
     pub media: MediaCaps, // negotiated by NegotiateCapsPass; MediaCaps::Any until then
-    #[doc = "Stores the contract used by `ResolvedEdge`."]
+    #[doc = "Stores the contract component of `ResolvedEdge`."]
     pub contract: Option<EdgeContract>, // None until NegotiateCapsPass records one
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Stores the resolved nodes, edges, and topological order used by runtime planning."]
+#[doc = "Contains the resolved nodes, edges, and topological order consumed by runtime planning."]
 pub struct GraphIr {
-    #[doc = "Stores the nodes used by `GraphIr`."]
+    #[doc = "References the nodes participating in `GraphIr`."]
     pub nodes: Vec<ResolvedNode>,
-    #[doc = "Stores the edges used by `GraphIr`."]
+    #[doc = "References the edges participating in `GraphIr`."]
     pub edges: Vec<ResolvedEdge>,
-    #[doc = "Stores the topo order used by `GraphIr`."]
+    #[doc = "Lists graph nodes in the validated topological execution order for `GraphIr`."]
     pub topo_order: Vec<NodeId>, // empty until CycleDetectionPass fills a valid order
 }
 

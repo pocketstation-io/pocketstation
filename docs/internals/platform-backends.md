@@ -1,6 +1,6 @@
 # Platform backend boundary
 
-<!-- claims: CLM-DOC-053-CAP-001,CLM-DOC-053-CAP-002,CLM-DOC-053-CAP-003,CLM-DOC-053-SOURCE-001 -->
+<!-- claims: CLM-DOC-053-SCOPE-001,CLM-DOC-053-TEXT-001,CLM-DOC-053-TEXT-002,CLM-DOC-053-TEXT-003,CLM-DOC-053-TEXT-004,CLM-DOC-053-SOURCE-001 -->
 
 ## Scope
 
@@ -31,7 +31,7 @@ The scope of **Platform backend boundary** ends at the native contracts and exec
 | `CallbackCaptureBackend::prepare` | function | Prepares resources required by `CallbackCaptureBackend`. | `src/capture/capture_owner.rs:84` |
 | `PreparedCaptureBackend::open` | function | Opens the resource represented by `PreparedCaptureBackend`. | `src/capture/capture_owner.rs:89` |
 | `pocketstation::capture::platform::macos::input::discover_input_sources_native` | function | Discovers microphone input sources through the native macOS backend. | `src/capture/platform/macos/input.rs:263` |
-| `CaptureOwnerObservations::backend` | struct_field | Stores the backend used by `CaptureOwnerObservations`. | `src/capture/capture_owner.rs:161` |
+| `CaptureOwnerObservations::backend` | struct_field | Stores the backend as a `CaptureObservations` value in `CaptureOwnerObservations`. | `src/capture/capture_owner.rs:161` |
 | `query` | module | Control-plane source discovery queries used by the first-party CLI. | `src/capture/query.rs:1` |
 | `pocketstation::capture::query::SourceProvider` | trait | Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract. | `src/capture/query.rs:48` |
 | `pocketstation::capture::capture_owner::CaptureDelivery` | struct | Callback delivery endpoints transferred to a prepared native backend. | `src/capture/capture_owner.rs:73` |
@@ -112,6 +112,6 @@ Executable evidence selected for **Platform backend boundary** is limited to eac
 
 The claims on **Platform backend boundary** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/platform/mod.rs:1-7` (`DIRECT`)
+- `src/capture/platform/mod.rs:2-6` (`DIRECT`)
 
 For **Platform backend boundary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

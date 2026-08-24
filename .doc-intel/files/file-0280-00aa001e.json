@@ -33,8 +33,8 @@
       "classification": "DIRECT",
       "content_hash": "aefce7d6ea7e55e3b30a69e101a3e37e3c1467508a6523b7e7721349e31b7a87",
       "lines": [
-        1,
-        83
+        2,
+        22
       ],
       "path": "tools/check-core-freeze-policy.sh",
       "symbol": null
@@ -88,7 +88,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`tools/check-core-freeze-policy.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

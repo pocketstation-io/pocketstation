@@ -96,12 +96,12 @@ impl SignalTiming {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as signal timing error."]
+#[doc = "Classifies failures surfaced by signal timing operations."]
 pub enum SignalTimingError {
     #[error("signal timing duration must be non-zero when present")]
-    #[doc = "Reports zero duration."]
+    #[doc = "Reports that duration must be greater than zero."]
     ZeroDuration,
     #[error("signal timing range overflows u64 nanoseconds")]
-    #[doc = "Reports timestamp overflow."]
+    #[doc = "Reports that timestamp exceeds its numeric range."]
     TimestampOverflow,
 }

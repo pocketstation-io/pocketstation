@@ -4,7 +4,21 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/session/declaration/typed_stream.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -115,7 +129,21 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/session/declaration/typed_stream.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1054,17 +1082,261 @@
       "classification": "DIRECT",
       "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
       "lines": [
-        1,
-        531
+        12,
+        12
       ],
       "path": "src/endpoint/runtime.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        13,
+        15
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "SessionTimelineOrigin"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "monotonic_timestamp_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        18,
+        22
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "from_monotonic_timestamp_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        24,
+        26
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "monotonic_timestamp_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        31,
+        40
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "EndpointInputOrigin"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "Stem"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "Signal"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        35,
+        39
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "Source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "source_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "stream_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "audio_stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        44,
+        47
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "EndpointRouteContext"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "route_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1891ee21fc323487dcdf46ea070085d551396c63b72ce55ff12fb12fcb3e140e",
+      "lines": [
+        46,
+        46
+      ],
+      "path": "src/endpoint/runtime.rs",
+      "symbol": "origin"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/session/declaration/typed_stream.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1106,7 +1378,21 @@
   "generated_from": "not_applicable",
   "git_object": "310c789890dd55aa356f40b7966b2712fbd97287",
   "implemented_by": [
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/session/declaration/typed_stream.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1147,7 +1433,21 @@
     "RunningEndpoint"
   ],
   "imported_by": [
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/session/declaration/typed_stream.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1179,13 +1479,13 @@
     "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}",
-    "crate::graph::NodeConfig",
-    "module:tests",
-    "std::fmt",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}"
+    "Consumes configuration at src/endpoint/runtime.rs:529.",
+    "Depends on `crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::NodeConfig` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1211,43 +1511,43 @@
   "module": "pocketstation::endpoint::runtime",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::runtime` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-9949c92003d42b97ae91"
   ],
   "outputs": [
-    "Err(failure) => Err(EndpointStartFailure {",
-    "enum:EndpointFailureRetryability",
-    "enum:EndpointFailureStage",
-    "enum:EndpointInputOrigin",
-    "fn:audio_stem_id",
-    "fn:code",
-    "fn:connector_id",
-    "fn:endpoint_id",
-    "fn:from_monotonic_timestamp_ns",
-    "fn:from_source",
-    "fn:from_stem",
-    "fn:message",
-    "fn:monotonic_timestamp_ns",
-    "fn:new",
-    "fn:node_configuration",
-    "fn:origin",
-    "fn:owned_heap_bytes",
-    "fn:retryability",
-    "fn:route_context",
-    "fn:route_id",
-    "fn:session_id",
-    "fn:session_timeline_origin",
-    "fn:signal",
-    "fn:stage",
-    "fn:with_connector_id",
-    "fn:with_external_details",
-    "return Err(EndpointStartFailure {",
-    "struct:EndpointFailure",
-    "struct:EndpointPrepareContext",
-    "struct:EndpointRouteContext",
-    "struct:SessionTimelineOrigin"
+    "Creates a typed failure at src/endpoint/runtime.rs:419.",
+    "Creates a typed failure at src/endpoint/runtime.rs:429.",
+    "Declares public enum `EndpointFailureRetryability`.",
+    "Declares public enum `EndpointFailureStage`.",
+    "Declares public enum `EndpointInputOrigin`.",
+    "Declares public fn `audio_stem_id`.",
+    "Declares public fn `code`.",
+    "Declares public fn `connector_id`.",
+    "Declares public fn `endpoint_id`.",
+    "Declares public fn `from_monotonic_timestamp_ns`.",
+    "Declares public fn `from_source`.",
+    "Declares public fn `from_stem`.",
+    "Declares public fn `message`.",
+    "Declares public fn `monotonic_timestamp_ns`.",
+    "Declares public fn `new`.",
+    "Declares public fn `node_configuration`.",
+    "Declares public fn `origin`.",
+    "Declares public fn `owned_heap_bytes`.",
+    "Declares public fn `retryability`.",
+    "Declares public fn `route_context`.",
+    "Declares public fn `route_id`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `session_timeline_origin`.",
+    "Declares public fn `signal`.",
+    "Declares public fn `stage`.",
+    "Declares public fn `with_connector_id`.",
+    "Declares public fn `with_external_details`.",
+    "Declares public struct `EndpointFailure`.",
+    "Declares public struct `EndpointPrepareContext`.",
+    "Declares public struct `EndpointRouteContext`.",
+    "Declares public struct `SessionTimelineOrigin`."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/runtime.rs",
@@ -1708,8 +2008,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::runtime responsibilities, including One Session-owned anchor in PocketStation's monotonic nanosecond clock.; Creates `SessionTimelineOrigin` from monotonic timestamp nanoseconds.; Returns the monotonic timestamp nanoseconds held by `SessionTimelineOrigin`.."
+    "classification": "DECLARED",
+    "text": "One Session-owned anchor in PocketStation's monotonic nanosecond clock. Creates `SessionTimelineOrigin` from monotonic timestamp nanoseconds. Returns the monotonic timestamp nanoseconds held by `SessionTimelineOrigin`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1746,6 +2046,11 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/session/declaration/typed_stream.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/node.rs"
   ],
@@ -1848,10 +2153,10 @@
     "pocketstation::endpoint::runtime::EndpointFailureStage::RequestStop: Identifies the request stop state or stage represented by `EndpointFailureStage`.",
     "pocketstation::endpoint::runtime::EndpointFailureStage::JoinFinalize: Identifies the join finalize state or stage represented by `EndpointFailureStage`.",
     "pocketstation::endpoint::runtime::EndpointFailureRetryability: Machine-readable recovery classification retained in Session outcomes.",
-    "pocketstation::endpoint::runtime::EndpointFailureRetryability::Never: Selects never behavior for `EndpointFailureRetryability`.",
-    "pocketstation::endpoint::runtime::EndpointFailureRetryability::Retryable: Selects retryable behavior for `EndpointFailureRetryability`.",
-    "pocketstation::endpoint::runtime::EndpointFailureRetryability::ReconfigurationRequired: Selects reconfiguration required behavior for `EndpointFailureRetryability`.",
-    "pocketstation::endpoint::runtime::EndpointFailure: Reports a endpoint failure.",
+    "pocketstation::endpoint::runtime::EndpointFailureRetryability::Never: Declares an endpoint failure to be never.",
+    "pocketstation::endpoint::runtime::EndpointFailureRetryability::Retryable: Declares an endpoint failure to be retryable.",
+    "pocketstation::endpoint::runtime::EndpointFailureRetryability::ReconfigurationRequired: Declares an endpoint failure to be reconfiguration required.",
+    "pocketstation::endpoint::runtime::EndpointFailure: Classifies failures surfaced by endpoint failure operations.",
     "new: Creates a new `EndpointFailure`.",
     "with_external_details: Attaches stable external failure details without changing Endpoint's",
     "stage: Returns the stage held by `EndpointFailure`.",
@@ -1866,32 +2171,32 @@
     "EndpointDriverObservations::failures_total: Counts the total number of failures observed by `EndpointDriverObservations`.",
     "pocketstation::endpoint::runtime::EndpointCancellationOutcome: Reports the structured endpoint cancellation outcome.",
     "EndpointCancellationOutcome::observations: Carries the observations collected for `EndpointCancellationOutcome`.",
-    "EndpointCancellationOutcome::result: Stores the result used by `EndpointCancellationOutcome`.",
+    "EndpointCancellationOutcome::result: Records whether the result operation succeeded and preserves its typed failure for `EndpointCancellationOutcome`.",
     "pocketstation::endpoint::runtime::EndpointDriverFinalization: Reports an endpoint driver's terminal observations and any finalization failure.",
     "EndpointDriverFinalization::observations: Carries the observations collected for `EndpointDriverFinalization`.",
-    "EndpointDriverFinalization::result: Stores the result used by `EndpointDriverFinalization`.",
+    "EndpointDriverFinalization::result: Records whether the result operation succeeded and preserves its typed failure for `EndpointDriverFinalization`.",
     "pocketstation::endpoint::runtime::EndpointFinalizationOutcome: Reports the structured endpoint finalization outcome.",
     "EndpointFinalizationOutcome::observations: Carries the observations collected for `EndpointFinalizationOutcome`.",
-    "EndpointFinalizationOutcome::request_stop_result: Stores the request stop result used by `EndpointFinalizationOutcome`.",
-    "EndpointFinalizationOutcome::join_finalize_result: Stores the join finalize result used by `EndpointFinalizationOutcome`.",
+    "EndpointFinalizationOutcome::request_stop_result: Records whether the request stop result operation succeeded and preserves its typed failure for `EndpointFinalizationOutcome`.",
+    "EndpointFinalizationOutcome::join_finalize_result: Records whether the join finalize result operation succeeded and preserves its typed failure for `EndpointFinalizationOutcome`.",
     "pocketstation::endpoint::runtime::PreparedEndpointDriver: Prepared endpoint resources that have not started consuming their edge.",
     "PreparedEndpointDriver::start: Makes endpoint resources ready behind the supplied closed gate.",
-    "PreparedEndpointDriver::cancel_preparation: Cancels preparation for `PreparedEndpointDriver`.",
+    "PreparedEndpointDriver::cancel_preparation: Cancels resources created while preparing `PreparedEndpointDriver`.",
     "pocketstation::endpoint::runtime::RunningEndpointDriver: Active endpoint resources owned until finalization.",
     "RunningEndpointDriver::observations: Returns the observations exposed by `RunningEndpointDriver`.",
     "RunningEndpointDriver::request_stop: Requests a graceful stop from `RunningEndpointDriver`.",
     "RunningEndpointDriver::request_shutdown: Requests the selected shutdown mode from `RunningEndpointDriver`.",
     "RunningEndpointDriver::join_and_finalize: Joins and finalize for `RunningEndpointDriver`.",
     "pocketstation::endpoint::runtime::EndpointShutdownMode: Session shutdown intent delivered to an active endpoint.",
-    "pocketstation::endpoint::runtime::EndpointShutdownMode::Drain: Selects drain behavior for `EndpointShutdownMode`.",
-    "pocketstation::endpoint::runtime::EndpointShutdownMode::Abort: Selects abort behavior for `EndpointShutdownMode`.",
+    "pocketstation::endpoint::runtime::EndpointShutdownMode::Drain: Shuts an endpoint down using the drain mode.",
+    "pocketstation::endpoint::runtime::EndpointShutdownMode::Abort: Shuts an endpoint down using the abort mode.",
     "pocketstation::endpoint::runtime::EndpointStartGate: Read-only one-way start barrier shared by endpoint drivers in one startup.",
-    "is_open: Returns whether open applies to `EndpointStartGate`.",
+    "is_open: Reports whether open is true for `EndpointStartGate`.",
     "pocketstation::endpoint::runtime::PreparedEndpoint: Owns endpoint resources after preparation and before its runtime driver starts.",
-    "pocketstation::endpoint::runtime::EndpointStartFailureCause: Enumerates the supported endpoint start failure cause cases.",
-    "pocketstation::endpoint::runtime::EndpointStartFailureCause::GateAlreadyOpen: Reported when the owning operation encounters gate already open.",
-    "pocketstation::endpoint::runtime::EndpointStartFailureCause::Driver: Reported when the owning operation encounters driver.",
-    "pocketstation::endpoint::runtime::EndpointStartFailure: Reports a endpoint start failure.",
+    "pocketstation::endpoint::runtime::EndpointStartFailureCause: Classifies the lifecycle stage responsible for an endpoint start failure.",
+    "pocketstation::endpoint::runtime::EndpointStartFailureCause::GateAlreadyOpen: Classifies a failure at the gate already open stage or component of `EndpointStartFailureCause`.",
+    "pocketstation::endpoint::runtime::EndpointStartFailureCause::Driver: Classifies a failure at the driver stage or component of `EndpointStartFailureCause`.",
+    "pocketstation::endpoint::runtime::EndpointStartFailure: Classifies failures surfaced by endpoint start failure operations.",
     "pocketstation::endpoint::runtime::RunningEndpoint: Owns a started endpoint driver until shutdown and finalization complete."
   ],
   "retry_behavior": [],

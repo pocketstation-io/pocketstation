@@ -120,6 +120,21 @@ for example in EXAMPLES:
         EXAMPLES_BY_SYMBOL[symbol_id].add(example["example_id"])
 
 
+def module_documentation(path: str) -> tuple[str | None, list[int] | None]:
+    lines = TEXT_BY_PATH[path].splitlines()
+    documented: list[tuple[int, str]] = []
+    for number, line in enumerate(lines[:160], 1):
+        stripped = line.strip()
+        if stripped.startswith("//!"):
+            documented.append((number, stripped[3:].strip()))
+        elif documented and stripped and not stripped.startswith(("#![", "//")):
+            break
+    if not documented:
+        return None, None
+    text = re.sub(r"\s+", " ", " ".join(value for _line, value in documented)).strip()
+    return text, [documented[0][0], documented[-1][0]]
+
+
 def purpose_for(path: str, dossier: dict[str, Any], symbols: list[dict[str, Any]]) -> tuple[str, str]:
     kind = dossier["file_kind"]
     explicit = {
@@ -129,6 +144,8 @@ def purpose_for(path: str, dossier: dict[str, Any], symbols: list[dict[str, Any]
         ".github/PULL_REQUEST_TEMPLATE.md": "Defines the evidence and validation checklist required from pull requests.",
         ".github/workflows/ci.yml": "Defines continuous-integration jobs for formatting, linting, tests, protocol checks, and supported build surfaces.",
         ".github/workflows/publish.yml": "Defines the release workflow that validates and publishes the PocketStation crate.",
+        "src/connector/mod.rs": "Declares connector manifests, validated configuration, endpoint factories, sidecar-backed drivers, registrations, and observations.",
+        "src/session/prepare/mod.rs": "Prepares generated-audio ingresses, external and captured sources, operators, endpoints, recordings, and their runtime identity mappings before Session start.",
     }
     if path in explicit:
         return explicit[path], "DIRECT"
@@ -138,11 +155,21 @@ def purpose_for(path: str, dossier: dict[str, Any], symbols: list[dict[str, Any]
         return f"Provides executable evidence for {scope} under the conditions declared in this test file.", "TESTED"
     if kind == "example":
         return f"Demonstrates the repository-owned {human(PurePosixPath(path).stem)} workflow as compilable example code.", "DECLARED"
+    if kind == "benchmark":
+        calls = [value for value in dossier.get("calls", []) if value not in {"black_box", "iter"}]
+        subject = ", ".join(calls[:4]) or human(PurePosixPath(path).stem)
+        return f"Measures {human(PurePosixPath(path).stem)} by repeatedly exercising {subject}.", "DECLARED"
     if path.endswith(".rs"):
+        module_docs, _lines = module_documentation(path)
+        if module_docs:
+            return module_docs, "DECLARED"
         public = [symbol_description(item) for item in symbols if item.get("public_api")][:3]
-        owned = public or [human(item["name"]) for item in symbols[:3]]
-        detail = "; ".join(owned) if owned else f"the {human(path.removesuffix('.rs'))} boundary"
-        return f"Implements {human(dossier['module'])} responsibilities, including {detail}.", "INFERRED"
+        if public:
+            return " ".join(value.rstrip(".") + "." for value in public), "DECLARED"
+        owned = [f"{human(item['name'])} {human(item['kind'])}" for item in symbols[:4]]
+        if owned:
+            return f"Owns the internal {', '.join(owned)} used by `{dossier['module']}`.", "INFERRED"
+        return f"Owns the internal implementation boundary in `{dossier['module']}`.", "INFERRED"
     if path.endswith(".md"):
         heading = re.search(r"(?m)^#\s+(.+)$", TEXT_BY_PATH[path])
         subject = heading.group(1).strip() if heading else human(PurePosixPath(path).stem)
@@ -159,19 +186,186 @@ def purpose_for(path: str, dossier: dict[str, Any], symbols: list[dict[str, Any]
 
 def non_responsibilities_for(dossier: dict[str, Any]) -> list[str]:
     kind = dossier["file_kind"]
+    boundary = dossier["module"] if dossier["module"] != "not_applicable" else dossier["path"]
     if kind == "test":
-        return ["Does not define production behavior beyond the test setup and asserted outcome."]
+        return [f"`{dossier['path']}` does not define production behavior beyond its recorded setup and assertions."]
     if kind == "example":
-        return ["Does not establish platform qualification or behavior outside the example's prerequisites."]
+        return [f"`{dossier['path']}` does not establish platform qualification or behavior outside its prerequisites."]
     if kind in {"automation", "semantic_metadata"}:
-        return ["Does not prove runtime behavior; it declares build, configuration, or publication inputs."]
+        return [f"`{dossier['path']}` declares repository inputs and does not by itself prove product runtime behavior."]
     if kind == "public_ffi":
-        return ["Does not implement the Rust runtime behind the ABI or extend ownership beyond the declared C contract."]
+        return [f"`{dossier['path']}` does not implement the Rust runtime or extend ownership beyond its C declarations."]
     if kind == "native_source":
-        return ["Does not establish physical-device qualification merely by implementing a target backend."]
+        return [f"The `{boundary}` native implementation does not establish physical-device qualification."]
     if dossier["language"] == "Markdown":
-        return ["Does not override compiler-visible API contracts or executable test evidence."]
-    return ["Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."]
+        return [f"`{dossier['path']}` does not override compiler-visible API contracts or executable tests."]
+    return [f"`{boundary}` does not establish qualification, performance, or retry guarantees outside its direct evidence."]
+
+
+def precise_dossier_evidence(
+    file_record: dict[str, Any], dossier: dict[str, Any], symbols: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    path = file_record["path"]
+    if path.endswith(".rs"):
+        _docs, lines = module_documentation(path)
+        if lines:
+            return [{
+                "path": path,
+                "content_hash": file_record["sha256"],
+                "lines": lines,
+                "symbol": dossier["module"],
+                "classification": "DECLARED",
+            }]
+        symbol_evidence = [
+            item
+            for symbol in symbols
+            if symbol.get("kind") != "module"
+            for item in symbol.get("evidence", [])
+        ][:24]
+        if symbol_evidence:
+            return symbol_evidence
+        tests = [test for test in TESTS if test["path"] == path]
+        if tests:
+            return [item for test in tests[:12] for item in test["evidence"]]
+    lines = TEXT_BY_PATH[path].splitlines()
+    if path.endswith(".md"):
+        heading = next((number for number, line in enumerate(lines, 1) if line.startswith("# ")), 1)
+        return [{
+            "path": path, "content_hash": file_record["sha256"],
+            "lines": [heading, min(len(lines), heading + 8)], "symbol": None,
+            "classification": "DECLARED",
+        }]
+    meaningful = [number for number, line in enumerate(lines, 1) if line.strip() and not line.lstrip().startswith(("#", "//"))]
+    begin = meaningful[0] if meaningful else 1
+    return [{
+        "path": path, "content_hash": file_record["sha256"],
+        "lines": [begin, min(len(lines), begin + 20)], "symbol": None,
+        "classification": "DIRECT",
+    }]
+
+
+def symbol_source(symbol: dict[str, Any]) -> str:
+    lines = TEXT_BY_PATH[symbol["source_file"]].splitlines()
+    begin, end = symbol["source_lines"]
+    return "\n".join(lines[max(0, begin - 1):min(len(lines), end)])
+
+
+def refine_symbols() -> None:
+    public_error_symbols = [
+        item for item in SYMBOLS
+        if item.get("public_api") and any(token in item["name"].lower() for token in ("error", "failure"))
+    ]
+    for symbol in SYMBOLS:
+        if not symbol.get("public_api"):
+            continue
+        source = symbol_source(symbol)
+        lower_source = source.lower()
+        description = symbol_description(symbol).strip().rstrip(".")
+        if not description or description == human(symbol["name"]):
+            description = f"Declares the public {human(symbol['kind'])} `{symbol['qualified_name']}`"
+        # ``summary`` is the concise public description in the symbol schema.
+        # Preserve the frozen compiler fact in ``source_documented`` while
+        # filling this field from the declaration-specific native-doc ledger.
+        # Leaving thousands of literal ``unknown`` summaries would make the
+        # registry internally inconsistent with its exhaustive API docs.
+        symbol["summary"] = description + "."
+        symbol["summary_basis"] = (
+            "frozen_source_documentation"
+            if symbol.get("source_documented")
+            else "declaration_specific_native_documentation"
+        )
+        symbol["responsibility"] = description + "."
+        if symbol["kind"] == "function":
+            symbol["when_to_use"] = f"Call `{symbol['qualified_name']}` when its documented {human(symbol['name'])} operation matches the current owner state and inputs."
+            symbol["when_not_to_use"] = f"Do not call `{symbol['qualified_name']}` when its receiver state, target gate, input validity, or ownership preconditions are not satisfied."
+        elif symbol["kind"] == "trait":
+            symbol["when_to_use"] = f"Implement `{symbol['qualified_name']}` to supply the behavior required by its compiler-visible methods."
+            symbol["when_not_to_use"] = f"Do not implement `{symbol['qualified_name']}` without honoring every required method, ownership boundary, and lifecycle result."
+        else:
+            symbol["when_to_use"] = f"Use `{symbol['qualified_name']}` where an owning PocketStation API signature requires this {human(symbol['kind'])}."
+            symbol["when_not_to_use"] = f"Do not substitute `{symbol['qualified_name']}` for a different identity, state, unit, or ownership type."
+
+        if symbol["kind"] == "function":
+            panic_sites = [
+                token for token in ("panic!", ".unwrap(", ".expect(", "assert!(", "assert_eq!(")
+                if token in source
+            ]
+            symbol["panic_behavior"] = (
+                "explicit_panic_sites_in_owned_body:" + ",".join(panic_sites)
+                if panic_sites
+                else "no_explicit_panic_site_in_owned_body; transitive panic behavior is not declared"
+            )
+            blocking_sites = [
+                token for token in ("sleep(", ".recv(", ".wait(", ".join(", "read_exact", "write_all", "Command::")
+                if token in source
+            ]
+            symbol["blocking_behavior"] = (
+                "potentially_blocking_owned_operations:" + ",".join(blocking_sites)
+                if blocking_sites
+                else "no_explicit_blocking_primitive_in_owned_body"
+            )
+            if "cancel" in lower_source:
+                symbol["cancellation"] = "observes_or_requests_cancellation_in_owned_body"
+            elif symbol.get("async_behavior") == "async":
+                symbol["cancellation"] = "no_explicit_cancellation_contract_in_owned_async_body"
+            else:
+                symbol["cancellation"] = "not_applicable_to_synchronous_nonwaiting_operation"
+        else:
+            symbol["panic_behavior"] = "not_applicable_to_non_callable_declaration"
+            symbol["blocking_behavior"] = "not_applicable_to_non_callable_declaration"
+            symbol["cancellation"] = "not_applicable_to_non_callable_declaration"
+
+        symbol["thread_safety"] = (
+            "compiler_enforced_Send_Sync_properties_only; no additional operational guarantee is declared"
+        )
+        if any(token in lower_source for token in ("sequence", "ordered", "fifo", "topo")):
+            symbol["ordering"] = "ordering_semantics_are_declared_in_the_owned_source_and_preserve_the_recorded_sequence_or_topology"
+        else:
+            symbol["ordering"] = "no_additional_ordering_contract_declared_by_this_declaration"
+        if any(token in lower_source for token in ("capacity", "full", "backpressure", "try_send", "drop")):
+            symbol["backpressure"] = "bounded_capacity_or_saturation_behavior_is_present_in_the_owned_source; inspect_returned_outcomes"
+        else:
+            symbol["backpressure"] = "not_applicable_or_not_declared_by_this_declaration"
+
+        name = symbol["name"].lower()
+        description_lower = description.lower()
+        if name.endswith("_ns") or "nanosecond" in description_lower:
+            symbol["units"] = "nanoseconds"
+        elif name.endswith("_ms") or "millisecond" in description_lower:
+            symbol["units"] = "milliseconds"
+        elif name.endswith("_hz") or "hertz" in description_lower:
+            symbol["units"] = "hertz"
+        elif name.endswith(("_bytes", "_byte_count")) or "in bytes" in description_lower:
+            symbol["units"] = "bytes"
+        elif name.endswith(("_frames", "_frame_count")):
+            symbol["units"] = "frames"
+        else:
+            symbol["units"] = "not_applicable_or_encoded_by_the_declared_type"
+        if name.startswith("max_") or "maximum" in description_lower or "capacity" in name:
+            symbol["limits"] = "the compiler-visible constant, field value, or validation path defines the upper bound"
+        else:
+            symbol["limits"] = "no_independent_limit_declared_by_this_declaration"
+
+        signature = json.dumps(symbol.get("signature"), separators=(",", ":"))
+        if "raw_pointer" in signature:
+            symbol["ownership"] = "raw_pointer_ownership_and_validity_follow_the_documented_safety_contract"
+        elif "borrowed_ref" in signature:
+            symbol["ownership"] = "borrows_the_referenced_value_for_the_compiler_visible_lifetime"
+        elif symbol["kind"] == "function" and '"self"' in signature:
+            symbol["ownership"] = "receiver_ownership_is_encoded_by_the_compiler_visible_self_parameter"
+        else:
+            symbol["ownership"] = "value_ownership_is_encoded_by_the_compiler_visible_type_or_signature"
+        symbol["lifetime"] = "compiler_visible_lifetimes_and_borrowed_references_are_authoritative"
+        symbol["mutability"] = "compiler_visible_mutability_of_fields_parameters_and_receiver_is_authoritative"
+        symbol["unknown_references"] = ["unknown-public-thread-safety"]
+        if "retry" in lower_source or any("retry" in value.lower() for value in symbol.get("errors", [])):
+            symbol["unknown_references"].append("unknown-retry-policy")
+        symbol["errors"] = sorted({
+            error["symbol_id"] for error in public_error_symbols
+            if error["name"] in source and error["symbol_id"] != symbol["symbol_id"]
+        })
+    write_jsonl(DB / "symbol-manifest.jsonl", SYMBOLS)
+    write_jsonl(DB / "symbols.jsonl", SYMBOLS)
 
 
 def refine_dossiers() -> None:
@@ -210,15 +404,26 @@ def refine_dossiers() -> None:
         dossier["constructed_by"] = sorted(set(incoming[file_record["path"]]))
         dossier["implemented_by"] = sorted(set(incoming[file_record["path"]]))
         dossier["extended_by"] = sorted(set(incoming[file_record["path"]]))
-        inputs = list(dossier.get("imports", []))
-        inputs.extend(dossier.get("environment_variables", []))
-        inputs.extend(item["text"] for item in dossier.get("configuration_read", [])[:10])
+        inputs = [
+            f"Depends on `{value.removeprefix('module:')}` through a declared Rust import."
+            for value in dossier.get("imports", [])[:20]
+        ]
+        inputs.extend(f"Reads process environment variable `{value}`." for value in dossier.get("environment_variables", []))
+        inputs.extend(
+            f"Consumes configuration at {file_record['path']}:{item['line']}."
+            for item in dossier.get("configuration_read", [])[:10]
+        )
         dossier["inputs"] = sorted(set(inputs)) or ["No external input is declared in this file."]
         outputs = [
-            f"{item['kind']}:{item['name']}" for item in dossier.get("public_surface", [])[:30]
+            f"Declares public {item['kind']} `{item['name']}`."
+            for item in dossier.get("public_surface", [])[:30]
         ]
-        outputs.extend(item["text"] for item in dossier.get("errors_created", [])[:10])
+        outputs.extend(
+            f"Creates a typed failure at {file_record['path']}:{item['line']}."
+            for item in dossier.get("errors_created", [])[:10]
+        )
         dossier["outputs"] = sorted(set(outputs)) or ["No emitted value or public declaration is recorded for this file."]
+        dossier["evidence"] = precise_dossier_evidence(file_record, dossier, symbols)
         test_ids = set(TESTS_BY_PATH[file_record["path"]])
         example_ids = set(EXAMPLES_BY_PATH[file_record["path"]])
         for symbol in symbols:
@@ -267,13 +472,56 @@ def developer_action(name: str, template: str | None) -> str:
         return "Inspect the reported stage and deadline; retry only when the owning API supplies an idempotence or retry contract."
     if template:
         return "Use the returned context to correct the reported condition; preserve the error when no recovery contract is declared."
-    return "Preserve the typed failure and follow the owning operation's documented recovery contract."
+    return f"Preserve `{name}` and inspect the owning operation's typed fields before choosing recovery or presentation."
+
+
+def token_sites(token: str, *, context: str | None = None, limit: int = 200) -> list[dict[str, Any]]:
+    sites: list[dict[str, Any]] = []
+    pattern = re.compile(rf"\b{re.escape(token)}\b")
+    for path, text in TEXT_BY_PATH.items():
+        for number, line in enumerate(text.splitlines(), 1):
+            if pattern.search(line) and (context is None or context in line):
+                sites.append({
+                    "path": path,
+                    "line": number,
+                    "text": line.strip()[:300],
+                    "content_hash": FILE_BY_PATH[path]["sha256"],
+                })
+                if len(sites) == limit:
+                    return sites
+    return sites
 
 
 def refine_errors() -> None:
     records = read_jsonl(DB / "errors.jsonl")
+    variant_names = {str(record["variant"]) for record in records if record.get("variant")}
+    error_type_names = {record["type"].rsplit("::", 1)[-1] for record in records}
+    variant_sites: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
+    translation_sites_by_type: defaultdict[str, list[dict[str, Any]]] = defaultdict(list)
+    for path, text in TEXT_BY_PATH.items():
+        for number, line in enumerate(text.splitlines(), 1):
+            tokens = set(re.findall(r"\b[A-Za-z_][A-Za-z0-9_]*\b", line))
+            for name in tokens & variant_names:
+                variant_sites[name].append({
+                    "path": path, "line": number, "text": line.strip()[:300],
+                    "content_hash": FILE_BY_PATH[path]["sha256"],
+                })
+            if "map_err" in line or "impl From<" in line:
+                for name in tokens & error_type_names:
+                    translation_sites_by_type[name].append({
+                        "path": path, "line": number, "text": line.strip()[:300],
+                        "content_hash": FILE_BY_PATH[path]["sha256"],
+                    })
+    function_symbols_by_token: defaultdict[str, set[str]] = defaultdict(set)
+    for candidate in SYMBOLS:
+        if candidate.get("kind") != "function":
+            continue
+        for token in set(re.findall(r"\b[A-Za-z_][A-Za-z0-9_]*\b", symbol_source(candidate))):
+            if token in error_type_names or token in variant_names:
+                function_symbols_by_token[token].add(candidate["symbol_id"])
     for record in records:
         symbol = SYMBOL_BY_ID[record["symbol_id"]]
+        error_type_name = record["type"].rsplit("::", 1)[-1]
         template = error_template(symbol["source_file"], symbol["source_lines"][0]) if record.get("variant") else None
         if template:
             record["external_representation"] = template
@@ -282,9 +530,38 @@ def refine_errors() -> None:
         elif record.get("variant"):
             record["trigger_condition"] = f"Classifies the {human(record['variant'])} failure case at the owning boundary."
             record["trigger_basis"] = "compiler-visible variant and native documentation; no narrower creation site was resolved"
+            record["external_representation"] = "typed_variant_without_a_declared_display_string"
         else:
             record["trigger_condition"] = f"Returned by operations whose signature names {record['type']}."
             record["trigger_basis"] = "compiler-visible public error type"
+            record["external_representation"] = "typed_Rust_error; variant_records_hold_any_declared_display_text"
+
+        if record.get("variant"):
+            qualified = f"{error_type_name}::{record['variant']}"
+            created = [item for item in variant_sites[record["variant"]] if qualified in item["text"]]
+            if not created:
+                self_qualified = f"Self::{record['variant']}"
+                created = [item for item in variant_sites[record["variant"]] if self_qualified in item["text"]]
+            record["created_at"] = created
+            record["lineage_disposition"] = (
+                "creation_sites_resolved_by_qualified_variant_constructor"
+                if created
+                else "no_qualified_constructor_site_resolved; construction_may_be_external_or_derived"
+            )
+        else:
+            record["created_at"] = []
+            record["lineage_disposition"] = "aggregate_error_type; variant_records_own_creation_sites"
+
+        propagation = set(function_symbols_by_token[error_type_name])
+        if record.get("variant"):
+            propagation.update(function_symbols_by_token[record["variant"]])
+        record["propagates_through"] = sorted(propagation)
+        creation_sites = record["created_at"]
+        record["wrapped_by"] = [
+            {"path": item["path"], "line": item["line"], "mechanism": "map_err"}
+            for item in creation_sites if "map_err" in item["text"]
+        ]
+        record["translated_to"] = translation_sites_by_type[error_type_name][:100]
         tests = set(symbol.get("tests", []))
         tests.update(TEST_TOKEN_INDEX.get(symbol["name"], set()))
         record["tests"] = sorted(tests)
@@ -325,8 +602,12 @@ for path in TEXT_BY_PATH:
 
 def refine_configuration() -> None:
     records = read_jsonl(DB / "configuration.jsonl")
+    errors = read_jsonl(DB / "errors.jsonl")
     for record in records:
         if record["kind"] == "cargo_feature":
+            record["security_implications"] = "feature_dependent; enabling native or fixture code expands the compiled surface"
+            record["tests"] = sorted(TEST_TOKEN_INDEX.get(record["name"], set()))
+            record["test_coverage_status"] = "linked" if record["tests"] else "no_direct_test_link_extracted"
             continue
         name = record["name"]
         parent = (record.get("parent") or "").rsplit("::", 1)[-1]
@@ -357,15 +638,34 @@ def refine_configuration() -> None:
             if len(uses) == 8:
                 break
         record["read_sites"] = uses
-        record["when_read"] = "Read at the recorded construction, validation, preparation, or runtime sites." if uses else "No distinct read site was resolved beyond the declaration."
-        record["precedence"] = "The constructed typed value is authoritative; no repository-level override precedence is declared."
+        if uses:
+            locations = ", ".join(f"{item['path']}:{item['line']}" for item in uses)
+            record["when_read"] = f"Consumed at the resolved source sites: {locations}."
+            record["read_site_disposition"] = "resolved_by_exact_field_name_reference"
+        else:
+            record["when_read"] = "No consumer beyond the declaration was resolved by exact field-name reference."
+            record["read_site_disposition"] = "unresolved_explicit"
+        record["precedence"] = (
+            "The value stored in the owning typed configuration is authoritative; "
+            "a source-level environment or repository override was not resolved."
+        )
         tests = sorted(TEST_TOKEN_INDEX.get(name, set()))
         record["tests"] = tests
         record["test_coverage_status"] = "linked" if tests else "no_direct_test_link_extracted"
         record["minimum"] = record["minimum"] if record["minimum"] != "unknown" else "not_declared"
         record["maximum"] = record["maximum"] if record["maximum"] != "unknown" else "not_declared"
         record["restart_required"] = "reconstruct_or_reprepare_owner"
-        record["invalid_value_behavior"] = "See the owning constructor or validation error; no fallback is inferred."
+        related_errors = [
+            error["error_id"] for error in errors
+            if error["defined_at"]["path"] == record["source_file"]
+            or record["name"].lower() in str(error.get("trigger_condition", "")).lower()
+        ]
+        record["invalid_value_behavior"] = (
+            f"Rejected through typed errors {', '.join(related_errors[:12])}."
+            if related_errors
+            else "No implicit fallback is declared; rejection behavior remains with the owning constructor or validator."
+        )
+        record["invalid_value_error_ids"] = related_errors[:12]
         record["security_implications"] = "secret_material" if "secret" in name.lower() or "secret" in parent.lower() else "none_explicitly_declared"
         record["documentation_status"] = "pending"
     write_jsonl(DB / "configuration.jsonl", records)
@@ -374,7 +674,7 @@ def refine_configuration() -> None:
 def lifecycle_states(name: str) -> tuple[str, str]:
     lower = name.lower()
     if "prepare" in lower:
-        return "declared_or_compiled", "prepared_or_prepare_failed"
+        return "constructed_before_preparation", "prepared_or_prepare_failed"
     if "start" in lower:
         return "prepared", "running_or_start_failed"
     if "cancel" in lower:
@@ -389,7 +689,7 @@ def lifecycle_states(name: str) -> tuple[str, str]:
         return "owned_or_running", "closed_or_released"
     if "run" in lower:
         return "prepared", "running_or_terminal"
-    return "state_declared_by_owning_type", "state_returned_by_owning_operation"
+    return "owning_state_before_operation", "owning_state_after_returned_outcome"
 
 
 def refine_lifecycles() -> None:
@@ -402,17 +702,72 @@ def refine_lifecycles() -> None:
         source, destination = lifecycle_states(record["operation"])
         record["source_state"] = source
         record["destination_state"] = destination
-        record["guard"] = "The receiver, arguments, and current lifecycle must satisfy the compiler-visible signature and owning type contract."
+        parameter_names = [
+            str(value[0]) for value in symbol.get("parameters", [])
+            if isinstance(value, list) and value
+        ]
+        record["guard"] = (
+            f"`{record['operation']}` requires source state `{source}` and compiler-visible inputs "
+            f"{', '.join(parameter_names) if parameter_names else 'with no explicit parameters'}."
+        )
+        record["guard_basis"] = "operation name plus compiler-owned signature; state inference is explicit"
+        record["state_classification"] = "INFERRED"
         record["action"] = symbol_description(symbol)
         related_errors = errors_by_file.get(symbol["source_file"], [])
         record["possible_error"] = related_errors[:20] if related_errors else "no_same_file_public_error_resolved"
-        record["recovery"] = "Preserve the returned outcome or error; no restart or retry guarantee is inferred."
-        record["idempotence"] = "not_declared_unless_the_native_API_description_states_otherwise"
+        record["recovery"] = (
+            f"Preserve the returned outcome and inspect typed errors {', '.join(related_errors[:20])}; "
+            "no retry is authorized without the owning error contract."
+            if related_errors
+            else "Preserve the returned outcome; no same-file public error or restart guarantee was resolved."
+        )
+        source_text = symbol_source(symbol).lower()
+        record["idempotence"] = (
+            "explicit_already_terminal_or_repeated_call_handling_present"
+            if any(token in source_text for token in ("already", "idempot", "take()", "is_none"))
+            else "no_idempotence_guarantee_declared_in_the_owned_operation"
+        )
         tests = set(symbol.get("tests", [])) | TEST_TOKEN_INDEX.get(symbol["name"], set())
         record["tests"] = sorted(tests)
         record["observable_signal"] = "typed_return_or_terminal_outcome" if tests or related_errors else "no_distinct_signal_extracted"
         record["documentation_status"] = "pending"
     write_jsonl(DB / "lifecycles.jsonl", records)
+
+
+def refine_behaviors() -> None:
+    records = read_jsonl(DB / "behaviors.jsonl")
+    lifecycle_by_symbol = {
+        record["symbol_id"]: record for record in read_jsonl(DB / "lifecycles.jsonl")
+    }
+    test_by_id = {record["test_id"]: record for record in TESTS}
+    for record in records:
+        if record.get("classification") == "TESTED" and record.get("tests"):
+            test = test_by_id.get(record["tests"][0])
+            if test:
+                source = TEXT_BY_PATH[test["path"]].splitlines()
+                body = "\n".join(source[test["lines"][0] - 1:test["lines"][1]])
+                operations = sorted({
+                    match.group(1)
+                    for match in re.finditer(r"\b([A-Za-z_][A-Za-z0-9_:]*)\s*\(", body)
+                    if match.group(1) not in {test["name"], "if", "for", "while", "match"}
+                })
+                record["steps"] = [{"operation": value} for value in operations]
+                record["errors"] = test.get("failure_expectation", [])
+                record["step_basis"] = "test_body_span"
+        elif record.get("entry_points"):
+            lifecycle = lifecycle_by_symbol.get(record["entry_points"][0])
+            if lifecycle:
+                record["steps"] = [{
+                    "operation": lifecycle["operation"],
+                    "source_state": lifecycle["source_state"],
+                    "destination_state": lifecycle["destination_state"],
+                }]
+                possible = lifecycle.get("possible_error")
+                record["errors"] = possible if isinstance(possible, list) else []
+                record["step_basis"] = "linked_lifecycle_record"
+        record["unknown_references"] = []
+        record["documentation_status"] = "pending"
+    write_jsonl(DB / "behaviors.jsonl", records)
 
 
 PATTERN_CONTENT = {
@@ -511,10 +866,12 @@ def refine_patterns() -> None:
 
 
 def main() -> None:
+    refine_symbols()
     refine_dossiers()
     refine_errors()
     refine_configuration()
     refine_lifecycles()
+    refine_behaviors()
     refine_patterns()
     checkpoint = {
         "snapshot": SNAPSHOT,

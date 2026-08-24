@@ -4,7 +4,15 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
@@ -194,7 +202,15 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
@@ -1116,11 +1132,241 @@
       "classification": "DIRECT",
       "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
       "lines": [
-        1,
-        1179
+        16,
+        16
       ],
       "path": "src/session/lifecycle/trace.rs",
-      "symbol": null
+      "symbol": "TRACE_MAGIC"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "TRACE_VERSION"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "HEADER_SIZE_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "RECORD_SIZE_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "FOOTER_SIZE_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "RECORD_MARKER"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "FOOTER_MARKER"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "FNV_OFFSET_BASIS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "FNV_PRIME"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        27,
+        52
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "SessionTraceRecordKind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        28,
+        30
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "Lifecycle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "state"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        31,
+        33
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "SourceFailure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        34,
+        38
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "EndpointFailure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "route_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "endpoint_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "stage_code"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        39,
+        41
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "RollbackFailure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        40,
+        40
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "stage"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        42,
+        44
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": "FinalizationFailure"
     }
   ],
   "example_coverage_status": "linked",
@@ -1130,7 +1376,15 @@
     "example-7fa365a72e313c091085"
   ],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
@@ -1220,7 +1474,15 @@
   "generated_from": "not_applicable",
   "git_object": "7be727966f12207e11eabbe52262db99be7febff",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
@@ -1235,7 +1497,15 @@
     "SessionTrace"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/lib.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
@@ -1256,18 +1526,18 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
-    "crate::session::{ SessionEvent, SessionEventKind, SessionFinalizationStage, SessionLifecycleState, SessionRollbackStage, SessionTerminalState, }",
-    "crate::session::{SessionEventKind, SessionTerminalOutcome}",
-    "std::fs::{File, OpenOptions}",
-    "std::io::{BufWriter, Write}",
-    "std::path::{Path, PathBuf}",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::sync::mpsc::{self, Receiver, SyncSender, TrySendError}",
-    "std::thread::{self, JoinHandle}",
-    "super::*"
+    "Consumes configuration at src/session/lifecycle/trace.rs:870.",
+    "Depends on `crate::frame::{EndpointId, RouteId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::session::{ SessionEvent, SessionEventKind, SessionFinalizationStage, SessionLifecycleState, SessionRollbackStage, SessionTerminalState, }` through a declared Rust import.",
+    "Depends on `crate::session::{SessionEventKind, SessionTerminalOutcome}` through a declared Rust import.",
+    "Depends on `std::fs::{File, OpenOptions}` through a declared Rust import.",
+    "Depends on `std::io::{BufWriter, Write}` through a declared Rust import.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::mpsc::{self, Receiver, SyncSender, TrySendError}` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1329,44 +1599,44 @@
   "module": "pocketstation::session::lifecycle::trace",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::trace` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-d4805cdc3b1b71af14b5"
   ],
   "outputs": [
-    "Err(TrySendError::Disconnected(_)) => {",
-    "Err(TrySendError::Full(_)) => {",
-    "Err(error) => return Err(error.into()),",
-    "Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {",
-    "enum:SessionTraceRecordDelivery",
-    "enum:SessionTraceRecordKind",
-    "enum:SessionTraceRecorderFinishError",
-    "enum:SessionTraceRecorderStartError",
-    "enum:SessionTraceValidationError",
-    "fn:finish",
-    "fn:handle",
-    "fn:is_complete",
-    "fn:outcome",
-    "fn:read",
-    "fn:records",
-    "fn:session_id",
-    "fn:start",
-    "fn:try_record_event",
-    "fn:validate",
-    "return Err(SessionTraceRecorderStartError::OutputExists { path });",
-    "return Err(SessionTraceRecorderStartError::ZeroCapacity);",
-    "return Err(SessionTraceValidationError::IncompleteTrace);",
-    "return Err(SessionTraceValidationError::SequenceGap);",
-    "return Err(SessionTraceValidationError::SessionMismatch);",
-    "return Err(SessionTraceValidationError::TimestampRegression);",
-    "struct:SessionTrace",
-    "struct:SessionTraceRecord",
-    "struct:SessionTraceRecorder",
-    "struct:SessionTraceRecorderHandle",
-    "struct:SessionTraceRecorderOutcome",
-    "struct:SessionTraceTerminal",
-    "struct:SessionTraceValidation"
+    "Creates a typed failure at src/session/lifecycle/trace.rs:136.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:142.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:166.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:171.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:172.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:174.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:282.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:289.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:292.",
+    "Creates a typed failure at src/session/lifecycle/trace.rs:295.",
+    "Declares public enum `SessionTraceRecordDelivery`.",
+    "Declares public enum `SessionTraceRecordKind`.",
+    "Declares public enum `SessionTraceRecorderFinishError`.",
+    "Declares public enum `SessionTraceRecorderStartError`.",
+    "Declares public enum `SessionTraceValidationError`.",
+    "Declares public fn `finish`.",
+    "Declares public fn `handle`.",
+    "Declares public fn `is_complete`.",
+    "Declares public fn `outcome`.",
+    "Declares public fn `read`.",
+    "Declares public fn `records`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `start`.",
+    "Declares public fn `try_record_event`.",
+    "Declares public fn `validate`.",
+    "Declares public struct `SessionTraceRecord`.",
+    "Declares public struct `SessionTraceRecorderHandle`.",
+    "Declares public struct `SessionTraceRecorderOutcome`.",
+    "Declares public struct `SessionTraceRecorder`.",
+    "Declares public struct `SessionTraceTerminal`.",
+    "Declares public struct `SessionTraceValidation`.",
+    "Declares public struct `SessionTrace`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/trace.rs",
@@ -1874,8 +2144,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::trace responsibilities, including Selects the session trace record kind used by PocketStation.; Selects lifecycle behavior for `SessionTraceRecordKind`.; Stores the state used by `Lifecycle`.."
+    "classification": "DECLARED",
+    "text": "Selects the session trace record kind used by PocketStation. Tags a Session trace record as lifecycle. Records the state selected for `Lifecycle`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1936,6 +2206,12 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/session/lifecycle/events.rs",
     "REFERENCES:src/endpoint/runtime.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/session/lifecycle/events.rs"
@@ -1984,47 +2260,47 @@
   ],
   "responsibilities": [
     "pocketstation::session::lifecycle::trace::SessionTraceRecordKind: Selects the session trace record kind used by PocketStation.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::Lifecycle: Selects lifecycle behavior for `SessionTraceRecordKind`.",
-    "SessionTraceRecordKind::Lifecycle::state: Stores the state used by `Lifecycle`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::SourceFailure: Selects source failure behavior for `SessionTraceRecordKind`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::Lifecycle: Tags a Session trace record as lifecycle.",
+    "SessionTraceRecordKind::Lifecycle::state: Records the state selected for `Lifecycle`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::SourceFailure: Tags a Session trace record as source failure.",
     "SessionTraceRecordKind::SourceFailure::stem_id: Identifies the stem identifier recorded by `SourceFailure`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::EndpointFailure: Selects endpoint failure behavior for `SessionTraceRecordKind`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::EndpointFailure: Tags a Session trace record as endpoint failure.",
     "SessionTraceRecordKind::EndpointFailure::route_id: Identifies the route identifier recorded by `EndpointFailure`.",
     "SessionTraceRecordKind::EndpointFailure::endpoint_id: Identifies the endpoint identifier recorded by `EndpointFailure`.",
-    "SessionTraceRecordKind::EndpointFailure::stage_code: Stores the stage code used by `EndpointFailure`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::RollbackFailure: Selects rollback failure behavior for `SessionTraceRecordKind`.",
-    "SessionTraceRecordKind::RollbackFailure::stage: Stores the stage used by `RollbackFailure`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::FinalizationFailure: Selects finalization failure behavior for `SessionTraceRecordKind`.",
-    "SessionTraceRecordKind::FinalizationFailure::stage: Stores the stage used by `FinalizationFailure`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::Terminal: Selects terminal behavior for `SessionTraceRecordKind`.",
-    "SessionTraceRecordKind::Terminal::state: Stores the state used by `Terminal`.",
+    "SessionTraceRecordKind::EndpointFailure::stage_code: Stores the stage code component of `EndpointFailure`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::RollbackFailure: Tags a Session trace record as rollback failure.",
+    "SessionTraceRecordKind::RollbackFailure::stage: Records the stage selected for `RollbackFailure`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::FinalizationFailure: Tags a Session trace record as finalization failure.",
+    "SessionTraceRecordKind::FinalizationFailure::stage: Records the stage selected for `FinalizationFailure`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecordKind::Terminal: Tags a Session trace record as terminal.",
+    "SessionTraceRecordKind::Terminal::state: Records the state selected for `Terminal`.",
     "SessionTraceRecordKind::Terminal::source_failures_total: Counts the total number of source failures observed by `Terminal`.",
     "SessionTraceRecordKind::Terminal::endpoint_failures_total: Counts the total number of endpoint failures observed by `Terminal`.",
     "SessionTraceRecordKind::Terminal::rollback_failures_total: Counts the total number of rollback failures observed by `Terminal`.",
     "SessionTraceRecordKind::Terminal::finalization_failures_total: Counts the total number of finalization failures observed by `Terminal`.",
     "pocketstation::session::lifecycle::trace::SessionTraceRecord: Records one immutable session trace observation.",
-    "SessionTraceRecord::sequence_index: Stores the sequence index used by `SessionTraceRecord`.",
+    "SessionTraceRecord::sequence_index: Identifies the sequence index position within `SessionTraceRecord`.",
     "SessionTraceRecord::observed_at_ns: Stores the observed at value for `SessionTraceRecord`, in nanoseconds.",
     "SessionTraceRecord::session_id: Identifies the session identifier recorded by `SessionTraceRecord`.",
-    "SessionTraceRecord::kind: Stores the kind used by `SessionTraceRecord`.",
+    "SessionTraceRecord::kind: Records the kind selected for `SessionTraceRecord`.",
     "pocketstation::session::lifecycle::trace::SessionTraceRecorderOutcome: Reports the structured session trace recorder outcome.",
-    "SessionTraceRecorderOutcome::path: Stores the path used by `SessionTraceRecorderOutcome`.",
+    "SessionTraceRecorderOutcome::path: Points to the path used by `SessionTraceRecorderOutcome`.",
     "SessionTraceRecorderOutcome::records_attempted_total: Counts the total number of records attempted observed by `SessionTraceRecorderOutcome`.",
     "SessionTraceRecorderOutcome::records_enqueued_total: Counts the total number of records enqueued observed by `SessionTraceRecorderOutcome`.",
     "SessionTraceRecorderOutcome::records_dropped_total: Counts the total number of records dropped observed by `SessionTraceRecorderOutcome`.",
     "SessionTraceRecorderOutcome::records_written_total: Counts the total number of records written observed by `SessionTraceRecorderOutcome`.",
-    "SessionTraceRecorderOutcome::rolling_hash: Stores the rolling hash used by `SessionTraceRecorderOutcome`.",
-    "is_complete: Returns whether complete applies to `SessionTraceRecorderOutcome`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError: Classifies failures reported as session trace recorder start error.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError::ZeroCapacity: Reported when the owning operation encounters zero capacity.",
-    "SessionTraceRecorderStartError::OutputExists::path: Stores the path used by `OutputExists`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError::OutputExists: Reported when the owning operation encounters output exists.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError::Io: Reported when the owning operation encounters I/O.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError: Classifies failures reported as session trace recorder finish error.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError::ChannelClosed: Reported when the owning operation encounters channel closed.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError::Io: Reported when the owning operation encounters I/O.",
-    "pocketstation::session::lifecycle::trace::SessionTraceRecorderHandle: Owns bounded access to session trace recorder.",
+    "SessionTraceRecorderOutcome::rolling_hash: Stores the rolling integrity hash computed for `SessionTraceRecorderOutcome`.",
+    "is_complete: Reports whether complete is true for `SessionTraceRecorderOutcome`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError: Classifies failures produced during session trace recorder lifecycle start.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError::ZeroCapacity: Reports that capacity must be greater than zero.",
+    "SessionTraceRecorderStartError::OutputExists::path: Points to the path used by `OutputExists`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError::OutputExists: Reports that output already exists and would be overwritten.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError::Io: Reports an operating-system or filesystem I/O failure.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError: Classifies failures surfaced by session trace recorder finish operations.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError::ChannelClosed: Reports that channel closed before the operation completed.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError::WorkerPanicked: Reports that worker panicked while the operation was active.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError::Io: Reports an operating-system or filesystem I/O failure.",
+    "pocketstation::session::lifecycle::trace::SessionTraceRecorderHandle: Holds the ownership or bounded access represented by session trace recorder handle.",
     "pocketstation::session::lifecycle::trace::SessionTraceRecorder: Collects ordered lifecycle records and writes the trace artifact during Session finalization.",
     "start: Starts the lifecycle represented by `SessionTraceRecorder`.",
     "handle: Returns the handle associated with `SessionTraceRecorder`.",
@@ -2038,32 +2314,32 @@
     "outcome: Returns the outcome held by `SessionTrace`.",
     "validate: Validates `SessionTrace` against its declared contract.",
     "pocketstation::session::lifecycle::trace::SessionTraceTerminal: Records the terminal Session disposition and component failures stored in a trace.",
-    "SessionTraceTerminal::state: Stores the state used by `SessionTraceTerminal`.",
+    "SessionTraceTerminal::state: Records the state selected for `SessionTraceTerminal`.",
     "SessionTraceTerminal::source_failures_total: Counts the total number of source failures observed by `SessionTraceTerminal`.",
     "SessionTraceTerminal::endpoint_failures_total: Counts the total number of endpoint failures observed by `SessionTraceTerminal`.",
     "SessionTraceTerminal::rollback_failures_total: Counts the total number of rollback failures observed by `SessionTraceTerminal`.",
     "SessionTraceTerminal::finalization_failures_total: Counts the total number of finalization failures observed by `SessionTraceTerminal`.",
     "pocketstation::session::lifecycle::trace::SessionTraceValidation: Reports the validated identity and record count of a parsed Session trace.",
     "SessionTraceValidation::session_id: Identifies the session identifier recorded by `SessionTraceValidation`.",
-    "SessionTraceValidation::lifecycle: Stores the lifecycle used by `SessionTraceValidation`.",
+    "SessionTraceValidation::lifecycle: Stores the lifecycle component of `SessionTraceValidation`.",
     "SessionTraceValidation::terminal: Indicates whether terminal applies to `SessionTraceValidation`.",
     "SessionTraceValidation::records_validated_total: Counts the total number of records validated observed by `SessionTraceValidation`.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError: Classifies failures reported as session trace validation error.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::Io: Reported when the owning operation encounters I/O.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidMagic: Reported when the owning operation encounters invalid magic.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::UnsupportedVersion: Reported when the owning operation encounters unsupported version.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidLayout: Reported when the owning operation encounters invalid layout.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::Truncated: Reported when the owning operation encounters truncated.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidChecksum: Reported when the owning operation encounters invalid checksum.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::IncompleteTrace: Reported when the owning operation encounters incomplete trace.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::SequenceGap: Reported when the owning operation encounters sequence gap.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::SessionMismatch: Reported when the owning operation encounters session mismatch.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::TimestampRegression: Reported when the owning operation encounters timestamp regression.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidLifecycleTransition: Reported when the owning operation encounters invalid lifecycle transition.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::MissingTerminal: Reported when the owning operation encounters missing terminal.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::TerminalMismatch: Reported when the owning operation encounters terminal mismatch.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::RecordAfterTerminal: Reported when the owning operation encounters record after terminal.",
-    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::UnknownRecordType: Reported when the owning operation encounters unknown record type."
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError: Classifies failures produced during session trace validation.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::Io: Reports an operating-system or filesystem I/O failure.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidMagic: Reports that the supplied magic is invalid.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::UnsupportedVersion: Reports that the requested version is unsupported.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidLayout: Reports that the supplied layout is invalid.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::Truncated: Reports that the encoded input ended before the complete record was available.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidChecksum: Reports that the supplied checksum is invalid.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::IncompleteTrace: Classifies a failure at the incomplete trace stage or component of `SessionTraceValidationError`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::SequenceGap: Classifies a failure at the sequence gap stage or component of `SessionTraceValidationError`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::SessionMismatch: Reports that session does not match the expected contract.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::TimestampRegression: Reports that timestamp moved backward instead of remaining monotonic.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::InvalidLifecycleTransition: Reports that the supplied lifecycle transition is invalid.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::MissingTerminal: Reports that the required terminal is missing.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::TerminalMismatch: Reports that terminal does not match the expected contract.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::RecordAfterTerminal: Classifies a failure at the record after terminal stage or component of `SessionTraceValidationError`.",
+    "pocketstation::session::lifecycle::trace::SessionTraceValidationError::UnknownRecordType: Reports that the referenced record type is not declared or registered."
   ],
   "retry_behavior": [],
   "serialization": [],

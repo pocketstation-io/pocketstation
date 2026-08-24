@@ -3,7 +3,7 @@ const DRIFT_WINDOW_SAMPLES: usize = 100;
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
 #[doc = "Reports the clock drift snapshot collected at an observation boundary."]
 pub struct ClockDriftSnapshot {
-    #[doc = "Stores the drift ppm used by `ClockDriftSnapshot`."]
+    #[doc = "Reports the estimated clock drift for `ClockDriftSnapshot`, in parts per million."]
     pub drift_ppm: f64,
     #[doc = "Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds."]
     pub accumulated_error_ns: i64,

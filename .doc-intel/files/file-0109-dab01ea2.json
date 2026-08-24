@@ -4,6 +4,20 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/codec.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/macos_asp.rs",
+    "CALLS:src/codec/decoder.rs",
+    "CALLS:src/codec/profile.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/codec/mod.rs",
     "IMPORTS:src/codec/mod.rs",
     "REFERENCES:src/abi/codec.rs",
@@ -171,6 +185,20 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/codec.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/macos_asp.rs",
+    "CALLS:src/codec/decoder.rs",
+    "CALLS:src/codec/profile.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/codec/mod.rs",
     "IMPORTS:src/codec/mod.rs",
     "REFERENCES:src/abi/codec.rs",
@@ -601,11 +629,241 @@
       "classification": "DIRECT",
       "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
       "lines": [
-        1,
-        860
+        6,
+        6
       ],
       "path": "src/codec/encoder.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        7,
+        12
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "OpusFrameDuration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Ms10"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Ms20"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Ms40"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Ms60"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        15,
+        22
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "samples_at_48k"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        27,
+        30
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "OpusChannels"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Mono"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Stereo"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        33,
+        38
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        44,
+        46
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "OpusSampleRate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "Hz48000"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        49,
+        53
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "hz"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        57,
+        57
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0809bd284aab560c71aa83ad4346b831765ccf794439ed3c1ecef82c9cfdcdc2",
+      "lines": [
+        57,
+        57
+      ],
+      "path": "src/codec/encoder.rs",
+      "symbol": "clone"
     }
   ],
   "example_coverage_status": "linked",
@@ -613,6 +871,20 @@
     "example-64188d831f3c13af50ff"
   ],
   "extended_by": [
+    "CALLS:src/abi/codec.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/macos_asp.rs",
+    "CALLS:src/codec/decoder.rs",
+    "CALLS:src/codec/profile.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/codec/mod.rs",
     "IMPORTS:src/codec/mod.rs",
     "REFERENCES:src/abi/codec.rs",
@@ -648,6 +920,20 @@
   "generated_from": "not_applicable",
   "git_object": "76b99c07063d417ed2e1a956c43333174171e6f3",
   "implemented_by": [
+    "CALLS:src/abi/codec.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/macos_asp.rs",
+    "CALLS:src/codec/decoder.rs",
+    "CALLS:src/codec/profile.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/codec/mod.rs",
     "IMPORTS:src/codec/mod.rs",
     "REFERENCES:src/abi/codec.rs",
@@ -664,6 +950,20 @@
     "Default for OpusEncoder"
   ],
   "imported_by": [
+    "CALLS:src/abi/codec.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/macos_asp.rs",
+    "CALLS:src/codec/decoder.rs",
+    "CALLS:src/codec/profile.rs",
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/codec/mod.rs",
     "IMPORTS:src/codec/mod.rs",
     "REFERENCES:src/abi/codec.rs",
@@ -679,17 +979,17 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "/// Configured for 48 000 Hz, mono, [`Application::Voip`], 20 ms frames",
-    "CARGO_MANIFEST_DIR",
-    "PKS_WRITE_AUDIO_ARTIFACTS",
-    "crate::codec::constants::{I16_SCALE, OPUS_MAX_PACKET_BYTES}",
-    "crate::codec::constants::{OPUS_FRAME_SAMPLES, VOICE_AGENT_FRAME_SAMPLES}",
-    "if std::env::var(\"PKS_WRITE_AUDIO_ARTIFACTS\").as_deref() == Ok(\"1\") {",
-    "opus::{Application, Channels, Encoder}",
-    "std::f32::consts::PI",
-    "std::path::Path",
-    "super::*"
+    "Consumes configuration at src/codec/encoder.rs:146.",
+    "Consumes configuration at src/codec/encoder.rs:308.",
+    "Consumes configuration at src/codec/encoder.rs:818.",
+    "Depends on `crate::codec::constants::{I16_SCALE, OPUS_MAX_PACKET_BYTES}` through a declared Rust import.",
+    "Depends on `crate::codec::constants::{OPUS_FRAME_SAMPLES, VOICE_AGENT_FRAME_SAMPLES}` through a declared Rust import.",
+    "Depends on `opus::{Application, Channels, Encoder}` through a declared Rust import.",
+    "Depends on `std::f32::consts::PI` through a declared Rust import.",
+    "Depends on `std::path::Path` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Reads process environment variable `CARGO_MANIFEST_DIR`.",
+    "Reads process environment variable `PKS_WRITE_AUDIO_ARTIFACTS`."
   ],
   "invariants": [
     {
@@ -791,34 +1091,34 @@
   "module": "pocketstation::codec::encoder",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::codec::encoder` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-f22d42317b3d422a1552"
   ],
   "outputs": [
-    "Err(OpusEncodeError::InvalidFrameSampleCount {",
-    "Err(_) => {",
-    "Err(error) => {",
-    "enum:OpusApplication",
-    "enum:OpusChannels",
-    "enum:OpusEncodeError",
-    "enum:OpusFrameDuration",
-    "enum:OpusSampleRate",
-    "fn:count",
-    "fn:encode_into",
-    "fn:from_config",
-    "fn:hz",
-    "fn:new",
-    "fn:samples_at_48k",
-    "fn:set_bitrate_kbps",
-    "fn:set_complexity",
-    "fn:stereo_broadcast",
-    "fn:validate_frame_sample_count",
-    "fn:voice_broadcast",
-    "return Err(error.into());",
-    "struct:OpusConfig",
-    "struct:OpusEncoder"
+    "Creates a typed failure at src/codec/encoder.rs:216.",
+    "Creates a typed failure at src/codec/encoder.rs:261.",
+    "Creates a typed failure at src/codec/encoder.rs:263.",
+    "Creates a typed failure at src/codec/encoder.rs:715.",
+    "Declares public enum `OpusApplication`.",
+    "Declares public enum `OpusChannels`.",
+    "Declares public enum `OpusEncodeError`.",
+    "Declares public enum `OpusFrameDuration`.",
+    "Declares public enum `OpusSampleRate`.",
+    "Declares public fn `count`.",
+    "Declares public fn `encode_into`.",
+    "Declares public fn `from_config`.",
+    "Declares public fn `hz`.",
+    "Declares public fn `new`.",
+    "Declares public fn `samples_at_48k`.",
+    "Declares public fn `set_bitrate_kbps`.",
+    "Declares public fn `set_complexity`.",
+    "Declares public fn `stereo_broadcast`.",
+    "Declares public fn `validate_frame_sample_count`.",
+    "Declares public fn `voice_broadcast`.",
+    "Declares public struct `OpusConfig`.",
+    "Declares public struct `OpusEncoder`."
   ],
   "package": "pocketstation",
   "path": "src/codec/encoder.rs",
@@ -1081,8 +1381,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::codec::encoder responsibilities, including Supported Opus frame duration at 48 kHz.; Represents the ms10 alternative defined by `OpusFrameDuration`.; Represents the ms20 alternative defined by `OpusFrameDuration`.."
+    "classification": "DECLARED",
+    "text": "Supported Opus frame duration at 48 kHz. Represents the ms10 alternative defined by `OpusFrameDuration`. Represents the ms20 alternative defined by `OpusFrameDuration`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1107,7 +1407,10 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::codec::encoder::OpusFrameDuration: Supported Opus frame duration at 48 kHz.",
@@ -1139,12 +1442,12 @@
     "default: Returns the default `OpusConfig` value.",
     "voice_broadcast: Standard 20 ms mono voice transport profile with in-band FEC.",
     "stereo_broadcast: 20 ms stereo audio transport profile with an explicit bitrate.",
-    "pocketstation::codec::encoder::OpusEncodeError: Classifies failures reported as opus encode error.",
-    "pocketstation::codec::encoder::OpusEncodeError::InvalidFrameSampleCount: Reported when the owning operation encounters invalid frame sample count.",
+    "pocketstation::codec::encoder::OpusEncodeError: Classifies failures produced during opus encoding.",
+    "pocketstation::codec::encoder::OpusEncodeError::InvalidFrameSampleCount: Reports that the supplied frame sample count is invalid.",
     "OpusEncodeError::InvalidFrameSampleCount::sample_count: Stores the number of sample represented by `InvalidFrameSampleCount`.",
-    "OpusEncodeError::InvalidFrameSampleCount::channels: Stores the channels used by `InvalidFrameSampleCount`.",
+    "OpusEncodeError::InvalidFrameSampleCount::channels: Contains the channels owned or reported by `InvalidFrameSampleCount`.",
     "OpusEncodeError::InvalidFrameSampleCount::expected_sample_count: Stores the number of expected sample represented by `InvalidFrameSampleCount`.",
-    "pocketstation::codec::encoder::OpusEncodeError::Opus: Reported when the owning operation encounters opus.",
+    "pocketstation::codec::encoder::OpusEncodeError::Opus: Classifies a failure at the opus stage or component of `OpusEncodeError`.",
     "pocketstation::codec::encoder::OpusEncoder: Real Opus encoder wrapping libopus via the `opus` crate.",
     "new: Create a new encoder with default config (48 kHz, mono, Voip, 20 ms).",
     "from_config: Create an encoder from an explicit OpusConfig.",

@@ -13,6 +13,11 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/prepared.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -272,6 +277,11 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/prepared.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1278,16 +1288,251 @@
       "classification": "DIRECT",
       "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
       "lines": [
-        1,
-        2625
+        59,
+        63
       ],
       "path": "src/session/lifecycle/running.rs",
-      "symbol": null
+      "symbol": "RuntimeSource"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        60,
+        60
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        61,
+        61
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "capture"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        62,
+        62
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "sender"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        65,
+        68
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "OpenedCapture"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        66,
+        66
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "owner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        70,
+        76
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "RuntimeWorkerStart"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        71,
+        71
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "sources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        72,
+        72
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "runner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        73,
+        73
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "options"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        74,
+        74
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "session_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        75,
+        75
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "event_sender"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        78,
+        78
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        79,
+        87
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "RuntimeWorkerOutcome"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        80,
+        80
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "captures"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        81,
+        81
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "runner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        82,
+        82
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "runtime_events_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        83,
+        83
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "runtime_failures_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "lineage_failures_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        85,
+        85
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "source_send_rejections_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        86,
+        86
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "source_failures"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        89,
+        92
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "RunningEndpointBinding"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        90,
+        90
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": "identities"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/prepared.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1332,6 +1577,11 @@
   "generated_from": "not_applicable",
   "git_object": "47a422962674e265ebe86d175e995145bc8d0606",
   "implemented_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/prepared.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1345,6 +1595,11 @@
     "CaptureAcquisitionError"
   ],
   "imported_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/prepared.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1375,28 +1630,29 @@
     "super::capture_mode"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::capture::{ capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive, }",
-    "crate::capture::{CaptureMode, SourceKind, StableSourceId}",
-    "crate::endpoint::{ endpoint_start_gate, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFinalizationOutcome, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, RunningEndpoint, SessionTimelineOrigin, }",
-    "crate::frame::Platform",
-    "crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId}",
-    "crate::runtime::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput, AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncRuntimeHost, CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendError, PlanSourceSendOutcome, RealtimePlanRunner, SessionOperatorInput, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarMessage, }",
-    "crate::session::lifecycle::control::{ validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
-    "crate::session::lifecycle::endpoint_setup::{ prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints, PendingEndpointPortInput, PreparedEndpointBinding, }",
-    "crate::session::lifecycle::events::{session_event_channel, SessionEventSender}",
-    "crate::session::lifecycle::operator_inputs::{ OperatorInputObservation, OperatorInputObservationBinding, }",
-    "crate::session::lifecycle::rollback::StartupRollback",
-    "crate::session::lifecycle::telemetry::{ DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation, IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding, }",
-    "crate::session::prepare::{ PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping, PreparedOperatorMapping, PreparedOperatorOutputTarget, PreparedSignalRouteMapping, }",
-    "crate::session::{ ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId, PreparedSession, PreparedSourceRuntime, SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver, SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext, }",
-    "crate::session::{ApplicationSelector, ProcessId, Source}",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::thread::JoinHandle",
-    "std::time::Duration",
-    "super::capture_mode"
+    "Consumes configuration at src/session/lifecycle/running.rs:2596.",
+    "Consumes configuration at src/session/lifecycle/running.rs:626.",
+    "Consumes configuration at src/session/lifecycle/running.rs:642.",
+    "Depends on `crate::capture::{ capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive, }` through a declared Rust import.",
+    "Depends on `crate::capture::{CaptureMode, SourceKind, StableSourceId}` through a declared Rust import.",
+    "Depends on `crate::endpoint::{ endpoint_start_gate, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFinalizationOutcome, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, RunningEndpoint, SessionTimelineOrigin, }` through a declared Rust import.",
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput, AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncRuntimeHost, CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendError, PlanSourceSendOutcome, RealtimePlanRunner, SessionOperatorInput, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarMessage, }` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::control::{ validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::endpoint_setup::{ prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints, PendingEndpointPortInput, PreparedEndpointBinding, }` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::events::{session_event_channel, SessionEventSender}` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::operator_inputs::{ OperatorInputObservation, OperatorInputObservationBinding, }` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::rollback::StartupRollback` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::telemetry::{ DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation, IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding, }` through a declared Rust import.",
+    "Depends on `crate::session::prepare::{ PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping, PreparedOperatorMapping, PreparedOperatorOutputTarget, PreparedSignalRouteMapping, }` through a declared Rust import.",
+    "Depends on `crate::session::{ ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId, PreparedSession, PreparedSourceRuntime, SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver, SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext, }` through a declared Rust import.",
+    "Depends on `crate::session::{ApplicationSelector, ProcessId, Source}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, Ordering}` through a declared Rust import.",
+    "Depends on `std::thread::JoinHandle` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::capture_mode` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -1405,7 +1661,7 @@
   "module": "pocketstation::session::lifecycle::running",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::running` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-04f8d9b9f861abf03e05",
@@ -1413,30 +1669,36 @@
     "pattern-eea7a0d04a047e2090c1"
   ],
   "outputs": [
-    "Err((error, rollback_failures)) => {",
-    "Err(error) => Some(error.to_string()),",
-    "Err(source) => {",
-    "fn:attach_sidecars",
-    "fn:audio_reentry_metrics",
-    "fn:cancel",
-    "fn:derived_route_metrics",
-    "fn:external_source_metrics",
-    "fn:indexed_metrics",
-    "fn:indexed_metrics_full",
-    "fn:operator_metrics",
-    "fn:receive_sidecar_signal",
-    "fn:session_id",
-    "fn:sidecar_metrics",
-    "fn:start_prepared_session",
-    "fn:start_prepared_session_cancellable",
-    "fn:start_prepared_session_cancellable_with_trace",
-    "fn:state",
-    "fn:stop",
-    "fn:take_event_receiver",
-    "fn:try_receive_sidecar_signal",
-    "fn:try_send_sidecar_signal",
-    "return Err(complete_start_failure(",
-    "struct:RunningSession"
+    "Creates a typed failure at src/session/lifecycle/running.rs:474.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:690.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:718.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:719.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:748.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:749.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:761.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:777.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:792.",
+    "Creates a typed failure at src/session/lifecycle/running.rs:796.",
+    "Declares public fn `attach_sidecars`.",
+    "Declares public fn `audio_reentry_metrics`.",
+    "Declares public fn `cancel`.",
+    "Declares public fn `derived_route_metrics`.",
+    "Declares public fn `external_source_metrics`.",
+    "Declares public fn `indexed_metrics_full`.",
+    "Declares public fn `indexed_metrics`.",
+    "Declares public fn `operator_metrics`.",
+    "Declares public fn `receive_sidecar_signal`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `sidecar_metrics`.",
+    "Declares public fn `start_prepared_session_cancellable_with_trace`.",
+    "Declares public fn `start_prepared_session_cancellable`.",
+    "Declares public fn `start_prepared_session`.",
+    "Declares public fn `state`.",
+    "Declares public fn `stop`.",
+    "Declares public fn `take_event_receiver`.",
+    "Declares public fn `try_receive_sidecar_signal`.",
+    "Declares public fn `try_send_sidecar_signal`.",
+    "Declares public struct `RunningSession`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/running.rs",
@@ -1849,8 +2111,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::running responsibilities, including Owns a started Session together with event, polling, recording, trace, and stop resources.; Returns the session identifier held by `RunningSession`.; Returns the authoritative current lifecycle state owned by this Session.."
+    "classification": "DECLARED",
+    "text": "Owns a started Session together with event, polling, recording, trace, and stop resources. Returns the session identifier held by `RunningSession`. Returns the authoritative current lifecycle state owned by this Session."
   },
   "queues": [],
   "recovery_behavior": [
@@ -2492,6 +2754,31 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/runtime/lifecycle/async_host.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/runtime/signal/operator.rs",
+    "CALLS:src/session/declaration/selector.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/control.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/observations.rs",
+    "CALLS:src/session/lifecycle/operator_inputs.rs",
+    "CALLS:src/session/lifecycle/rollback.rs",
+    "CALLS:src/session/prepare/mappings.rs",
     "REFERENCES:src/capture/authorization.rs",
     "REFERENCES:src/capture/capture_owner.rs",
     "REFERENCES:src/capture/frame_stream.rs",

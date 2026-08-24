@@ -81,7 +81,7 @@
       "content_hash": "a3099215fc78fa852a295746ab65a3fe0bcd4b020a7cd2172709e0da081da4f6",
       "lines": [
         1,
-        5
+        4
       ],
       "path": "src/abi/mod.rs",
       "symbol": null
@@ -122,10 +122,10 @@
     "module:session"
   ],
   "inputs": [
-    "module:codec",
-    "module:executable_extension",
-    "module:extension",
-    "module:session"
+    "Depends on `codec` through a declared Rust import.",
+    "Depends on `executable_extension` through a declared Rust import.",
+    "Depends on `extension` through a declared Rust import.",
+    "Depends on `session` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -134,13 +134,13 @@
   "module": "pocketstation::abi",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "mod:executable_extension",
-    "mod:extension",
-    "mod:session"
+    "Declares public mod `executable_extension`.",
+    "Declares public mod `extension`.",
+    "Declares public mod `session`."
   ],
   "package": "pocketstation",
   "path": "src/abi/mod.rs",
@@ -182,7 +182,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::abi responsibilities, including abi."
+    "text": "Owns the internal abi module used by `pocketstation::abi`."
   },
   "queues": [],
   "recovery_behavior": [],

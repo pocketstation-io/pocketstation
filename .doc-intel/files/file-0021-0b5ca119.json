@@ -35,11 +35,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "88ad3fee3b3e24f2df8fe6cc10390d2324757ebad72ef4f9d0b9793e86c468c7",
       "lines": [
         1,
-        37
+        9
       ],
       "path": "docs/README.md",
       "symbol": null
@@ -80,7 +80,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/README.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

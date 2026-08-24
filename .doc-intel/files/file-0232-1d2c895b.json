@@ -4,6 +4,12 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -99,6 +105,12 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -1012,16 +1024,252 @@
       "classification": "DIRECT",
       "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
       "lines": [
-        1,
-        636
+        16,
+        16
       ],
       "path": "src/session/lifecycle/observations.rs",
-      "symbol": null
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        17,
+        29
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "SessionEventQueueObservations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "capacity_event_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "maximum_event_owned_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "maximum_buffered_owned_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "depth_events"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "depth_owned_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "peak_depth_event_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "peak_depth_owned_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "events_enqueued_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "events_dropped_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "events_dropped_oversized_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "receiver_closed_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        36,
+        44
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "SessionMetricsSnapshot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "event_queue"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "polled_audio"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "sources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        40,
+        40
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "external_sources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": "routes"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -1047,6 +1295,12 @@
   "generated_from": "not_applicable",
   "git_object": "c7ac25cba8ab670813c5f22f92524894c2594566",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -1067,6 +1321,12 @@
     "SessionEventQueueCounters"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/session/lifecycle/events.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -1088,14 +1348,14 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::capture::CaptureOwnerObservations",
-    "crate::endpoint::EndpointDriverObservations",
-    "crate::frame::{EndpointId, RouteId, SourceId, StemId}",
-    "crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations, GeneratedAudioBridgeObservations, PlanSourceInputObservations, SidecarHostSnapshot, }",
-    "crate::session::{ OperatorInstanceId, PolledAudioObservations, SourceInstanceId, SourceRuntimeObservations, }",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "super::*"
+    "Consumes configuration at src/session/lifecycle/observations.rs:574.",
+    "Depends on `crate::capture::CaptureOwnerObservations` through a declared Rust import.",
+    "Depends on `crate::endpoint::EndpointDriverObservations` through a declared Rust import.",
+    "Depends on `crate::frame::{EndpointId, RouteId, SourceId, StemId}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations, GeneratedAudioBridgeObservations, PlanSourceInputObservations, SidecarHostSnapshot, }` through a declared Rust import.",
+    "Depends on `crate::session::{ OperatorInstanceId, PolledAudioObservations, SourceInstanceId, SourceRuntimeObservations, }` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1113,41 +1373,41 @@
   "module": "pocketstation::session::lifecycle::observations",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::observations` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "Err(observed_depth_events) => depth_events = observed_depth_events,",
-    "enum:SessionRouteLatencyBoundary",
-    "enum:SessionRouteLatencyUnit",
-    "enum:SessionRouteObservationInterval",
-    "fn:derived_route",
-    "fn:derived_route_count",
-    "fn:drop_observations",
-    "fn:drop_rate_pct",
-    "fn:event_queue",
-    "fn:external_source",
-    "fn:external_source_count",
-    "fn:from_bridge",
-    "fn:new",
-    "fn:operator",
-    "fn:operator_count",
-    "fn:polled_audio",
-    "fn:route",
-    "fn:route_count",
-    "fn:source",
-    "fn:source_count",
-    "fn:source_to_receive_latency",
-    "struct:SessionAudioReentryMetrics",
-    "struct:SessionEventQueueObservations",
-    "struct:SessionExternalSourceMetrics",
-    "struct:SessionMetricsSnapshot",
-    "struct:SessionOperatorInputMetrics",
-    "struct:SessionRouteDropObservations",
-    "struct:SessionRouteLatencyObservations",
-    "struct:SessionRouteMetrics",
-    "struct:SessionSidecarMetrics",
-    "struct:SessionSourceMetrics"
+    "Creates a typed failure at src/session/lifecycle/observations.rs:517.",
+    "Declares public enum `SessionRouteLatencyBoundary`.",
+    "Declares public enum `SessionRouteLatencyUnit`.",
+    "Declares public enum `SessionRouteObservationInterval`.",
+    "Declares public fn `derived_route_count`.",
+    "Declares public fn `derived_route`.",
+    "Declares public fn `drop_observations`.",
+    "Declares public fn `drop_rate_pct`.",
+    "Declares public fn `event_queue`.",
+    "Declares public fn `external_source_count`.",
+    "Declares public fn `external_source`.",
+    "Declares public fn `from_bridge`.",
+    "Declares public fn `new`.",
+    "Declares public fn `operator_count`.",
+    "Declares public fn `operator`.",
+    "Declares public fn `polled_audio`.",
+    "Declares public fn `route_count`.",
+    "Declares public fn `route`.",
+    "Declares public fn `source_count`.",
+    "Declares public fn `source_to_receive_latency`.",
+    "Declares public fn `source`.",
+    "Declares public struct `SessionAudioReentryMetrics`.",
+    "Declares public struct `SessionEventQueueObservations`.",
+    "Declares public struct `SessionExternalSourceMetrics`.",
+    "Declares public struct `SessionMetricsSnapshot`.",
+    "Declares public struct `SessionOperatorInputMetrics`.",
+    "Declares public struct `SessionRouteDropObservations`.",
+    "Declares public struct `SessionRouteLatencyObservations`.",
+    "Declares public struct `SessionRouteMetrics`.",
+    "Declares public struct `SessionSidecarMetrics`.",
+    "Declares public struct `SessionSourceMetrics`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/observations.rs",
@@ -1602,8 +1862,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::observations responsibilities, including Point-in-time observations for a session's bounded control-event queue.; Sets the capacity event count available to `SessionEventQueueObservations`.; Stores the maximum event owned size for `SessionEventQueueObservations`, in bytes.."
+    "classification": "DECLARED",
+    "text": "Point-in-time observations for a session's bounded control-event queue. Sets the capacity event count available to `SessionEventQueueObservations`. Stores the maximum event owned size for `SessionEventQueueObservations`, in bytes."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1664,6 +1924,8 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
     "REFERENCES:src/capture/capture_owner.rs",
     "REFERENCES:src/endpoint/polled_audio_driver.rs",
     "REFERENCES:src/endpoint/runtime.rs",
@@ -1755,27 +2017,27 @@
     "derived_route: Returns the derived route associated with `SessionMetricsSnapshot`.",
     "pocketstation::session::lifecycle::observations::SessionSourceMetrics: Reports the session source metrics collected at an observation boundary.",
     "SessionSourceMetrics::stem_id: Identifies the stem identifier recorded by `SessionSourceMetrics`.",
-    "SessionSourceMetrics::capture: Stores the capture used by `SessionSourceMetrics`.",
-    "SessionSourceMetrics::ingress: Stores the ingress used by `SessionSourceMetrics`.",
+    "SessionSourceMetrics::capture: Stores the capture as a `CaptureOwnerObservations` value in `SessionSourceMetrics`.",
+    "SessionSourceMetrics::ingress: Contains the ingress owned or reported by `SessionSourceMetrics`.",
     "pocketstation::session::lifecycle::observations::SessionExternalSourceMetrics: Reports the session external source metrics collected at an observation boundary.",
     "SessionExternalSourceMetrics::source_instance_id: Identifies the source instance identifier recorded by `SessionExternalSourceMetrics`.",
     "SessionExternalSourceMetrics::source_id: Identifies the source identifier recorded by `SessionExternalSourceMetrics`.",
-    "SessionExternalSourceMetrics::runtime: Stores the runtime used by `SessionExternalSourceMetrics`.",
+    "SessionExternalSourceMetrics::runtime: Stores the runtime as a `SourceRuntimeObservations` value in `SessionExternalSourceMetrics`.",
     "pocketstation::session::lifecycle::observations::SessionSidecarMetrics: Exact bounded-queue and process-lifecycle accounting for one Session-owned",
     "SessionSidecarMetrics::sidecar_id: Identifies the sidecar identifier recorded by `SessionSidecarMetrics`.",
-    "SessionSidecarMetrics::host: Stores the host used by `SessionSidecarMetrics`.",
+    "SessionSidecarMetrics::host: Stores the host as a `SidecarHostSnapshot` value in `SessionSidecarMetrics`.",
     "pocketstation::session::lifecycle::observations::SessionRouteMetrics: Reports the session route metrics collected at an observation boundary.",
     "SessionRouteMetrics::route_id: Identifies the route identifier recorded by `SessionRouteMetrics`.",
     "SessionRouteMetrics::endpoint_id: Identifies the endpoint identifier recorded by `SessionRouteMetrics`.",
-    "SessionRouteMetrics::edge: Stores the edge used by `SessionRouteMetrics`.",
-    "SessionRouteMetrics::endpoint: Stores the endpoint used by `SessionRouteMetrics`.",
-    "SessionRouteMetrics::endpoint_observation_stage: Stores the endpoint observation stage used by `SessionRouteMetrics`.",
+    "SessionRouteMetrics::edge: References the edge participating in `SessionRouteMetrics`.",
+    "SessionRouteMetrics::endpoint: References the endpoint participating in `SessionRouteMetrics`.",
+    "SessionRouteMetrics::endpoint_observation_stage: References the endpoint observation stage participating in `SessionRouteMetrics`.",
     "SessionRouteMetrics::endpoint_finalization_failures_total: Counts the total number of endpoint finalization failures observed by `SessionRouteMetrics`.",
     "pocketstation::session::lifecycle::observations::SessionRouteObservationInterval: Interval covered by monotonic route counters.",
     "pocketstation::session::lifecycle::observations::SessionRouteObservationInterval::RouteLifetimeToSnapshot: From route start through the instant of the Session snapshot.",
     "pocketstation::session::lifecycle::observations::SessionRouteDropObservations: Explicit numerator, denominator, interval, and typed reasons for one route.",
     "SessionRouteDropObservations::route_id: Identifies the route identifier recorded by `SessionRouteDropObservations`.",
-    "SessionRouteDropObservations::interval: Stores the interval used by `SessionRouteDropObservations`.",
+    "SessionRouteDropObservations::interval: Stores the interval as a `SessionRouteObservationInterval` value in `SessionRouteDropObservations`.",
     "SessionRouteDropObservations::frames_dropped_total: Counts the total number of frames dropped observed by `SessionRouteDropObservations`.",
     "SessionRouteDropObservations::frames_attempted_total: Counts the total number of frames attempted observed by `SessionRouteDropObservations`.",
     "SessionRouteDropObservations::receiver_unavailable_drops_total: Counts the total number of receiver unavailable drops observed by `SessionRouteDropObservations`.",
@@ -1787,8 +2049,8 @@
     "drop_rate_pct: Returns the drop rate pct held by `SessionRouteDropObservations`.",
     "pocketstation::session::lifecycle::observations::SessionRouteLatencyObservations: Common-clock source timestamp to route-receive latency in nanoseconds.",
     "SessionRouteLatencyObservations::route_id: Identifies the route identifier recorded by `SessionRouteLatencyObservations`.",
-    "SessionRouteLatencyObservations::boundary: Stores the boundary used by `SessionRouteLatencyObservations`.",
-    "SessionRouteLatencyObservations::unit: Stores the unit used by `SessionRouteLatencyObservations`.",
+    "SessionRouteLatencyObservations::boundary: Stores the boundary as a `SessionRouteLatencyBoundary` value in `SessionRouteLatencyObservations`.",
+    "SessionRouteLatencyObservations::unit: Stores the unit as a `SessionRouteLatencyUnit` value in `SessionRouteLatencyObservations`.",
     "SessionRouteLatencyObservations::samples_total: Counts the total number of samples observed by `SessionRouteLatencyObservations`.",
     "SessionRouteLatencyObservations::missing_or_incompatible_clock_total: Counts the total number of missing or incompatible clock observed by `SessionRouteLatencyObservations`.",
     "SessionRouteLatencyObservations::future_timestamp_total: Counts the total number of future timestamp observed by `SessionRouteLatencyObservations`.",
@@ -1796,15 +2058,15 @@
     "SessionRouteLatencyObservations::p95_ns: Stores the p95 value for `SessionRouteLatencyObservations`, in nanoseconds.",
     "SessionRouteLatencyObservations::p99_ns: Stores the p99 value for `SessionRouteLatencyObservations`, in nanoseconds.",
     "SessionRouteLatencyObservations::max_ns: Stores the max value for `SessionRouteLatencyObservations`, in nanoseconds.",
-    "pocketstation::session::lifecycle::observations::SessionRouteLatencyBoundary: Enumerates the supported session route latency boundary cases.",
+    "pocketstation::session::lifecycle::observations::SessionRouteLatencyBoundary: Identifies the route boundary at which Session latency was observed.",
     "pocketstation::session::lifecycle::observations::SessionRouteLatencyBoundary::SourceMonotonicTimestampToRouteReceive: Represents the source monotonic timestamp to route receive alternative defined by `SessionRouteLatencyBoundary`.",
-    "pocketstation::session::lifecycle::observations::SessionRouteLatencyUnit: Enumerates the supported session route latency unit cases.",
+    "pocketstation::session::lifecycle::observations::SessionRouteLatencyUnit: Declares the unit used by a Session route-latency observation.",
     "pocketstation::session::lifecycle::observations::SessionRouteLatencyUnit::Nanoseconds: Represents the nanoseconds alternative defined by `SessionRouteLatencyUnit`.",
     "drop_observations: Returns the drop observations held by `SessionRouteMetrics`.",
     "source_to_receive_latency: Returns the source to receive latency associated with `SessionRouteMetrics`.",
     "pocketstation::session::lifecycle::observations::SessionOperatorInputMetrics: Reports the session operator input metrics collected at an observation boundary.",
-    "SessionOperatorInputMetrics::port_name: Stores the port name used by `SessionOperatorInputMetrics`.",
-    "SessionOperatorInputMetrics::edge: Stores the edge used by `SessionOperatorInputMetrics`.",
+    "SessionOperatorInputMetrics::port_name: Stores the human-readable port used to identify `SessionOperatorInputMetrics`.",
+    "SessionOperatorInputMetrics::edge: References the edge participating in `SessionOperatorInputMetrics`.",
     "pocketstation::session::lifecycle::observations::SessionAudioReentryMetrics: Exact boundedness and lifecycle accounting for one operator PCM output",
     "operator_instance_id: Returns the operator instance identifier held by `SessionAudioReentryMetrics`.",
     "stem_id: Returns the stem identifier held by `SessionAudioReentryMetrics`.",
@@ -1829,7 +2091,7 @@
     "SessionOperatorMetrics::operator_instance_id: Identifies the operator instance identifier recorded by `SessionOperatorMetrics`.",
     "SessionOperatorMetrics::input_edge: Sole counter authority for input delivered by the compiled Session plan.",
     "SessionOperatorMetrics::input_ports: Exact per-port input accounting. `input_edge` is the compatibility",
-    "SessionOperatorMetrics::worker: Stores the worker used by `SessionOperatorMetrics`.",
+    "SessionOperatorMetrics::worker: Stores the worker as a `AsyncOperatorObservations` value in `SessionOperatorMetrics`.",
     "SessionOperatorMetrics::finalization_failures_total: Counts the total number of finalization failures observed by `SessionOperatorMetrics`.",
     "input_port: Returns the input port held by `SessionOperatorMetrics`.",
     "input_queue_capacity_frames: Returns the input queue capacity frames held by `SessionOperatorMetrics`.",
@@ -1843,8 +2105,8 @@
     "SessionDerivedRouteMetrics::route_id: Identifies the route identifier recorded by `SessionDerivedRouteMetrics`.",
     "SessionDerivedRouteMetrics::endpoint_id: Identifies the endpoint identifier recorded by `SessionDerivedRouteMetrics`.",
     "SessionDerivedRouteMetrics::output: Carries the output produced by `SessionDerivedRouteMetrics`.",
-    "SessionDerivedRouteMetrics::endpoint: Stores the endpoint used by `SessionDerivedRouteMetrics`.",
-    "SessionDerivedRouteMetrics::endpoint_observation_stage: Stores the endpoint observation stage used by `SessionDerivedRouteMetrics`.",
+    "SessionDerivedRouteMetrics::endpoint: References the endpoint participating in `SessionDerivedRouteMetrics`.",
+    "SessionDerivedRouteMetrics::endpoint_observation_stage: References the endpoint observation stage participating in `SessionDerivedRouteMetrics`.",
     "SessionDerivedRouteMetrics::endpoint_finalization_failures_total: Counts the total number of endpoint finalization failures observed by `SessionDerivedRouteMetrics`.",
     "pocketstation::session::lifecycle::observations::EndpointObservationStage: Selects the endpoint observation stage used by PocketStation.",
     "pocketstation::session::lifecycle::observations::EndpointObservationStage::Unavailable: Reports that the requested resource is unavailable.",

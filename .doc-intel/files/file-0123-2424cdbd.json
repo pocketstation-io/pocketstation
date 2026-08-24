@@ -4,7 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
+    "IMPLEMENTS:src/connector/sidecar.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -73,7 +76,10 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
+    "IMPLEMENTS:src/connector/sidecar.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -387,17 +393,250 @@
       "classification": "DIRECT",
       "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
       "lines": [
-        1,
-        287
+        12,
+        12
       ],
       "path": "src/connector/worker/driver.rs",
-      "symbol": null
+      "symbol": "DRIVER_IDLE_WAIT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        16,
+        25
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "ConnectorInputDescriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "endpoint_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "connector_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "route_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "port_name"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "signal"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "media"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "edge_contract"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "configuration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        28,
+        30
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "endpoint_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        32,
+        34
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "connector_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        36,
+        38
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "route_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        40,
+        42
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "port_name"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        44,
+        46
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "signal_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        48,
+        50
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "media"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        52,
+        54
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "edge_contract"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        56,
+        58
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "configuration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        62,
+        71
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "ConnectorItem"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        63,
+        66
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "Audio"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        64,
+        64
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "input"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        65,
+        65
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": "frame"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
+    "IMPLEMENTS:src/connector/sidecar.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -418,7 +657,10 @@
   "generated_from": "not_applicable",
   "git_object": "8da872bb28839d501d8a3a5b20f3ddfb1c9d7e48",
   "implemented_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
+    "IMPLEMENTS:src/connector/sidecar.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -431,7 +673,10 @@
     "ConnectorWorker for PollingConnectorWorker"
   ],
   "imported_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
     "CONTAINS:src/connector/worker/mod.rs",
+    "IMPLEMENTS:src/connector/sidecar.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -446,11 +691,11 @@
     "super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker}"
   ],
   "inputs": [
-    "crate::connector::{ConnectorError, ResolvedConnectorConfiguration}",
-    "crate::{ EndpointAudioFrame, EndpointId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointShutdownMode, MediaCaps, RouteId, SignalEnvelope, SignalSpec, }",
-    "std::sync::Arc",
-    "std::time::Duration",
-    "super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker}"
+    "Depends on `crate::connector::{ConnectorError, ResolvedConnectorConfiguration}` through a declared Rust import.",
+    "Depends on `crate::{ EndpointAudioFrame, EndpointId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointShutdownMode, MediaCaps, RouteId, SignalEnvelope, SignalSpec, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -464,32 +709,32 @@
   "module": "pocketstation::connector::worker::driver",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::worker::driver` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-e065b0a6fab311b67644"
   ],
   "outputs": [
-    "Err(error) => ConnectorRunOutcome::failure(error),",
-    "Err(error) => return ConnectorRunOutcome::failure(error),",
-    "enum:ConnectorDeliveryOutcome",
-    "enum:ConnectorItem",
-    "fn:configuration",
-    "fn:connector_id",
-    "fn:edge_contract",
-    "fn:endpoint_id",
-    "fn:input",
-    "fn:media",
-    "fn:port_name",
-    "fn:prepare_connector_driver",
-    "fn:route_id",
-    "fn:signal_spec",
-    "if let Err(error) = driver.idle(&context) {",
-    "if let Err(error) = driver.start(&context) {",
-    "return Err(super::supervisor::internal_connector_error(",
-    "struct:ConnectorInputDescriptor",
-    "trait:ConnectorDriver",
-    "trait:ConnectorDriverFactory"
+    "Creates a typed failure at src/connector/worker/driver.rs:144.",
+    "Creates a typed failure at src/connector/worker/driver.rs:201.",
+    "Creates a typed failure at src/connector/worker/driver.rs:249.",
+    "Creates a typed failure at src/connector/worker/driver.rs:259.",
+    "Creates a typed failure at src/connector/worker/driver.rs:270.",
+    "Declares public enum `ConnectorDeliveryOutcome`.",
+    "Declares public enum `ConnectorItem`.",
+    "Declares public fn `configuration`.",
+    "Declares public fn `connector_id`.",
+    "Declares public fn `edge_contract`.",
+    "Declares public fn `endpoint_id`.",
+    "Declares public fn `input`.",
+    "Declares public fn `media`.",
+    "Declares public fn `port_name`.",
+    "Declares public fn `prepare_connector_driver`.",
+    "Declares public fn `route_id`.",
+    "Declares public fn `signal_spec`.",
+    "Declares public struct `ConnectorInputDescriptor`.",
+    "Declares public trait `ConnectorDriverFactory`.",
+    "Declares public trait `ConnectorDriver`."
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/driver.rs",
@@ -674,8 +919,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::worker::driver responsibilities, including Immutable Session and graph metadata for one connector input.; Returns the endpoint identifier held by `ConnectorInputDescriptor`.; Returns the connector identifier held by `ConnectorInputDescriptor`.."
+    "classification": "DECLARED",
+    "text": "Immutable Session and graph metadata for one connector input. Returns the endpoint identifier held by `ConnectorInputDescriptor`. Returns the connector identifier held by `ConnectorInputDescriptor`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -718,6 +963,12 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/identity.rs",
+    "IMPLEMENTS:src/connector/worker/mod.rs",
     "REFERENCES:src/connector/configuration.rs",
     "REFERENCES:src/connector/error.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -780,11 +1031,11 @@
     "configuration: Returns the configuration held by `ConnectorInputDescriptor`.",
     "pocketstation::connector::worker::driver::ConnectorItem: One bounded item delivered by Core to a connector driver.",
     "pocketstation::connector::worker::driver::ConnectorItem::Audio: Represents the audio alternative defined by `ConnectorItem`.",
-    "ConnectorItem::Audio::input: Stores the input used by `Audio`.",
-    "ConnectorItem::Audio::frame: Stores the frame used by `Audio`.",
+    "ConnectorItem::Audio::input: References the input participating in `Audio`.",
+    "ConnectorItem::Audio::frame: Stores the frame as a `EndpointAudioFrame` value in `Audio`.",
     "pocketstation::connector::worker::driver::ConnectorItem::Signal: Represents the signal alternative defined by `ConnectorItem`.",
-    "ConnectorItem::Signal::input: Stores the input used by `Signal`.",
-    "ConnectorItem::Signal::signal: Stores the signal used by `Signal`.",
+    "ConnectorItem::Signal::input: References the input participating in `Signal`.",
+    "ConnectorItem::Signal::signal: Stores the signal component of `Signal`.",
     "input: Returns the input held by `ConnectorItem`.",
     "pocketstation::connector::worker::driver::ConnectorDeliveryOutcome: Explicit delivery result used for Core-owned accounting.",
     "pocketstation::connector::worker::driver::ConnectorDeliveryOutcome::Delivered: Identifies the delivered state or stage represented by `ConnectorDeliveryOutcome`.",
@@ -794,7 +1045,7 @@
     "ConnectorDriver::deliver: Delivers the next input through `ConnectorDriver`.",
     "ConnectorDriver::idle: Advances `ConnectorDriver` while no input is available.",
     "ConnectorDriver::shutdown: Shuts down `ConnectorDriver` according to its lifecycle contract.",
-    "ConnectorDriver::cancel_preparation: Cancels preparation for `ConnectorDriver`.",
+    "ConnectorDriver::cancel_preparation: Cancels resources created while preparing `ConnectorDriver`.",
     "pocketstation::connector::worker::driver::ConnectorDriverFactory: Prepares provider state while Core retains receiver and lifecycle authority.",
     "ConnectorDriverFactory::preparation_group: Returns the preparation group associated with `ConnectorDriverFactory`.",
     "ConnectorDriverFactory::prepare: Prepares resources required by `ConnectorDriverFactory`."

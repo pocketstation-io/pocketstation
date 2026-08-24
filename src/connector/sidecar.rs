@@ -12,9 +12,9 @@ use super::{
     ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration,
 };
 
-#[doc = "Defines the public connector audio record signal identifier value."]
+#[doc = "Defines connector audio record signal identifier as `\"io.pocketstation.connector.audio-record.v1\"` for the owning public contract."]
 pub const CONNECTOR_AUDIO_RECORD_SIGNAL_ID: &str = "io.pocketstation.connector.audio-record.v1";
-#[doc = "Defines the public connector audio record schema value."]
+#[doc = "Defines connector audio record schema as `\"urn:pocketstation:connector:audio-record:v1\"` for the owning public contract."]
 pub const CONNECTOR_AUDIO_RECORD_SCHEMA: &str = "urn:pocketstation:connector:audio-record:v1";
 
 /// Adapts a bounded PocketStation sidecar process to the Connector driver SPI.

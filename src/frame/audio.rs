@@ -1,22 +1,22 @@
-#[doc = "Types and operations for audio."]
+#[doc = "Realtime audio routing, execution, plan-runner, and runtime observation types."]
 #[doc = "Types and operations for audio."]
 use std::sync::Arc;
 
 use super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle};
 use crate::frame::{FrameLineage, SourceId, StreamId};
 
-#[doc = "Defines the public sample rate hertz value."]
+#[doc = "Defines sample rate hertz as `48_000` for the owning public contract."]
 pub const SAMPLE_RATE_HZ: u32 = 48_000;
 #[cfg(test)]
 const FRAME_DURATION_MS: u32 = 20;
 #[cfg(any(test, feature = "internal-testing", target_os = "linux"))]
-#[doc = "Defines the public pool slot samples value."]
+#[doc = "Defines pool slot samples as `960` for the owning public contract."]
 pub const POOL_SLOT_SAMPLES: usize = 960; // 20ms × 48kHz
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the sample format used by PocketStation."]
 pub enum SampleFormat {
-    #[doc = "Selects f32 interleaved behavior for `SampleFormat`."]
+    #[doc = "Declares PCM samples in f32 interleaved format."]
     F32Interleaved,
 }
 
@@ -25,9 +25,9 @@ pub enum SampleFormat {
 pub struct SampleSpec {
     #[doc = "Stores the sample rate value for `SampleSpec`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels used by `SampleSpec`."]
+    #[doc = "Contains the channels owned or reported by `SampleSpec`."]
     pub channels: u8,
-    #[doc = "Stores the format used by `SampleSpec`."]
+    #[doc = "Records the format selected for `SampleSpec`."]
     pub format: SampleFormat,
 }
 
@@ -61,20 +61,20 @@ pub struct AudioFrame {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as audio frame build error."]
+#[doc = "Classifies failures produced during audio frame construction and input validation."]
 pub enum AudioFrameBuildError {
     #[error("audio frame sample rate must be non-zero")]
-    #[doc = "Reports zero sample rate."]
+    #[doc = "Reports that sample rate must be greater than zero."]
     ZeroSampleRate,
     #[error("audio frame channel count must be non-zero")]
-    #[doc = "Reports zero channels."]
+    #[doc = "Reports that channels must be greater than zero."]
     ZeroChannels,
     #[error("audio frame sample count {samples} is not divisible by {channels} channels")]
-    #[doc = "Reports misaligned samples."]
+    #[doc = "Reports that samples does not satisfy the required alignment."]
     MisalignedSamples {
-        #[doc = "Stores the samples used by `MisalignedSamples`."]
+        #[doc = "Contains the samples owned or reported by `MisalignedSamples`."]
         samples: usize,
-        #[doc = "Stores the channels used by `MisalignedSamples`."]
+        #[doc = "Contains the channels owned or reported by `MisalignedSamples`."]
         channels: u8,
     },
 }
@@ -290,16 +290,16 @@ impl SharedAudioFrame {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as frame lineage error."]
+#[doc = "Classifies failures surfaced by frame lineage operations."]
 pub enum FrameLineageError {
     #[error("frame source id does not match its lineage")]
-    #[doc = "Reported when the owning operation encounters source."]
+    #[doc = "Classifies a failure at the source stage or component of `FrameLineageError`."]
     Source,
     #[error("frame sequence number does not match its lineage")]
-    #[doc = "Reported when the owning operation encounters sequence number."]
+    #[doc = "Classifies a failure at the sequence number stage or component of `FrameLineageError`."]
     SequenceNumber,
     #[error("frame timestamp does not match its lineage")]
-    #[doc = "Reported when the owning operation encounters timestamp."]
+    #[doc = "Classifies a failure at the timestamp stage or component of `FrameLineageError`."]
     Timestamp,
 }
 

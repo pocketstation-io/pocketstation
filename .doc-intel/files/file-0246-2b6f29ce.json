@@ -199,10 +199,160 @@
       "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
       "lines": [
         1,
-        94
+        1
       ],
       "path": "src/timing/clock_correction.rs",
-      "symbol": null
+      "symbol": "MAX_CORRECTION_NS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        4,
+        10
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "ClockCorrectionController"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "proportional_gain"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "integral_gain"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "integral_error_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "last_offset_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "last_correction_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        13,
+        21
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        23,
+        34
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "tick"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        36,
+        38
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "last_offset_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        39,
+        41
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "last_correction_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        42,
+        44
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "integral_error_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        46,
+        48
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "integral_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "cbae2e6a7a53a6d2db685980f13665ef2ceb7ec17abbdec4d6c5086c2069ac9a",
+      "lines": [
+        52,
+        54
+      ],
+      "path": "src/timing/clock_correction.rs",
+      "symbol": "default"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -240,8 +390,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/timing/clock_correction.rs:57.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -267,17 +417,17 @@
   "module": "pocketstation::timing::clock_correction",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::timing::clock_correction` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:integral_error_ns",
-    "fn:integral_ns",
-    "fn:last_correction_ns",
-    "fn:last_offset_ns",
-    "fn:new",
-    "fn:tick",
-    "struct:ClockCorrectionController"
+    "Declares public fn `integral_error_ns`.",
+    "Declares public fn `integral_ns`.",
+    "Declares public fn `last_correction_ns`.",
+    "Declares public fn `last_offset_ns`.",
+    "Declares public fn `new`.",
+    "Declares public fn `tick`.",
+    "Declares public struct `ClockCorrectionController`."
   ],
   "package": "pocketstation",
   "path": "src/timing/clock_correction.rs",
@@ -384,8 +534,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::timing::clock correction responsibilities, including Applies bounded proportional corrections from measured clock offsets without changing lineage.; Creates a new `ClockCorrectionController`.; Applies one measured clock offset to `ClockCorrectionController` and returns the bounded correction.."
+    "classification": "DECLARED",
+    "text": "Applies bounded proportional corrections from measured clock offsets without changing lineage. Creates a new `ClockCorrectionController`. Applies one measured clock offset to `ClockCorrectionController` and returns the bounded correction."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -1,6 +1,6 @@
 # Inject external PCM
 
-<!-- claims: CLM-GUIDE-023-CAP-001,CLM-GUIDE-023-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-023-SCOPE-001,CLM-GUIDE-023-TEXT-001,CLM-GUIDE-023-TEXT-002,CLM-GUIDE-023-TEXT-003,CLM-GUIDE-023-TEXT-004,CLM-GUIDE-023-TEXT-005,CLM-GUIDE-023-TEXT-006,CLM-GUIDE-023-SOURCE-001 -->
 
 ## Scope
 
@@ -19,6 +19,54 @@ An `AudioInputConfig` matching the producer's rate, channels, frame shape, and f
 3. Write only within declared capacity and format.
 4. Submit through AudioInputWriter and route the source.
 5. Handle acquire, write, cancellation, and runtime errors separately.
+
+## Concrete repository example
+
+The executable repository test `given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage` (`test-f1139be85b9372ec989b`) shows the concrete API sequence and asserted outcome at `tests/audio_input.rs:37`.
+
+```rust
+}
+
+#[test]
+fn given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage() {
+    let session = Session::builder().sample_spec(sample_spec()).build();
+    let mut input = session
+        .audio_input(audio_input_config(2))
+        .expect("application audio input");
+    let source_id = input.source().source_id();
+    let stream_id = input.output().stream_id();
+    let polled_audio = session.polled_audio().expect("polled audio endpoint");
+    input
+        .output()
+        .send(polled_audio)
+        .expect("audio input polling route");
+
+    let mut running = session.start().expect("running audio input Session");
+    input
+        .try_write(&vec![0.25_f32; FRAME_SAMPLES])
+        .expect("nonblocking façade write");
+
+    let deadline = Instant::now() + Duration::from_secs(3);
+    let (delivered_source_id, delivered_stream_id) = loop {
+        if let Ok(batch) = running.try_poll_audio() {
+            if let Some(frame) = batch.frame(0) {
+                break (frame.lineage().source_id(), frame.stream_id());
+            }
+        }
+        assert!(Instant::now() < deadline, "façade frame was not delivered");
+        std::thread::yield_now();
+    };
+    assert_eq!(delivered_source_id, source_id);
+    assert_eq!(delivered_stream_id, stream_id);
+
+    input.close();
+    assert!(running.stop().is_success());
+}
+```
+
+```bash
+cargo test --all-features given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage
+```
 
 ## Important consequence
 
@@ -67,10 +115,10 @@ Executable evidence selected for **Inject external PCM** is limited to each test
 | `pocketstation::session::extensions::audio_input::AudioInputConfig` | struct | Configures audio input behavior at its owning API boundary. | `src/session/extensions/audio_input/mod.rs:22` |
 | `pocketstation::session::extensions::audio_input::buffer::AudioInputBuffer` | struct | Leases bounded PCM storage from an external-audio input until the caller submits or releases it. | `src/session/extensions/audio_input/buffer.rs:11` |
 | `pocketstation::session::extensions::audio_input::buffer::AudioInputObservations` | struct | Reports the audio input observations collected at an observation boundary. | `src/session/extensions/audio_input/buffer.rs:72` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError` | struct | Reports a audio input write error. | `src/session/extensions/audio_input/buffer.rs:305` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError` | struct | Classifies failures produced during audio input writing. | `src/session/extensions/audio_input/buffer.rs:305` |
 | `pocketstation::session::extensions::audio_input::buffer::AudioInputWriter` | struct | Sends audio input values across its declared ownership boundary. | `src/session/extensions/audio_input/buffer.rs:91` |
 | `pocketstation::session::extensions::audio_input::source::PcmSource` | struct | Low-level PCM source ownership for integrations that separately retain the Session handles and producer writer. | `src/session/extensions/audio_input/source.rs:33` |
-| `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures reported as audio input config error. | `src/session/extensions/audio_input/mod.rs:77` |
+| `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures surfaced by audio input config operations. | `src/session/extensions/audio_input/mod.rs:77` |
 
 ## Related documentation
 
@@ -86,6 +134,10 @@ Executable evidence selected for **Inject external PCM** is limited to each test
 
 The claims on **Inject external PCM** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `tests/audio_input.rs:1-659` (`DIRECT`)
+- `tests/audio_input.rs:73-155` (`TESTED`)
+- `tests/audio_input.rs:351-427` (`TESTED`)
+- `tests/audio_input.rs:155-210` (`TESTED`)
+- `tests/audio_input.rs:427-591` (`TESTED`)
+- `tests/audio_input.rs:37-73` (`TESTED`)
 
 For **Inject external PCM**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

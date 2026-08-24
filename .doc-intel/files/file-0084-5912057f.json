@@ -73,8 +73,8 @@
       "classification": "DIRECT",
       "content_hash": "92af1755909be7b1ea3c1dd13cec9f513af1fc4987a548d69c5815bf7f19de6c",
       "lines": [
-        1,
-        10
+        2,
+        9
       ],
       "path": "src/capture/platform/linux/mod.rs",
       "symbol": null
@@ -112,11 +112,14 @@
     "session_backend::DesktopCaptureBackend"
   ],
   "inputs": [
-    "#[cfg(target_os = \"linux\")]",
-    "module:pipewire",
-    "module:session_backend",
-    "pipewire::{discover_sources_linux, DesktopCaptureSource, SystemLoopbackSource}",
-    "session_backend::DesktopCaptureBackend"
+    "Consumes configuration at src/capture/platform/linux/mod.rs:1.",
+    "Consumes configuration at src/capture/platform/linux/mod.rs:3.",
+    "Consumes configuration at src/capture/platform/linux/mod.rs:6.",
+    "Consumes configuration at src/capture/platform/linux/mod.rs:8.",
+    "Depends on `pipewire::{discover_sources_linux, DesktopCaptureSource, SystemLoopbackSource}` through a declared Rust import.",
+    "Depends on `pipewire` through a declared Rust import.",
+    "Depends on `session_backend::DesktopCaptureBackend` through a declared Rust import.",
+    "Depends on `session_backend` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -125,7 +128,7 @@
   "module": "pocketstation::capture::platform::linux",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::linux` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -159,7 +162,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::linux responsibilities, including the src/capture/platform/linux/mod boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::platform::linux`."
   },
   "queues": [],
   "recovery_behavior": [],

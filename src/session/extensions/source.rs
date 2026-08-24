@@ -67,16 +67,16 @@ fn has_source_category(value: &str) -> bool {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as source type id error."]
+#[doc = "Classifies failures surfaced by source type identifier operations."]
 pub enum SourceTypeIdError {
     #[error("source type identifier cannot be empty")]
     #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("source type identifier cannot contain surrounding whitespace")]
-    #[doc = "Reports surrounding whitespace."]
+    #[doc = "Classifies a failure at the surrounding whitespace stage or component of `SourceTypeIdError`."]
     SurroundingWhitespace,
     #[error("source type identifier is {actual_bytes} bytes; maximum is {maximum_bytes}")]
-    #[doc = "Reports too long."]
+    #[doc = "Classifies a failure at the too long stage or component of `SourceTypeIdError`."]
     TooLong {
         #[doc = "Stores the actual size for `TooLong`, in bytes."]
         actual_bytes: usize,
@@ -84,13 +84,13 @@ pub enum SourceTypeIdError {
         maximum_bytes: usize,
     },
     #[error("source type identifier must contain only ASCII contract characters")]
-    #[doc = "Reports non ascii."]
+    #[doc = "Reports that no n ascii is available."]
     NonAscii,
     #[error("source type identifier must use bounded reverse-domain syntax ending in vN")]
-    #[doc = "Reports invalid contract syntax."]
+    #[doc = "Reports that the supplied contract syntax is invalid."]
     InvalidContractSyntax,
     #[error("source type identifier must contain a source category and concrete source name")]
-    #[doc = "Reports missing source category."]
+    #[doc = "Reports that the required source category is missing."]
     MissingSourceCategory,
 }
 
@@ -123,7 +123,7 @@ impl SourceConfiguration {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Describes the source manifest contract."]
+#[doc = "Declares an external source's identity, outputs, preparation group, and execution requirements."]
 pub struct SourceManifest {
     pub(crate) source_type_id: SourceTypeId,
     pub(crate) revision: u32,
@@ -244,16 +244,16 @@ impl SourceManifest {
 #[derive(Debug, Clone)]
 #[doc = "Carries the inputs and runtime context required to source prepare."]
 pub struct SourcePrepareContext {
-    #[doc = "Stores the manifest used by `SourcePrepareContext`."]
+    #[doc = "Stores the manifest as a `SourceManifest` value in `SourcePrepareContext`."]
     pub manifest: SourceManifest,
-    #[doc = "Stores the session used by `SourcePrepareContext`."]
+    #[doc = "Stores the session component of `SourcePrepareContext`."]
     pub session: Option<SourceSessionContext>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Identifies one declared source output by source type, output port, and stream identity."]
 pub struct SourceOutputIdentity {
-    #[doc = "Stores the output port used by `SourceOutputIdentity`."]
+    #[doc = "References the output port participating in `SourceOutputIdentity`."]
     pub output_port: String,
     #[doc = "Identifies the stream identifier recorded by `SourceOutputIdentity`."]
     pub stream_id: StreamId,
@@ -266,7 +266,7 @@ pub struct SourceSessionContext {
     pub session_id: SessionId,
     #[doc = "Identifies the source identifier recorded by `SourceSessionContext`."]
     pub source_id: SourceId,
-    #[doc = "Stores the outputs used by `SourceSessionContext`."]
+    #[doc = "References the outputs participating in `SourceSessionContext`."]
     pub outputs: Vec<SourceOutputIdentity>,
 }
 
@@ -286,7 +286,7 @@ pub struct SourceCancellation {
 }
 
 impl SourceCancellation {
-    #[doc = "Returns whether cancelled applies to `SourceCancellation`."]
+    #[doc = "Reports whether cancelled is true for `SourceCancellation`."]
     pub fn is_cancelled(&self) -> bool {
         self.cancelled.load(Ordering::Acquire)
     }
@@ -295,9 +295,9 @@ impl SourceCancellation {
 #[derive(Debug)]
 #[doc = "Carries one external-source emission with its output-port identity and signal envelope."]
 pub struct SourceEmission {
-    #[doc = "Stores the output port used by `SourceEmission`."]
+    #[doc = "References the output port participating in `SourceEmission`."]
     pub output_port: String,
-    #[doc = "Stores the envelope used by `SourceEmission`."]
+    #[doc = "Stores the envelope as a `SignalEnvelope` value in `SourceEmission`."]
     pub envelope: SignalEnvelope,
     #[doc = "Indicates whether terminal applies to `SourceEmission`."]
     pub terminal: bool,
@@ -320,7 +320,7 @@ pub trait SourceDriver: Send {
 pub trait SourceFactory: Send + Sync {
     #[doc = "Returns the manifest held by `SourceFactory`."]
     fn manifest(&self) -> &SourceManifest;
-    #[doc = "Validates config for `SourceFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `SourceFactory`."]
     fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError>;
     #[doc = "Creates the runtime implementation described by `SourceFactory`."]
     fn create(
@@ -360,7 +360,7 @@ impl SourceRegistry {
         Ok(())
     }
 
-    #[doc = "Validates config for `SourceRegistry`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `SourceRegistry`."]
     pub fn validate_config(
         &self,
         source_type_id: &SourceTypeId,
@@ -403,7 +403,7 @@ impl SourceRegistry {
         PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)
     }
 
-    #[doc = "Prepares session for `SourceRegistry`."]
+    #[doc = "Builds the source preparation context for the current Session through `SourceRegistry`."]
     pub fn prepare_session(
         &self,
         source_type_id: &SourceTypeId,
@@ -423,17 +423,17 @@ impl SourceRegistry {
 #[derive(Debug, Clone)]
 #[doc = "Configures source output branch behavior at its owning API boundary."]
 pub struct SourceOutputBranchSpec {
-    #[doc = "Stores the output port used by `SourceOutputBranchSpec`."]
+    #[doc = "References the output port participating in `SourceOutputBranchSpec`."]
     pub output_port: String,
-    #[doc = "Stores the branch used by `SourceOutputBranchSpec`."]
+    #[doc = "References the branch participating in `SourceOutputBranchSpec`."]
     pub branch: TypedEdgeBranchSpec,
 }
 
 #[doc = "Receives source output values across its declared ownership boundary."]
 pub struct SourceOutputReceiver {
-    #[doc = "Stores the output port used by `SourceOutputReceiver`."]
+    #[doc = "References the output port participating in `SourceOutputReceiver`."]
     pub output_port: String,
-    #[doc = "Stores the receiver used by `SourceOutputReceiver`."]
+    #[doc = "Owns the receiver endpoint through which `SourceOutputReceiver` exchanges values."]
     pub receiver: TypedEdgeReceiver,
 }
 
@@ -469,12 +469,12 @@ pub struct SourceRuntimeObservations {
     pub policy_change_total: u64,
     #[doc = "Indicates whether ready applies to `SourceRuntimeObservations`."]
     pub ready: bool,
-    #[doc = "Stores the joined used by `SourceRuntimeObservations`."]
+    #[doc = "Reports whether joined is true for `SourceRuntimeObservations`."]
     pub joined: bool,
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to source runtime observation."]
+#[doc = "Holds the ownership or bounded access represented by source runtime observation handle."]
 pub struct SourceRuntimeObservationHandle {
     state: Arc<SourceRuntimeObservationState>,
 }
@@ -754,51 +754,51 @@ fn run_source_driver(
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as source manifest error."]
+#[doc = "Classifies failures surfaced by source manifest operations."]
 pub enum SourceManifestError {
     #[error("source type identifier cannot be empty")]
-    #[doc = "Reports empty source type identifier."]
+    #[doc = "Reports that source type identifier is empty."]
     EmptySourceTypeId,
     #[error("source manifest revision and implementation generation must be non-zero")]
-    #[doc = "Reports zero version."]
+    #[doc = "Reports that version must be greater than zero."]
     ZeroVersion,
     #[error("source manifest requires at least one output")]
-    #[doc = "Reports no outputs."]
+    #[doc = "Reports that no outputs is available."]
     NoOutputs,
     #[error("source manifest contains a non-output port")]
-    #[doc = "Reports non output port."]
+    #[doc = "Reports that no n output port is available."]
     NonOutputPort,
     #[error("source output name cannot be empty")]
-    #[doc = "Reports empty output name."]
+    #[doc = "Reports that output name is empty."]
     EmptyOutputName,
     #[error("source output names must be unique")]
-    #[doc = "Reports duplicate output name."]
+    #[doc = "Reports that output name duplicates an existing declaration or record."]
     DuplicateOutputName,
     #[error("source output SignalSpec is invalid")]
-    #[doc = "Reports invalid signal."]
+    #[doc = "Reports that the supplied signal is invalid."]
     InvalidSignal,
     #[error("source output SignalSpec and MediaCaps are incompatible")]
-    #[doc = "Reports signal media mismatch."]
+    #[doc = "Reports that signal media does not match the expected contract."]
     SignalMediaMismatch,
     #[error("source safety contract is incompatible with its execution partition")]
-    #[doc = "Reports invalid safety contract."]
+    #[doc = "Reports that the supplied safety contract is invalid."]
     InvalidSafetyContract,
     #[error("in-process source drivers currently require the BlockingWorker partition")]
-    #[doc = "Reports unsupported execution partition."]
+    #[doc = "Reports that the requested execution partition is unsupported."]
     UnsupportedExecutionPartition,
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as source registration error."]
+#[doc = "Classifies failures produced during source registration."]
 pub enum SourceRegistrationError {
     #[error("invalid source manifest: {0}")]
-    #[doc = "Reports invalid manifest."]
+    #[doc = "Returns `SourceRegistrationError::InvalidManifest` when the owning operation detects invalid manifest."]
     InvalidManifest(SourceManifestError),
     #[error("source type {0} is already registered")]
-    #[doc = "Reports duplicate source type."]
+    #[doc = "Reports that source type duplicates an existing declaration or record."]
     DuplicateSourceType(SourceTypeId),
     #[error("source type {0} conflicts with an existing graph node type")]
-    #[doc = "Reports node type conflict."]
+    #[doc = "Reports that no de type conflict is available."]
     NodeTypeConflict(SourceTypeId),
 }
 
@@ -841,66 +841,66 @@ impl std::fmt::Display for SourceTypeId {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as source driver error."]
+#[doc = "Classifies failures surfaced by source driver operations."]
 pub enum SourceDriverError {
     #[error("source driver failed: {0}")]
-    #[doc = "Reports failed."]
+    #[doc = "Reports that the requested operation failed."]
     Failed(String),
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as source runtime error."]
+#[doc = "Classifies failures produced during source runtime execution."]
 pub enum SourceRuntimeError {
     #[error("invalid source manifest: {0}")]
-    #[doc = "Reported when the owning operation encounters invalid manifest."]
+    #[doc = "Reports that the supplied manifest is invalid."]
     InvalidManifest(SourceManifestError),
     #[error("invalid source configuration: {0}")]
-    #[doc = "Reported when the owning operation encounters invalid configuration."]
+    #[doc = "Reports that the supplied configuration is invalid."]
     InvalidConfiguration(ConfigError),
     #[error("source driver failure: {0}")]
-    #[doc = "Reported when the owning operation encounters driver."]
+    #[doc = "Classifies a failure at the driver stage or component of `SourceRuntimeError`."]
     Driver(SourceDriverError),
     #[error("typed edge build failed: {0}")]
-    #[doc = "Reported when the owning operation encounters edge build."]
+    #[doc = "Classifies a failure at the edge build stage or component of `SourceRuntimeError`."]
     EdgeBuild(TypedEdgeBuildError),
     #[error("source runtime requires at least one routed output")]
-    #[doc = "Reported when the owning operation encounters no routed outputs."]
+    #[doc = "Reports that no routed outputs is available."]
     NoRoutedOutputs,
     #[error("source emitted unknown output {0}")]
-    #[doc = "Reported when the owning operation encounters unknown output."]
+    #[doc = "Reports that the referenced output is not declared or registered."]
     UnknownOutput(String),
     #[error("source emitted unrouted output {0}")]
-    #[doc = "Reported when the owning operation encounters unrouted output."]
+    #[doc = "Classifies a failure at the unrouted output stage or component of `SourceRuntimeError`."]
     UnroutedOutput(String),
     #[error("source output does not match its manifest contract")]
-    #[doc = "Reported when the owning operation encounters output contract mismatch."]
+    #[doc = "Reports that output contract does not match the expected contract."]
     OutputContractMismatch,
     #[error("Session-owned source output is missing signal lineage")]
-    #[doc = "Reported when the owning operation encounters missing session lineage."]
+    #[doc = "Reports that the required session lineage is missing."]
     MissingSessionLineage,
     #[error("source output identity does not match the Session prepare context")]
-    #[doc = "Reported when the owning operation encounters output identity mismatch."]
+    #[doc = "Reports that output identity does not match the expected contract."]
     OutputIdentityMismatch,
     #[error("source continuity validation failed: {0}")]
-    #[doc = "Reported when the owning operation encounters continuity."]
+    #[doc = "Classifies a failure at the continuity stage or component of `SourceRuntimeError`."]
     Continuity(crate::graph::SignalContinuityError),
     #[error("typed source publish failed: {0}")]
-    #[doc = "Reported when the owning operation encounters publish."]
+    #[doc = "Classifies a failure at the publish stage or component of `SourceRuntimeError`."]
     Publish(TypedEdgePublishError),
     #[error("source worker could not spawn: {0}")]
-    #[doc = "Reported when the owning operation encounters spawn."]
+    #[doc = "Classifies a failure at the spawn stage or component of `SourceRuntimeError`."]
     Spawn(std::io::Error),
     #[error("source worker panicked")]
-    #[doc = "Reported when the owning operation encounters worker panicked."]
+    #[doc = "Reports that worker panicked while the operation was active."]
     WorkerPanicked,
     #[error("source worker has already been joined")]
-    #[doc = "Reported when the owning operation encounters already joined."]
+    #[doc = "Reports that joined already occurred before this operation."]
     AlreadyJoined,
     #[error("prepared source state has already been consumed")]
-    #[doc = "Reported when the owning operation encounters prepared state consumed."]
+    #[doc = "Classifies a failure at the prepared state consumed stage or component of `SourceRuntimeError`."]
     PreparedStateConsumed,
     #[error("source type {0} is not registered")]
-    #[doc = "Reported when the owning operation encounters unregistered source."]
+    #[doc = "Reports that source has not been registered."]
     UnregisteredSource(SourceTypeId),
 }
 

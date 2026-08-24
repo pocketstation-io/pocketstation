@@ -1,6 +1,6 @@
 # PocketStation documentation
 
-<!-- claims: CLM-DOC-001-CAP-001,CLM-DOC-001-CAP-002,CLM-DOC-001-SOURCE-001 -->
+<!-- claims: CLM-DOC-001-SCOPE-001,CLM-DOC-001-TEXT-001,CLM-DOC-001-TEXT-002,CLM-DOC-001-TEXT-003,CLM-DOC-001-TEXT-004,CLM-DOC-001-TEXT-005,CLM-DOC-001-TEXT-006,CLM-DOC-001-TEXT-007,CLM-DOC-001-TEXT-008,CLM-DOC-001-TEXT-009,CLM-DOC-001-TEXT-010,CLM-DOC-001-TEXT-011,CLM-DOC-001-TEXT-012,CLM-DOC-001-SOURCE-001 -->
 
 Use this index to move from a first Session to the exact contract, task, failure, or implementation detail you need. Public navigation follows developer responsibilities; the separate intelligence workspace preserves file, symbol, relationship, behavior, and claim provenance.
 
@@ -199,7 +199,30 @@ Use this index to move from a first Session to the exact contract, task, failure
 
 The claims on **PocketStation documentation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
-- `src/lib.rs:1-1161` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
+- `src/lib.rs:55-71` (`DIRECT`)
+- `src/lib.rs:236-250` (`DIRECT`)
+- `src/lib.rs:237-237` (`DIRECT`)
+- `src/lib.rs:238-238` (`DIRECT`)
+- `src/lib.rs:239-239` (`DIRECT`)
+- `src/lib.rs:240-240` (`DIRECT`)
+- `src/lib.rs:241-241` (`DIRECT`)
+- `src/lib.rs:242-242` (`DIRECT`)
+- `src/lib.rs:243-243` (`DIRECT`)
+- `src/lib.rs:244-244` (`DIRECT`)
+- `src/lib.rs:245-245` (`DIRECT`)
+- `src/lib.rs:246-246` (`DIRECT`)
+- `src/lib.rs:247-247` (`DIRECT`)
+- `src/lib.rs:248-248` (`DIRECT`)
+- `src/lib.rs:249-249` (`DIRECT`)
+- `src/lib.rs:252-255` (`DIRECT`)
+- `src/lib.rs:253-253` (`DIRECT`)
+- `src/lib.rs:254-254` (`DIRECT`)
+- `src/lib.rs:257-261` (`DIRECT`)
+- `src/lib.rs:258-258` (`DIRECT`)
+- `src/lib.rs:259-259` (`DIRECT`)
+- `src/lib.rs:260-260` (`DIRECT`)
+- `src/lib.rs:263-267` (`DIRECT`)
+- `src/lib.rs:264-264` (`DIRECT`)
 
 For **PocketStation documentation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

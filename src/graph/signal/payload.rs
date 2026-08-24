@@ -7,7 +7,7 @@ use crate::frame::AudioFrame;
 use crate::graph::signal::{SignalClass, SignalSpec};
 
 #[derive(Debug)]
-#[doc = "Enumerates the supported signal payload cases."]
+#[doc = "Carries the typed audio, text, event, or binary body of a signal envelope."]
 pub enum SignalPayload {
     #[doc = "Represents the audio case of `SignalPayload`."]
     Audio(AudioFrame),

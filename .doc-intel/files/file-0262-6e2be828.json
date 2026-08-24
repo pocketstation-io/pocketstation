@@ -142,14 +142,49 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
       "lines": [
-        1,
-        205
+        89,
+        113
       ],
-      "path": "tests/conformance_fixture.rs",
-      "symbol": null
+      "path": "tests/conformance_fixture.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
+      "lines": [
+        76,
+        89
+      ],
+      "path": "tests/conformance_fixture.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
+      "lines": [
+        58,
+        76
+      ],
+      "path": "tests/conformance_fixture.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
+      "lines": [
+        14,
+        58
+      ],
+      "path": "tests/conformance_fixture.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
+      "lines": [
+        113,
+        204
+      ],
+      "path": "tests/conformance_fixture.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -178,12 +213,12 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "#![cfg(feature = \"conformance-fixtures\")]",
-    "pocketstation::{ conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation, SessionStartErrorKind, SessionStopDisposition, Source, }",
-    "std::collections::BTreeSet",
-    "std::env::temp_dir().join(format!(\"pocketstation-{test_name}-{}\", std::process::id()))",
-    "std::path::PathBuf",
-    "std::time::{Duration, Instant}"
+    "Consumes configuration at tests/conformance_fixture.rs:1.",
+    "Consumes configuration at tests/conformance_fixture.rs:13.",
+    "Depends on `pocketstation::{ conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation, SessionStartErrorKind, SessionStopDisposition, Source, }` through a declared Rust import.",
+    "Depends on `std::collections::BTreeSet` through a declared Rust import.",
+    "Depends on `std::path::PathBuf` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -253,7 +288,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/conformance_fixture.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

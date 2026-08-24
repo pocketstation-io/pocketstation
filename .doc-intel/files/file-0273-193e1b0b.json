@@ -57,14 +57,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "587f4571f7e39983d6862d0c01ccdb45c2787389fefdc5be33e32b6cff10faa3",
       "lines": [
-        1,
-        55
+        12,
+        35
       ],
-      "path": "tests/protocol_compatibility.rs",
-      "symbol": null
+      "path": "tests/protocol_compatibility.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "587f4571f7e39983d6862d0c01ccdb45c2787389fefdc5be33e32b6cff10faa3",
+      "lines": [
+        35,
+        54
+      ],
+      "path": "tests/protocol_compatibility.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -90,8 +98,8 @@
     "pocketstation::{SidecarMessage, SidecarMessageKind, SidecarProtocolLimits}"
   ],
   "inputs": [
-    "(SidecarMessageKind::Configure, 8),",
-    "pocketstation::{SidecarMessage, SidecarMessageKind, SidecarProtocolLimits}"
+    "Consumes configuration at tests/protocol_compatibility.rs:47.",
+    "Depends on `pocketstation::{SidecarMessage, SidecarMessageKind, SidecarProtocolLimits}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -100,7 +108,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/protocol_compatibility.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

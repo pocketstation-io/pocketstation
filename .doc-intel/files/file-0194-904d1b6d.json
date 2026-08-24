@@ -103,14 +103,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "aed14f154ebf9607f5a204319066910a8797d9f8e8a206f5dc28bb64990c7086",
       "lines": [
         1,
-        56
+        1
       ],
       "path": "src/runtime/signal/error.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::signal::error"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -148,7 +148,7 @@
     "crate::graph::NodeError"
   ],
   "inputs": [
-    "crate::graph::NodeError"
+    "Depends on `crate::graph::NodeError` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -157,11 +157,11 @@
   "module": "pocketstation::runtime::signal::error",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::signal::error` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:AsyncOperatorWorkerError"
+    "Declares public enum `AsyncOperatorWorkerError`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/error.rs",
@@ -183,8 +183,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::signal::error responsibilities, including Classifies failures reported as async operator worker error.; Reported when the owning operation encounters prepare.; Stores the timeout value for `PrepareTimeout`, in milliseconds.."
+    "classification": "DECLARED",
+    "text": "Failures produced by async operator preparation, execution, and shutdown."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -245,38 +245,38 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError: Classifies failures reported as async operator worker error.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Prepare: Reported when the owning operation encounters prepare.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError: Classifies failures surfaced by async operator worker operations.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Prepare: Classifies a failure at the prepare stage or component of `AsyncOperatorWorkerError`.",
     "AsyncOperatorWorkerError::PrepareTimeout::timeout_ms: Stores the timeout value for `PrepareTimeout`, in milliseconds.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::PrepareTimeout: Reported when the owning operation encounters prepare timeout.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Process: Reported when the owning operation encounters process.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::PrepareTimeout: Reports that prepare exceeded its deadline.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Process: Classifies a failure at the process stage or component of `AsyncOperatorWorkerError`.",
     "AsyncOperatorWorkerError::Timeout::timeout_ms: Stores the timeout value for `Timeout`, in milliseconds.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Timeout: Reported when the owning operation encounters timeout.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Close: Reported when the owning operation encounters close.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Timeout: Reports that the operation exceeded its deadline.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Close: Classifies a failure at the close stage or component of `AsyncOperatorWorkerError`.",
     "AsyncOperatorWorkerError::CloseTimeout::timeout_ms: Stores the timeout value for `CloseTimeout`, in milliseconds.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::CloseTimeout: Reported when the owning operation encounters close timeout.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Cancel: Reported when the owning operation encounters cancel.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::CloseTimeout: Reports that close exceeded its deadline.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Cancel: Classifies a failure at the cancel stage or component of `AsyncOperatorWorkerError`.",
     "AsyncOperatorWorkerError::CancelTimeout::timeout_ms: Stores the timeout value for `CancelTimeout`, in milliseconds.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::CancelTimeout: Reported when the owning operation encounters cancel timeout.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::MissingDerivedLineage: Reported when the owning operation encounters missing derived lineage.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::DerivedLineageMismatch: Reported when the owning operation encounters derived lineage mismatch.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::OutputSignalMismatch: Reported when the owning operation encounters output signal mismatch.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::UndeclaredOutputRole: Reported when the owning operation encounters undeclared output role.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::MissingOutputContract: Reported when the owning operation encounters missing output contract.",
-    "AsyncOperatorWorkerError::UnknownInputPort::port_name: Stores the port name used by `UnknownInputPort`.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::UnknownInputPort: Reported when the owning operation encounters unknown input port.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::AmbiguousOutputPort: Reported when the owning operation encounters ambiguous output port.",
-    "AsyncOperatorWorkerError::TerminalOutputDropped::branch_index: Stores the branch index used by `TerminalOutputDropped`.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::TerminalOutputDropped: Reported when the owning operation encounters terminal output dropped.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::OutputPayloadTooLarge: Reported when the owning operation encounters output payload too large.",
-    "AsyncOperatorWorkerError::OutputPayloadTooLarge::branch_index: Stores the branch index used by `OutputPayloadTooLarge`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::CancelTimeout: Reports that cancel exceeded its deadline.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::MissingDerivedLineage: Reports that the required derived lineage is missing.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::DerivedLineageMismatch: Reports that derived lineage does not match the expected contract.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::OutputSignalMismatch: Reports that output signal does not match the expected contract.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::UndeclaredOutputRole: Reports that output role was emitted or requested without a declaration.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::MissingOutputContract: Reports that the required output contract is missing.",
+    "AsyncOperatorWorkerError::UnknownInputPort::port_name: Stores the human-readable port used to identify `UnknownInputPort`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::UnknownInputPort: Reports that the referenced input port is not declared or registered.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::AmbiguousOutputPort: Reports that output port resolves to more than one candidate.",
+    "AsyncOperatorWorkerError::TerminalOutputDropped::branch_index: Identifies the branch index position within `TerminalOutputDropped`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::TerminalOutputDropped: Reports that terminal output was dropped before delivery completed.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::OutputPayloadTooLarge: Reports that output payload exceeds the supported size limit.",
+    "AsyncOperatorWorkerError::OutputPayloadTooLarge::branch_index: Identifies the branch index position within `OutputPayloadTooLarge`.",
     "AsyncOperatorWorkerError::OutputPayloadTooLarge::payload_bytes: Stores the payload size for `OutputPayloadTooLarge`, in bytes.",
     "AsyncOperatorWorkerError::OutputPayloadTooLarge::max_payload_bytes: Limits payload storage for `OutputPayloadTooLarge`, in bytes.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Join: Reported when the owning operation encounters join.",
-    "AsyncOperatorWorkerError::InvalidPlanInput::kind: Stores the kind used by `InvalidPlanInput`.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::InvalidPlanInput: Reported when the owning operation encounters invalid plan input.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::PlanInputLineageMismatch: Reported when the owning operation encounters plan input lineage mismatch.",
-    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::SharedAudioTypedInput: Reported when the owning operation encounters shared audio typed input."
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Join: Classifies a failure at the join stage or component of `AsyncOperatorWorkerError`.",
+    "AsyncOperatorWorkerError::InvalidPlanInput::kind: Records the kind selected for `InvalidPlanInput`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::InvalidPlanInput: Reports that the supplied plan input is invalid.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::PlanInputLineageMismatch: Reports that plan input lineage does not match the expected contract.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::SharedAudioTypedInput: Classifies a failure at the shared audio typed input stage or component of `AsyncOperatorWorkerError`."
   ],
   "retry_behavior": [],
   "serialization": [],

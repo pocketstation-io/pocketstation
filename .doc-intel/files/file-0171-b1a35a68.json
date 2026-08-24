@@ -4,6 +4,14 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/capture/platform/macos/authorization.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs"
   ],
@@ -233,6 +241,14 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/capture/platform/macos/authorization.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs"
   ],
@@ -1902,11 +1918,241 @@
       "classification": "DIRECT",
       "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
       "lines": [
-        1,
-        1161
+        55,
+        71
       ],
       "path": "src/lib.rs",
-      "symbol": null
+      "symbol": "microphone_permission_observation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        236,
+        250
+      ],
+      "path": "src/lib.rs",
+      "symbol": "Session"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        237,
+        237
+      ],
+      "path": "src/lib.rs",
+      "symbol": "declaration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        238,
+        238
+      ],
+      "path": "src/lib.rs",
+      "symbol": "host_builder"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        239,
+        239
+      ],
+      "path": "src/lib.rs",
+      "symbol": "polled_audio_endpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        240,
+        240
+      ],
+      "path": "src/lib.rs",
+      "symbol": "recording_root"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        241,
+        241
+      ],
+      "path": "src/lib.rs",
+      "symbol": "sample_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        242,
+        242
+      ],
+      "path": "src/lib.rs",
+      "symbol": "endpoint_registrations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        243,
+        243
+      ],
+      "path": "src/lib.rs",
+      "symbol": "endpoint_extensions"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        244,
+        244
+      ],
+      "path": "src/lib.rs",
+      "symbol": "operator_registrations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        245,
+        245
+      ],
+      "path": "src/lib.rs",
+      "symbol": "source_registrations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        246,
+        246
+      ],
+      "path": "src/lib.rs",
+      "symbol": "audio_input_factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        247,
+        247
+      ],
+      "path": "src/lib.rs",
+      "symbol": "sidecar_registrations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        248,
+        248
+      ],
+      "path": "src/lib.rs",
+      "symbol": "capture_backends"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        249,
+        249
+      ],
+      "path": "src/lib.rs",
+      "symbol": "session_trace"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        252,
+        255
+      ],
+      "path": "src/lib.rs",
+      "symbol": "CaptureBackendConfiguration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        253,
+        253
+      ],
+      "path": "src/lib.rs",
+      "symbol": "application"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        254,
+        254
+      ],
+      "path": "src/lib.rs",
+      "symbol": "microphone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        257,
+        261
+      ],
+      "path": "src/lib.rs",
+      "symbol": "EndpointDriverRegistration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        258,
+        258
+      ],
+      "path": "src/lib.rs",
+      "symbol": "operator_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        259,
+        259
+      ],
+      "path": "src/lib.rs",
+      "symbol": "node_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        260,
+        260
+      ],
+      "path": "src/lib.rs",
+      "symbol": "factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        263,
+        267
+      ],
+      "path": "src/lib.rs",
+      "symbol": "EndpointExtensionRegistration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6579d457af0f972cbf477bd5f2f3855ab42b99b675963c72971e0e2a9451b2b3",
+      "lines": [
+        264,
+        264
+      ],
+      "path": "src/lib.rs",
+      "symbol": "operator_id"
     }
   ],
   "example_coverage_status": "linked",
@@ -1915,6 +2161,14 @@
     "example-6d2567a68ad98d330f8b"
   ],
   "extended_by": [
+    "CALLS:src/capture/platform/macos/authorization.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs"
   ],
@@ -1938,6 +2192,14 @@
   "generated_from": "not_applicable",
   "git_object": "a81757bf460b04a19f07938fe42a041004888cb5",
   "implemented_by": [
+    "CALLS:src/capture/platform/macos/authorization.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs"
   ],
@@ -1956,6 +2218,14 @@
     "SessionStopResult"
   ],
   "imported_by": [
+    "CALLS:src/capture/platform/macos/authorization.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs"
   ],
@@ -2017,70 +2287,36 @@
     "std::sync::{Arc, Mutex}"
   ],
   "inputs": [
-    "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]",
-    "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]",
-    "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]",
-    "#[cfg(feature = \"conformance-fixtures\")]",
-    "#[cfg(feature = \"internal-testing\")]",
-    "#[cfg(not(all(",
-    "BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics,",
-    "DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME,",
-    "capture::captured_frame_stream",
-    "crate::capture::*",
-    "crate::capture::platform::linux::*",
-    "crate::capture::platform::macos::{ discover_input_sources_native, discover_sources_native, tap_available, InternalDesktopCaptureBackend as DesktopCaptureBackend, InternalDesktopCaptureSource as DesktopCaptureSource, InternalSystemLoopbackSource as SystemLoopbackSource, MacosInputSource, }",
-    "crate::capture::platform::windows::*",
-    "crate::capture::{ application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend, ApplicationPolicyObservation, CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureScope, CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId, }",
-    "crate::codec::*",
-    "crate::endpoint::*",
-    "crate::endpoint::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureRetryability, EndpointFailureStage, EndpointGroupId, EndpointInputOrigin, EndpointPortInput, EndpointPreparationGroup, EndpointPrepareContext, EndpointReceiver, EndpointRouteContext, EndpointShutdownMode, EndpointSignalReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
-    "crate::frame::*",
-    "crate::frame::{ AudioBufferHandle, AudioBufferWriteError, Platform, SharedAudioBufferHandle, SharedAudioFrame, }",
-    "crate::frame::{ AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId, FrameLineage, FrameLineageBuildError, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
-    "crate::graph::*",
-    "crate::graph::compile::*",
-    "crate::graph::compile::Compiler",
-    "crate::graph::compile::RuntimePlanner",
-    "crate::graph::dsl::*",
-    "crate::graph::ir::*",
-    "crate::graph::node::*",
-    "crate::graph::plan::*",
-    "crate::graph::registry::*",
-    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AsyncOperatorPrepareContext, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext, PortSpec, SafetyContract, SchemaRef, SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalLineageError, SignalPayload, SignalSpec, SignalSpecError, SignalTiming, SignalTimingError, TextFormat, }",
-    "crate::recording::*",
-    "crate::runtime::*",
-    "crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations, PlanSourceInputObservations, }",
-    "crate::runtime::{ SidecarDeadlines, SidecarHostError, SidecarHostSnapshot, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SidecarState, }",
-    "crate::session::*",
-    "crate::session::SessionCompileDiagnostic",
-    "crate::session::declaration::{ ApplicationSelector, ConnectionSpec, ConnectionTarget, DerivedStreamHandle, DeviceId, DeviceSelector, EndpointConfiguration, EndpointDescriptor, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle, OperatorInstanceId, OperatorInstanceSpec, ProcessId, Source, SourceInstanceHandle, SourceInstanceId, SourceInstanceSpec, SourceOutputHandle, SourceOutputSpec, StemHandle, Stream, StreamOrigin, StreamSignal, TypedOperator, TypedStreamError, }",
-    "crate::session::error::SessionError",
-    "crate::session::error_code::{ polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode, }",
-    "crate::session::extensions::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, PCM_SOURCE_TYPE_ID, }",
-    "crate::session::lifecycle::{ SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure, SessionDerivedRouteMetrics, SessionEvent, SessionEventKind, SessionEventQueueObservations, SessionEventReceive, SessionExternalSourceMetrics, SessionLifecycleState, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics, SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecord, SessionTraceRecordKind, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation, SessionTraceValidationError, }",
-    "crate::session::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, SessionEngineStartError, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
-    "crate::session::{ PolledAudioBatchLease, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, }",
-    "crate::session::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }",
-    "crate::timing::*",
-    "feature = \"native-capture\",",
-    "frame::{ AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES, }",
-    "module:abi",
-    "module:capture",
-    "module:codec",
-    "module:conformance",
-    "module:connector",
-    "module:endpoint",
-    "module:error_code",
-    "module:frame",
-    "module:graph",
-    "module:native_extension",
-    "module:recording",
-    "module:runtime",
-    "module:secret",
-    "module:session",
-    "module:timing",
-    "std::path::PathBuf",
-    "std::sync::{Arc, Mutex}"
+    "Consumes configuration at src/lib.rs:134.",
+    "Consumes configuration at src/lib.rs:152.",
+    "Consumes configuration at src/lib.rs:157.",
+    "Consumes configuration at src/lib.rs:161.",
+    "Consumes configuration at src/lib.rs:24.",
+    "Consumes configuration at src/lib.rs:56.",
+    "Consumes configuration at src/lib.rs:60.",
+    "Consumes configuration at src/lib.rs:64.",
+    "Consumes configuration at src/lib.rs:65.",
+    "Consumes configuration at src/lib.rs:88.",
+    "Depends on `capture::captured_frame_stream` through a declared Rust import.",
+    "Depends on `crate::capture::*` through a declared Rust import.",
+    "Depends on `crate::capture::platform::linux::*` through a declared Rust import.",
+    "Depends on `crate::capture::platform::macos::{ discover_input_sources_native, discover_sources_native, tap_available, InternalDesktopCaptureBackend as DesktopCaptureBackend, InternalDesktopCaptureSource as DesktopCaptureSource, InternalSystemLoopbackSource as SystemLoopbackSource, MacosInputSource, }` through a declared Rust import.",
+    "Depends on `crate::capture::platform::windows::*` through a declared Rust import.",
+    "Depends on `crate::capture::{ application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend, ApplicationPolicyObservation, CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureScope, CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId, }` through a declared Rust import.",
+    "Depends on `crate::codec::*` through a declared Rust import.",
+    "Depends on `crate::endpoint::*` through a declared Rust import.",
+    "Depends on `crate::endpoint::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureRetryability, EndpointFailureStage, EndpointGroupId, EndpointInputOrigin, EndpointPortInput, EndpointPreparationGroup, EndpointPrepareContext, EndpointReceiver, EndpointRouteContext, EndpointShutdownMode, EndpointSignalReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }` through a declared Rust import.",
+    "Depends on `crate::frame::*` through a declared Rust import.",
+    "Depends on `crate::frame::{ AudioBufferHandle, AudioBufferWriteError, Platform, SharedAudioBufferHandle, SharedAudioFrame, }` through a declared Rust import.",
+    "Depends on `crate::frame::{ AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId, FrameLineage, FrameLineageBuildError, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `crate::graph::*` through a declared Rust import.",
+    "Depends on `crate::graph::compile::*` through a declared Rust import.",
+    "Depends on `crate::graph::compile::Compiler` through a declared Rust import.",
+    "Depends on `crate::graph::compile::RuntimePlanner` through a declared Rust import.",
+    "Depends on `crate::graph::dsl::*` through a declared Rust import.",
+    "Depends on `crate::graph::ir::*` through a declared Rust import.",
+    "Depends on `crate::graph::node::*` through a declared Rust import.",
+    "Depends on `crate::graph::plan::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -2235,46 +2471,47 @@
   "module": "pocketstation",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-4749381b955e49aa6477",
     "pattern-73fee963faa887906e44"
   ],
   "outputs": [
-    "Err(error) => {",
-    "fn:microphone_permission_observation",
-    "mod:capture",
-    "mod:codec",
-    "mod:compile",
-    "mod:compiler",
-    "mod:conformance",
-    "mod:connector",
-    "mod:dsl",
-    "mod:endpoint",
-    "mod:frame",
-    "mod:graph",
-    "mod:internal",
-    "mod:ir",
-    "mod:linux",
-    "mod:macos",
-    "mod:native_extension",
-    "mod:node",
-    "mod:plan",
-    "mod:planner",
-    "mod:recording",
-    "mod:registry",
-    "mod:runtime",
-    "mod:session",
-    "mod:timing",
-    "mod:windows",
-    "return Err(AudioInputError::IncompatibleContract);",
-    "return Err(SessionEndpointError::DuplicateNodeTypeId {",
-    "return Err(SessionEndpointError::DuplicateOperatorId {",
-    "return Err(SessionStartError::new(",
-    "return Err(error.into());",
-    "struct:Session",
-    "struct:SessionBuilder"
+    "Creates a typed failure at src/lib.rs:409.",
+    "Creates a typed failure at src/lib.rs:435.",
+    "Creates a typed failure at src/lib.rs:437.",
+    "Creates a typed failure at src/lib.rs:597.",
+    "Creates a typed failure at src/lib.rs:608.",
+    "Creates a typed failure at src/lib.rs:727.",
+    "Creates a typed failure at src/lib.rs:742.",
+    "Declares public fn `microphone_permission_observation`.",
+    "Declares public mod `capture`.",
+    "Declares public mod `codec`.",
+    "Declares public mod `compile`.",
+    "Declares public mod `compiler`.",
+    "Declares public mod `conformance`.",
+    "Declares public mod `connector`.",
+    "Declares public mod `dsl`.",
+    "Declares public mod `endpoint`.",
+    "Declares public mod `frame`.",
+    "Declares public mod `graph`.",
+    "Declares public mod `internal`.",
+    "Declares public mod `ir`.",
+    "Declares public mod `linux`.",
+    "Declares public mod `macos`.",
+    "Declares public mod `native_extension`.",
+    "Declares public mod `node`.",
+    "Declares public mod `plan`.",
+    "Declares public mod `planner`.",
+    "Declares public mod `recording`.",
+    "Declares public mod `registry`.",
+    "Declares public mod `runtime`.",
+    "Declares public mod `session`.",
+    "Declares public mod `timing`.",
+    "Declares public mod `windows`.",
+    "Declares public struct `SessionBuilder`.",
+    "Declares public struct `Session`."
   ],
   "package": "pocketstation",
   "path": "src/lib.rs",
@@ -3025,8 +3262,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation responsibilities, including # PocketStation; Reads the current microphone authorization state without prompting.; Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it.."
+    "classification": "DECLARED",
+    "text": "# PocketStation. Reads the current microphone authorization state without prompting. Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -3110,6 +3347,20 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/platform/macos/authorization.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/compile/error.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/error_code.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/abi/mod.rs",
     "CONTAINS:src/capture/mod.rs",
     "CONTAINS:src/codec/mod.rs",
@@ -3125,6 +3376,10 @@
     "CONTAINS:src/secret.rs",
     "CONTAINS:src/session/mod.rs",
     "CONTAINS:src/timing/mod.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
+    "IMPLEMENTS:src/session/lifecycle/trace.rs",
     "IMPORTS:src/abi/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "IMPORTS:src/codec/mod.rs",
@@ -3315,7 +3570,7 @@
     "register_source: Retains an external Source factory for this Session.",
     "register_sidecar: Registers one language-neutral sidecar under this Session's bounded",
     "endpoint: Declares an endpoint on `Session` and returns its Session-scoped handle.",
-    "register_operator: Registers operator for `Session`.",
+    "register_operator: Registers one asynchronous operator implementation for use by `Session`.",
     "polled_audio: Declares a bounded polled-audio endpoint on `Session`.",
     "connector: Declares an external connector. Register its implementation after route",
     "register_connector_driver: Registers the externally owned implementation for a declared connector.",
@@ -3323,7 +3578,7 @@
     "register_browser_driver: Registers the externally owned browser/remote transport implementation.",
     "register_endpoint: Registers one externally owned endpoint as a single compiler/runtime",
     "start: Starts the lifecycle represented by `Session`.",
-    "start_cancellable: Starts cancellable for `Session`.",
+    "start_cancellable: Starts `Session` transactionally while observing the supplied cancellation handle.",
     "default: Returns the default `Session` value.",
     "pocketstation::RunningSession: Owns a started Session together with event, polling, recording, trace, and stop resources.",
     "session_id: Returns the session identifier held by `RunningSession`.",
@@ -3351,32 +3606,32 @@
     "message: Returns the diagnostic message reported by `SessionStartError`.",
     "compile_diagnostic: Returns structured compiler facts when startup failed while compiling",
     "kind: Returns the kind represented by `SessionStartError`.",
-    "is_cancelled: Returns whether cancelled applies to `SessionStartError`.",
+    "is_cancelled: Reports whether cancelled is true for `SessionStartError`.",
     "from: Converts the supplied value into `SessionStartError`.",
     "from: Converts the supplied value into `SessionStartError`.",
     "from: Converts the supplied value into `SessionStartError`.",
     "from: Converts the supplied value into `SessionStartError`.",
-    "pocketstation::SessionEndpointError: Classifies failures reported as session endpoint error.",
-    "pocketstation::SessionEndpointError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
+    "pocketstation::SessionEndpointError: Classifies failures surfaced by session endpoint operations.",
+    "pocketstation::SessionEndpointError::RegistrationStateUnavailable: Reports that registration state is unavailable.",
     "pocketstation::SessionEndpointError::DuplicateOperatorId::operator_id: Identifies the operator identifier recorded by `DuplicateOperatorId`.",
-    "pocketstation::SessionEndpointError::DuplicateOperatorId: Reported when the owning operation encounters duplicate operator identifier.",
+    "pocketstation::SessionEndpointError::DuplicateOperatorId: Reports that operator identifier duplicates an existing declaration or record.",
     "pocketstation::SessionEndpointError::DuplicateNodeTypeId::node_type_id: Identifies the node type identifier recorded by `DuplicateNodeTypeId`.",
-    "pocketstation::SessionEndpointError::DuplicateNodeTypeId: Reported when the owning operation encounters duplicate node type identifier.",
-    "pocketstation::SessionSidecarError: Classifies failures reported as session sidecar error.",
-    "pocketstation::SessionSidecarError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
-    "pocketstation::SessionOperatorError: Classifies failures reported as session operator error.",
-    "pocketstation::SessionOperatorError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
-    "pocketstation::SessionSourceError: Classifies failures reported as session source error.",
-    "pocketstation::SessionSourceError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
+    "pocketstation::SessionEndpointError::DuplicateNodeTypeId: Reports that node type identifier duplicates an existing declaration or record.",
+    "pocketstation::SessionSidecarError: Classifies failures surfaced by session sidecar operations.",
+    "pocketstation::SessionSidecarError::RegistrationStateUnavailable: Reports that registration state is unavailable.",
+    "pocketstation::SessionOperatorError: Classifies failures surfaced by session operator operations.",
+    "pocketstation::SessionOperatorError::RegistrationStateUnavailable: Reports that registration state is unavailable.",
+    "pocketstation::SessionSourceError: Classifies failures surfaced by session source operations.",
+    "pocketstation::SessionSourceError::RegistrationStateUnavailable: Reports that registration state is unavailable.",
     "pocketstation::SessionStartErrorKind: Selects the session start error kind used by PocketStation.",
-    "pocketstation::SessionStartErrorKind::Host: Selects host behavior for `SessionStartErrorKind`.",
-    "pocketstation::SessionStartErrorKind::Engine: Selects engine behavior for `SessionStartErrorKind`.",
+    "pocketstation::SessionStartErrorKind::Host: Classifies a Session start failure attributed to host.",
+    "pocketstation::SessionStartErrorKind::Engine: Classifies a Session start failure attributed to engine.",
     "pocketstation::SessionStartErrorKind::Cancelled: Indicates that the operation was cancelled.",
-    "pocketstation::SessionStartErrorKind::InvalidSelector: Selects invalid selector behavior for `SessionStartErrorKind`.",
-    "pocketstation::SessionStartErrorKind::MissingRecordingConfiguration: Selects missing recording configuration behavior for `SessionStartErrorKind`.",
-    "pocketstation::SessionStartErrorKind::Invariant: Selects invariant behavior for `SessionStartErrorKind`.",
-    "pocketstation::SessionRuntimeError: Classifies failures reported as session runtime error.",
-    "pocketstation::SessionRuntimeError::MissingMetricsSnapshot: Reported when the owning operation encounters missing metrics snapshot.",
+    "pocketstation::SessionStartErrorKind::InvalidSelector: Classifies a Session start failure attributed to invalid selector.",
+    "pocketstation::SessionStartErrorKind::MissingRecordingConfiguration: Classifies a Session start failure attributed to missing recording configuration.",
+    "pocketstation::SessionStartErrorKind::Invariant: Classifies a Session start failure attributed to invariant.",
+    "pocketstation::SessionRuntimeError: Classifies failures produced during session runtime execution.",
+    "pocketstation::SessionRuntimeError::MissingMetricsSnapshot: Reports that the required metrics snapshot is missing.",
     "pocketstation::SessionStopDisposition: Classifies the observable session stop disposition.",
     "pocketstation::SessionStopDisposition::Stopped: Indicates that the operation stopped normally.",
     "pocketstation::SessionStopDisposition::AlreadyStopped: Indicates that the operation had already stopped.",
@@ -3386,11 +3641,11 @@
     "pocketstation::SessionCancelResult: Reports the structured session cancel result.",
     "disposition: Returns the disposition associated with `SessionCancelResult`.",
     "outcome: Returns the outcome held by `SessionCancelResult`.",
-    "is_success: Returns whether success applies to `SessionCancelResult`.",
+    "is_success: Reports whether success is true for `SessionCancelResult`.",
     "pocketstation::SessionStopResult: Reports the structured session stop result.",
     "disposition: Returns the disposition associated with `SessionStopResult`.",
     "outcome: Returns the outcome held by `SessionStopResult`.",
-    "is_success: Returns whether success applies to `SessionStopResult`."
+    "is_success: Reports whether success is true for `SessionStopResult`."
   ],
   "retry_behavior": [],
   "serialization": [],

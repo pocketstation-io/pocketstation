@@ -1,6 +1,6 @@
 # Asynchronous signal lane
 
-<!-- claims: CLM-DOC-051-CAP-001,CLM-DOC-051-CAP-002,CLM-DOC-051-SOURCE-001 -->
+<!-- claims: CLM-DOC-051-SCOPE-001,CLM-DOC-051-TEXT-001,CLM-DOC-051-TEXT-002,CLM-DOC-051-TEXT-003,CLM-DOC-051-TEXT-004,CLM-DOC-051-SOURCE-001 -->
 
 ## Scope
 
@@ -21,7 +21,7 @@ The scope of **Asynchronous signal lane** ends at the native contracts and execu
 | `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
 | `pocketstation::graph::signal::operator::AsyncOperatorFactory` | trait | Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract. | `src/graph/signal/operator.rs:368` |
 | `pocketstation::graph::signal::envelope::SignalEnvelope` | struct | Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata. | `src/graph/signal/envelope.rs:6` |
-| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Describes the async operator manifest contract. | `src/graph/signal/operator.rs:127` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Declares an asynchronous operator's ports, execution partition, failure policy, and cancellation policy. | `src/graph/signal/operator.rs:127` |
 | `pocketstation::graph::signal::operator::OperatorDeadlinePolicy` | struct | Configures operator deadline behavior at its owning API boundary. | `src/graph/signal/operator.rs:52` |
 | `pocketstation::graph::signal::operator::OperatorOutputRolePolicy` | struct | Configures operator output role behavior at its owning API boundary. | `src/graph/signal/operator.rs:69` |
 | `pocketstation::graph::signal::operator::OperatorPermissionPolicy` | struct | Configures operator permission behavior at its owning API boundary. | `src/graph/signal/operator.rs:46` |
@@ -29,7 +29,7 @@ The scope of **Asynchronous signal lane** ends at the native contracts and execu
 | `pocketstation::graph::signal::spec::SemanticRole` | struct | Semantic role annotation on a port. | `src/graph/signal/spec.rs:57` |
 | `pocketstation::graph::signal::spec::SignalId` | struct | Opaque identifier for a custom signal type. | `src/graph/signal/spec.rs:22` |
 | `pocketstation::graph::signal::spec::SignalSpec` | struct | Full signal contract for a single port. | `src/graph/signal/spec.rs:205` |
-| `pocketstation::runtime::signal::edge::SignalEdgeObservationHandle` | struct | Owns bounded access to signal edge observation. | `src/runtime/signal/edge.rs:49` |
+| `pocketstation::runtime::signal::edge::SignalEdgeObservationHandle` | struct | Holds the ownership or bounded access represented by signal edge observation handle. | `src/runtime/signal/edge.rs:49` |
 | `pocketstation::runtime::signal::edge::SignalEdgeObservations` | struct | Reports the signal edge observations collected at an observation boundary. | `src/runtime/signal/edge.rs:31` |
 | `pocketstation::runtime::signal::edge::SignalEdgeReceiver` | struct | Receives signal edge values across its declared ownership boundary. | `src/runtime/signal/edge.rs:204` |
 | `pocketstation::runtime::signal::edge::SignalEdgeSendError` | struct | Reports a signal edge send error. | `src/runtime/signal/edge.rs:118` |
@@ -38,8 +38,8 @@ The scope of **Asynchronous signal lane** ends at the native contracts and execu
 | `pocketstation::runtime::signal::edge::TypedEdgePublishReport` | struct | Reports how many fan-out branches accepted or dropped one published signal. | `src/runtime/signal/edge.rs:380` |
 | `pocketstation::runtime::signal::operator::AsyncOperatorWorker` | struct | Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result. | `src/runtime/signal/operator.rs:250` |
 | `pocketstation::runtime::signal::operator::CompiledOperatorInputContract` | struct | Declares the validated constraints applied to compiled operator input. | `src/runtime/signal/operator.rs:103` |
-| `pocketstation::graph::signal::envelope::SignalEnvelopeError` | enum | Classifies failures reported as signal envelope error. | `src/graph/signal/envelope.rs:137` |
-| `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures reported as async operator manifest error. | `src/graph/signal/operator.rs:321` |
+| `pocketstation::graph::signal::envelope::SignalEnvelopeError` | enum | Classifies failures surfaced by signal envelope operations. | `src/graph/signal/envelope.rs:137` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures surfaced by async operator manifest operations. | `src/graph/signal/operator.rs:321` |
 | `pocketstation::graph::signal::operator::OperatorCancellationPolicy` | enum | Selects the operator cancellation policy used by PocketStation. | `src/graph/signal/operator.rs:57` |
 | `pocketstation::graph::signal::operator::OperatorFailurePolicy` | enum | Selects the operator failure policy used by PocketStation. | `src/graph/signal/operator.rs:63` |
 
@@ -112,7 +112,53 @@ Executable evidence selected for **Asynchronous signal lane** is limited to each
 
 The claims on **Asynchronous signal lane** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/signal/edge.rs:1-651` (`DIRECT`)
-- `src/runtime/signal/operator.rs:1-2573` (`DIRECT`)
+- `src/runtime/signal/edge.rs:15-15` (`DIRECT`)
+- `src/runtime/signal/edge.rs:17-17` (`DIRECT`)
+- `src/runtime/signal/edge.rs:18-28` (`DIRECT`)
+- `src/runtime/signal/edge.rs:19-19` (`DIRECT`)
+- `src/runtime/signal/edge.rs:20-20` (`DIRECT`)
+- `src/runtime/signal/edge.rs:21-21` (`DIRECT`)
+- `src/runtime/signal/edge.rs:22-22` (`DIRECT`)
+- `src/runtime/signal/edge.rs:23-23` (`DIRECT`)
+- `src/runtime/signal/edge.rs:24-24` (`DIRECT`)
+- `src/runtime/signal/edge.rs:25-25` (`DIRECT`)
+- `src/runtime/signal/edge.rs:26-26` (`DIRECT`)
+- `src/runtime/signal/edge.rs:27-27` (`DIRECT`)
+- `src/runtime/signal/edge.rs:30-30` (`DIRECT`)
+- `src/runtime/signal/edge.rs:30-30` (`DIRECT`)
+- `src/runtime/signal/edge.rs:30-30` (`DIRECT`)
+- `src/runtime/signal/edge.rs:31-46` (`DIRECT`)
+- `src/runtime/signal/edge.rs:32-32` (`DIRECT`)
+- `src/runtime/signal/edge.rs:33-33` (`DIRECT`)
+- `src/runtime/signal/edge.rs:34-34` (`DIRECT`)
+- `src/runtime/signal/edge.rs:35-35` (`DIRECT`)
+- `src/runtime/signal/edge.rs:36-36` (`DIRECT`)
+- `src/runtime/signal/edge.rs:37-37` (`DIRECT`)
+- `src/runtime/signal/edge.rs:38-38` (`DIRECT`)
+- `src/runtime/signal/edge.rs:44-44` (`DIRECT`)
+- `src/runtime/signal/operator.rs:31-31` (`DIRECT`)
+- `src/runtime/signal/operator.rs:33-44` (`DIRECT`)
+- `src/runtime/signal/operator.rs:35-35` (`DIRECT`)
+- `src/runtime/signal/operator.rs:35-35` (`DIRECT`)
+- `src/runtime/signal/operator.rs:36-39` (`DIRECT`)
+- `src/runtime/signal/operator.rs:37-37` (`DIRECT`)
+- `src/runtime/signal/operator.rs:38-38` (`DIRECT`)
+- `src/runtime/signal/operator.rs:40-43` (`DIRECT`)
+- `src/runtime/signal/operator.rs:41-41` (`DIRECT`)
+- `src/runtime/signal/operator.rs:42-42` (`DIRECT`)
+- `src/runtime/signal/operator.rs:46-52` (`DIRECT`)
+- `src/runtime/signal/operator.rs:47-50` (`DIRECT`)
+- `src/runtime/signal/operator.rs:48-48` (`DIRECT`)
+- `src/runtime/signal/operator.rs:49-49` (`DIRECT`)
+- `src/runtime/signal/operator.rs:51-51` (`DIRECT`)
+- `src/runtime/signal/operator.rs:51-51` (`DIRECT`)
+- `src/runtime/signal/operator.rs:55-86` (`DIRECT`)
+- `src/runtime/signal/operator.rs:88-99` (`DIRECT`)
+- `src/runtime/signal/operator.rs:102-102` (`DIRECT`)
+- `src/runtime/signal/operator.rs:102-102` (`DIRECT`)
+- `src/runtime/signal/operator.rs:102-102` (`DIRECT`)
+- `src/runtime/signal/operator.rs:103-114` (`DIRECT`)
+- `src/runtime/signal/operator.rs:104-104` (`DIRECT`)
+- `src/runtime/signal/operator.rs:105-105` (`DIRECT`)
 
 For **Asynchronous signal lane**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

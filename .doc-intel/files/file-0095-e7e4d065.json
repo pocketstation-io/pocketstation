@@ -109,14 +109,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "7a33bc3f57c6e29ca25174ca32d287764c18b97310a136bcb0f83d285db2ce62",
       "lines": [
         1,
-        69
+        1
       ],
       "path": "src/capture/platform/windows/authorization.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::platform::windows::authorization"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -163,10 +163,10 @@
     "windows_core::{Error, HRESULT, HSTRING}"
   ],
   "inputs": [
-    "crate::capture::PermissionObservation",
-    "windows::Security::Authorization::AppCapabilityAccess::{ AppCapability, AppCapabilityAccessStatus, }",
-    "windows::Win32::System::WinRT::{RoInitialize, RoUninitialize, RO_INIT_MULTITHREADED}",
-    "windows_core::{Error, HRESULT, HSTRING}"
+    "Depends on `crate::capture::PermissionObservation` through a declared Rust import.",
+    "Depends on `windows::Security::Authorization::AppCapabilityAccess::{ AppCapability, AppCapabilityAccessStatus, }` through a declared Rust import.",
+    "Depends on `windows::Win32::System::WinRT::{RoInitialize, RoUninitialize, RO_INIT_MULTITHREADED}` through a declared Rust import.",
+    "Depends on `windows_core::{Error, HRESULT, HSTRING}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -180,15 +180,15 @@
   "module": "pocketstation::capture::platform::windows::authorization",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::windows::authorization` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-f36079402c22d64d761f"
   ],
   "outputs": [
-    "Err(error) => Err(error),",
-    "Err(error) if error.code() == RPC_E_CHANGED_MODE => Ok(Self {",
-    "fn:microphone_permission_observation"
+    "Creates a typed failure at src/capture/platform/windows/authorization.rs:52.",
+    "Creates a typed failure at src/capture/platform/windows/authorization.rs:55.",
+    "Declares public fn `microphone_permission_observation`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/authorization.rs",
@@ -242,8 +242,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::windows::authorization responsibilities, including the src/capture/platform/windows/authorization boundary."
+    "classification": "DECLARED",
+    "text": "Non-prompting Windows microphone capability observation."
   },
   "queues": [],
   "recovery_behavior": [],

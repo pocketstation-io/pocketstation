@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/signal/lineage.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -35,6 +36,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/graph/signal/lineage.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -210,14 +212,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "4d9c3d9c56f85022f1d0ebb9edffbbf3da7d5fe00779dc6e816e2c9d6905b258",
       "lines": [
         1,
-        95
+        1
       ],
       "path": "src/graph/signal/timing.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::signal::timing"
     }
   ],
   "example_coverage_status": "linked",
@@ -225,6 +227,7 @@
     "example-015ad57d56d019a5d285"
   ],
   "extended_by": [
+    "CALLS:src/graph/signal/lineage.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -245,6 +248,7 @@
   "generated_from": "not_applicable",
   "git_object": "a6eba00401fef0c65ba5b5457d2fc8f169523718",
   "implemented_by": [
+    "CALLS:src/graph/signal/lineage.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -255,6 +259,7 @@
     "SignalTiming"
   ],
   "imported_by": [
+    "CALLS:src/graph/signal/lineage.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/graph/signal/continuity.rs",
@@ -265,7 +270,7 @@
     "crate::frame::FrameLineage"
   ],
   "inputs": [
-    "crate::frame::FrameLineage"
+    "Depends on `crate::frame::FrameLineage` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -279,25 +284,25 @@
   "module": "pocketstation::graph::signal::timing",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::signal::timing` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-29bc796899bd9e0e8772"
   ],
   "outputs": [
-    "enum:SignalTimingError",
-    "fn:duration_ns",
-    "fn:from_frame",
-    "fn:observed",
-    "fn:observed_timestamp_ns",
-    "fn:session_timestamp_ns",
-    "fn:source_timestamp_ns",
-    "fn:timestamp_end_ns",
-    "fn:try_new",
-    "fn:with_duration_ns",
-    "return Err(SignalTimingError::TimestampOverflow);",
-    "return Err(SignalTimingError::ZeroDuration);",
-    "struct:SignalTiming"
+    "Creates a typed failure at src/graph/signal/timing.rs:21.",
+    "Creates a typed failure at src/graph/signal/timing.rs:28.",
+    "Declares public enum `SignalTimingError`.",
+    "Declares public fn `duration_ns`.",
+    "Declares public fn `from_frame`.",
+    "Declares public fn `observed_timestamp_ns`.",
+    "Declares public fn `observed`.",
+    "Declares public fn `session_timestamp_ns`.",
+    "Declares public fn `source_timestamp_ns`.",
+    "Declares public fn `timestamp_end_ns`.",
+    "Declares public fn `try_new`.",
+    "Declares public fn `with_duration_ns`.",
+    "Declares public struct `SignalTiming`."
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/timing.rs",
@@ -379,8 +384,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::signal::timing responsibilities, including Carries a signal timestamp, clock domain, and timing semantics without rewriting source lineage.; Creates a new `SignalTiming` after validating its inputs.; Creates observed signal timing for `SignalTiming`.."
+    "classification": "DECLARED",
+    "text": "Source, observation, and Session clock coordinates for one signal."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -419,6 +424,8 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/timeline.rs",
+    "CALLS:src/graph/signal/lineage.rs",
     "REFERENCES:src/frame/lineage.rs"
   ],
   "resource_ownership": [],
@@ -433,9 +440,9 @@
     "observed_timestamp_ns: Returns the observed timestamp nanoseconds held by `SignalTiming`.",
     "session_timestamp_ns: Returns the session timestamp nanoseconds held by `SignalTiming`.",
     "duration_ns: Returns the duration nanoseconds held by `SignalTiming`.",
-    "pocketstation::graph::signal::timing::SignalTimingError: Classifies failures reported as signal timing error.",
-    "pocketstation::graph::signal::timing::SignalTimingError::ZeroDuration: Reported when the owning operation encounters zero duration.",
-    "pocketstation::graph::signal::timing::SignalTimingError::TimestampOverflow: Reported when the owning operation encounters timestamp overflow."
+    "pocketstation::graph::signal::timing::SignalTimingError: Classifies failures surfaced by signal timing operations.",
+    "pocketstation::graph::signal::timing::SignalTimingError::ZeroDuration: Reports that duration must be greater than zero.",
+    "pocketstation::graph::signal::timing::SignalTimingError::TimestampOverflow: Reports that timestamp exceeds its numeric range."
   ],
   "retry_behavior": [],
   "serialization": [],

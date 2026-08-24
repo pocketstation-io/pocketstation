@@ -1,6 +1,6 @@
 # Run protocol checks
 
-<!-- claims: CLM-GUIDE-025-CAP-001,CLM-GUIDE-025-CAP-002,CLM-GUIDE-025-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-025-SCOPE-001,CLM-GUIDE-025-TEXT-001,CLM-GUIDE-025-TEXT-002,CLM-GUIDE-025-TEXT-003,CLM-GUIDE-025-TEXT-004,CLM-GUIDE-025-TEXT-005,CLM-GUIDE-025-TEXT-006,CLM-GUIDE-025-TEXT-007,CLM-GUIDE-025-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,20 @@ The repository toolchain plus every public, sibling, or private fixture named by
 3. Provide required sibling or private fixtures.
 4. Distinguish absent prerequisites from assertion failures.
 5. Record command, target, and fixture revision.
+
+## Concrete repository example
+
+Run the run protocol checks commands from the PocketStation checkout. Each command is part of this task's documented validation surface.
+
+```bash
+./scripts/check_protocol.sh
+cargo test --test abi_c_conformance --all-features
+cargo test --test connector_portable_semantics --all-features
+```
+
+## Current workspace qualification
+
+The sibling `pks` checkout at commit `0ae30be3d384735f1e4053fb123e8e92e0d18113` failed the single-engine ownership check with 244 matched occurrences across 25 source paths. It still imports PocketStation internal engine machinery and retains retired parallel command paths. This is an explicit `CONFLICTED` workspace result: this documentation branch does not claim that the multi-repository single-engine boundary passes. The exact command, checked commit, output digest, and affected paths are recorded in the `.doc-intel/checkpoints/workspace-qualification.json`.
 
 ## Important consequence
 
@@ -58,7 +72,7 @@ No task-specific public error was resolved for run protocol checks; preserve the
 | `pocketstation::conformance` | module | Deterministic Session fixture for external conformance harnesses. | `src/conformance.rs:1` |
 | `pocketstation::conformance::ExtensionConformanceReport` | struct | Language-neutral outcome returned by the W20 fixture. | `src/conformance.rs:572` |
 | `pocketstation::conformance::ExtensionSignal` | struct | Owns one signal payload used by the native-extension conformance fixtures. | `src/conformance.rs:1180` |
-| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures reported as observed endpoint error. | `src/conformance.rs:344` |
+| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures surfaced by observed endpoint operations. | `src/conformance.rs:344` |
 | `pocketstation::conformance::observed_browser` | function | Declares and registers a deterministic native browser boundary used only by cross-language conformance harnesses. | `src/conformance.rs:334` |
 | `pocketstation::conformance::observed_connector` | function | Declares and registers a deterministic native connector used only by cross-language conformance harnesses. | `src/conformance.rs:273` |
 | `pocketstation::conformance::run_extension_vector` | function | Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint vector through the public Session. | `src/conformance.rs:1005` |
@@ -79,6 +93,6 @@ No task-specific public error was resolved for run protocol checks; preserve the
 
 The claims on **Run protocol checks** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `scripts/check_protocol.sh:1-132` (`DIRECT`)
+- `scripts/check_protocol.sh:2-22` (`DIRECT`)
 
 For **Run protocol checks**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

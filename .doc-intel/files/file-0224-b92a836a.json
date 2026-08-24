@@ -159,14 +159,31 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "44ff6fae8dfa0542c15ef2d573877650aaab29bb54a578043b7e0203371dff58",
       "lines": [
-        1,
-        134
+        105,
+        121
       ],
-      "path": "src/session/extensions/tests/registry.rs",
-      "symbol": null
+      "path": "src/session/extensions/tests/registry.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "44ff6fae8dfa0542c15ef2d573877650aaab29bb54a578043b7e0203371dff58",
+      "lines": [
+        121,
+        133
+      ],
+      "path": "src/session/extensions/tests/registry.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "44ff6fae8dfa0542c15ef2d573877650aaab29bb54a578043b7e0203371dff58",
+      "lines": [
+        90,
+        105
+      ],
+      "path": "src/session/extensions/tests/registry.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -198,12 +215,12 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec,",
-    "crate::graph::PrepareContext",
-    "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
-    "crate::session::{ SampleFormat, SampleSpec, SessionEngineBuilder, SessionStartOptions, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceRegistrationError, SourceTypeId, }",
-    "fn validate_config(&self, _configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
-    "std::sync::Arc"
+    "Consumes configuration at src/session/extensions/tests/registry.rs:4.",
+    "Consumes configuration at src/session/extensions/tests/registry.rs:46.",
+    "Depends on `crate::graph::PrepareContext` through a declared Rust import.",
+    "Depends on `crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }` through a declared Rust import.",
+    "Depends on `crate::session::{ SampleFormat, SampleSpec, SessionEngineBuilder, SessionStartOptions, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceRegistrationError, SourceTypeId, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -225,7 +242,7 @@
   "module": "pocketstation::session::extensions::tests::registry",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::tests::registry` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-1051f823fb6b54798236"
@@ -332,7 +349,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::tests::registry responsibilities, including the src/session/extensions/tests/registry boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::session::extensions::tests::registry`."
   },
   "queues": [],
   "recovery_behavior": [],

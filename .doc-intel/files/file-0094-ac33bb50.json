@@ -89,8 +89,8 @@
       "classification": "DIRECT",
       "content_hash": "9b19fd8492bb9ee907129f5a3b2d7dc2301ed7c890ef542e9932030a3c07c5b7",
       "lines": [
-        1,
-        7
+        2,
+        6
       ],
       "path": "src/capture/platform/mod.rs",
       "symbol": null
@@ -132,12 +132,12 @@
     "module:windows"
   ],
   "inputs": [
-    "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]",
-    "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]",
-    "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]",
-    "module:linux",
-    "module:macos",
-    "module:windows"
+    "Consumes configuration at src/capture/platform/mod.rs:1.",
+    "Consumes configuration at src/capture/platform/mod.rs:3.",
+    "Consumes configuration at src/capture/platform/mod.rs:5.",
+    "Depends on `linux` through a declared Rust import.",
+    "Depends on `macos` through a declared Rust import.",
+    "Depends on `windows` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -146,13 +146,13 @@
   "module": "pocketstation::capture::platform",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "mod:linux",
-    "mod:macos",
-    "mod:windows"
+    "Declares public mod `linux`.",
+    "Declares public mod `macos`.",
+    "Declares public mod `windows`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/mod.rs",
@@ -190,7 +190,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform responsibilities, including platform."
+    "text": "Owns the internal platform module used by `pocketstation::capture::platform`."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -79,8 +79,8 @@
       "classification": "DIRECT",
       "content_hash": "d0ff8ee7a038b9cfb0367a99d560ea2930f1a7c0a6848238adb016031c151cd0",
       "lines": [
-        1,
-        81
+        13,
+        33
       ],
       "path": "scripts/lint/check-architecture-constraints.sh",
       "symbol": null
@@ -107,9 +107,9 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "# Core must not have enum ModelNode, enum PolicyNode, or enum SinkNode.",
-    "echo \"FAIL [arch-2]: Closed graph enum (ModelNode/PolicyNode/SinkNode) in ${dir##\"${REPO_ROOT}\"/}.\" >&2",
-    "if grep -rq \"enum ModelNode\\|enum PolicyNode\\|enum SinkNode\" \"${dir}/src\" 2>/dev/null; then"
+    "Consumes configuration at scripts/lint/check-architecture-constraints.sh:30.",
+    "Consumes configuration at scripts/lint/check-architecture-constraints.sh:33.",
+    "Consumes configuration at scripts/lint/check-architecture-constraints.sh:34."
   ],
   "invariants": [
     {
@@ -131,7 +131,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/lint/check-architecture-constraints.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

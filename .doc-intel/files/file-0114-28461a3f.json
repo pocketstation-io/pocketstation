@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -66,6 +69,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -383,16 +389,249 @@
       "classification": "DIRECT",
       "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
       "lines": [
-        1,
-        190
+        6,
+        6
       ],
       "path": "src/connector/error.rs",
-      "symbol": null
+      "symbol": "MAX_CONNECTOR_ERROR_CODE_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "MAX_CONNECTOR_ERROR_MESSAGE_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "ConnectorErrorCode"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        13,
+        27
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        29,
+        31
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "as_str"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        35,
+        40
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        44,
+        46
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        50,
+        57
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "ConnectorErrorCodeError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        52,
+        52
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "Empty"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        54,
+        54
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "TooLong"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        56,
+        56
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "InvalidCharacter"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        59,
+        59
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        59,
+        59
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        59,
+        59
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        60,
+        69
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "ConnectorErrorStage"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c9c9caa4bf1b338df1ef43d034814f41db97be867b6a05aa57f6ea2d8f59c7fd",
+      "lines": [
+        61,
+        61
+      ],
+      "path": "src/connector/error.rs",
+      "symbol": "Configuration"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -419,6 +658,9 @@
   "generated_from": "not_applicable",
   "git_object": "aec50de0a1955c6f6fcc205e9be2585e29d18a18",
   "implemented_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -438,6 +680,9 @@
     "ConnectorError"
   ],
   "imported_by": [
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -456,11 +701,11 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "Configuration,",
-    "ConnectorErrorStage::Configuration | ConnectorErrorStage::Prepare => {",
-    "crate::{EndpointFailure, EndpointFailureRetryability, EndpointFailureStage}",
-    "std::fmt",
-    "std::sync::Arc"
+    "Consumes configuration at src/connector/error.rs:127.",
+    "Consumes configuration at src/connector/error.rs:61.",
+    "Depends on `crate::{EndpointFailure, EndpointFailureRetryability, EndpointFailureStage}` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -478,34 +723,34 @@
   "module": "pocketstation::connector::error",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::error` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-000d969c18fb6fea62e3"
   ],
   "outputs": [
-    "const:MAX_CONNECTOR_ERROR_CODE_BYTES",
-    "const:MAX_CONNECTOR_ERROR_MESSAGE_BYTES",
-    "enum:ConnectorErrorBuildError",
-    "enum:ConnectorErrorCodeError",
-    "enum:ConnectorErrorStage",
-    "enum:ConnectorRetryability",
-    "fn:as_str",
-    "fn:code",
-    "fn:internal",
-    "fn:internal_with_retryability",
-    "fn:into_endpoint_failure",
-    "fn:message",
-    "fn:new",
-    "fn:retryability",
-    "fn:stage",
-    "return Err(ConnectorErrorBuildError::EmptyMessage);",
-    "return Err(ConnectorErrorBuildError::MessageTooLarge);",
-    "return Err(ConnectorErrorCodeError::Empty);",
-    "return Err(ConnectorErrorCodeError::InvalidCharacter);",
-    "return Err(ConnectorErrorCodeError::TooLong);",
-    "struct:ConnectorError",
-    "struct:ConnectorErrorCode"
+    "Creates a typed failure at src/connector/error.rs:16.",
+    "Creates a typed failure at src/connector/error.rs:19.",
+    "Creates a typed failure at src/connector/error.rs:24.",
+    "Creates a typed failure at src/connector/error.rs:96.",
+    "Creates a typed failure at src/connector/error.rs:99.",
+    "Declares public const `MAX_CONNECTOR_ERROR_CODE_BYTES`.",
+    "Declares public const `MAX_CONNECTOR_ERROR_MESSAGE_BYTES`.",
+    "Declares public enum `ConnectorErrorBuildError`.",
+    "Declares public enum `ConnectorErrorCodeError`.",
+    "Declares public enum `ConnectorErrorStage`.",
+    "Declares public enum `ConnectorRetryability`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `code`.",
+    "Declares public fn `internal_with_retryability`.",
+    "Declares public fn `internal`.",
+    "Declares public fn `into_endpoint_failure`.",
+    "Declares public fn `message`.",
+    "Declares public fn `new`.",
+    "Declares public fn `retryability`.",
+    "Declares public fn `stage`.",
+    "Declares public struct `ConnectorErrorCode`.",
+    "Declares public struct `ConnectorError`."
   ],
   "package": "pocketstation",
   "path": "src/connector/error.rs",
@@ -642,8 +887,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::error responsibilities, including Sets the maximum supported connector error code bytes.; Sets the maximum supported connector error message bytes.; Carries the stable external error code exported for a connector failure.."
+    "classification": "DECLARED",
+    "text": "Sets the maximum supported connector error code bytes. Sets the maximum supported connector error message bytes. Carries the stable external error code exported for a connector failure."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -686,6 +931,8 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/endpoint/runtime.rs"
   ],
   "resource_ownership": [
@@ -714,10 +961,10 @@
     "as_str: Returns the stable string representation of `ConnectorErrorCode`.",
     "fmt: Formats `ConnectorErrorCode` with the requested formatter.",
     "fmt: Formats `ConnectorErrorCode` with the requested formatter.",
-    "pocketstation::connector::error::ConnectorErrorCodeError: Classifies failures reported as connector error code error.",
+    "pocketstation::connector::error::ConnectorErrorCodeError: Classifies failures surfaced by connector error code operations.",
     "pocketstation::connector::error::ConnectorErrorCodeError::Empty: Represents an empty value or collection.",
-    "pocketstation::connector::error::ConnectorErrorCodeError::TooLong: Reported when the owning operation encounters too long.",
-    "pocketstation::connector::error::ConnectorErrorCodeError::InvalidCharacter: Reported when the owning operation encounters invalid character.",
+    "pocketstation::connector::error::ConnectorErrorCodeError::TooLong: Classifies a failure at the too long stage or component of `ConnectorErrorCodeError`.",
+    "pocketstation::connector::error::ConnectorErrorCodeError::InvalidCharacter: Reports that the supplied character is invalid.",
     "pocketstation::connector::error::ConnectorErrorStage: Selects the connector error stage used by PocketStation.",
     "pocketstation::connector::error::ConnectorErrorStage::Configuration: Identifies the configuration state or stage represented by `ConnectorErrorStage`.",
     "pocketstation::connector::error::ConnectorErrorStage::Prepare: Identifies the prepare state or stage represented by `ConnectorErrorStage`.",
@@ -727,10 +974,10 @@
     "pocketstation::connector::error::ConnectorErrorStage::Retry: Identifies the retry state or stage represented by `ConnectorErrorStage`.",
     "pocketstation::connector::error::ConnectorErrorStage::Shutdown: Identifies the shutdown state or stage represented by `ConnectorErrorStage`.",
     "pocketstation::connector::error::ConnectorErrorStage::Join: Identifies the join state or stage represented by `ConnectorErrorStage`.",
-    "pocketstation::connector::error::ConnectorRetryability: Enumerates the supported connector retryability cases.",
-    "pocketstation::connector::error::ConnectorRetryability::Never: Selects never behavior for `ConnectorRetryability`.",
-    "pocketstation::connector::error::ConnectorRetryability::Retryable: Selects retryable behavior for `ConnectorRetryability`.",
-    "pocketstation::connector::error::ConnectorRetryability::RetryAfterReconfiguration: Selects retry after reconfiguration behavior for `ConnectorRetryability`.",
+    "pocketstation::connector::error::ConnectorRetryability: Declares whether a connector failure may be retried under the connector contract.",
+    "pocketstation::connector::error::ConnectorRetryability::Never: Declares a connector failure to be never.",
+    "pocketstation::connector::error::ConnectorRetryability::Retryable: Declares a connector failure to be retryable.",
+    "pocketstation::connector::error::ConnectorRetryability::RetryAfterReconfiguration: Declares a connector failure to be retry after reconfiguration.",
     "pocketstation::connector::error::ConnectorError: Reports a connector error.",
     "new: Creates a new `ConnectorError`.",
     "code: Returns the stable error or status code represented by `ConnectorError`.",
@@ -738,9 +985,9 @@
     "retryability: Returns the retryability associated with `ConnectorError`.",
     "message: Returns the diagnostic message reported by `ConnectorError`.",
     "into_endpoint_failure: Converts `ConnectorError` into endpoint failure.",
-    "pocketstation::connector::error::ConnectorErrorBuildError: Classifies failures reported as connector error build error.",
-    "pocketstation::connector::error::ConnectorErrorBuildError::EmptyMessage: Reported when the owning operation encounters empty message.",
-    "pocketstation::connector::error::ConnectorErrorBuildError::MessageTooLarge: Reported when the owning operation encounters message too large."
+    "pocketstation::connector::error::ConnectorErrorBuildError: Classifies failures produced during connector error construction and input validation.",
+    "pocketstation::connector::error::ConnectorErrorBuildError::EmptyMessage: Reports that message is empty.",
+    "pocketstation::connector::error::ConnectorErrorBuildError::MessageTooLarge: Reports that message exceeds the supported size limit."
   ],
   "retry_behavior": [],
   "serialization": [],

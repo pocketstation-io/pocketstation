@@ -163,14 +163,14 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "5acd16be645606cc5414f16bffe9af84fcb7b62027f1a623b2618904593541e0",
       "lines": [
         1,
-        109
+        1
       ],
       "path": "src/graph/signal/continuity.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::signal::continuity"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -210,9 +210,9 @@
     "crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming}"
   ],
   "inputs": [
-    "PolicyRegressed,",
-    "crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming}",
-    "return Err(SignalContinuityError::PolicyRegressed);"
+    "Consumes configuration at src/graph/signal/continuity.rs:107.",
+    "Consumes configuration at src/graph/signal/continuity.rs:44.",
+    "Depends on `crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -221,23 +221,23 @@
   "module": "pocketstation::graph::signal::continuity",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::signal::continuity` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-1342756152871060c44a"
   ],
   "outputs": [
-    "enum:SignalContinuityError",
-    "fn:observe",
-    "return Err(SignalContinuityError::DiscontinuityRegressed);",
-    "return Err(SignalContinuityError::GenerationRegressed);",
-    "return Err(SignalContinuityError::IdentityChanged);",
-    "return Err(SignalContinuityError::PolicyRegressed);",
-    "return Err(SignalContinuityError::RecoveryWithoutDiscontinuity);",
-    "return Err(SignalContinuityError::SequenceGapWithoutDiscontinuity);",
-    "return Err(SignalContinuityError::TimestampRegression);",
-    "struct:SignalContinuityObservation",
-    "struct:SignalContinuityTracker"
+    "Creates a typed failure at src/graph/signal/continuity.rs:35.",
+    "Creates a typed failure at src/graph/signal/continuity.rs:38.",
+    "Creates a typed failure at src/graph/signal/continuity.rs:41.",
+    "Creates a typed failure at src/graph/signal/continuity.rs:44.",
+    "Creates a typed failure at src/graph/signal/continuity.rs:50.",
+    "Creates a typed failure at src/graph/signal/continuity.rs:54.",
+    "Creates a typed failure at src/graph/signal/continuity.rs:57.",
+    "Declares public enum `SignalContinuityError`.",
+    "Declares public fn `observe`.",
+    "Declares public struct `SignalContinuityObservation`.",
+    "Declares public struct `SignalContinuityTracker`."
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/continuity.rs",
@@ -284,8 +284,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::signal::continuity responsibilities, including Reports sequence or timestamp continuity observed for one signal stream.; Stores the discontinuity observed used by `SignalContinuityObservation`.; Stores the source recovered used by `SignalContinuityObservation`.."
+    "classification": "DECLARED",
+    "text": "Deterministic continuity validation for source-aware signals."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -331,21 +331,21 @@
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::graph::signal::continuity::SignalContinuityObservation: Reports sequence or timestamp continuity observed for one signal stream.",
-    "SignalContinuityObservation::discontinuity_observed: Stores the discontinuity observed used by `SignalContinuityObservation`.",
-    "SignalContinuityObservation::source_recovered: Stores the source recovered used by `SignalContinuityObservation`.",
-    "SignalContinuityObservation::policy_changed: Stores the policy changed used by `SignalContinuityObservation`.",
+    "SignalContinuityObservation::discontinuity_observed: Reports whether discontinuity is observed for `SignalContinuityObservation`.",
+    "SignalContinuityObservation::source_recovered: References the source recovered participating in `SignalContinuityObservation`.",
+    "SignalContinuityObservation::policy_changed: Reports whether policy changed is true for `SignalContinuityObservation`.",
     "pocketstation::graph::signal::continuity::SignalContinuityTracker: Tracks sequence and timing progress so discontinuities remain observable.",
     "observe: Returns the current observation exposed by `SignalContinuityTracker`.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError: Classifies failures reported as signal continuity error.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::InvalidEnvelope: Reported when the owning operation encounters invalid envelope.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::MissingLineage: Reported when the owning operation encounters missing lineage.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::IdentityChanged: Reported when the owning operation encounters identity changed.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::SequenceGapWithoutDiscontinuity: Reported when the owning operation encounters sequence gap without discontinuity.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::TimestampRegression: Reported when the owning operation encounters timestamp regression.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::DiscontinuityRegressed: Reported when the owning operation encounters discontinuity regressed.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::GenerationRegressed: Reported when the owning operation encounters generation regressed.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::RecoveryWithoutDiscontinuity: Reported when the owning operation encounters recovery without discontinuity.",
-    "pocketstation::graph::signal::continuity::SignalContinuityError::PolicyRegressed: Reported when the owning operation encounters policy regressed."
+    "pocketstation::graph::signal::continuity::SignalContinuityError: Classifies failures surfaced by signal continuity operations.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::InvalidEnvelope: Reports that the supplied envelope is invalid.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::MissingLineage: Reports that the required lineage is missing.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::IdentityChanged: Reports that identity changed across a boundary that requires stability.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::SequenceGapWithoutDiscontinuity: Classifies a failure at the sequence gap without discontinuity stage or component of `SignalContinuityError`.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::TimestampRegression: Reports that timestamp moved backward instead of remaining monotonic.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::DiscontinuityRegressed: Reports that discontinuity moved backward instead of remaining monotonic.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::GenerationRegressed: Reports that generation moved backward instead of remaining monotonic.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::RecoveryWithoutDiscontinuity: Classifies a failure at the recovery without discontinuity stage or component of `SignalContinuityError`.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::PolicyRegressed: Reports that policy moved backward instead of remaining monotonic."
   ],
   "retry_behavior": [],
   "serialization": [],

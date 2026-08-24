@@ -1,6 +1,6 @@
 # Native extension libraries
 
-<!-- claims: CLM-DOC-027-CAP-001,CLM-DOC-027-SOURCE-001 -->
+<!-- claims: CLM-DOC-027-SCOPE-001,CLM-DOC-027-TEXT-001,CLM-DOC-027-TEXT-002,CLM-DOC-027-TEXT-003,CLM-DOC-027-TEXT-004,CLM-DOC-027-TEXT-005,CLM-DOC-027-TEXT-006,CLM-DOC-027-SOURCE-001 -->
 
 ## What it is
 
@@ -46,12 +46,12 @@ The scope of **Native extension libraries** ends at the native contracts and exe
 | `pocketstation::native_extension::NativeExtensionLibraryError` | struct | Reports a native extension library error. | `src/native_extension/mod.rs:124` |
 | `pocketstation::native_extension::NativeExtensionRegistration` | struct | Identifies one node registration imported transactionally from a native extension. | `src/native_extension/mod.rs:34` |
 | `pocketstation::native_extension::NativeExtensionKind` | enum | Selects the native extension kind used by PocketStation. | `src/native_extension/mod.rs:27` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode` | enum | Enumerates the supported native extension library error code cases. | `src/native_extension/mod.rs:78` |
+| `pocketstation::native_extension::NativeExtensionLibraryErrorCode` | enum | Provides stable categories for native-extension load and validation failures. | `src/native_extension/mod.rs:78` |
 | `pocketstation::native_extension::EXTENSION_LIBRARY_ENTRYPOINT_V1` | constant | Exact exported symbol required from a native Extension ABI v1 dynamic library. The suffix follows the ABI major; compatible minor revisions use the same entrypoint. | `src/native_extension/mod.rs:24` |
-| `pocketstation::native_extension::NativeExtensionKind::Endpoint` | variant | Selects endpoint behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:30` |
-| `pocketstation::native_extension::NativeExtensionKind::Operator` | variant | Selects operator behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:29` |
-| `pocketstation::native_extension::NativeExtensionKind::Source` | variant | Selects source behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:28` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::DuplicateRegistration` | variant | Reported when the owning operation encounters duplicate registration. | `src/native_extension/mod.rs:92` |
+| `pocketstation::native_extension::NativeExtensionKind::Endpoint` | variant | Classifies the loaded native extension as endpoint. | `src/native_extension/mod.rs:30` |
+| `pocketstation::native_extension::NativeExtensionKind::Operator` | variant | Classifies the loaded native extension as operator. | `src/native_extension/mod.rs:29` |
+| `pocketstation::native_extension::NativeExtensionKind::Source` | variant | Classifies the loaded native extension as source. | `src/native_extension/mod.rs:28` |
+| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::DuplicateRegistration` | variant | Reports that registration duplicates an existing declaration or record. | `src/native_extension/mod.rs:92` |
 
 ## Executable evidence
 
@@ -85,6 +85,12 @@ Executable evidence selected for **Native extension libraries** is limited to ea
 
 The claims on **Native extension libraries** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/native_extension/library.rs:1-272` (`DIRECT`)
+- `src/native_extension/library.rs:19-19` (`DIRECT`)
+- `src/native_extension/library.rs:21-24` (`DIRECT`)
+- `src/native_extension/library.rs:22-22` (`DIRECT`)
+- `src/native_extension/library.rs:23-23` (`DIRECT`)
+- `src/native_extension/library.rs:33-230` (`DIRECT`)
+- `src/native_extension/library.rs:232-263` (`DIRECT`)
+- `src/native_extension/library.rs:265-271` (`DIRECT`)
 
 For **Native extension libraries**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

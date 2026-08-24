@@ -119,14 +119,31 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "584aa777466817842a69292c4dea64caa8840ba1aea3747e5573d1853ae0fbf4",
       "lines": [
-        1,
-        54
+        44,
+        52
       ],
-      "path": "src/capture/platform/windows/runtime_lifecycle.rs",
-      "symbol": null
+      "path": "src/capture/platform/windows/runtime_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "584aa777466817842a69292c4dea64caa8840ba1aea3747e5573d1853ae0fbf4",
+      "lines": [
+        27,
+        35
+      ],
+      "path": "src/capture/platform/windows/runtime_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "584aa777466817842a69292c4dea64caa8840ba1aea3747e5573d1853ae0fbf4",
+      "lines": [
+        35,
+        44
+      ],
+      "path": "src/capture/platform/windows/runtime_lifecycle.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -158,8 +175,9 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/capture/platform/windows/runtime_lifecycle.rs:25.",
+    "Consumes configuration at src/capture/platform/windows/runtime_lifecycle.rs:8.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -173,13 +191,13 @@
   "module": "pocketstation::capture::platform::windows::runtime_lifecycle",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::windows::runtime_lifecycle` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "const:AUDCLNT_E_DEVICE_INVALIDATED_STATUS_CODE",
-    "enum:WindowsRuntimeFailureDisposition",
-    "fn:classify_platform_status"
+    "Declares public const `AUDCLNT_E_DEVICE_INVALIDATED_STATUS_CODE`.",
+    "Declares public enum `WindowsRuntimeFailureDisposition`.",
+    "Declares public fn `classify_platform_status`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/runtime_lifecycle.rs",
@@ -245,7 +263,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::windows::runtime lifecycle responsibilities, including the src/capture/platform/windows/runtime lifecycle boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::platform::windows::runtime_lifecycle`."
   },
   "queues": [],
   "recovery_behavior": [],

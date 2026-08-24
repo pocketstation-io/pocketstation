@@ -62,14 +62,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "8732e702f70b2e65280ac2f4cccd05899847d296375b4df1d8846394db99be16",
       "lines": [
         1,
-        18
+        5
       ],
       "path": "src/frame/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::frame"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -113,16 +113,16 @@
     "pool::*"
   ],
   "inputs": [
-    "audio::*",
-    "identity::*",
-    "lineage::*",
-    "module:audio",
-    "module:identity",
-    "module:lineage",
-    "module:platform",
-    "module:pool",
-    "platform::Platform",
-    "pool::*"
+    "Depends on `audio::*` through a declared Rust import.",
+    "Depends on `audio` through a declared Rust import.",
+    "Depends on `identity::*` through a declared Rust import.",
+    "Depends on `identity` through a declared Rust import.",
+    "Depends on `lineage::*` through a declared Rust import.",
+    "Depends on `lineage` through a declared Rust import.",
+    "Depends on `platform::Platform` through a declared Rust import.",
+    "Depends on `platform` through a declared Rust import.",
+    "Depends on `pool::*` through a declared Rust import.",
+    "Depends on `pool` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -131,7 +131,7 @@
   "module": "pocketstation::frame",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::frame` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -181,8 +181,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::frame responsibilities, including frame."
+    "classification": "DECLARED",
+    "text": "Realtime audio frame ownership. Platform and graph identities are intentionally separate from pooled audio storage. The audio module remains specialized; arbitrary signals use the asynchronous signal lane."
   },
   "queues": [],
   "recovery_behavior": [],

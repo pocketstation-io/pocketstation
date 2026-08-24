@@ -37,7 +37,7 @@ const SLOW_BRANCH_QUEUE_CAPACITY_FRAMES: usize = RECORDING_EDGE_CAPACITY_FRAMES 
 /// remains lossless even if its worker is not scheduled until capture ends.
 /// The independently configured half-capacity polled branch still saturates.
 pub const FRAMES_PER_SOURCE: u64 = RECORDING_EDGE_CAPACITY_FRAMES as u64;
-#[doc = "Defines the public observed connector operator identifier value."]
+#[doc = "Defines observed connector operator identifier as `\"io.pocketstation.conformance.connector.v1\"` for the owning public contract."]
 pub const OBSERVED_CONNECTOR_OPERATOR_ID: &str = "io.pocketstation.conformance.connector.v1";
 
 #[derive(Clone, Copy)]
@@ -343,22 +343,22 @@ pub fn observed_browser(
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as observed endpoint error."]
+#[doc = "Classifies failures surfaced by observed endpoint operations."]
 pub enum ObservedEndpointError {
     #[error("invalid conformance connector contract: {0}")]
-    #[doc = "Reported when the owning operation encounters contract."]
+    #[doc = "Classifies a failure at the contract stage or component of `ObservedEndpointError`."]
     Contract(String),
     #[error(transparent)]
-    #[doc = "Reported when the owning operation encounters declaration."]
+    #[doc = "Classifies a failure at the declaration stage or component of `ObservedEndpointError`."]
     Declaration(#[from] SessionError),
     #[error(transparent)]
-    #[doc = "Reported when the owning operation encounters registration."]
+    #[doc = "Classifies a failure at the registration stage or component of `ObservedEndpointError`."]
     Registration(#[from] SessionEndpointError),
     #[error(transparent)]
-    #[doc = "Reported when the owning operation encounters connector registration."]
+    #[doc = "Classifies a failure at the connector registration stage or component of `ObservedEndpointError`."]
     ConnectorRegistration(#[from] crate::connector::ConnectorRegistrationError),
     #[error(transparent)]
-    #[doc = "Reported when the owning operation encounters connector declaration."]
+    #[doc = "Classifies a failure at the connector declaration stage or component of `ObservedEndpointError`."]
     ConnectorDeclaration(#[from] crate::connector::ConnectorDeclarationError),
 }
 
@@ -557,33 +557,33 @@ impl Drop for RunningObservedEndpoint {
 // W20 cross-language conformance uses deliberately neutral vocabulary. These
 // identities are shared verbatim by Rust, C, managed SDK, and PKSS fixtures;
 // no Rust type identity is serialized at any boundary.
-#[doc = "Defines the public extension signal identifier value."]
+#[doc = "Defines extension signal identifier as `\"org.pocketstation.conformance.signal.v1\"` for the owning public contract."]
 pub const EXTENSION_SIGNAL_ID: &str = "org.pocketstation.conformance.signal.v1";
-#[doc = "Defines the public extension schema identifier value."]
+#[doc = "Defines extension schema identifier as `\"urn:pocketstation:conformance:signal:v1\"` for the owning public contract."]
 pub const EXTENSION_SCHEMA_ID: &str = "urn:pocketstation:conformance:signal:v1";
-#[doc = "Defines the public extension role identifier value."]
+#[doc = "Defines extension role identifier as `\"org.pocketstation.conformance.terminal.v1\"` for the owning public contract."]
 pub const EXTENSION_ROLE_ID: &str = "org.pocketstation.conformance.terminal.v1";
-#[doc = "Defines the public extension source type identifier value."]
+#[doc = "Defines extension source type identifier as `\"org.pocketstation.conformance.source.fixture.v1\"` for the owning public contract."]
 pub const EXTENSION_SOURCE_TYPE_ID: &str = "org.pocketstation.conformance.source.fixture.v1";
-#[doc = "Defines the public extension operator identifier value."]
+#[doc = "Defines extension operator identifier as `\"org.pocketstation.conformance.operator.v1\"` for the owning public contract."]
 pub const EXTENSION_OPERATOR_ID: &str = "org.pocketstation.conformance.operator.v1";
-#[doc = "Defines the public extension operator node identifier value."]
+#[doc = "Defines extension operator node identifier as `\"org.pocketstation.conformance.operator-node.v1\"` for the owning public contract."]
 pub const EXTENSION_OPERATOR_NODE_ID: &str = "org.pocketstation.conformance.operator-node.v1";
-#[doc = "Defines the public extension endpoint identifier value."]
+#[doc = "Defines extension endpoint identifier as `\"org.pocketstation.conformance.endpoint.v1\"` for the owning public contract."]
 pub const EXTENSION_ENDPOINT_ID: &str = "org.pocketstation.conformance.endpoint.v1";
-#[doc = "Defines the public extension endpoint node identifier value."]
+#[doc = "Defines extension endpoint node identifier as `\"org.pocketstation.conformance.endpoint-node.v1\"` for the owning public contract."]
 pub const EXTENSION_ENDPOINT_NODE_ID: &str = "org.pocketstation.conformance.endpoint-node.v1";
-#[doc = "Defines the public extension source port value."]
+#[doc = "Defines extension source port as `\"out\"` for the owning public contract."]
 pub const EXTENSION_SOURCE_PORT: &str = "out";
-#[doc = "Defines the public extension operator input port value."]
+#[doc = "Defines extension operator input port as `\"in\"` for the owning public contract."]
 pub const EXTENSION_OPERATOR_INPUT_PORT: &str = "in";
-#[doc = "Defines the public extension operator output port value."]
+#[doc = "Defines extension operator output port as `\"out\"` for the owning public contract."]
 pub const EXTENSION_OPERATOR_OUTPUT_PORT: &str = "out";
-#[doc = "Defines the public extension endpoint input port value."]
+#[doc = "Defines extension endpoint input port as `\"in\"` for the owning public contract."]
 pub const EXTENSION_ENDPOINT_INPUT_PORT: &str = "in";
-#[doc = "Defines the public extension input payload value."]
+#[doc = "Defines extension input payload as `b\"seed\"` for the owning public contract."]
 pub const EXTENSION_INPUT_PAYLOAD: &[u8] = b"seed";
-#[doc = "Defines the public extension output payload value."]
+#[doc = "Defines extension output payload as `b\"seed!\"` for the owning public contract."]
 pub const EXTENSION_OUTPUT_PAYLOAD: &[u8] = b"seed!";
 
 /// Language-neutral outcome returned by the W20 fixture.
@@ -604,11 +604,11 @@ pub struct ExtensionConformanceReport {
     pub operator_id: &'static str,
     #[doc = "Identifies the endpoint identifier recorded by `ExtensionConformanceReport`."]
     pub endpoint_id: &'static str,
-    #[doc = "Stores the input payload used by `ExtensionConformanceReport`."]
+    #[doc = "References the input payload participating in `ExtensionConformanceReport`."]
     pub input_payload: &'static str,
-    #[doc = "Stores the output payload used by `ExtensionConformanceReport`."]
+    #[doc = "References the output payload participating in `ExtensionConformanceReport`."]
     pub output_payload: &'static str,
-    #[doc = "Stores the failure requested used by `ExtensionConformanceReport`."]
+    #[doc = "Reports whether failure is requested for `ExtensionConformanceReport`."]
     pub failure_requested: bool,
     #[doc = "Counts the total number of source prepared observed by `ExtensionConformanceReport`."]
     pub source_prepared_total: u64,
@@ -650,7 +650,7 @@ pub struct ExtensionConformanceReport {
     pub route_delivered_total: u64,
     #[doc = "Stores the maximum buffered payload size for `ExtensionConformanceReport`, in bytes."]
     pub maximum_buffered_payload_bytes: u64,
-    #[doc = "Stores the stop success used by `ExtensionConformanceReport`."]
+    #[doc = "Contains the stop success owned or reported by `ExtensionConformanceReport`."]
     pub stop_success: bool,
 }
 

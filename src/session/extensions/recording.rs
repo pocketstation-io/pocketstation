@@ -17,19 +17,19 @@ use crate::session::{
     OperatorId, Session, SessionEngineBuilder, SessionError, SourceOutputHandle, StemHandle,
 };
 
-#[doc = "Defines the public recorder node type identifier value."]
+#[doc = "Defines recorder node type identifier as `\"endpoint.recording.multistem\"` for the owning public contract."]
 pub const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
-#[doc = "Defines the public recorder operator identifier value."]
+#[doc = "Defines recorder operator identifier as `\"io.pocketstation.recording.wav-stems.v1\"` for the owning public contract."]
 pub const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1";
 #[cfg(any(test, feature = "internal-testing"))]
-#[doc = "Defines the public recording group configuration key value."]
+#[doc = "Defines recording group configuration key as `MULTISTEM_GROUP_CONFIGURATION_KEY` for the owning public contract."]
 pub const RECORDING_GROUP_CONFIGURATION_KEY: &str = MULTISTEM_GROUP_CONFIGURATION_KEY;
-#[doc = "Defines the public default multistem recording group identifier value."]
+#[doc = "Defines default multistem recording group identifier as `\"session.multistem.default.v1\"` for the owning public contract."]
 pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = "session.multistem.default.v1";
-#[doc = "Defines the public session recording manifest file name value."]
+#[doc = "Defines session recording manifest file name as `crate::recording::RECORDING_MANIFEST_FILE_NAME` for the owning public contract."]
 pub const SESSION_RECORDING_MANIFEST_FILE_NAME: &str =
     crate::recording::RECORDING_MANIFEST_FILE_NAME;
-#[doc = "Defines the public session recording manifest schema version value."]
+#[doc = "Defines session recording manifest schema version as `crate::recording::RECORDING_MANIFEST_SCHEMA_VERSION` for the owning public contract."]
 pub const SESSION_RECORDING_MANIFEST_SCHEMA_VERSION: u32 =
     crate::recording::RECORDING_MANIFEST_SCHEMA_VERSION;
 

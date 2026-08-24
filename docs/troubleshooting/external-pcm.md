@@ -1,6 +1,6 @@
 # External PCM input is saturated
 
-<!-- claims: CLM-TRBL-018-CAP-001,CLM-TRBL-018-CAP-002,CLM-TRBL-018-CAP-003,CLM-TRBL-018-CAP-004,CLM-TRBL-018-SOURCE-001 -->
+<!-- claims: CLM-TRBL-018-SCOPE-001,CLM-TRBL-018-TEXT-001,CLM-TRBL-018-TEXT-002,CLM-TRBL-018-TEXT-003,CLM-TRBL-018-TEXT-004,CLM-TRBL-018-TEXT-005,CLM-TRBL-018-TEXT-006,CLM-TRBL-018-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,6 +78,29 @@ Retry acquisition only after capacity returns. Never replay a submitted frame un
 
 The claims on **External PCM input is saturated** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/extensions/audio_input/buffer.rs:1-367` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:11-16` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:12-12` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:13-13` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:14-14` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:15-15` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:19-21` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:23-25` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:27-32` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:34-36` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:38-40` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:42-44` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:46-48` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:52-59` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:62-62` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:63-69` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:64-64` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:65-65` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:66-66` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:67-67` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:68-68` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:71-71` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:71-71` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:71-71` (`DIRECT`)
+- `src/session/extensions/audio_input/buffer.rs:72-81` (`DIRECT`)
 
 For **External PCM input is saturated**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

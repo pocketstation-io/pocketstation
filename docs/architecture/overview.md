@@ -1,6 +1,6 @@
 # Architecture overview
 
-<!-- claims: CLM-DOC-048-CAP-001,CLM-DOC-048-CAP-002,CLM-DOC-048-CAP-003,CLM-DOC-048-CAP-004,CLM-DOC-048-SOURCE-001 -->
+<!-- claims: CLM-DOC-048-SCOPE-001,CLM-DOC-048-TEXT-001,CLM-DOC-048-TEXT-002,CLM-DOC-048-TEXT-003,CLM-DOC-048-TEXT-004,CLM-DOC-048-SOURCE-001 -->
 
 ## Scope
 
@@ -114,7 +114,30 @@ Executable evidence selected for **Architecture overview** is limited to each te
 
 The claims on **Architecture overview** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/lib.rs:1-1161` (`DIRECT`)
-- `src/runtime/mod.rs:1-20` (`DIRECT`)
+- `src/lib.rs:55-71` (`DIRECT`)
+- `src/lib.rs:236-250` (`DIRECT`)
+- `src/lib.rs:237-237` (`DIRECT`)
+- `src/lib.rs:238-238` (`DIRECT`)
+- `src/lib.rs:239-239` (`DIRECT`)
+- `src/lib.rs:240-240` (`DIRECT`)
+- `src/lib.rs:241-241` (`DIRECT`)
+- `src/lib.rs:242-242` (`DIRECT`)
+- `src/lib.rs:243-243` (`DIRECT`)
+- `src/lib.rs:244-244` (`DIRECT`)
+- `src/lib.rs:245-245` (`DIRECT`)
+- `src/lib.rs:246-246` (`DIRECT`)
+- `src/lib.rs:247-247` (`DIRECT`)
+- `src/lib.rs:248-248` (`DIRECT`)
+- `src/lib.rs:249-249` (`DIRECT`)
+- `src/lib.rs:252-255` (`DIRECT`)
+- `src/lib.rs:253-253` (`DIRECT`)
+- `src/lib.rs:254-254` (`DIRECT`)
+- `src/lib.rs:257-261` (`DIRECT`)
+- `src/lib.rs:258-258` (`DIRECT`)
+- `src/lib.rs:259-259` (`DIRECT`)
+- `src/lib.rs:260-260` (`DIRECT`)
+- `src/lib.rs:263-267` (`DIRECT`)
+- `src/lib.rs:264-264` (`DIRECT`)
+- `src/runtime/mod.rs:1-5` (`DECLARED`)
 
 For **Architecture overview**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

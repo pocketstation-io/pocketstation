@@ -1,6 +1,6 @@
 # Honor connector retryability
 
-<!-- claims: CLM-BEST-005-CAP-001,CLM-BEST-005-CAP-002,CLM-BEST-005-CAP-003,CLM-BEST-005-CAP-004,CLM-BEST-005-SOURCE-001 -->
+<!-- claims: CLM-BEST-005-SCOPE-001,CLM-BEST-005-TEXT-001,CLM-BEST-005-TEXT-002,CLM-BEST-005-TEXT-003,CLM-BEST-005-TEXT-004,CLM-BEST-005-TEXT-005,CLM-BEST-005-TEXT-006,CLM-BEST-005-SOURCE-001 -->
 
 ## Problem
 
@@ -59,7 +59,53 @@ Executable evidence selected for **Honor connector retryability** is limited to 
 
 The claims on **Honor connector retryability** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/connector/error.rs:1-190` (`DIRECT`)
-- `src/connector/observations.rs:1-261` (`DIRECT`)
+- `src/connector/error.rs:6-6` (`DIRECT`)
+- `src/connector/error.rs:7-7` (`DIRECT`)
+- `src/connector/error.rs:9-9` (`DIRECT`)
+- `src/connector/error.rs:9-9` (`DIRECT`)
+- `src/connector/error.rs:9-9` (`DIRECT`)
+- `src/connector/error.rs:10-10` (`DIRECT`)
+- `src/connector/error.rs:10-10` (`DIRECT`)
+- `src/connector/error.rs:13-27` (`DIRECT`)
+- `src/connector/error.rs:29-31` (`DIRECT`)
+- `src/connector/error.rs:35-40` (`DIRECT`)
+- `src/connector/error.rs:44-46` (`DIRECT`)
+- `src/connector/error.rs:49-49` (`DIRECT`)
+- `src/connector/error.rs:49-49` (`DIRECT`)
+- `src/connector/error.rs:49-49` (`DIRECT`)
+- `src/connector/error.rs:49-49` (`DIRECT`)
+- `src/connector/error.rs:50-57` (`DIRECT`)
+- `src/connector/error.rs:52-52` (`DIRECT`)
+- `src/connector/error.rs:54-54` (`DIRECT`)
+- `src/connector/error.rs:56-56` (`DIRECT`)
+- `src/connector/error.rs:59-59` (`DIRECT`)
+- `src/connector/error.rs:59-59` (`DIRECT`)
+- `src/connector/error.rs:59-59` (`DIRECT`)
+- `src/connector/error.rs:60-69` (`DIRECT`)
+- `src/connector/error.rs:61-61` (`DIRECT`)
+- `src/connector/observations.rs:14-14` (`DIRECT`)
+- `src/connector/observations.rs:15-17` (`DIRECT`)
+- `src/connector/observations.rs:16-16` (`DIRECT`)
+- `src/connector/observations.rs:19-27` (`DIRECT`)
+- `src/connector/observations.rs:20-20` (`DIRECT`)
+- `src/connector/observations.rs:21-21` (`DIRECT`)
+- `src/connector/observations.rs:22-22` (`DIRECT`)
+- `src/connector/observations.rs:23-23` (`DIRECT`)
+- `src/connector/observations.rs:24-24` (`DIRECT`)
+- `src/connector/observations.rs:25-25` (`DIRECT`)
+- `src/connector/observations.rs:26-26` (`DIRECT`)
+- `src/connector/observations.rs:30-51` (`DIRECT`)
+- `src/connector/observations.rs:53-74` (`DIRECT`)
+- `src/connector/observations.rs:76-89` (`DIRECT`)
+- `src/connector/observations.rs:91-104` (`DIRECT`)
+- `src/connector/observations.rs:106-123` (`DIRECT`)
+- `src/connector/observations.rs:125-127` (`DIRECT`)
+- `src/connector/observations.rs:129-140` (`DIRECT`)
+- `src/connector/observations.rs:142-147` (`DIRECT`)
+- `src/connector/observations.rs:149-154` (`DIRECT`)
+- `src/connector/observations.rs:157-157` (`DIRECT`)
+- `src/connector/observations.rs:157-157` (`DIRECT`)
+- `src/connector/observations.rs:157-157` (`DIRECT`)
+- `src/connector/observations.rs:158-165` (`DIRECT`)
 
 For **Honor connector retryability**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

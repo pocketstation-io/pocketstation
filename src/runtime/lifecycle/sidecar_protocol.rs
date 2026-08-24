@@ -8,23 +8,23 @@ pub const SIDECAR_PROTOCOL_MINOR: u16 = 0;
 #[repr(u8)]
 #[doc = "Selects the sidecar message kind used by PocketStation."]
 pub enum SidecarMessageKind {
-    #[doc = "Selects signal behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing signal."]
     Signal = 1,
-    #[doc = "Selects ready behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing ready."]
     Ready = 2,
-    #[doc = "Selects error behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing error."]
     Error = 3,
-    #[doc = "Selects cancel behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing cancel."]
     Cancel = 4,
-    #[doc = "Selects close behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing close."]
     Close = 5,
-    #[doc = "Selects hello behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing hello."]
     Hello = 6,
-    #[doc = "Selects manifest behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing manifest."]
     Manifest = 7,
-    #[doc = "Selects configure behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing configure."]
     Configure = 8,
-    #[doc = "Selects observation behavior for `SidecarMessageKind`."]
+    #[doc = "Identifies a sidecar protocol message carrying or representing observation."]
     Observation = 9,
     #[doc = "Reports that the underlying channel or resource is closed."]
     Closed = 10,
@@ -92,23 +92,23 @@ impl SidecarProtocolLimits {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Carries one typed control or signal message across the sidecar protocol."]
 pub struct SidecarMessage {
-    #[doc = "Stores the kind used by `SidecarMessage`."]
+    #[doc = "Records the kind selected for `SidecarMessage`."]
     pub kind: SidecarMessageKind,
     #[doc = "Indicates whether terminal applies to `SidecarMessage`."]
     pub terminal: bool,
     #[doc = "Identifies the stream identifier recorded by `SidecarMessage`."]
     pub stream_id: u64,
-    #[doc = "Stores the sequence number used by `SidecarMessage`."]
+    #[doc = "Orders `SidecarMessage` within its protocol or stream sequence."]
     pub sequence_number: u64,
     #[doc = "Stores the timestamp value for `SidecarMessage`, in nanoseconds."]
     pub timestamp_ns: u64,
     #[doc = "Identifies the signal identifier recorded by `SidecarMessage`."]
     pub signal_id: String,
-    #[doc = "Stores the role used by `SidecarMessage`."]
+    #[doc = "Records the role selected for `SidecarMessage`."]
     pub role: Option<String>,
-    #[doc = "Stores the schema used by `SidecarMessage`."]
+    #[doc = "Records the schema selected for `SidecarMessage`."]
     pub schema: Option<String>,
-    #[doc = "Stores the payload used by `SidecarMessage`."]
+    #[doc = "Contains the encoded message body carried by `SidecarMessage`."]
     pub payload: Vec<u8>,
 }
 
@@ -322,39 +322,39 @@ fn validate_length(
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as sidecar protocol error."]
+#[doc = "Classifies failures produced during sidecar protocol parsing and state transitions."]
 pub enum SidecarProtocolError {
     #[error("sidecar frame is truncated")]
-    #[doc = "Reports truncated."]
+    #[doc = "Reports that the encoded input ended before the complete record was available."]
     Truncated,
     #[error("sidecar frame has trailing bytes")]
-    #[doc = "Reports trailing bytes."]
+    #[doc = "Reports that bytes remain after decoding the complete record."]
     TrailingBytes,
     #[error("sidecar frame magic is invalid")]
-    #[doc = "Reports invalid magic."]
+    #[doc = "Reports that the supplied magic is invalid."]
     InvalidMagic,
     #[error("sidecar protocol major {0} is unsupported")]
-    #[doc = "Reports unsupported major."]
+    #[doc = "Reports that the requested major is unsupported."]
     UnsupportedMajor(u16),
     #[error("sidecar protocol minor {0} is unsupported")]
-    #[doc = "Reports unsupported minor."]
+    #[doc = "Reports that the requested minor is unsupported."]
     UnsupportedMinor(u16),
     #[error("sidecar message kind {0} is unknown")]
-    #[doc = "Reports unknown message kind."]
+    #[doc = "Reports that the referenced message kind is not declared or registered."]
     UnknownMessageKind(u8),
     #[error("sidecar terminal flag {0} is invalid")]
-    #[doc = "Reports invalid terminal."]
+    #[doc = "Reports that the supplied terminal is invalid."]
     InvalidTerminal(u8),
     #[error("sidecar reserved field is non-zero")]
-    #[doc = "Reports reserved field set."]
+    #[doc = "Reports that a reserved compatibility field contains a nonzero value."]
     ReservedFieldSet,
     #[error("sidecar signal id is empty")]
-    #[doc = "Reports empty signal identifier."]
+    #[doc = "Reports that signal identifier is empty."]
     EmptySignalId,
     #[error("sidecar {field} length {actual} exceeds {maximum}")]
-    #[doc = "Reports field too large."]
+    #[doc = "Reports that field exceeds the supported size limit."]
     FieldTooLarge {
-        #[doc = "Stores the field used by `FieldTooLarge`."]
+        #[doc = "Stores the field component of `FieldTooLarge`."]
         field: &'static str,
         #[doc = "Records the value observed by `FieldTooLarge`."]
         actual: usize,
@@ -362,13 +362,13 @@ pub enum SidecarProtocolError {
         maximum: usize,
     },
     #[error("sidecar {0} is not valid UTF-8")]
-    #[doc = "Reports invalid UTF-8."]
+    #[doc = "Reports that the supplied utf8 is invalid."]
     InvalidUtf8(&'static str),
     #[error("sidecar frame length overflowed")]
-    #[doc = "Reports frame length overflow."]
+    #[doc = "Reports that frame length exceeds its numeric range."]
     FrameLengthOverflow,
     #[error("sidecar frame exceeds the configured bound")]
-    #[doc = "Reports frame too large."]
+    #[doc = "Reports that frame exceeds the supported size limit."]
     FrameTooLarge,
 }
 

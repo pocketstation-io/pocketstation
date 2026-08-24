@@ -1,6 +1,6 @@
 # External PCM input
 
-<!-- claims: CLM-DOC-032-CAP-001,CLM-DOC-032-SOURCE-001 -->
+<!-- claims: CLM-DOC-032-SCOPE-001,CLM-DOC-032-TEXT-001,CLM-DOC-032-TEXT-002,CLM-DOC-032-TEXT-003,CLM-DOC-032-TEXT-004,CLM-DOC-032-TEXT-005,CLM-DOC-032-TEXT-006,CLM-DOC-032-SOURCE-001 -->
 
 ## What it is
 
@@ -45,12 +45,12 @@ The scope of **External PCM input** ends at the native contracts and executable 
 | `pocketstation::session::extensions::audio_input::AudioInputConfig` | struct | Configures audio input behavior at its owning API boundary. | `src/session/extensions/audio_input/mod.rs:22` |
 | `pocketstation::session::extensions::audio_input::buffer::AudioInputBuffer` | struct | Leases bounded PCM storage from an external-audio input until the caller submits or releases it. | `src/session/extensions/audio_input/buffer.rs:11` |
 | `pocketstation::session::extensions::audio_input::buffer::AudioInputObservations` | struct | Reports the audio input observations collected at an observation boundary. | `src/session/extensions/audio_input/buffer.rs:72` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError` | struct | Reports a audio input write error. | `src/session/extensions/audio_input/buffer.rs:305` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError` | struct | Classifies failures produced during audio input writing. | `src/session/extensions/audio_input/buffer.rs:305` |
 | `pocketstation::session::extensions::audio_input::buffer::AudioInputWriter` | struct | Sends audio input values across its declared ownership boundary. | `src/session/extensions/audio_input/buffer.rs:91` |
 | `pocketstation::session::extensions::audio_input::source::PcmSource` | struct | Low-level PCM source ownership for integrations that separately retain the Session handles and producer writer. | `src/session/extensions/audio_input/source.rs:33` |
-| `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures reported as audio input config error. | `src/session/extensions/audio_input/mod.rs:77` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` | enum | Classifies failures reported as audio input buffer acquire error. | `src/session/extensions/audio_input/buffer.rs:271` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` | enum | Classifies failures reported as audio input buffer error. | `src/session/extensions/audio_input/buffer.rs:281` |
+| `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures surfaced by audio input config operations. | `src/session/extensions/audio_input/mod.rs:77` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` | enum | Classifies failures surfaced by audio input buffer acquire operations. | `src/session/extensions/audio_input/buffer.rs:271` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` | enum | Classifies failures surfaced by audio input buffer operations. | `src/session/extensions/audio_input/buffer.rs:281` |
 
 ## Executable evidence
 
@@ -83,6 +83,29 @@ Executable evidence selected for **External PCM input** is limited to each test'
 
 The claims on **External PCM input** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/extensions/audio_input/mod.rs:1-152` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:16-16` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:19-19` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:21-21` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:21-21` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:21-21` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:22-26` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:23-23` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:24-24` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:25-25` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:29-57` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:59-61` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:63-65` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:67-69` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:71-73` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:76-76` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:76-76` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:76-76` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:76-76` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:77-90` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:79-79` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:81-81` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:83-83` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:85-85` (`DIRECT`)
+- `src/session/extensions/audio_input/mod.rs:87-87` (`DIRECT`)
 
 For **External PCM input**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

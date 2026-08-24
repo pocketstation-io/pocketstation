@@ -5,11 +5,11 @@ use crate::graph::{EdgeContract, NodeTypeId};
 
 use crate::session::SessionError;
 
-#[doc = "Defines the public connector node type identifier value."]
+#[doc = "Defines connector node type identifier as `\"endpoint.connector.external\"` for the owning public contract."]
 pub const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
-#[doc = "Defines the public browser node type identifier value."]
+#[doc = "Defines browser node type identifier as `\"endpoint.browser.remote\"` for the owning public contract."]
 pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
-#[doc = "Defines the public browser operator identifier value."]
+#[doc = "Defines browser operator identifier as `\"io.pocketstation.browser.webrtc.v1\"` for the owning public contract."]
 pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
 pub(crate) const BROWSER_RECEIVER_URI_CONFIGURATION_KEY: &str = "receiver_uri";
 
@@ -68,7 +68,7 @@ impl EndpointConfiguration {
         self.values.get(key).map(|entry| entry.value.as_str())
     }
 
-    #[doc = "Returns whether sensitive applies to `EndpointConfiguration`."]
+    #[doc = "Reports whether sensitive is true for `EndpointConfiguration`."]
     pub fn is_sensitive(&self, key: &str) -> bool {
         self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
@@ -117,7 +117,7 @@ impl std::fmt::Debug for EndpointConfiguration {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Describes the endpoint descriptor contract."]
+#[doc = "Declares an endpoint's node identity, media contract, configuration, and execution requirements."]
 pub struct EndpointDescriptor {
     node_type_id: NodeTypeId,
     operator_id: OperatorId,

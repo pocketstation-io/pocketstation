@@ -38,17 +38,17 @@ pub struct CaptureSampleTimeline {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
-#[doc = "Classifies failures reported as capture sample timeline error."]
+#[doc = "Classifies failures surfaced by capture sample timeline operations."]
 pub enum CaptureSampleTimelineError {
-    #[doc = "Reported when the owning operation encounters mixed advance modes."]
+    #[doc = "Classifies a failure at the mixed advance modes stage or component of `CaptureSampleTimelineError`."]
     MixedAdvanceModes,
-    #[doc = "Reported when the owning operation encounters source position overflow."]
+    #[doc = "Reports that source position exceeds its numeric range."]
     SourcePositionOverflow,
-    #[doc = "Reported when the owning operation encounters source position moved backward."]
+    #[doc = "Reports that source position moved backward instead of remaining monotonic."]
     SourcePositionMovedBackward {
-        #[doc = "Stores the expected at least used by `SourcePositionMovedBackward`."]
+        #[doc = "Stores the expected at least component of `SourcePositionMovedBackward`."]
         expected_at_least: u64,
-        #[doc = "Stores the observed used by `SourcePositionMovedBackward`."]
+        #[doc = "Stores the observed component of `SourcePositionMovedBackward`."]
         observed: u64,
     },
 }

@@ -102,14 +102,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "faaf56ff65f46f3f2d6860ab65b89fd30f9a1e067a8cc68bff47a8eab1854790",
       "lines": [
-        1,
-        92
+        20,
+        59
       ],
-      "path": "tests/codec_hot_path_alloc.rs",
-      "symbol": null
+      "path": "tests/codec_hot_path_alloc.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "faaf56ff65f46f3f2d6860ab65b89fd30f9a1e067a8cc68bff47a8eab1854790",
+      "lines": [
+        62,
+        82
+      ],
+      "path": "tests/codec_hot_path_alloc.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -137,10 +145,10 @@
     "pocketstation::internal::frame::{AudioBufferPool, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "assert_no_alloc::*",
-    "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }",
-    "pocketstation::internal::frame::{AudioBufferPool, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ}"
+    "Consumes configuration at tests/codec_hot_path_alloc.rs:14.",
+    "Depends on `assert_no_alloc::*` through a declared Rust import.",
+    "Depends on `pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }` through a declared Rust import.",
+    "Depends on `pocketstation::internal::frame::{AudioBufferPool, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -158,7 +166,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/codec_hot_path_alloc.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-10d2eeb94420867a2507"

@@ -138,14 +138,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "e25fd263ce16321cbf72e4b21b17476226ce1e2861b64f616d75bab9217ef63e",
       "lines": [
         1,
-        57
+        1
       ],
       "path": "src/session/lifecycle/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::lifecycle"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -202,29 +202,28 @@
     "trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "control::{ CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
-    "engine::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
-    "events::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
-    "host::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
-    "module:control",
-    "module:endpoint_setup",
-    "module:engine",
-    "module:events",
-    "module:host",
-    "module:observations",
-    "module:operator_inputs",
-    "module:rollback",
-    "module:running",
-    "module:telemetry",
-    "module:trace",
-    "observations::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionEventQueueObservations, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics, SessionSourceMetrics, }",
-    "running::RunningSession",
-    "running::start_prepared_session_cancellable_with_trace",
-    "running::{start_prepared_session, start_prepared_session_cancellable}",
-    "trace::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderHandle, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
-    "trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}"
+    "Consumes configuration at src/session/lifecycle/mod.rs:43.",
+    "Consumes configuration at src/session/lifecycle/mod.rs:52.",
+    "Depends on `control::{ CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }` through a declared Rust import.",
+    "Depends on `control` through a declared Rust import.",
+    "Depends on `endpoint_setup` through a declared Rust import.",
+    "Depends on `engine::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }` through a declared Rust import.",
+    "Depends on `engine` through a declared Rust import.",
+    "Depends on `events::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }` through a declared Rust import.",
+    "Depends on `events` through a declared Rust import.",
+    "Depends on `host::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }` through a declared Rust import.",
+    "Depends on `host` through a declared Rust import.",
+    "Depends on `observations::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionEventQueueObservations, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics, SessionSourceMetrics, }` through a declared Rust import.",
+    "Depends on `observations` through a declared Rust import.",
+    "Depends on `operator_inputs` through a declared Rust import.",
+    "Depends on `rollback` through a declared Rust import.",
+    "Depends on `running::RunningSession` through a declared Rust import.",
+    "Depends on `running::start_prepared_session_cancellable_with_trace` through a declared Rust import.",
+    "Depends on `running::{start_prepared_session, start_prepared_session_cancellable}` through a declared Rust import.",
+    "Depends on `running` through a declared Rust import.",
+    "Depends on `telemetry` through a declared Rust import.",
+    "Depends on `trace::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderHandle, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }` through a declared Rust import.",
+    "Depends on `trace` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -233,7 +232,7 @@
   "module": "pocketstation::session::lifecycle",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-42242e8c33db6aa40f15"
@@ -339,8 +338,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle responsibilities, including lifecycle."
+    "classification": "DECLARED",
+    "text": "Session engine construction, transactional startup, observations, and stop."
   },
   "queues": [],
   "recovery_behavior": [

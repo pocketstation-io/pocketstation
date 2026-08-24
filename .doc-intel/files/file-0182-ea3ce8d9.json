@@ -62,14 +62,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "d59e8e15843f65ca96e5492b903994aaefe2213675d509c441ec772c36dab849",
       "lines": [
         1,
-        22
+        1
       ],
       "path": "src/runtime/audio/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::audio"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -117,19 +117,20 @@
     "runner::{ plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceInput, PlanSourceObservationHandle, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanRunner, }"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "executor::{ExecError, PlanExecutionSummary, RealtimePlanExecutor}",
-    "module:executor",
-    "module:router",
-    "module:runner",
-    "router::EdgeObservations",
-    "router::PlanRouterError",
-    "router::{DispatchSummary, PlanEdgeRouter}",
-    "router::{PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver}",
-    "runner::PlanRunnerStepSummary",
-    "runner::PlanSourceInputObservations",
-    "runner::PlanSourceSendError",
-    "runner::{ plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceInput, PlanSourceObservationHandle, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanRunner, }"
+    "Consumes configuration at src/runtime/audio/mod.rs:13.",
+    "Consumes configuration at src/runtime/audio/mod.rs:9.",
+    "Depends on `executor::{ExecError, PlanExecutionSummary, RealtimePlanExecutor}` through a declared Rust import.",
+    "Depends on `executor` through a declared Rust import.",
+    "Depends on `router::EdgeObservations` through a declared Rust import.",
+    "Depends on `router::PlanRouterError` through a declared Rust import.",
+    "Depends on `router::{DispatchSummary, PlanEdgeRouter}` through a declared Rust import.",
+    "Depends on `router::{PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver}` through a declared Rust import.",
+    "Depends on `router` through a declared Rust import.",
+    "Depends on `runner::PlanRunnerStepSummary` through a declared Rust import.",
+    "Depends on `runner::PlanSourceInputObservations` through a declared Rust import.",
+    "Depends on `runner::PlanSourceSendError` through a declared Rust import.",
+    "Depends on `runner::{ plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceInput, PlanSourceObservationHandle, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanRunner, }` through a declared Rust import.",
+    "Depends on `runner` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -138,7 +139,7 @@
   "module": "pocketstation::runtime::audio",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::audio` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -176,8 +177,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::audio responsibilities, including Allocation-free realtime audio execution lane.."
+    "classification": "DECLARED",
+    "text": "Allocation-free realtime audio execution lane."
   },
   "queues": [],
   "recovery_behavior": [],

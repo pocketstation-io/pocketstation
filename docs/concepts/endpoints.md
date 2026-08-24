@@ -1,6 +1,6 @@
 # Endpoint lifecycle
 
-<!-- claims: CLM-DOC-024-CAP-001,CLM-DOC-024-SOURCE-001 -->
+<!-- claims: CLM-DOC-024-SCOPE-001,CLM-DOC-024-TEXT-001,CLM-DOC-024-TEXT-002,CLM-DOC-024-TEXT-003,CLM-DOC-024-TEXT-004,CLM-DOC-024-TEXT-005,CLM-DOC-024-TEXT-006,CLM-DOC-024-SOURCE-001 -->
 
 ## What it is
 
@@ -85,7 +85,53 @@ Executable evidence selected for **Endpoint lifecycle** is limited to each test'
 
 The claims on **Endpoint lifecycle** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/endpoint/contract.rs:1-276` (`DIRECT`)
-- `src/endpoint/runtime.rs:1-531` (`DIRECT`)
+- `src/endpoint/contract.rs:18-22` (`DIRECT`)
+- `src/endpoint/contract.rs:19-19` (`DIRECT`)
+- `src/endpoint/contract.rs:20-20` (`DIRECT`)
+- `src/endpoint/contract.rs:21-21` (`DIRECT`)
+- `src/endpoint/contract.rs:25-35` (`DIRECT`)
+- `src/endpoint/contract.rs:37-39` (`DIRECT`)
+- `src/endpoint/contract.rs:41-43` (`DIRECT`)
+- `src/endpoint/contract.rs:45-47` (`DIRECT`)
+- `src/endpoint/contract.rs:49-51` (`DIRECT`)
+- `src/endpoint/contract.rs:53-55` (`DIRECT`)
+- `src/endpoint/contract.rs:57-59` (`DIRECT`)
+- `src/endpoint/contract.rs:61-63` (`DIRECT`)
+- `src/endpoint/contract.rs:65-67` (`DIRECT`)
+- `src/endpoint/contract.rs:69-71` (`DIRECT`)
+- `src/endpoint/contract.rs:73-75` (`DIRECT`)
+- `src/endpoint/contract.rs:78-80` (`DIRECT`)
+- `src/endpoint/contract.rs:83-85` (`DIRECT`)
+- `src/endpoint/contract.rs:92-94` (`DIRECT`)
+- `src/endpoint/contract.rs:93-93` (`DIRECT`)
+- `src/endpoint/contract.rs:97-99` (`DIRECT`)
+- `src/endpoint/contract.rs:101-103` (`DIRECT`)
+- `src/endpoint/contract.rs:106-108` (`DIRECT`)
+- `src/endpoint/contract.rs:110-120` (`DIRECT`)
+- `src/endpoint/contract.rs:122-124` (`DIRECT`)
+- `src/endpoint/runtime.rs:12-12` (`DIRECT`)
+- `src/endpoint/runtime.rs:12-12` (`DIRECT`)
+- `src/endpoint/runtime.rs:12-12` (`DIRECT`)
+- `src/endpoint/runtime.rs:13-15` (`DIRECT`)
+- `src/endpoint/runtime.rs:14-14` (`DIRECT`)
+- `src/endpoint/runtime.rs:18-22` (`DIRECT`)
+- `src/endpoint/runtime.rs:24-26` (`DIRECT`)
+- `src/endpoint/runtime.rs:30-30` (`DIRECT`)
+- `src/endpoint/runtime.rs:30-30` (`DIRECT`)
+- `src/endpoint/runtime.rs:30-30` (`DIRECT`)
+- `src/endpoint/runtime.rs:31-40` (`DIRECT`)
+- `src/endpoint/runtime.rs:32-32` (`DIRECT`)
+- `src/endpoint/runtime.rs:32-32` (`DIRECT`)
+- `src/endpoint/runtime.rs:34-34` (`DIRECT`)
+- `src/endpoint/runtime.rs:35-39` (`DIRECT`)
+- `src/endpoint/runtime.rs:36-36` (`DIRECT`)
+- `src/endpoint/runtime.rs:37-37` (`DIRECT`)
+- `src/endpoint/runtime.rs:38-38` (`DIRECT`)
+- `src/endpoint/runtime.rs:43-43` (`DIRECT`)
+- `src/endpoint/runtime.rs:43-43` (`DIRECT`)
+- `src/endpoint/runtime.rs:43-43` (`DIRECT`)
+- `src/endpoint/runtime.rs:44-47` (`DIRECT`)
+- `src/endpoint/runtime.rs:45-45` (`DIRECT`)
+- `src/endpoint/runtime.rs:46-46` (`DIRECT`)
 
 For **Endpoint lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

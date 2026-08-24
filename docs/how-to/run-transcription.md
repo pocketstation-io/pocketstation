@@ -1,6 +1,6 @@
 # Run the transcription example
 
-<!-- claims: CLM-GUIDE-026-CAP-001,CLM-GUIDE-026-CAP-002,CLM-GUIDE-026-CAP-003,CLM-GUIDE-026-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-026-SCOPE-001,CLM-GUIDE-026-TEXT-001,CLM-GUIDE-026-TEXT-002,CLM-GUIDE-026-TEXT-003,CLM-GUIDE-026-TEXT-004,CLM-GUIDE-026-TEXT-005,CLM-GUIDE-026-TEXT-006,CLM-GUIDE-026-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,15 @@ The nested example's Rust and external-process prerequisites, capture access, an
 3. Choose required capture sources.
 4. Run the external process integration.
 5. Preserve and validate process evidence.
+
+## Concrete repository example
+
+Run the run the transcription example commands from the PocketStation checkout. Each command is part of this task's documented validation surface.
+
+```bash
+cargo check --manifest-path examples/whisper-transcribe/Cargo.toml
+cargo run --manifest-path examples/whisper-transcribe/Cargo.toml
+```
 
 ## Important consequence
 
@@ -80,7 +89,7 @@ No task-specific public error was resolved for run the transcription example; pr
 
 The claims on **Run the transcription example** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/whisper-transcribe/README.md:1-37` (`DIRECT`)
-- `examples/whisper-transcribe/src/main.rs:1-75` (`DIRECT`)
+- `examples/whisper-transcribe/README.md:1-9` (`DECLARED`)
+- `examples/whisper-transcribe/src/main.rs:1-21` (`DIRECT`)
 
 For **Run the transcription example**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

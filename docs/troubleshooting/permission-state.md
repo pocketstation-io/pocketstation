@@ -1,6 +1,6 @@
 # Permission state is denied or unobservable
 
-<!-- claims: CLM-TRBL-004-CAP-001,CLM-TRBL-004-CAP-002,CLM-TRBL-004-CAP-003,CLM-TRBL-004-CAP-004,CLM-TRBL-004-CAP-005,CLM-TRBL-004-SOURCE-001 -->
+<!-- claims: CLM-TRBL-004-SCOPE-001,CLM-TRBL-004-TEXT-001,CLM-TRBL-004-TEXT-002,CLM-TRBL-004-TEXT-003,CLM-TRBL-004-TEXT-004,CLM-TRBL-004-TEXT-005,CLM-TRBL-004-TEXT-006,CLM-TRBL-004-SOURCE-001 -->
 
 ## Symptom
 
@@ -76,6 +76,6 @@ A denied state is not safe to hammer with retries; an unobservable state is not 
 
 The claims on **Permission state is denied or unobservable** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/authorization.rs:1-318` (`DIRECT`)
+- `src/capture/authorization.rs:1-1` (`DECLARED`)
 
 For **Permission state is denied or unobservable**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

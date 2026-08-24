@@ -1,6 +1,6 @@
 # Frame and lineage API
 
-<!-- claims: CLM-REF-004-CAP-001,CLM-REF-004-SOURCE-001 -->
+<!-- claims: CLM-REF-004-SCOPE-001,CLM-REF-004-TEXT-001,CLM-REF-004-TEXT-002,CLM-REF-004-SOURCE-001 -->
 
 ## Scope
 
@@ -16,15 +16,15 @@ For **Frame and lineage API**, the generated [docs.rs API](https://docs.rs/pocke
 
 | Evidence record | Declaration | Kind | Purpose | Source |
 |---|---|---|---|---|
-| sym-7c9bc39a246042394c48 | `pocketstation::frame::audio::POOL_SLOT_SAMPLES` | constant | Defines the public pool slot samples value. | `src/frame/audio.rs:10` |
-| sym-c747591501f5767e9363 | `pocketstation::frame::audio::SAMPLE_RATE_HZ` | constant | Defines the public sample rate hertz value. | `src/frame/audio.rs:6` |
-| sym-af2221631095d6323bae | `pocketstation::frame::pool::POOL_MAX_SLOTS` | constant | Defines the public pool max slots value. | `src/frame/pool.rs:11` |
-| sym-75c0d9ea95fe08480487 | `pocketstation::frame::audio::AudioFrameBuildError` | enum | Classifies failures reported as audio frame build error. | `src/frame/audio.rs:51` |
-| sym-e372b47263dc149e2565 | `pocketstation::frame::audio::FrameLineageError` | enum | Classifies failures reported as frame lineage error. | `src/frame/audio.rs:250` |
+| sym-7c9bc39a246042394c48 | `pocketstation::frame::audio::POOL_SLOT_SAMPLES` | constant | Defines pool slot samples as `960` for the owning public contract. | `src/frame/audio.rs:10` |
+| sym-c747591501f5767e9363 | `pocketstation::frame::audio::SAMPLE_RATE_HZ` | constant | Defines sample rate hertz as `48_000` for the owning public contract. | `src/frame/audio.rs:6` |
+| sym-af2221631095d6323bae | `pocketstation::frame::pool::POOL_MAX_SLOTS` | constant | Defines pool max slots as `64` for the owning public contract. | `src/frame/pool.rs:11` |
+| sym-75c0d9ea95fe08480487 | `pocketstation::frame::audio::AudioFrameBuildError` | enum | Classifies failures produced during audio frame construction and input validation. | `src/frame/audio.rs:51` |
+| sym-e372b47263dc149e2565 | `pocketstation::frame::audio::FrameLineageError` | enum | Classifies failures surfaced by frame lineage operations. | `src/frame/audio.rs:250` |
 | sym-8dcddebc5c2a3910991b | `pocketstation::frame::audio::SampleFormat` | enum | Selects the sample format used by PocketStation. | `src/frame/audio.rs:13` |
-| sym-4343e1e50b9eca8f5850 | `pocketstation::frame::lineage::FrameLineageBuildError` | enum | Classifies failures reported as frame lineage build error. | `src/frame/lineage.rs:93` |
-| sym-7e350671a794cf32f491 | `pocketstation::frame::platform::Platform` | enum | Enumerates the supported platform cases. | `src/frame/platform.rs:4` |
-| sym-9e482a2d7e66b0d9c0e6 | `pocketstation::frame::pool::AudioBufferWriteError` | enum | Classifies failures reported as audio buffer write error. | `src/frame/pool.rs:14` |
+| sym-4343e1e50b9eca8f5850 | `pocketstation::frame::lineage::FrameLineageBuildError` | enum | Classifies failures produced during frame lineage construction and input validation. | `src/frame/lineage.rs:93` |
+| sym-7e350671a794cf32f491 | `pocketstation::frame::platform::Platform` | enum | Identifies the operating-system platform attached to captured lineage. | `src/frame/platform.rs:4` |
+| sym-9e482a2d7e66b0d9c0e6 | `pocketstation::frame::pool::AudioBufferWriteError` | enum | Classifies failures produced during audio buffer writing. | `src/frame/pool.rs:14` |
 | sym-c5be09000b38bb0c866a | `acquire` | function | Attempts to acquire an available buffer slot from `AudioBufferPool`. | `src/frame/pool.rs:75` |
 | sym-ba21839ffaec3909eb0b | `acquire_failures` | function | Returns the acquire failures associated with `AudioBufferPool`. | `src/frame/pool.rs:68` |
 | sym-4393ee74246a52c49218 | `as_mut_slice` | function | Borrows `AudioBufferHandle` as mut slice. | `src/frame/pool.rs:218` |
@@ -56,7 +56,7 @@ For **Frame and lineage API**, the generated [docs.rs API](https://docs.rs/pocke
 | sym-cf86a3d6bcb80a95cb9d | `into_parts` | function | Consumes `LineagedAudioFrame` and returns its component values. | `src/frame/audio.rs:285` |
 | sym-694b0417ceb4093d53c5 | `is_empty` | function | Returns whether `AudioBufferHandle` contains no values. | `src/frame/pool.rs:208` |
 | sym-377854407927a5521f81 | `is_empty` | function | Returns whether `SharedAudioBufferHandle` contains no values. | `src/frame/pool.rs:292` |
-| sym-7f13b15d2c80392c67f2 | `is_in_use` | function | Returns whether in use applies to `AudioBufferPool`. | `src/frame/pool.rs:98` |
+| sym-7f13b15d2c80392c67f2 | `is_in_use` | function | Reports whether in use is true for `AudioBufferPool`. | `src/frame/pool.rs:98` |
 | sym-f4dfdeb380903e4528bd | `len` | function | Returns the number of values held by `AudioBufferHandle`. | `src/frame/pool.rs:205` |
 | sym-708eb84562629092eee6 | `len` | function | Returns the number of values held by `SharedAudioBufferHandle`. | `src/frame/pool.rs:288` |
 | sym-6aca508b0efb6ddab602 | `lineage` | function | Returns the frame lineage carried by `LineagedAudioFrame`. | `src/frame/audio.rs:281` |
@@ -96,7 +96,7 @@ For **Frame and lineage API**, the generated [docs.rs API](https://docs.rs/pocke
 | sym-83f62304819c589f4f4b | `try_new` | function | Creates a new `AudioFrame` after validating its inputs. | `src/frame/audio.rs:61` |
 | sym-0828b915e37452bf1cc1 | `try_new` | function | Creates a new `FrameLineage` after validating its inputs. | `src/frame/lineage.rs:21` |
 | sym-e9167f9b18af1e32aad6 | `try_set_len` | function | Changes the visible sample length without panicking. | `src/frame/pool.rs:228` |
-| sym-fd1a5e4bf81be429c380 | `audio` | module | Types and operations for audio. | `src/frame/audio.rs:1` |
+| sym-fd1a5e4bf81be429c380 | `audio` | module | Realtime audio routing, execution, plan-runner, and runtime observation types. | `src/frame/audio.rs:1` |
 | sym-d9e7c0a66c2f232e1613 | `lineage` | module | Compact source-aware lineage carried on realtime audio frames. | `src/frame/lineage.rs:1` |
 | sym-da89361ec9773f03cfbe | `pool` | module | Fixed-capacity realtime audio storage and ownership handles. | `src/frame/pool.rs:1` |
 | sym-8577d9382df72191707a | `pocketstation::frame::audio::AudioFrame` | struct | Carries one audio payload together with its declared metadata. | `src/frame/audio.rs:39` |
@@ -113,26 +113,26 @@ For **Frame and lineage API**, the generated [docs.rs API](https://docs.rs/pocke
 | sym-82a2b9584ea1d7a2dae6 | `pocketstation::frame::identity::StemId` | struct | Uniquely identifies stem within its PocketStation ownership scope. | `src/frame/identity.rs:23` |
 | sym-0010fb7e6f1802e2c0c1 | `pocketstation::frame::identity::StreamId` | struct | Uniquely identifies stream within its PocketStation ownership scope. | `src/frame/identity.rs:20` |
 | sym-4f5d7dda4dde3e3ceaf9 | `pocketstation::frame::lineage::FrameLineage` | struct | Preserves source, stream, sequence, clock, generation, and discontinuity identity for an audio frame. | `src/frame/lineage.rs:6` |
-| sym-de68a53d211a83bfc33c | `pocketstation::frame::pool::AudioBufferHandle` | struct | Owns bounded access to audio buffer. | `src/frame/pool.rs:198` |
+| sym-de68a53d211a83bfc33c | `pocketstation::frame::pool::AudioBufferHandle` | struct | Holds the ownership or bounded access represented by audio buffer handle. | `src/frame/pool.rs:198` |
 | sym-73a3a95b920434157c7b | `pocketstation::frame::pool::AudioBufferPool` | struct | Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame. | `src/frame/pool.rs:24` |
-| sym-d1d3a10ca5f3d96627df | `pocketstation::frame::pool::SharedAudioBufferHandle` | struct | Owns bounded access to shared audio buffer. | `src/frame/pool.rs:281` |
-| sym-46bd88499244eadd7644 | `audio::AudioFrameBuildError::MisalignedSamples::channels` | struct_field | Stores the channels used by `MisalignedSamples`. | `src/frame/audio.rs:57` |
-| sym-c152aa4eaf517b7e0f38 | `audio::AudioFrameBuildError::MisalignedSamples::samples` | struct_field | Stores the samples used by `MisalignedSamples`. | `src/frame/audio.rs:57` |
-| sym-d03c8216ec1500493017 | `audio::SampleSpec::channels` | struct_field | Stores the channels used by `SampleSpec`. | `src/frame/audio.rs:20` |
-| sym-63a8cb9ef418fdd86d75 | `audio::SampleSpec::format` | struct_field | Stores the format used by `SampleSpec`. | `src/frame/audio.rs:21` |
+| sym-d1d3a10ca5f3d96627df | `pocketstation::frame::pool::SharedAudioBufferHandle` | struct | Holds the ownership or bounded access represented by shared audio buffer handle. | `src/frame/pool.rs:281` |
+| sym-46bd88499244eadd7644 | `audio::AudioFrameBuildError::MisalignedSamples::channels` | struct_field | Contains the channels owned or reported by `MisalignedSamples`. | `src/frame/audio.rs:57` |
+| sym-c152aa4eaf517b7e0f38 | `audio::AudioFrameBuildError::MisalignedSamples::samples` | struct_field | Contains the samples owned or reported by `MisalignedSamples`. | `src/frame/audio.rs:57` |
+| sym-d03c8216ec1500493017 | `audio::SampleSpec::channels` | struct_field | Contains the channels owned or reported by `SampleSpec`. | `src/frame/audio.rs:20` |
+| sym-63a8cb9ef418fdd86d75 | `audio::SampleSpec::format` | struct_field | Records the format selected for `SampleSpec`. | `src/frame/audio.rs:21` |
 | sym-aa5c5c984c98f972616a | `audio::SampleSpec::sample_rate_hz` | struct_field | Stores the sample rate value for `SampleSpec`, in hertz. | `src/frame/audio.rs:19` |
 | sym-d4623f39a117cbed7815 | `pool::AudioBufferWriteError::CapacityExceeded::capacity_samples` | struct_field | Sets the capacity samples available to `CapacityExceeded`. | `src/frame/pool.rs:20` |
-| sym-7fb9e3e159af61c62ea6 | `pool::AudioBufferWriteError::CapacityExceeded::requested_samples` | struct_field | Stores the requested samples used by `CapacityExceeded`. | `src/frame/pool.rs:19` |
-| sym-19eaba59e9cfed66e693 | `pocketstation::frame::audio::AudioFrameBuildError::MisalignedSamples` | variant | Reported when the owning operation encounters misaligned samples. | `src/frame/audio.rs:57` |
-| sym-eaf6e41fb330ca815075 | `pocketstation::frame::audio::AudioFrameBuildError::ZeroChannels` | variant | Reported when the owning operation encounters zero channels. | `src/frame/audio.rs:55` |
-| sym-c684902a1f1c52d3b842 | `pocketstation::frame::audio::AudioFrameBuildError::ZeroSampleRate` | variant | Reported when the owning operation encounters zero sample rate. | `src/frame/audio.rs:53` |
-| sym-2c22a35c423b0c4ec202 | `pocketstation::frame::audio::FrameLineageError::SequenceNumber` | variant | Reported when the owning operation encounters sequence number. | `src/frame/audio.rs:254` |
-| sym-d5d0ca3146b94c396fdb | `pocketstation::frame::audio::FrameLineageError::Source` | variant | Reported when the owning operation encounters source. | `src/frame/audio.rs:252` |
-| sym-85195a3401c0fe61e495 | `pocketstation::frame::audio::FrameLineageError::Timestamp` | variant | Reported when the owning operation encounters timestamp. | `src/frame/audio.rs:256` |
-| sym-3a769b03af01431e0e85 | `pocketstation::frame::audio::SampleFormat::F32Interleaved` | variant | Selects f32 interleaved behavior for `SampleFormat`. | `src/frame/audio.rs:14` |
-| sym-1189c02b7250275259f9 | `pocketstation::frame::lineage::FrameLineageBuildError::TimestampOverflow` | variant | Reported when the owning operation encounters timestamp overflow. | `src/frame/lineage.rs:99` |
-| sym-8565c6b0e0b425dc0c01 | `pocketstation::frame::lineage::FrameLineageBuildError::ZeroDuration` | variant | Reported when the owning operation encounters zero duration. | `src/frame/lineage.rs:95` |
-| sym-a1e996dbffa813d8ec0f | `pocketstation::frame::lineage::FrameLineageBuildError::ZeroSourceGeneration` | variant | Reported when the owning operation encounters zero source generation. | `src/frame/lineage.rs:97` |
+| sym-7fb9e3e159af61c62ea6 | `pool::AudioBufferWriteError::CapacityExceeded::requested_samples` | struct_field | Contains the requested samples owned or reported by `CapacityExceeded`. | `src/frame/pool.rs:19` |
+| sym-19eaba59e9cfed66e693 | `pocketstation::frame::audio::AudioFrameBuildError::MisalignedSamples` | variant | Reports that samples does not satisfy the required alignment. | `src/frame/audio.rs:57` |
+| sym-eaf6e41fb330ca815075 | `pocketstation::frame::audio::AudioFrameBuildError::ZeroChannels` | variant | Reports that channels must be greater than zero. | `src/frame/audio.rs:55` |
+| sym-c684902a1f1c52d3b842 | `pocketstation::frame::audio::AudioFrameBuildError::ZeroSampleRate` | variant | Reports that sample rate must be greater than zero. | `src/frame/audio.rs:53` |
+| sym-2c22a35c423b0c4ec202 | `pocketstation::frame::audio::FrameLineageError::SequenceNumber` | variant | Classifies a failure at the sequence number stage or component of `FrameLineageError`. | `src/frame/audio.rs:254` |
+| sym-d5d0ca3146b94c396fdb | `pocketstation::frame::audio::FrameLineageError::Source` | variant | Classifies a failure at the source stage or component of `FrameLineageError`. | `src/frame/audio.rs:252` |
+| sym-85195a3401c0fe61e495 | `pocketstation::frame::audio::FrameLineageError::Timestamp` | variant | Classifies a failure at the timestamp stage or component of `FrameLineageError`. | `src/frame/audio.rs:256` |
+| sym-3a769b03af01431e0e85 | `pocketstation::frame::audio::SampleFormat::F32Interleaved` | variant | Declares PCM samples in f32 interleaved format. | `src/frame/audio.rs:14` |
+| sym-1189c02b7250275259f9 | `pocketstation::frame::lineage::FrameLineageBuildError::TimestampOverflow` | variant | Reports that timestamp exceeds its numeric range. | `src/frame/lineage.rs:99` |
+| sym-8565c6b0e0b425dc0c01 | `pocketstation::frame::lineage::FrameLineageBuildError::ZeroDuration` | variant | Reports that duration must be greater than zero. | `src/frame/lineage.rs:95` |
+| sym-a1e996dbffa813d8ec0f | `pocketstation::frame::lineage::FrameLineageBuildError::ZeroSourceGeneration` | variant | Reports that source generation must be greater than zero. | `src/frame/lineage.rs:97` |
 | sym-a5faed540ad6de134b1c | `pocketstation::frame::platform::Platform::Android` | variant | Represents the android alternative defined by `Platform`. | `src/frame/platform.rs:9` |
 | sym-d7895c7b24722dbb63c2 | `pocketstation::frame::platform::Platform::Ios` | variant | Represents the ios alternative defined by `Platform`. | `src/frame/platform.rs:8` |
 | sym-9652799b7d15ebc70b3a | `pocketstation::frame::platform::Platform::Linux` | variant | Represents the linux alternative defined by `Platform`. | `src/frame/platform.rs:7` |
@@ -140,7 +140,7 @@ For **Frame and lineage API**, the generated [docs.rs API](https://docs.rs/pocke
 | sym-05ee566e953b53c50178 | `pocketstation::frame::platform::Platform::Unknown` | variant | Represents the unknown alternative defined by `Platform`. | `src/frame/platform.rs:11` |
 | sym-2e39b3ebc8ab3c6e06bd | `pocketstation::frame::platform::Platform::Web` | variant | Represents the web alternative defined by `Platform`. | `src/frame/platform.rs:10` |
 | sym-31d821d576822bb09505 | `pocketstation::frame::platform::Platform::Windows` | variant | Represents the windows alternative defined by `Platform`. | `src/frame/platform.rs:6` |
-| sym-29e6dc01c36a90fb7576 | `pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded` | variant | Reported when the owning operation encounters capacity exceeded. | `src/frame/pool.rs:18` |
+| sym-29e6dc01c36a90fb7576 | `pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded` | variant | Classifies a failure at the capacity exceeded stage or component of `AudioBufferWriteError`. | `src/frame/pool.rs:18` |
 
 ## Interpretation
 
@@ -161,6 +161,6 @@ The **Frame and lineage API** inventory records compiler-visible or extracted ev
 
 The claims on **Frame and lineage API** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/frame/mod.rs:1-18` (`DIRECT`)
+- `src/frame/mod.rs:1-5` (`DECLARED`)
 
 For **Frame and lineage API**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

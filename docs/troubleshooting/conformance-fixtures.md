@@ -1,6 +1,6 @@
 # A conformance check cannot find external fixtures
 
-<!-- claims: CLM-TRBL-013-CAP-001,CLM-TRBL-013-CAP-002,CLM-TRBL-013-SOURCE-001 -->
+<!-- claims: CLM-TRBL-013-SCOPE-001,CLM-TRBL-013-TEXT-001,CLM-TRBL-013-TEXT-002,CLM-TRBL-013-TEXT-003,CLM-TRBL-013-TEXT-004,CLM-TRBL-013-TEXT-005,CLM-TRBL-013-TEXT-006,CLM-TRBL-013-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,7 +77,7 @@ Absence is a prerequisite failure, not a retryable product failure and not passi
 
 The claims on **A conformance check cannot find external fixtures** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `tests/connector_portable_semantics.rs:1-210` (`DIRECT`)
-- `scripts/check_protocol.sh:1-132` (`DIRECT`)
+- `tests/connector_portable_semantics.rs:167-209` (`TESTED`)
+- `scripts/check_protocol.sh:2-22` (`DIRECT`)
 
 For **A conformance check cannot find external fixtures**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

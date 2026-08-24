@@ -5,6 +5,7 @@
   "callbacks": [],
   "called_by": [
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/worker/endpoint_adapter.rs"
@@ -52,6 +53,7 @@
   "configuration_read": [],
   "constructed_by": [
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/worker/endpoint_adapter.rs"
@@ -474,17 +476,248 @@
       "classification": "DIRECT",
       "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
       "lines": [
-        1,
-        255
+        7,
+        7
       ],
       "path": "src/connector/manifest.rs",
-      "symbol": null
+      "symbol": "CONNECTOR_API_REVISION"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "MAX_CONNECTOR_MANIFEST_ENTRIES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "MAX_CONNECTOR_MANIFEST_TEXT_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        12,
+        15
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "ConnectorCapability"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "documentation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        18,
+        28
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        30,
+        32
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        34,
+        36
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "documentation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        40,
+        44
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "ConnectorRequirement"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "required"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "documentation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        47,
+        59
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        61,
+        63
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        65,
+        67
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "required"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        69,
+        71
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "documentation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        74,
+        74
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": "fmt"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/worker/endpoint_adapter.rs"
@@ -504,6 +737,7 @@
   "git_object": "2936591c40c9515ae62f9aee7c1de915c2ea1168",
   "implemented_by": [
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/worker/endpoint_adapter.rs"
@@ -515,6 +749,7 @@
   ],
   "imported_by": [
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
     "REFERENCES:src/connector/worker/endpoint_adapter.rs"
@@ -525,9 +760,9 @@
     "super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy}"
   ],
   "inputs": [
-    "crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId}",
-    "std::collections::BTreeSet",
-    "super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy}"
+    "Depends on `crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId}` through a declared Rust import.",
+    "Depends on `std::collections::BTreeSet` through a declared Rust import.",
+    "Depends on `super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -557,45 +792,45 @@
   "module": "pocketstation::connector::manifest",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::manifest` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-61365c498fc8a7d33f5f"
   ],
   "outputs": [
-    "const:CONNECTOR_API_REVISION",
-    "const:MAX_CONNECTOR_MANIFEST_ENTRIES",
-    "const:MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
-    "enum:ConnectorManifestError",
-    "fn:api_revision",
-    "fn:capabilities",
-    "fn:configuration",
-    "fn:documentation",
-    "fn:id",
-    "fn:manifest_revision",
-    "fn:new",
-    "fn:node",
-    "fn:operator_id",
-    "fn:package_version",
-    "fn:readiness",
-    "fn:required",
-    "fn:requirements",
-    "fn:validate",
-    "fn:with_capability",
-    "fn:with_requirement",
-    "return Err(ConnectorManifestError::EmptyOperatorId);",
-    "return Err(ConnectorManifestError::InvalidManifestEntry);",
-    "return Err(ConnectorManifestError::InvalidManifestRevision);",
-    "return Err(ConnectorManifestError::InvalidPackageVersion);",
-    "return Err(ConnectorManifestError::ManifestEntryTooLarge);",
-    "return Err(ConnectorManifestError::MissingInputPort);",
-    "return Err(ConnectorManifestError::OutputPortNotSupported);",
-    "return Err(ConnectorManifestError::RealtimeExecutionForbidden);",
-    "return Err(ConnectorManifestError::TooManyManifestEntries);",
-    "return Err(ConnectorManifestError::UnsupportedApiRevision {",
-    "struct:ConnectorCapability",
-    "struct:ConnectorManifest",
-    "struct:ConnectorRequirement"
+    "Creates a typed failure at src/connector/manifest.rs:162.",
+    "Creates a typed failure at src/connector/manifest.rs:168.",
+    "Creates a typed failure at src/connector/manifest.rs:171.",
+    "Creates a typed failure at src/connector/manifest.rs:176.",
+    "Creates a typed failure at src/connector/manifest.rs:179.",
+    "Creates a typed failure at src/connector/manifest.rs:182.",
+    "Creates a typed failure at src/connector/manifest.rs:188.",
+    "Creates a typed failure at src/connector/manifest.rs:204.",
+    "Creates a typed failure at src/connector/manifest.rs:209.",
+    "Creates a typed failure at src/connector/manifest.rs:219.",
+    "Declares public const `CONNECTOR_API_REVISION`.",
+    "Declares public const `MAX_CONNECTOR_MANIFEST_ENTRIES`.",
+    "Declares public const `MAX_CONNECTOR_MANIFEST_TEXT_BYTES`.",
+    "Declares public enum `ConnectorManifestError`.",
+    "Declares public fn `api_revision`.",
+    "Declares public fn `capabilities`.",
+    "Declares public fn `configuration`.",
+    "Declares public fn `documentation`.",
+    "Declares public fn `id`.",
+    "Declares public fn `manifest_revision`.",
+    "Declares public fn `new`.",
+    "Declares public fn `node`.",
+    "Declares public fn `operator_id`.",
+    "Declares public fn `package_version`.",
+    "Declares public fn `readiness`.",
+    "Declares public fn `required`.",
+    "Declares public fn `requirements`.",
+    "Declares public fn `validate`.",
+    "Declares public fn `with_capability`.",
+    "Declares public fn `with_requirement`.",
+    "Declares public struct `ConnectorCapability`.",
+    "Declares public struct `ConnectorManifest`.",
+    "Declares public struct `ConnectorRequirement`."
   ],
   "package": "pocketstation",
   "path": "src/connector/manifest.rs",
@@ -786,8 +1021,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::manifest responsibilities, including Defines the public connector API revision value.; Sets the maximum supported connector manifest entries.; Sets the maximum supported connector manifest text bytes.."
+    "classification": "DECLARED",
+    "text": "Defines connector API revision as `1` for the owning public contract. Sets the maximum supported connector manifest entries. Sets the maximum supported connector manifest text bytes."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -830,6 +1065,7 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/connector/configuration.rs",
     "REFERENCES:src/connector/readiness.rs",
     "REFERENCES:src/graph/node.rs",
@@ -837,7 +1073,7 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::connector::manifest::CONNECTOR_API_REVISION: Defines the public connector API revision value.",
+    "pocketstation::connector::manifest::CONNECTOR_API_REVISION: Defines connector API revision as `1` for the owning public contract.",
     "pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_ENTRIES: Sets the maximum supported connector manifest entries.",
     "pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_TEXT_BYTES: Sets the maximum supported connector manifest text bytes.",
     "pocketstation::connector::manifest::ConnectorCapability: Declares a capability advertised by a connector manifest.",
@@ -849,7 +1085,7 @@
     "id: Returns the id held by `ConnectorRequirement`.",
     "required: Returns the required held by `ConnectorRequirement`.",
     "documentation: Returns the documentation held by `ConnectorRequirement`.",
-    "pocketstation::connector::manifest::ConnectorManifest: Describes the connector manifest contract.",
+    "pocketstation::connector::manifest::ConnectorManifest: Declares connector identity, API revision, ports, capabilities, requirements, and configuration schema.",
     "new: Creates a new `ConnectorManifest`.",
     "with_capability: Sets the capability on `ConnectorManifest` and returns the updated value.",
     "with_requirement: Sets the requirement on `ConnectorManifest` and returns the updated value.",
@@ -863,21 +1099,21 @@
     "capabilities: Returns the capabilities held by `ConnectorManifest`.",
     "requirements: Returns the requirements held by `ConnectorManifest`.",
     "validate: Validates `ConnectorManifest` against its declared contract.",
-    "pocketstation::connector::manifest::ConnectorManifestError: Classifies failures reported as connector manifest error.",
-    "ConnectorManifestError::UnsupportedApiRevision::requested: Stores the requested used by `UnsupportedApiRevision`.",
-    "ConnectorManifestError::UnsupportedApiRevision::supported: Stores the supported used by `UnsupportedApiRevision`.",
-    "pocketstation::connector::manifest::ConnectorManifestError::UnsupportedApiRevision: Reported when the owning operation encounters unsupported API revision.",
-    "pocketstation::connector::manifest::ConnectorManifestError::InvalidManifestRevision: Reported when the owning operation encounters invalid manifest revision.",
-    "pocketstation::connector::manifest::ConnectorManifestError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
-    "pocketstation::connector::manifest::ConnectorManifestError::InvalidPackageVersion: Reported when the owning operation encounters invalid package version.",
-    "pocketstation::connector::manifest::ConnectorManifestError::MissingInputPort: Reported when the owning operation encounters missing input port.",
-    "pocketstation::connector::manifest::ConnectorManifestError::OutputPortNotSupported: Reported when the owning operation encounters output port not supported.",
-    "pocketstation::connector::manifest::ConnectorManifestError::RealtimeExecutionForbidden: Reported when the owning operation encounters realtime execution forbidden.",
-    "pocketstation::connector::manifest::ConnectorManifestError::InvalidManifestEntry: Reported when the owning operation encounters invalid manifest entry.",
-    "pocketstation::connector::manifest::ConnectorManifestError::ManifestEntryTooLarge: Reported when the owning operation encounters manifest entry too large.",
-    "pocketstation::connector::manifest::ConnectorManifestError::TooManyManifestEntries: Reported when the owning operation encounters too many manifest entries.",
+    "pocketstation::connector::manifest::ConnectorManifestError: Classifies failures surfaced by connector manifest operations.",
+    "ConnectorManifestError::UnsupportedApiRevision::requested: Stores the requested component of `UnsupportedApiRevision`.",
+    "ConnectorManifestError::UnsupportedApiRevision::supported: References the supported participating in `UnsupportedApiRevision`.",
+    "pocketstation::connector::manifest::ConnectorManifestError::UnsupportedApiRevision: Reports that the requested API revision is unsupported.",
+    "pocketstation::connector::manifest::ConnectorManifestError::InvalidManifestRevision: Reports that the supplied manifest revision is invalid.",
+    "pocketstation::connector::manifest::ConnectorManifestError::EmptyOperatorId: Reports that operator identifier is empty.",
+    "pocketstation::connector::manifest::ConnectorManifestError::InvalidPackageVersion: Reports that the supplied package version is invalid.",
+    "pocketstation::connector::manifest::ConnectorManifestError::MissingInputPort: Reports that the required input port is missing.",
+    "pocketstation::connector::manifest::ConnectorManifestError::OutputPortNotSupported: Reports that output port is not supported by this boundary.",
+    "pocketstation::connector::manifest::ConnectorManifestError::RealtimeExecutionForbidden: Reports that realtime execution is forbidden by the declared safety contract.",
+    "pocketstation::connector::manifest::ConnectorManifestError::InvalidManifestEntry: Reports that the supplied manifest entry is invalid.",
+    "pocketstation::connector::manifest::ConnectorManifestError::ManifestEntryTooLarge: Reports that manifest entry exceeds the supported size limit.",
+    "pocketstation::connector::manifest::ConnectorManifestError::TooManyManifestEntries: Reports that the number of manifest entries exceeds the supported limit.",
     "ConnectorManifestError::DuplicateManifestEntry::id: Identifies the id recorded by `DuplicateManifestEntry`.",
-    "pocketstation::connector::manifest::ConnectorManifestError::DuplicateManifestEntry: Reported when the owning operation encounters duplicate manifest entry."
+    "pocketstation::connector::manifest::ConnectorManifestError::DuplicateManifestEntry: Reports that manifest entry duplicates an existing declaration or record."
   ],
   "retry_behavior": [],
   "serialization": [],

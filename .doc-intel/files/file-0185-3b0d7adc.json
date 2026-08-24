@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/runtime/bridge/mod.rs",
     "IMPORTS:src/runtime/bridge/mod.rs",
     "REFERENCES:src/session/lifecycle/observations.rs",
@@ -116,6 +117,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/runtime/bridge/mod.rs",
     "IMPORTS:src/runtime/bridge/mod.rs",
     "REFERENCES:src/session/lifecycle/observations.rs",
@@ -416,16 +418,247 @@
       "classification": "DIRECT",
       "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
       "lines": [
-        1,
-        529
+        16,
+        16
       ],
       "path": "src/runtime/bridge/audio.rs",
-      "symbol": null
+      "symbol": "LOST_WAKEUP_FALLBACK_INTERVAL"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        19,
+        28
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "GeneratedAudioBridgeSpec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "session_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "stream_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "source_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "clock_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "sample_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "samples_per_frame"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "pool_slots"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        31,
+        42
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "validate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        46,
+        55
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "GeneratedAudioBridgeStartError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        48,
+        48
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "InvalidSampleSpec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        50,
+        50
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "ZeroFrameSamples"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        52,
+        52
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "InvalidPoolSlots"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        54,
+        54
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "ThreadStart"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        57,
+        57
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": "default"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/runtime/bridge/mod.rs",
     "IMPORTS:src/runtime/bridge/mod.rs",
     "REFERENCES:src/session/lifecycle/observations.rs",
@@ -445,6 +678,7 @@
   "generated_from": "not_applicable",
   "git_object": "8a1fe52f113a0909092d27af59d9e27655902c86",
   "implemented_by": [
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/runtime/bridge/mod.rs",
     "IMPORTS:src/runtime/bridge/mod.rs",
     "REFERENCES:src/session/lifecycle/observations.rs",
@@ -457,6 +691,7 @@
     "Drop for GeneratedAudioBridge"
   ],
   "imported_by": [
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/runtime/bridge/mod.rs",
     "IMPORTS:src/runtime/bridge/mod.rs",
     "REFERENCES:src/session/lifecycle/observations.rs",
@@ -476,18 +711,18 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleSpec, SessionId, SourceId, StemId, StreamId, POOL_MAX_SLOTS, }",
-    "crate::frame::{SampleFormat, SAMPLE_RATE_HZ}",
-    "crate::graph::{EdgeContract, SignalEnvelope}",
-    "crate::graph::{SignalEnvelope, SignalPayload}",
-    "crate::runtime::{ PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }",
-    "crate::runtime::{ plan_source_channel, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::thread::{self, JoinHandle}",
-    "std::time::Duration",
-    "super::*"
+    "Consumes configuration at src/runtime/bridge/audio.rs:328.",
+    "Depends on `crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleSpec, SessionId, SourceId, StemId, StreamId, POOL_MAX_SLOTS, }` through a declared Rust import.",
+    "Depends on `crate::frame::{SampleFormat, SAMPLE_RATE_HZ}` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, SignalEnvelope}` through a declared Rust import.",
+    "Depends on `crate::graph::{SignalEnvelope, SignalPayload}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }` through a declared Rust import.",
+    "Depends on `crate::runtime::{ plan_source_channel, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -525,7 +760,7 @@
   "module": "pocketstation::runtime::bridge::audio",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::bridge::audio` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-91de00a25daaff088c71",
@@ -533,21 +768,21 @@
     "pattern-e742bd4fc23f218a902b"
   ],
   "outputs": [
-    "enum:GeneratedAudioBridgeStartError",
-    "fn:cancel_and_join",
-    "fn:finish_and_join",
-    "fn:observations",
-    "fn:snapshot",
-    "fn:spawn",
-    "fn:stem_id",
-    "fn:validate",
-    "return Err(GeneratedAudioBridgeStartError::InvalidPoolSlots);",
-    "return Err(GeneratedAudioBridgeStartError::InvalidSampleSpec);",
-    "return Err(GeneratedAudioBridgeStartError::ZeroFrameSamples);",
-    "struct:GeneratedAudioBridge",
-    "struct:GeneratedAudioBridgeObservationHandle",
-    "struct:GeneratedAudioBridgeObservations",
-    "struct:GeneratedAudioBridgeSpec"
+    "Creates a typed failure at src/runtime/bridge/audio.rs:33.",
+    "Creates a typed failure at src/runtime/bridge/audio.rs:36.",
+    "Creates a typed failure at src/runtime/bridge/audio.rs:39.",
+    "Declares public enum `GeneratedAudioBridgeStartError`.",
+    "Declares public fn `cancel_and_join`.",
+    "Declares public fn `finish_and_join`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `snapshot`.",
+    "Declares public fn `spawn`.",
+    "Declares public fn `stem_id`.",
+    "Declares public fn `validate`.",
+    "Declares public struct `GeneratedAudioBridgeObservationHandle`.",
+    "Declares public struct `GeneratedAudioBridgeObservations`.",
+    "Declares public struct `GeneratedAudioBridgeSpec`.",
+    "Declares public struct `GeneratedAudioBridge`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/bridge/audio.rs",
@@ -717,8 +952,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::bridge::audio responsibilities, including Configures generated audio bridge behavior at its owning API boundary.; Identifies the session identifier recorded by `GeneratedAudioBridgeSpec`.; Identifies the stem identifier recorded by `GeneratedAudioBridgeSpec`.."
+    "classification": "DECLARED",
+    "text": "Configures generated audio bridge behavior at its owning API boundary. Identifies the session identifier recorded by `GeneratedAudioBridgeSpec`. Identifies the stem identifier recorded by `GeneratedAudioBridgeSpec`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -775,6 +1010,10 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_protocol.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/runtime/signal/operator.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/frame/pool.rs",
@@ -846,15 +1085,15 @@
     "GeneratedAudioBridgeSpec::stream_id: Identifies the stream identifier recorded by `GeneratedAudioBridgeSpec`.",
     "GeneratedAudioBridgeSpec::source_id: Identifies the source identifier recorded by `GeneratedAudioBridgeSpec`.",
     "GeneratedAudioBridgeSpec::clock_id: Identifies the clock identifier recorded by `GeneratedAudioBridgeSpec`.",
-    "GeneratedAudioBridgeSpec::sample_spec: Stores the sample spec used by `GeneratedAudioBridgeSpec`.",
-    "GeneratedAudioBridgeSpec::samples_per_frame: Stores the samples per frame used by `GeneratedAudioBridgeSpec`.",
-    "GeneratedAudioBridgeSpec::pool_slots: Stores the pool slots used by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::sample_spec: Declares the sample rate, channel layout, and format used by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::samples_per_frame: Stores the number of samples in each channel of a frame handled by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::pool_slots: Contains the pool slots owned or reported by `GeneratedAudioBridgeSpec`.",
     "validate: Validates `GeneratedAudioBridgeSpec` against its declared contract.",
-    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError: Classifies failures reported as generated audio bridge start error.",
-    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
-    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ZeroFrameSamples: Reported when the owning operation encounters zero frame samples.",
-    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots: Reported when the owning operation encounters invalid pool slots.",
-    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart: Reported when the owning operation encounters thread start.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError: Classifies failures produced during generated audio bridge lifecycle start.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec: Reports that the supplied sample spec is invalid.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ZeroFrameSamples: Reports that frame samples must be greater than zero.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots: Reports that the supplied pool slots is invalid.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart: Classifies a failure at the thread start stage or component of `GeneratedAudioBridgeStartError`.",
     "pocketstation::runtime::bridge::audio::GeneratedAudioBridge: Transfers generated audio across the bounded runtime boundary it owns.",
     "spawn: Spawns its owned operation for `GeneratedAudioBridge`.",
     "finish_and_join: Finishes input to `GeneratedAudioBridge`, joins its worker, and returns the terminal result.",

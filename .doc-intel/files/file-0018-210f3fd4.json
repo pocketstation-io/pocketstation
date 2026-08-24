@@ -54,7 +54,7 @@
       "content_hash": "4acd3a036e3252514636e048c0b5c91bd333becb769bd94eca4e253b28d275d5",
       "lines": [
         1,
-        33
+        21
       ],
       "path": "benches/timing.rs",
       "symbol": null
@@ -84,8 +84,8 @@
     "pocketstation::internal::timing::{ClockCorrectionController, ClockDriftEstimator}"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
-    "pocketstation::internal::timing::{ClockCorrectionController, ClockDriftEstimator}"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::timing::{ClockCorrectionController, ClockDriftEstimator}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -94,7 +94,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/timing.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -120,8 +120,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/timing boundary."
+    "classification": "DECLARED",
+    "text": "Measures timing by repeatedly exercising ClockCorrectionController::default, ClockDriftEstimator::new, Throughput::Elements, bench_function."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -21,21 +21,21 @@ const MAX_MANIFEST_GAPS: usize = 1_024;
 const MAX_SILENCE_GAP_NS: u64 = 3_600_000_000_000; // one hour
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as recorder error."]
+#[doc = "Classifies failures surfaced by recorder operations."]
 pub enum RecorderError {
     #[error("recording output already exists: {0}")]
-    #[doc = "Reported when the owning operation encounters output exists."]
+    #[doc = "Reports that output already exists and would be overwritten."]
     OutputExists(PathBuf),
     #[error("invalid stem label '{0}'")]
-    #[doc = "Reported when the owning operation encounters invalid stem label."]
+    #[doc = "Reports that the supplied stem label is invalid."]
     InvalidStemLabel(String),
     #[error("duplicate stem label '{0}'")]
-    #[doc = "Reported when the owning operation encounters duplicate stem label."]
+    #[doc = "Reports that stem label duplicates an existing declaration or record."]
     DuplicateStemLabel(String),
     #[error("stem '{label}' belongs to session {actual}, expected {expected}")]
-    #[doc = "Reported when the owning operation encounters session mismatch."]
+    #[doc = "Reports that session does not match the expected contract."]
     SessionMismatch {
-        #[doc = "Stores the label used by `SessionMismatch`."]
+        #[doc = "Stores the human-readable label used to identify `SessionMismatch`."]
         label: String,
         #[doc = "Records the value observed by `SessionMismatch`."]
         actual: u64,
@@ -46,19 +46,19 @@ pub enum RecorderError {
     #[doc = "Reports that the required permission was denied."]
     PermissionDenied(String),
     #[error("stem '{label}' has invalid sample spec {sample_rate_hz} Hz/{channels} ch")]
-    #[doc = "Reported when the owning operation encounters invalid sample spec."]
+    #[doc = "Reports that the supplied sample spec is invalid."]
     InvalidSampleSpec {
-        #[doc = "Stores the label used by `InvalidSampleSpec`."]
+        #[doc = "Stores the human-readable label used to identify `InvalidSampleSpec`."]
         label: String,
         #[doc = "Stores the sample rate value for `InvalidSampleSpec`, in hertz."]
         sample_rate_hz: u32,
-        #[doc = "Stores the channels used by `InvalidSampleSpec`."]
+        #[doc = "Contains the channels owned or reported by `InvalidSampleSpec`."]
         channels: u8,
     },
     #[error("stem '{label}' received source {actual}, expected {expected}")]
-    #[doc = "Reported when the owning operation encounters source mismatch."]
+    #[doc = "Reports that source does not match the expected contract."]
     SourceMismatch {
-        #[doc = "Stores the label used by `SourceMismatch`."]
+        #[doc = "Stores the human-readable label used to identify `SourceMismatch`."]
         label: String,
         #[doc = "Records the value observed by `SourceMismatch`."]
         actual: u64,
@@ -66,11 +66,11 @@ pub enum RecorderError {
         expected: u64,
     },
     #[error("stem '{label}' frame lineage {field:?} is {actual}, expected {expected}")]
-    #[doc = "Reported when the owning operation encounters lineage mismatch."]
+    #[doc = "Reports that lineage does not match the expected contract."]
     LineageMismatch {
-        #[doc = "Stores the label used by `LineageMismatch`."]
+        #[doc = "Stores the human-readable label used to identify `LineageMismatch`."]
         label: String,
-        #[doc = "Stores the field used by `LineageMismatch`."]
+        #[doc = "Stores the field as a `RecorderLineageField` value in `LineageMismatch`."]
         field: RecorderLineageField,
         #[doc = "Records the value observed by `LineageMismatch`."]
         actual: u64,
@@ -78,47 +78,47 @@ pub enum RecorderError {
         expected: u64,
     },
     #[error("stem '{label}' frame spec is {actual_rate_hz} Hz/{actual_channels} ch, expected {expected_rate_hz} Hz/{expected_channels} ch")]
-    #[doc = "Reported when the owning operation encounters frame spec mismatch."]
+    #[doc = "Reports that frame spec does not match the expected contract."]
     FrameSpecMismatch {
-        #[doc = "Stores the label used by `FrameSpecMismatch`."]
+        #[doc = "Stores the human-readable label used to identify `FrameSpecMismatch`."]
         label: String,
         #[doc = "Stores the actual rate value for `FrameSpecMismatch`, in hertz."]
         actual_rate_hz: u32,
-        #[doc = "Stores the actual channels used by `FrameSpecMismatch`."]
+        #[doc = "Contains the actual channels owned or reported by `FrameSpecMismatch`."]
         actual_channels: u8,
         #[doc = "Stores the expected rate value for `FrameSpecMismatch`, in hertz."]
         expected_rate_hz: u32,
-        #[doc = "Stores the expected channels used by `FrameSpecMismatch`."]
+        #[doc = "Contains the expected channels owned or reported by `FrameSpecMismatch`."]
         expected_channels: u8,
     },
     #[error("stem '{0}' has a frame whose samples are not channel-aligned")]
-    #[doc = "Reported when the owning operation encounters unaligned samples."]
+    #[doc = "Reports that samples does not align to complete frames or channels."]
     UnalignedSamples(String),
     #[error("stem '{0}' timestamp cannot be normalized")]
-    #[doc = "Reported when the owning operation encounters timestamp out of range."]
+    #[doc = "Reports that timestamp falls outside the supported range."]
     TimestampOutOfRange(String),
     #[error("stem '{label}' gap {duration_ns} ns exceeds the one-hour proof limit")]
-    #[doc = "Reported when the owning operation encounters gap too large."]
+    #[doc = "Reports that gap exceeds the supported size limit."]
     GapTooLarge {
-        #[doc = "Stores the label used by `GapTooLarge`."]
+        #[doc = "Stores the human-readable label used to identify `GapTooLarge`."]
         label: String,
         #[doc = "Stores the duration value for `GapTooLarge`, in nanoseconds."]
         duration_ns: u64,
     },
     #[error("stem '{0}' exceeded the bounded manifest gap count")]
-    #[doc = "Reported when the owning operation encounters too many gaps."]
+    #[doc = "Reports that the number of gaps exceeds the supported limit."]
     TooManyGaps(String),
     #[error("recorder worker '{0}' panicked")]
-    #[doc = "Reported when the owning operation encounters worker panicked."]
+    #[doc = "Reports that worker panicked while the operation was active."]
     WorkerPanicked(String),
     #[error("I/O error: {0}")]
-    #[doc = "Reported when the owning operation encounters I/O."]
+    #[doc = "Reports an operating-system or filesystem I/O failure."]
     Io(#[from] std::io::Error),
     #[error("WAV error: {0}")]
-    #[doc = "Reported when the owning operation encounters wav."]
+    #[doc = "Classifies a failure at the wav stage or component of `RecorderError`."]
     Wav(#[from] hound::Error),
     #[error("JSON error: {0}")]
-    #[doc = "Reported when the owning operation encounters json."]
+    #[doc = "Reports that JSON serialization or parsing failed."]
     Json(#[from] serde_json::Error),
 }
 
@@ -139,17 +139,17 @@ pub enum RecordingState {
 pub struct DiscontinuityRecord {
     #[doc = "Identifies the stem identifier recorded by `DiscontinuityRecord`."]
     pub stem_id: u64,
-    #[doc = "Stores the label used by `DiscontinuityRecord`."]
+    #[doc = "Stores the human-readable label used to identify `DiscontinuityRecord`."]
     pub label: String,
-    #[doc = "Stores the kind used by `DiscontinuityRecord`."]
+    #[doc = "Records the kind selected for `DiscontinuityRecord`."]
     pub kind: DiscontinuityKind,
     #[doc = "Stores the timestamp start value for `DiscontinuityRecord`, in nanoseconds."]
     pub timestamp_start_ns: u64,
     #[doc = "Stores the timestamp end value for `DiscontinuityRecord`, in nanoseconds."]
     pub timestamp_end_ns: u64,
-    #[doc = "Stores the sequence start used by `DiscontinuityRecord`."]
+    #[doc = "Records the first sequence number covered by `DiscontinuityRecord`."]
     pub sequence_start: Option<u64>,
-    #[doc = "Stores the sequence end used by `DiscontinuityRecord`."]
+    #[doc = "Records the last sequence number covered by `DiscontinuityRecord`."]
     pub sequence_end: Option<u64>,
 }
 
@@ -157,43 +157,43 @@ pub struct DiscontinuityRecord {
 #[serde(rename_all = "snake_case")]
 #[doc = "Selects the discontinuity kind used by PocketStation."]
 pub enum DiscontinuityKind {
-    #[doc = "Selects timestamp gap behavior for `DiscontinuityKind`."]
+    #[doc = "Classifies the observed stream discontinuity as timestamp gap."]
     TimestampGap,
-    #[doc = "Selects sequence gap behavior for `DiscontinuityKind`."]
+    #[doc = "Classifies the observed stream discontinuity as sequence gap."]
     SequenceGap,
-    #[doc = "Selects overlap rejected behavior for `DiscontinuityKind`."]
+    #[doc = "Classifies the observed stream discontinuity as overlap rejected."]
     OverlapRejected,
 }
 
 #[derive(Debug, Clone)]
 #[doc = "Reports the structured recording outcome."]
 pub struct RecordingOutcome {
-    #[doc = "Stores the session dir used by `RecordingOutcome`."]
+    #[doc = "Points to the directory containing the Session recording represented by `RecordingOutcome`."]
     pub session_dir: PathBuf,
-    #[doc = "Stores the state used by `RecordingOutcome`."]
+    #[doc = "Records the state selected for `RecordingOutcome`."]
     pub state: RecordingState,
-    #[doc = "Stores the completed stems used by `RecordingOutcome`."]
+    #[doc = "Contains the completed stems owned or reported by `RecordingOutcome`."]
     pub completed_stems: usize,
-    #[doc = "Stores the failed stems used by `RecordingOutcome`."]
+    #[doc = "Contains the failed stems owned or reported by `RecordingOutcome`."]
     pub failed_stems: usize,
-    #[doc = "Stores the stems used by `RecordingOutcome`."]
+    #[doc = "Contains the stems owned or reported by `RecordingOutcome`."]
     pub stems: Vec<RecordingStemOutcome>,
 }
 
 #[derive(Debug, Clone)]
 #[doc = "Reports the structured recording stem outcome."]
 pub struct RecordingStemOutcome {
-    #[doc = "Stores the label used by `RecordingStemOutcome`."]
+    #[doc = "Stores the human-readable label used to identify `RecordingStemOutcome`."]
     pub label: String,
-    #[doc = "Stores the written frames used by `RecordingStemOutcome`."]
+    #[doc = "Contains the written frames owned or reported by `RecordingStemOutcome`."]
     pub written_frames: u64,
-    #[doc = "Stores the stale frames used by `RecordingStemOutcome`."]
+    #[doc = "Contains the stale frames owned or reported by `RecordingStemOutcome`."]
     pub stale_frames: u64,
-    #[doc = "Stores the gap ranges used by `RecordingStemOutcome`."]
+    #[doc = "Contains the gap ranges owned or reported by `RecordingStemOutcome`."]
     pub gap_ranges: Vec<DiscontinuityRecord>,
-    #[doc = "Stores the error used by `RecordingStemOutcome`."]
+    #[doc = "Stores the error component of `RecordingStemOutcome`."]
     pub error: Option<String>,
-    #[doc = "Stores the edge observations used by `RecordingStemOutcome`."]
+    #[doc = "References the edge observations participating in `RecordingStemOutcome`."]
     pub edge_observations: EdgeObservations,
 }
 

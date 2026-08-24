@@ -1,6 +1,6 @@
 # No microphone audio arrives
 
-<!-- claims: CLM-TRBL-003-CAP-001,CLM-TRBL-003-CAP-002,CLM-TRBL-003-CAP-003,CLM-TRBL-003-CAP-004,CLM-TRBL-003-SOURCE-001 -->
+<!-- claims: CLM-TRBL-003-SCOPE-001,CLM-TRBL-003-TEXT-001,CLM-TRBL-003-TEXT-002,CLM-TRBL-003-TEXT-003,CLM-TRBL-003-TEXT-004,CLM-TRBL-003-TEXT-005,CLM-TRBL-003-TEXT-006,CLM-TRBL-003-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,7 +78,7 @@ Do not loop on `NotObservable`; retry opening only after a meaningful permission
 
 The claims on **No microphone audio arrives** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/authorization.rs:1-318` (`DIRECT`)
-- `src/capture/observations.rs:1-130` (`DIRECT`)
+- `src/capture/authorization.rs:1-1` (`DECLARED`)
+- `src/capture/observations.rs:1-1` (`DECLARED`)
 
 For **No microphone audio arrives**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

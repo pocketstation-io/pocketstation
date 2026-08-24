@@ -4,7 +4,21 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/graph/builtins.rs",
@@ -116,7 +130,21 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/graph/builtins.rs",
@@ -496,17 +524,261 @@
       "classification": "DIRECT",
       "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
       "lines": [
-        1,
-        231
+        11,
+        19
       ],
       "path": "src/graph/registry.rs",
-      "symbol": null
+      "symbol": "NodeFactory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "validate_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        14,
+        18
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "instantiate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        21,
+        24
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "NodeDefinition"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "validate_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        26,
+        30
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "RegistryEntry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "Runtime"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "Async"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "Definition"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        32,
+        36
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "NodeDefinitionRef"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "Runtime"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "Async"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "Definition"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        39,
+        45
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        47,
+        53
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "validate_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        56,
+        56
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": "fmt"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/graph/builtins.rs",
@@ -537,7 +809,21 @@
   "generated_from": "not_applicable",
   "git_object": "ae7f1b1af59db52cd72513310f1eabffc9ebdfd7",
   "implemented_by": [
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/graph/builtins.rs",
@@ -557,7 +843,21 @@
     "NodeRegistry"
   ],
   "imported_by": [
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/graph/builtins.rs",
@@ -583,19 +883,23 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,",
-    "crate::graph::OperatorId",
-    "crate::graph::builtins::{register_builtins, PassthroughFactory}",
-    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
-    "crate::graph::runtime_node::RuntimeNode",
-    "crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError}",
-    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;",
-    "pub fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::collections::HashMap",
-    "std::sync::Arc",
-    "super::*"
+    "Consumes configuration at src/graph/registry.rs:13.",
+    "Consumes configuration at src/graph/registry.rs:159.",
+    "Consumes configuration at src/graph/registry.rs:168.",
+    "Consumes configuration at src/graph/registry.rs:173.",
+    "Consumes configuration at src/graph/registry.rs:178.",
+    "Consumes configuration at src/graph/registry.rs:184.",
+    "Consumes configuration at src/graph/registry.rs:23.",
+    "Consumes configuration at src/graph/registry.rs:47.",
+    "Consumes configuration at src/graph/registry.rs:5.",
+    "Depends on `crate::graph::OperatorId` through a declared Rust import.",
+    "Depends on `crate::graph::builtins::{register_builtins, PassthroughFactory}` through a declared Rust import.",
+    "Depends on `crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }` through a declared Rust import.",
+    "Depends on `crate::graph::runtime_node::RuntimeNode` through a declared Rust import.",
+    "Depends on `crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError}` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -637,35 +941,37 @@
   "module": "pocketstation::graph::registry",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::registry` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-cbdc573effe2010bd38e"
   ],
   "outputs": [
-    "Err(NodeRegistrationError::DuplicateNodeType { .. })",
-    "enum:NodeDefinitionRef",
-    "enum:NodeRegistrationError",
-    "fn:async_factory",
-    "fn:async_factory_by_operator",
-    "fn:async_node_type_id",
-    "fn:contains",
-    "fn:definition",
-    "fn:descriptor",
-    "fn:get",
-    "fn:is_empty",
-    "fn:len",
-    "fn:new",
-    "fn:register",
-    "fn:register_async",
-    "fn:register_definition",
-    "fn:type_ids",
-    "fn:validate_config",
-    "return Err(NodeRegistrationError::DuplicateNodeType {",
-    "return Err(NodeRegistrationError::DuplicateOperatorId {",
-    "struct:NodeRegistry",
-    "trait:NodeDefinition",
-    "trait:NodeFactory"
+    "Creates a typed failure at src/graph/registry.rs:102.",
+    "Creates a typed failure at src/graph/registry.rs:118.",
+    "Creates a typed failure at src/graph/registry.rs:225.",
+    "Creates a typed failure at src/graph/registry.rs:80.",
+    "Creates a typed failure at src/graph/registry.rs:96.",
+    "Declares public enum `NodeDefinitionRef`.",
+    "Declares public enum `NodeRegistrationError`.",
+    "Declares public fn `async_factory_by_operator`.",
+    "Declares public fn `async_factory`.",
+    "Declares public fn `async_node_type_id`.",
+    "Declares public fn `contains`.",
+    "Declares public fn `definition`.",
+    "Declares public fn `descriptor`.",
+    "Declares public fn `get`.",
+    "Declares public fn `is_empty`.",
+    "Declares public fn `len`.",
+    "Declares public fn `new`.",
+    "Declares public fn `register_async`.",
+    "Declares public fn `register_definition`.",
+    "Declares public fn `register`.",
+    "Declares public fn `type_ids`.",
+    "Declares public fn `validate_config`.",
+    "Declares public struct `NodeRegistry`.",
+    "Declares public trait `NodeDefinition`.",
+    "Declares public trait `NodeFactory`."
   ],
   "package": "pocketstation",
   "path": "src/graph/registry.rs",
@@ -868,8 +1174,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::registry responsibilities, including Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract.; Returns the descriptor associated with `NodeFactory`.; Validates config for `NodeFactory`.."
+    "classification": "DECLARED",
+    "text": "Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract. Returns the descriptor associated with `NodeFactory`. Validates supplied node configuration against the schema declared by `NodeFactory`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -908,6 +1214,8 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/graph/signal/operator.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/operator.rs",
     "REFERENCES:src/graph/runtime_node.rs",
@@ -986,28 +1294,28 @@
   "responsibilities": [
     "pocketstation::graph::registry::NodeFactory: Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract.",
     "NodeFactory::descriptor: Returns the descriptor associated with `NodeFactory`.",
-    "NodeFactory::validate_config: Validates config for `NodeFactory`.",
+    "NodeFactory::validate_config: Validates supplied node configuration against the schema declared by `NodeFactory`.",
     "NodeFactory::instantiate: Instantiates the runtime node described by `NodeFactory`.",
     "pocketstation::graph::registry::NodeDefinition: Implement this trait to provide node definition behavior to PocketStation; its methods define the preparation and runtime contract.",
     "NodeDefinition::descriptor: Returns the descriptor associated with `NodeDefinition`.",
-    "NodeDefinition::validate_config: Validates config for `NodeDefinition`.",
-    "pocketstation::graph::registry::NodeDefinitionRef: Enumerates the supported node definition ref cases.",
+    "NodeDefinition::validate_config: Validates supplied node configuration against the schema declared by `NodeDefinition`.",
+    "pocketstation::graph::registry::NodeDefinitionRef: Borrows either a synchronous or asynchronous registered node definition.",
     "pocketstation::graph::registry::NodeDefinitionRef::Runtime: Represents the runtime alternative defined by `NodeDefinitionRef`.",
     "pocketstation::graph::registry::NodeDefinitionRef::Async: Represents the async alternative defined by `NodeDefinitionRef`.",
     "pocketstation::graph::registry::NodeDefinitionRef::Definition: Represents the definition alternative defined by `NodeDefinitionRef`.",
     "descriptor: Returns the descriptor associated with `NodeDefinitionRef`.",
-    "validate_config: Validates config for `NodeDefinitionRef`.",
-    "pocketstation::graph::registry::NodeRegistrationError: Classifies failures reported as node registration error.",
-    "pocketstation::graph::registry::NodeRegistrationError::InvalidAsyncManifest: Reported when the owning operation encounters invalid async manifest.",
+    "validate_config: Validates supplied node configuration against the schema declared by `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeRegistrationError: Classifies failures produced during node registration.",
+    "pocketstation::graph::registry::NodeRegistrationError::InvalidAsyncManifest: Reports that the supplied async manifest is invalid.",
     "NodeRegistrationError::DuplicateNodeType::node_type_id: Identifies the node type identifier recorded by `DuplicateNodeType`.",
-    "pocketstation::graph::registry::NodeRegistrationError::DuplicateNodeType: Reported when the owning operation encounters duplicate node type.",
+    "pocketstation::graph::registry::NodeRegistrationError::DuplicateNodeType: Reports that node type duplicates an existing declaration or record.",
     "NodeRegistrationError::DuplicateOperatorId::operator_id: Identifies the operator identifier recorded by `DuplicateOperatorId`.",
-    "pocketstation::graph::registry::NodeRegistrationError::DuplicateOperatorId: Reported when the owning operation encounters duplicate operator identifier.",
+    "pocketstation::graph::registry::NodeRegistrationError::DuplicateOperatorId: Reports that operator identifier duplicates an existing declaration or record.",
     "pocketstation::graph::registry::NodeRegistry: Indexes registered node implementations by their stable identities.",
     "new: Creates a new `NodeRegistry`.",
     "register: Registers a node definition with `NodeRegistry` while preserving unique identities.",
-    "register_async: Registers async for `NodeRegistry`.",
-    "register_definition: Registers definition for `NodeRegistry`.",
+    "register_async: Validates and registers one asynchronous operator factory with `NodeRegistry`.",
+    "register_definition: Registers one validated node definition with `NodeRegistry`.",
     "get: Returns the value held by `NodeRegistry`.",
     "definition: Returns the definition associated with `NodeRegistry`.",
     "async_factory: Returns the async factory associated with `NodeRegistry`.",

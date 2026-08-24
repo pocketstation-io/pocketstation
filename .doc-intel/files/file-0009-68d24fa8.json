@@ -43,11 +43,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "4bb05c002fa38cc0c4062fe3611956b06e3bc56544d70afdeb0a99c1f9fe00a0",
       "lines": [
         1,
-        91
+        9
       ],
       "path": "RELEASE_NOTES.md",
       "symbol": null
@@ -106,7 +106,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`RELEASE_NOTES.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

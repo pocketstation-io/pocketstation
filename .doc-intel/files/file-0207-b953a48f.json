@@ -109,14 +109,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "2530671835470780ad7ab181d7d763c353b3e981b6270bc9d55207a6e06a7acb",
       "lines": [
         1,
-        38
+        4
       ],
       "path": "src/session/declaration/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::declaration"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -166,22 +166,24 @@
     "typed_stream::{Stream, StreamSignal, TypedOperator, TypedStreamError}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "draft::{ DerivedStreamHandle, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle, Session, SourceInstanceHandle, SourceOutputHandle, StemHandle, }",
-    "endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
-    "endpoint::{ EndpointConfiguration, EndpointDescriptor, OperatorId, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
-    "module:draft",
-    "module:endpoint",
-    "module:operator_connections",
-    "module:selector",
-    "module:spec",
-    "module:typed_stream",
-    "selector::{ApplicationSelector, DeviceId, DeviceSelector, ProcessId, Source}",
-    "spec::StemSpec",
-    "spec::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, OperatorInstanceSpec, SessionSpec, SourceInstanceId, SourceInstanceSpec, SourceOutputSpec, StreamOrigin, }",
-    "spec::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION}",
-    "typed_stream::{Stream, StreamSignal, TypedOperator, TypedStreamError}"
+    "Consumes configuration at src/session/declaration/mod.rs:16.",
+    "Consumes configuration at src/session/declaration/mod.rs:23.",
+    "Consumes configuration at src/session/declaration/mod.rs:29.",
+    "Consumes configuration at src/session/declaration/mod.rs:34.",
+    "Depends on `draft::{ DerivedStreamHandle, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle, Session, SourceInstanceHandle, SourceOutputHandle, StemHandle, }` through a declared Rust import.",
+    "Depends on `draft` through a declared Rust import.",
+    "Depends on `endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY` through a declared Rust import.",
+    "Depends on `endpoint::{ EndpointConfiguration, EndpointDescriptor, OperatorId, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `endpoint` through a declared Rust import.",
+    "Depends on `operator_connections` through a declared Rust import.",
+    "Depends on `selector::{ApplicationSelector, DeviceId, DeviceSelector, ProcessId, Source}` through a declared Rust import.",
+    "Depends on `selector` through a declared Rust import.",
+    "Depends on `spec::StemSpec` through a declared Rust import.",
+    "Depends on `spec::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, OperatorInstanceSpec, SessionSpec, SourceInstanceId, SourceInstanceSpec, SourceOutputSpec, StreamOrigin, }` through a declared Rust import.",
+    "Depends on `spec::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION}` through a declared Rust import.",
+    "Depends on `spec` through a declared Rust import.",
+    "Depends on `typed_stream::{Stream, StreamSignal, TypedOperator, TypedStreamError}` through a declared Rust import.",
+    "Depends on `typed_stream` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -190,7 +192,7 @@
   "module": "pocketstation::session::declaration",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -252,8 +254,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration responsibilities, including declaration."
+    "classification": "DECLARED",
+    "text": "Public Session declaration model. This module owns the developer-facing declaration state only. It does not compile graphs, allocate runtime queues, or start platform resources."
   },
   "queues": [],
   "recovery_behavior": [],

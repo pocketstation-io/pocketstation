@@ -10,7 +10,7 @@ use super::{CaptureSource, SourceKind, SourceState};
 use crate::frame::Platform;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported source query cases."]
+#[doc = "Describes the source kind and optional application or device selector used for discovery."]
 pub enum SourceQuery {
     #[doc = "Represents the any case of `SourceQuery`."]
     Any,
@@ -44,7 +44,7 @@ impl SourceQuery {
     }
 }
 
-#[doc = "Resolves query for `query`."]
+#[doc = "Filters discovered capture sources using the supplied source query."]
 pub fn resolve_query(query: &SourceQuery, sources: &[CaptureSource]) -> Vec<CaptureSource> {
     sources
         .iter()

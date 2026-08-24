@@ -15,23 +15,23 @@ use super::timeline::monotonic_timestamp_ns;
 /// separately and must not be relabeled as an OS permission preflight.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CaptureAuthorizationSnapshot {
-    #[doc = "Stores the capability used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the capability as a `CaptureCapabilityState` value in `CaptureAuthorizationSnapshot`."]
     pub capability: CaptureCapabilityState,
-    #[doc = "Stores the os permission used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Reports the operating-system permission state observed by `CaptureAuthorizationSnapshot`."]
     pub os_permission: PermissionObservation,
-    #[doc = "Stores the application policy used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Reports the application-level capture policy observed by `CaptureAuthorizationSnapshot`."]
     pub application_policy: ApplicationPolicyObservation,
-    #[doc = "Stores the session grant used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Reports whether the Session-specific capture grant is present for `CaptureAuthorizationSnapshot`."]
     pub session_grant: CaptureSessionGrant,
-    #[doc = "Stores the capture scope used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Declares the exact resource scope authorized by `CaptureAuthorizationSnapshot`."]
     pub capture_scope: CaptureScope,
-    #[doc = "Stores the identity strength used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Reports how strongly the selected source identity is bound in `CaptureAuthorizationSnapshot`."]
     pub identity_strength: SourceIdentityStrength,
-    #[doc = "Stores the permission epoch used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Identifies the permission-observation generation attached to `CaptureAuthorizationSnapshot`."]
     pub permission_epoch: PermissionEpoch,
     #[doc = "Stores the observed at value for `CaptureAuthorizationSnapshot`, in nanoseconds."]
     pub observed_at_ns: u64,
-    #[doc = "Stores the open outcome used by `CaptureAuthorizationSnapshot`."]
+    #[doc = "Reports whether opening capture is allowed, denied, or requires setup in `CaptureAuthorizationSnapshot`."]
     pub open_outcome: CaptureOpenOutcome,
 }
 
@@ -187,13 +187,13 @@ pub enum PermissionObservation {
 /// it never converts a generic backend error into permission state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct CapturePermissionTransition {
-    #[doc = "Stores the kind used by `CapturePermissionTransition`."]
+    #[doc = "Records the kind selected for `CapturePermissionTransition`."]
     pub kind: SourceLifecycleEventKind,
-    #[doc = "Stores the previous used by `CapturePermissionTransition`."]
+    #[doc = "Contains the previous owned or reported by `CapturePermissionTransition`."]
     pub previous: PermissionObservation,
-    #[doc = "Stores the current used by `CapturePermissionTransition`."]
+    #[doc = "Stores the current as a `PermissionObservation` value in `CapturePermissionTransition`."]
     pub current: PermissionObservation,
-    #[doc = "Stores the permission epoch used by `CapturePermissionTransition`."]
+    #[doc = "Identifies the permission-observation generation attached to `CapturePermissionTransition`."]
     pub permission_epoch: PermissionEpoch,
 }
 
@@ -259,19 +259,19 @@ impl CapturePermissionLifecycle {
 #[serde(rename_all = "kebab-case")]
 #[doc = "Classifies the observable application policy observation."]
 pub enum ApplicationPolicyObservation {
-    #[doc = "Selects allowed behavior for `ApplicationPolicyObservation`."]
+    #[doc = "Reports the observed application policy as allowed."]
     Allowed,
-    #[doc = "Selects denied behavior for `ApplicationPolicyObservation`."]
+    #[doc = "Reports the observed application policy as denied."]
     Denied,
-    #[doc = "Selects not observable behavior for `ApplicationPolicyObservation`."]
+    #[doc = "Reports the observed application policy as not observable."]
     NotObservable,
-    #[doc = "Selects not applicable behavior for `ApplicationPolicyObservation`."]
+    #[doc = "Reports the observed application policy as not applicable."]
     NotApplicable,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
-#[doc = "Enumerates the supported capture session grant cases."]
+#[doc = "Reports the Session-specific authorization available for capture."]
 pub enum CaptureSessionGrant {
     #[doc = "Represents the granted by explicit selection case of `CaptureSessionGrant`."]
     GrantedByExplicitSelection,
@@ -285,28 +285,28 @@ pub enum CaptureSessionGrant {
 #[serde(tag = "kind", rename_all = "kebab-case")]
 #[doc = "Selects the capture scope used by PocketStation."]
 pub enum CaptureScope {
-    #[doc = "Selects exact application behavior for `CaptureScope`."]
+    #[doc = "Limits capture authorization to exact application."]
     ExactApplication {
         #[doc = "Identifies the stable identifier recorded by `ExactApplication`."]
         stable_id: String,
     },
-    #[doc = "Selects exact input device behavior for `CaptureScope`."]
+    #[doc = "Limits capture authorization to exact input device."]
     ExactInputDevice {
         #[doc = "Identifies the stable identifier recorded by `ExactInputDevice`."]
         stable_id: String,
     },
-    #[doc = "Selects exact output device behavior for `CaptureScope`."]
+    #[doc = "Limits capture authorization to exact output device."]
     ExactOutputDevice {
         #[doc = "Identifies the stable identifier recorded by `ExactOutputDevice`."]
         stable_id: String,
     },
-    #[doc = "Selects system mix behavior for `CaptureScope`."]
+    #[doc = "Limits capture authorization to system mix."]
     SystemMix,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
-#[doc = "Enumerates the supported source identity strength cases."]
+#[doc = "Classifies how reliably a capture source identity binds to the same resource."]
 pub enum SourceIdentityStrength {
     #[doc = "Represents the application id and process identifier case of `SourceIdentityStrength`."]
     ApplicationIdAndProcessId,
@@ -346,62 +346,62 @@ pub enum CaptureOpenOutcome {
     Succeeded,
     #[doc = "Reports that the required permission was denied."]
     PermissionDenied,
-    #[doc = "Indicates the source unavailable state for `CaptureOpenOutcome`."]
+    #[doc = "Reports that source is unavailable."]
     SourceUnavailable,
     #[doc = "Indicates the backend failed state for `CaptureOpenOutcome`."]
     BackendFailed,
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as capture error."]
+#[doc = "Classifies failures surfaced by capture operations."]
 pub enum CaptureError {
     #[error("system audio loopback is not supported on this platform")]
-    #[doc = "Reports not supported."]
+    #[doc = "Reports that no t supported is available."]
     NotSupported,
     #[error("loopback backend error: {0}")]
-    #[doc = "Reports backend init."]
+    #[doc = "Classifies a failure at the backend init stage or component of `CaptureError`."]
     BackendInit(String),
     #[error("capture backend setup required for {backend}: {action}")]
-    #[doc = "Reports backend setup required."]
+    #[doc = "Classifies a failure at the backend setup required stage or component of `CaptureError`."]
     BackendSetupRequired {
-        #[doc = "Stores the backend used by `BackendSetupRequired`."]
+        #[doc = "Stores the backend component of `BackendSetupRequired`."]
         backend: &'static str,
-        #[doc = "Stores the action used by `BackendSetupRequired`."]
+        #[doc = "Describes the corrective action reported with `BackendSetupRequired`."]
         action: &'static str,
     },
     #[error("capture permission denied while {operation}")]
     #[doc = "Reports that the required permission was denied."]
     PermissionDenied {
-        #[doc = "Stores the operation used by `PermissionDenied`."]
+        #[doc = "Names the operation that produced `PermissionDenied`."]
         operation: &'static str,
     },
     #[error("capture backend failed while {operation}: status {status_code}")]
-    #[doc = "Reports backend status."]
+    #[doc = "Classifies a failure at the backend status stage or component of `CaptureError`."]
     BackendStatus {
-        #[doc = "Stores the operation used by `BackendStatus`."]
+        #[doc = "Names the operation that produced `BackendStatus`."]
         operation: &'static str,
-        #[doc = "Stores the status code used by `BackendStatus`."]
+        #[doc = "Preserves the platform or protocol status code reported by `BackendStatus`."]
         status_code: i32,
     },
     #[error("selected capture source is unavailable: {stable_key}")]
     #[doc = "Reports source unavailable."]
     SourceUnavailable {
-        #[doc = "Stores the stable key used by `SourceUnavailable`."]
+        #[doc = "Stores the stable source key associated with `SourceUnavailable`."]
         stable_key: String,
     },
     #[error("capture mode not supported on this backend: {0:?}")]
-    #[doc = "Reports mode unsupported."]
+    #[doc = "Reports that mode is unsupported by the active backend or contract."]
     ModeUnsupported(CaptureMode),
     #[error("captured-frame stream capacity must be greater than zero")]
-    #[doc = "Reports invalid stream capacity."]
+    #[doc = "Reports that the supplied stream capacity is invalid."]
     InvalidStreamCapacity,
     #[error("source-runtime event channel capacity must be greater than zero")]
-    #[doc = "Reports invalid runtime event capacity."]
+    #[doc = "Reports that the supplied runtime event capacity is invalid."]
     InvalidRuntimeEventCapacity,
     #[error("capture worker panicked while joining: {worker}")]
-    #[doc = "Reports capture worker panicked."]
+    #[doc = "Reports that capture worker panicked while the operation was active."]
     CaptureWorkerPanicked {
-        #[doc = "Stores the worker used by `CaptureWorkerPanicked`."]
+        #[doc = "Stores the worker component of `CaptureWorkerPanicked`."]
         worker: &'static str,
     },
 }

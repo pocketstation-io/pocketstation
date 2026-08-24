@@ -1,6 +1,6 @@
 # Platform prerequisites
 
-<!-- claims: CLM-DOC-005-CAP-001,CLM-DOC-005-CAP-002,CLM-DOC-005-CAP-003,CLM-DOC-005-CAP-004,CLM-DOC-005-SOURCE-001 -->
+<!-- claims: CLM-DOC-005-SCOPE-001,CLM-DOC-005-TEXT-001,CLM-DOC-005-TEXT-002,CLM-DOC-005-TEXT-003,CLM-DOC-005-SOURCE-001 -->
 
 ## Before you build
 
@@ -32,8 +32,8 @@ The scope of **Platform prerequisites** ends at the native contracts and executa
 | `pocketstation::capture::platform::macos::session_backend::DesktopCaptureBackend` | struct | macOS adapter from the platform-neutral Session capture contract to the existing CoreAudio/input RAII owner. | `src/capture/platform/macos/session_backend.rs:11` |
 | `pocketstation::capture::platform::macos::input::discover_input_sources_native` | function | Discovers microphone input sources through the native macOS backend. | `src/capture/platform/macos/input.rs:263` |
 | `pocketstation::capture::authorization::SourceIdentityStrength::PlatformStableId` | variant | Represents the platform stable identifier alternative defined by `SourceIdentityStrength`. | `src/capture/authorization.rs:262` |
-| `pocketstation::capture::events::CaptureRuntimeFailureClass::PlatformStatus` | variant | Reported when the owning operation encounters platform status. | `src/capture/events.rs:42` |
-| `events::CaptureRuntimeFailureClass::PlatformStatus::status_code` | struct_field | Stores the status code used by `PlatformStatus`. | `src/capture/events.rs:42` |
+| `pocketstation::capture::events::CaptureRuntimeFailureClass::PlatformStatus` | variant | Classifies a failure at the platform status stage or component of `CaptureRuntimeFailureClass`. | `src/capture/events.rs:42` |
+| `events::CaptureRuntimeFailureClass::PlatformStatus::status_code` | struct_field | Preserves the platform or protocol status code reported by `PlatformStatus`. | `src/capture/events.rs:42` |
 | `authorization` | module | Explicit capture authorization evidence and open outcomes. | `src/capture/authorization.rs:1` |
 | `query` | module | Control-plane source discovery queries used by the first-party CLI. | `src/capture/query.rs:1` |
 | `pocketstation::capture::capture_owner::ActiveCaptureBackend` | trait | Native capture resources owned for exactly one active capture. | `src/capture/capture_owner.rs:100` |
@@ -76,7 +76,7 @@ Executable evidence selected for **Platform prerequisites** is limited to each t
 
 The claims on **Platform prerequisites** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
-- `src/capture/platform/mod.rs:1-7` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
+- `src/capture/platform/mod.rs:2-6` (`DIRECT`)
 
 For **Platform prerequisites**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

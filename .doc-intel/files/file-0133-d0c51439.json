@@ -4,7 +4,13 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
     "REFERENCES:src/session/lifecycle/control.rs",
@@ -57,7 +63,13 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
     "REFERENCES:src/session/lifecycle/control.rs",
@@ -302,17 +314,253 @@
       "classification": "DIRECT",
       "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
       "lines": [
-        1,
-        173
+        10,
+        13
       ],
       "path": "src/endpoint/registry.rs",
-      "symbol": null
+      "symbol": "RegisteredEndpointDriver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "node_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        16,
+        36
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "EndpointDriverRegistryError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "EmptyOperatorId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "EmptyNodeTypeId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        24,
+        27
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "Duplicate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "operator_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "node_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        31,
+        35
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "OperatorNodeTypeConflict"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "operator_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "registered_node_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "requested_node_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        39,
+        51
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "EndpointPrepareError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "EmptyBatch"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ecc1360ebc625d52534abde2e9c216e57a179f82b452e9a4210778f52270647",
+      "lines": [
+        45,
+        48
+      ],
+      "path": "src/endpoint/registry.rs",
+      "symbol": "NotRegistered"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
     "REFERENCES:src/session/lifecycle/control.rs",
@@ -337,7 +585,13 @@
   "generated_from": "not_applicable",
   "git_object": "e79d5060f47a5422d6702fbde8e86776e238929f",
   "implemented_by": [
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
     "REFERENCES:src/session/lifecycle/control.rs",
@@ -350,7 +604,13 @@
     "EndpointDriverRegistry"
   ],
   "imported_by": [
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/session/lifecycle/host.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
     "REFERENCES:src/session/lifecycle/control.rs",
@@ -367,13 +627,14 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointPortInput, EndpointPreparationGroup, OperatorId, PreparedEndpoint, }",
-    "crate::graph::NodeTypeId",
-    "module:tests",
-    "std::collections::HashMap",
-    "std::sync::Arc"
+    "Consumes configuration at src/endpoint/registry.rs:107.",
+    "Consumes configuration at src/endpoint/registry.rs:131.",
+    "Consumes configuration at src/endpoint/registry.rs:171.",
+    "Depends on `crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointPortInput, EndpointPreparationGroup, OperatorId, PreparedEndpoint, }` through a declared Rust import.",
+    "Depends on `crate::graph::NodeTypeId` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -395,28 +656,28 @@
   "module": "pocketstation::endpoint::registry",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::registry` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-08b6c198168e6870f15c"
   ],
   "outputs": [
-    "enum:EndpointDriverRegistryError",
-    "enum:EndpointPrepareError",
-    "fn:contains",
-    "fn:new",
-    "fn:node_type_id",
-    "fn:preparation_group",
-    "fn:prepare",
-    "fn:prepare_batch",
-    "fn:register",
-    "fn:validate_registration",
-    "return Err(EndpointDriverRegistryError::Duplicate {",
-    "return Err(EndpointDriverRegistryError::EmptyNodeTypeId);",
-    "return Err(EndpointDriverRegistryError::EmptyOperatorId);",
-    "return Err(EndpointDriverRegistryError::OperatorNodeTypeConflict {",
-    "return Err(EndpointPrepareError::EmptyBatch);",
-    "struct:EndpointDriverRegistry"
+    "Creates a typed failure at src/endpoint/registry.rs:148.",
+    "Creates a typed failure at src/endpoint/registry.rs:86.",
+    "Creates a typed failure at src/endpoint/registry.rs:89.",
+    "Creates a typed failure at src/endpoint/registry.rs:93.",
+    "Creates a typed failure at src/endpoint/registry.rs:98.",
+    "Declares public enum `EndpointDriverRegistryError`.",
+    "Declares public enum `EndpointPrepareError`.",
+    "Declares public fn `contains`.",
+    "Declares public fn `new`.",
+    "Declares public fn `node_type_id`.",
+    "Declares public fn `preparation_group`.",
+    "Declares public fn `prepare_batch`.",
+    "Declares public fn `prepare`.",
+    "Declares public fn `register`.",
+    "Declares public fn `validate_registration`.",
+    "Declares public struct `EndpointDriverRegistry`."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/registry.rs",
@@ -517,8 +778,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::registry responsibilities, including Classifies failures reported as endpoint driver registry error.; Reported when the owning operation encounters empty operator identifier.; Reported when the owning operation encounters empty node type identifier.."
+    "classification": "DECLARED",
+    "text": "Classifies failures surfaced by endpoint driver registry operations. Reports that operator identifier is empty. Reports that node type identifier is empty."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -555,6 +816,8 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/registry.rs",
+    "IMPLEMENTS:src/endpoint/runtime.rs",
     "REFERENCES:src/endpoint/contract.rs",
     "REFERENCES:src/endpoint/identity.rs",
     "REFERENCES:src/endpoint/runtime.rs",
@@ -577,22 +840,22 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::endpoint::registry::EndpointDriverRegistryError: Classifies failures reported as endpoint driver registry error.",
-    "pocketstation::endpoint::registry::EndpointDriverRegistryError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
-    "pocketstation::endpoint::registry::EndpointDriverRegistryError::EmptyNodeTypeId: Reported when the owning operation encounters empty node type identifier.",
-    "pocketstation::endpoint::registry::EndpointDriverRegistryError::Duplicate: Reported when the owning operation encounters duplicate.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError: Classifies failures surfaced by endpoint driver registry operations.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::EmptyOperatorId: Reports that operator identifier is empty.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::EmptyNodeTypeId: Reports that node type identifier is empty.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::Duplicate: Reports that the supplied value duplicates an existing record.",
     "EndpointDriverRegistryError::Duplicate::operator_id: Identifies the operator identifier recorded by `Duplicate`.",
     "EndpointDriverRegistryError::Duplicate::node_type_id: Identifies the node type identifier recorded by `Duplicate`.",
-    "pocketstation::endpoint::registry::EndpointDriverRegistryError::OperatorNodeTypeConflict: Reported when the owning operation encounters operator node type conflict.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::OperatorNodeTypeConflict: Reports that operator node type conflicts with an existing registration or declaration.",
     "EndpointDriverRegistryError::OperatorNodeTypeConflict::operator_id: Identifies the operator identifier recorded by `OperatorNodeTypeConflict`.",
     "EndpointDriverRegistryError::OperatorNodeTypeConflict::registered_node_type_id: Identifies the registered node type identifier recorded by `OperatorNodeTypeConflict`.",
     "EndpointDriverRegistryError::OperatorNodeTypeConflict::requested_node_type_id: Identifies the requested node type identifier recorded by `OperatorNodeTypeConflict`.",
-    "pocketstation::endpoint::registry::EndpointPrepareError: Classifies failures reported as endpoint prepare error.",
-    "pocketstation::endpoint::registry::EndpointPrepareError::EmptyBatch: Reported when the owning operation encounters empty batch.",
-    "pocketstation::endpoint::registry::EndpointPrepareError::NotRegistered: Reported when the owning operation encounters not registered.",
+    "pocketstation::endpoint::registry::EndpointPrepareError: Classifies failures produced during endpoint resource preparation.",
+    "pocketstation::endpoint::registry::EndpointPrepareError::EmptyBatch: Reports that batch is empty.",
+    "pocketstation::endpoint::registry::EndpointPrepareError::NotRegistered: Reports that no t registered is available.",
     "EndpointPrepareError::NotRegistered::operator_id: Identifies the operator identifier recorded by `NotRegistered`.",
     "EndpointPrepareError::NotRegistered::node_type_id: Identifies the node type identifier recorded by `NotRegistered`.",
-    "pocketstation::endpoint::registry::EndpointPrepareError::Driver: Reported when the owning operation encounters driver.",
+    "pocketstation::endpoint::registry::EndpointPrepareError::Driver: Classifies a failure at the driver stage or component of `EndpointPrepareError`.",
     "pocketstation::endpoint::registry::EndpointDriverRegistry: Indexes registered endpoint driver implementations by their stable identities."
   ],
   "retry_behavior": [],

@@ -1,6 +1,6 @@
 # Session traces
 
-<!-- claims: CLM-DOC-031-CAP-001,CLM-DOC-031-SOURCE-001 -->
+<!-- claims: CLM-DOC-031-SCOPE-001,CLM-DOC-031-TEXT-001,CLM-DOC-031-TEXT-002,CLM-DOC-031-TEXT-003,CLM-DOC-031-TEXT-004,CLM-DOC-031-TEXT-005,CLM-DOC-031-TEXT-006,CLM-DOC-031-SOURCE-001 -->
 
 ## What it is
 
@@ -48,13 +48,13 @@ The scope of **Session traces** ends at the native contracts and executable cond
 | `pocketstation::session::lifecycle::trace::SessionTrace` | struct | Contains the ordered lifecycle records read from a Session trace artifact. | `src/session/lifecycle/trace.rs:255` |
 | `pocketstation::session::lifecycle::trace::SessionTraceRecord` | struct | Records one immutable session trace observation. | `src/session/lifecycle/trace.rs:55` |
 | `pocketstation::session::lifecycle::trace::SessionTraceRecorder` | struct | Collects ordered lifecycle records and writes the trace artifact during Session finalization. | `src/session/lifecycle/trace.rs:152` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorderHandle` | struct | Owns bounded access to session trace recorder. | `src/session/lifecycle/trace.rs:108` |
+| `pocketstation::session::lifecycle::trace::SessionTraceRecorderHandle` | struct | Holds the ownership or bounded access represented by session trace recorder handle. | `src/session/lifecycle/trace.rs:108` |
 | `pocketstation::session::lifecycle::trace::SessionTraceRecorderOutcome` | struct | Reports the structured session trace recorder outcome. | `src/session/lifecycle/trace.rs:70` |
 | `pocketstation::session::lifecycle::trace::SessionTraceTerminal` | struct | Records the terminal Session disposition and component failures stored in a trace. | `src/session/lifecycle/trace.rs:339` |
 | `pocketstation::session::lifecycle::trace::SessionTraceValidation` | struct | Reports the validated identity and record count of a parsed Session trace. | `src/session/lifecycle/trace.rs:348` |
 | `pocketstation::session::lifecycle::trace::SessionTraceRecordKind` | enum | Selects the session trace record kind used by PocketStation. | `src/session/lifecycle/trace.rs:27` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` | enum | Classifies failures reported as session trace recorder finish error. | `src/session/lifecycle/trace.rs:98` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` | enum | Classifies failures reported as session trace recorder start error. | `src/session/lifecycle/trace.rs:88` |
+| `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` | enum | Classifies failures surfaced by session trace recorder finish operations. | `src/session/lifecycle/trace.rs:98` |
+| `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` | enum | Classifies failures produced during session trace recorder lifecycle start. | `src/session/lifecycle/trace.rs:88` |
 
 ## Executable evidence
 
@@ -87,6 +87,29 @@ Executable evidence selected for **Session traces** is limited to each test's re
 
 The claims on **Session traces** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/trace.rs:1-1179` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:17-17` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:19-19` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:27-52` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:28-30` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:29-29` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:31-33` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:32-32` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:34-38` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:36-36` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:39-41` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:40-40` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:42-44` (`DIRECT`)
 
 For **Session traces**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

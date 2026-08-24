@@ -4,6 +4,11 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -33,6 +38,11 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -93,14 +103,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "6351a7a3efb3f112e884b531c34adae225a400730674135fe872c5bf296ae498",
       "lines": [
         1,
-        48
+        4
       ],
       "path": "src/graph/signal/payload.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::signal::payload"
     }
   ],
   "example_coverage_status": "linked",
@@ -109,6 +119,11 @@
     "example-7fa365a72e313c091085"
   ],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -129,6 +144,11 @@
   "generated_from": "not_applicable",
   "git_object": "5ed629ef155c8f450a1d7fde07fc3a0aba420627",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -139,6 +159,11 @@
     "SignalPayload"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/sidecar.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/signal/operator.rs",
     "CONTAINS:src/graph/signal/mod.rs",
     "IMPORTS:src/graph/signal/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -150,8 +175,8 @@
     "crate::graph::signal::{SignalClass, SignalSpec}"
   ],
   "inputs": [
-    "crate::frame::AudioFrame",
-    "crate::graph::signal::{SignalClass, SignalSpec}"
+    "Depends on `crate::frame::AudioFrame` through a declared Rust import.",
+    "Depends on `crate::graph::signal::{SignalClass, SignalSpec}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -165,13 +190,13 @@
   "module": "pocketstation::graph::signal::payload",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::signal::payload` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:SignalPayload",
-    "fn:size_bytes",
-    "fn:supports"
+    "Declares public enum `SignalPayload`.",
+    "Declares public fn `size_bytes`.",
+    "Declares public fn `supports`."
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/payload.rs",
@@ -210,8 +235,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::signal::payload responsibilities, including Enumerates the supported signal payload cases.; Represents the audio alternative defined by `SignalPayload`.; Represents the text alternative defined by `SignalPayload`.."
+    "classification": "DECLARED",
+    "text": "Fundamental runtime payload representations. Semantic meaning belongs to `SignalSpec`; this enum must not grow provider-, customer-, or industry-specific variants."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -250,6 +275,7 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/signal/spec.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/graph/signal/spec.rs"
   ],
@@ -260,7 +286,7 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::graph::signal::payload::SignalPayload: Enumerates the supported signal payload cases.",
+    "pocketstation::graph::signal::payload::SignalPayload: Carries the typed audio, text, event, or binary body of a signal envelope.",
     "pocketstation::graph::signal::payload::SignalPayload::Audio: Represents the audio alternative defined by `SignalPayload`.",
     "pocketstation::graph::signal::payload::SignalPayload::Text: Represents the text alternative defined by `SignalPayload`.",
     "pocketstation::graph::signal::payload::SignalPayload::Bytes: Represents the bytes alternative defined by `SignalPayload`.",

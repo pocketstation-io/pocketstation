@@ -4,7 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
   ],
@@ -140,7 +143,10 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
   ],
@@ -591,17 +597,250 @@
       "classification": "DIRECT",
       "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
       "lines": [
-        1,
-        650
+        22,
+        22
       ],
       "path": "src/session/extensions/builtins.rs",
-      "symbol": null
+      "symbol": "AUDIO_PORT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "APPLICATION_SOURCE_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "MICROPHONE_SOURCE_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "GENERATED_AUDIO_INGRESS_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        30,
+        33
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "SessionGraphRegistrationError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "node_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "DuplicateNodeType"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        36,
+        44
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "register_session_graph_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        46,
+        108
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "register_session_graph_nodes_with_sample_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        110,
+        115
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "default_session_graph_lowerers"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        117,
+        117
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "BuiltinSourceLowerer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        120,
+        192
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "lower_source_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        194,
+        205
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "lower_operator_edges"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        207,
+        215
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "endpoint_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        218,
+        218
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "OperatorAudioLowerer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        221,
+        240
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "lower_source_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        242,
+        335
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "lower_operator_edges"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        337,
+        356
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": "endpoint_config"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
   ],
@@ -621,7 +860,10 @@
   "generated_from": "not_applicable",
   "git_object": "4dbad0a770c6d9fc0431ed5c63187534b542fbf3",
   "implemented_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
   ],
@@ -636,7 +878,10 @@
     "NodeDefinition for EndpointBoundaryDefinition"
   ],
   "imported_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
   ],
@@ -653,20 +898,23 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError,",
-    "crate::frame::SampleFormat",
-    "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
-    "crate::frame::{AudioFrame, SampleSpec}",
-    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
-    "crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId, Pipeline, PrepareContext, RuntimeNode, }",
-    "crate::session::compile::{ select_operator_port, CompiledNodeBinding, CompiledSessionBindings, LoweredOperator, SessionCompileError, SessionGraphLowerer, SessionSourceLoweringContext, }",
-    "crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId}",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::collections::HashMap",
-    "std::sync::Arc",
-    "super::*"
+    "Consumes configuration at src/session/extensions/builtins.rs:12.",
+    "Consumes configuration at src/session/extensions/builtins.rs:35.",
+    "Consumes configuration at src/session/extensions/builtins.rs:399.",
+    "Consumes configuration at src/session/extensions/builtins.rs:4.",
+    "Consumes configuration at src/session/extensions/builtins.rs:442.",
+    "Consumes configuration at src/session/extensions/builtins.rs:497.",
+    "Consumes configuration at src/session/extensions/builtins.rs:522.",
+    "Depends on `crate::frame::SampleFormat` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioFrame, SampleSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }` through a declared Rust import.",
+    "Depends on `crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId, Pipeline, PrepareContext, RuntimeNode, }` through a declared Rust import.",
+    "Depends on `crate::session::compile::{ select_operator_port, CompiledNodeBinding, CompiledSessionBindings, LoweredOperator, SessionCompileError, SessionGraphLowerer, SessionSourceLoweringContext, }` through a declared Rust import.",
+    "Depends on `crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId}` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -704,27 +952,27 @@
   "module": "pocketstation::session::extensions::builtins",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::builtins` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-2bff6ab2da8c5acd813e",
     "pattern-f113caf0c47b76f1137c"
   ],
   "outputs": [
-    "Err(SessionGraphRegistrationError::DuplicateNodeType { .. })",
-    "const:APPLICATION_SOURCE_NODE_TYPE_ID",
-    "const:EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
-    "const:GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
-    "const:GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
-    "const:MICROPHONE_SOURCE_NODE_TYPE_ID",
-    "enum:SessionGraphRegistrationError",
-    "fn:audio_endpoint_boundary_definition",
-    "fn:default_session_graph_lowerers",
-    "fn:register_session_graph_nodes",
-    "fn:register_session_graph_nodes_with_sample_spec",
-    "return Err(SessionCompileError::AudioBridgeOutputNotExclusive {",
-    "return Err(SessionCompileError::InvalidAudioBridgeOutput {",
-    "return Err(SessionGraphRegistrationError::DuplicateNodeType {"
+    "Creates a typed failure at src/session/extensions/builtins.rs:269.",
+    "Creates a typed failure at src/session/extensions/builtins.rs:312.",
+    "Creates a typed failure at src/session/extensions/builtins.rs:584.",
+    "Creates a typed failure at src/session/extensions/builtins.rs:89.",
+    "Declares public const `APPLICATION_SOURCE_NODE_TYPE_ID`.",
+    "Declares public const `EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID`.",
+    "Declares public const `GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID`.",
+    "Declares public const `GENERATED_AUDIO_INGRESS_NODE_TYPE_ID`.",
+    "Declares public const `MICROPHONE_SOURCE_NODE_TYPE_ID`.",
+    "Declares public enum `SessionGraphRegistrationError`.",
+    "Declares public fn `audio_endpoint_boundary_definition`.",
+    "Declares public fn `default_session_graph_lowerers`.",
+    "Declares public fn `register_session_graph_nodes_with_sample_spec`.",
+    "Declares public fn `register_session_graph_nodes`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/builtins.rs",
@@ -1017,8 +1265,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::builtins responsibilities, including Defines the public application source node type identifier value.; Defines the public microphone source node type identifier value.; Classifies failures reported as session graph registration error.."
+    "classification": "DECLARED",
+    "text": "Defines application source node type identifier as `\"source.application\"` for the owning public contract. Defines microphone source node type identifier as `\"source.microphone\"` for the owning public contract. Classifies failures produced during session graph registration."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1079,6 +1327,15 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/compile/bindings.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
+    "IMPLEMENTS:src/graph/runtime_node.rs",
+    "IMPLEMENTS:src/session/compile/mod.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/dsl.rs",
@@ -1162,11 +1419,11 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::session::extensions::builtins::APPLICATION_SOURCE_NODE_TYPE_ID: Defines the public application source node type identifier value.",
-    "pocketstation::session::extensions::builtins::MICROPHONE_SOURCE_NODE_TYPE_ID: Defines the public microphone source node type identifier value.",
-    "pocketstation::session::extensions::builtins::SessionGraphRegistrationError: Classifies failures reported as session graph registration error.",
+    "pocketstation::session::extensions::builtins::APPLICATION_SOURCE_NODE_TYPE_ID: Defines application source node type identifier as `\"source.application\"` for the owning public contract.",
+    "pocketstation::session::extensions::builtins::MICROPHONE_SOURCE_NODE_TYPE_ID: Defines microphone source node type identifier as `\"source.microphone\"` for the owning public contract.",
+    "pocketstation::session::extensions::builtins::SessionGraphRegistrationError: Classifies failures produced during session graph registration.",
     "SessionGraphRegistrationError::DuplicateNodeType::node_type_id: Identifies the node type identifier recorded by `DuplicateNodeType`.",
-    "pocketstation::session::extensions::builtins::SessionGraphRegistrationError::DuplicateNodeType: Reported when the owning operation encounters duplicate node type.",
+    "pocketstation::session::extensions::builtins::SessionGraphRegistrationError::DuplicateNodeType: Reports that node type duplicates an existing declaration or record.",
     "pocketstation::session::extensions::builtins::register_session_graph_nodes: Registers session graph nodes for `builtins`."
   ],
   "retry_behavior": [],

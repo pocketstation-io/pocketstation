@@ -9,7 +9,14 @@
     }
   ],
   "called_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -197,7 +204,14 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1369,17 +1383,254 @@
       "classification": "DIRECT",
       "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
       "lines": [
-        1,
-        892
+        16,
+        16
       ],
       "path": "src/session/extensions/source.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "partial_cmp"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "cmp"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "SourceTypeId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        26,
+        50
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        52,
+        54
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "as_str"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        57,
+        65
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "has_source_category"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        68,
+        84
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "SourceTypeIdError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        70,
+        70
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "Empty"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        72,
+        72
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "SurroundingWhitespace"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        74,
+        77
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "TooLong"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        75,
+        75
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "actual_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        76,
+        76
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "maximum_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        79,
+        79
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "NonAscii"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        81,
+        81
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "InvalidContractSyntax"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        83,
+        83
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": "MissingSourceCategory"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1411,7 +1662,14 @@
   "generated_from": "not_applicable",
   "git_object": "8a6be044690c3c019bbb101b38df999472a6f9ef",
   "implemented_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1443,7 +1701,14 @@
     "std::fmt::Display for SourceTypeId"
   ],
   "imported_by": [
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/extensions/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/lib.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
     "IMPORTS:src/session/extensions/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -1471,21 +1736,23 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,",
-    "InvalidConfiguration(ConfigError),",
-    "crate::frame::{SessionId, SourceId, StreamId}",
-    "crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope, }",
-    "crate::graph::{BinaryFormat, MediaCaps, Multiplicity, SignalSpec}",
-    "crate::runtime::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver, }",
-    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
-    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError>;",
-    "std::collections::{BTreeMap, BTreeSet}",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::thread::JoinHandle",
-    "super::*"
+    "Consumes configuration at src/session/extensions/source.rs:278.",
+    "Consumes configuration at src/session/extensions/source.rs:327.",
+    "Consumes configuration at src/session/extensions/source.rs:338.",
+    "Consumes configuration at src/session/extensions/source.rs:564.",
+    "Consumes configuration at src/session/extensions/source.rs:732.",
+    "Consumes configuration at src/session/extensions/source.rs:758.",
+    "Consumes configuration at src/session/extensions/source.rs:791.",
+    "Consumes configuration at src/session/extensions/source.rs:8.",
+    "Depends on `crate::frame::{SessionId, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope, }` through a declared Rust import.",
+    "Depends on `crate::graph::{BinaryFormat, MediaCaps, Multiplicity, SignalSpec}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver, }` through a declared Rust import.",
+    "Depends on `std::collections::{BTreeMap, BTreeSet}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::thread::JoinHandle` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1539,51 +1806,51 @@
   "module": "pocketstation::session::extensions::source",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::source` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-bd1fcbab45e9bdb65e16"
   ],
   "outputs": [
-    "enum:SourceTypeIdError",
-    "fn:as_str",
-    "fn:execution",
-    "fn:generation",
-    "fn:get",
-    "fn:implementation_generation",
-    "fn:insert",
-    "fn:is_cancelled",
-    "fn:iter",
-    "fn:manifest",
-    "fn:new",
-    "fn:output",
-    "fn:output_port",
-    "fn:outputs",
-    "fn:revision",
-    "fn:safety",
-    "fn:source_type_id",
-    "fn:validate",
-    "return Err(SourceManifestError::InvalidSafetyContract);",
-    "return Err(SourceManifestError::NoOutputs);",
-    "return Err(SourceManifestError::UnsupportedExecutionPartition);",
-    "return Err(SourceManifestError::ZeroVersion);",
-    "return Err(SourceTypeIdError::Empty);",
-    "return Err(SourceTypeIdError::InvalidContractSyntax);",
-    "return Err(SourceTypeIdError::MissingSourceCategory);",
-    "return Err(SourceTypeIdError::NonAscii);",
-    "return Err(SourceTypeIdError::SurroundingWhitespace);",
-    "return Err(SourceTypeIdError::TooLong {",
-    "struct:SourceCancellation",
-    "struct:SourceConfiguration",
-    "struct:SourceEmission",
-    "struct:SourceManifest",
-    "struct:SourceOutputIdentity",
-    "struct:SourcePrepareContext",
-    "struct:SourceRegistry",
-    "struct:SourceSessionContext",
-    "struct:SourceTypeId",
-    "trait:SourceDriver",
-    "trait:SourceFactory"
+    "Creates a typed failure at src/session/extensions/source.rs:184.",
+    "Creates a typed failure at src/session/extensions/source.rs:187.",
+    "Creates a typed failure at src/session/extensions/source.rs:190.",
+    "Creates a typed failure at src/session/extensions/source.rs:193.",
+    "Creates a typed failure at src/session/extensions/source.rs:29.",
+    "Creates a typed failure at src/session/extensions/source.rs:32.",
+    "Creates a typed failure at src/session/extensions/source.rs:35.",
+    "Creates a typed failure at src/session/extensions/source.rs:41.",
+    "Creates a typed failure at src/session/extensions/source.rs:44.",
+    "Creates a typed failure at src/session/extensions/source.rs:47.",
+    "Declares public enum `SourceTypeIdError`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `execution`.",
+    "Declares public fn `generation`.",
+    "Declares public fn `get`.",
+    "Declares public fn `implementation_generation`.",
+    "Declares public fn `insert`.",
+    "Declares public fn `is_cancelled`.",
+    "Declares public fn `iter`.",
+    "Declares public fn `manifest`.",
+    "Declares public fn `new`.",
+    "Declares public fn `output_port`.",
+    "Declares public fn `output`.",
+    "Declares public fn `outputs`.",
+    "Declares public fn `revision`.",
+    "Declares public fn `safety`.",
+    "Declares public fn `source_type_id`.",
+    "Declares public fn `validate`.",
+    "Declares public struct `SourceCancellation`.",
+    "Declares public struct `SourceConfiguration`.",
+    "Declares public struct `SourceEmission`.",
+    "Declares public struct `SourceManifest`.",
+    "Declares public struct `SourceOutputIdentity`.",
+    "Declares public struct `SourcePrepareContext`.",
+    "Declares public struct `SourceRegistry`.",
+    "Declares public struct `SourceSessionContext`.",
+    "Declares public struct `SourceTypeId`.",
+    "Declares public trait `SourceDriver`.",
+    "Declares public trait `SourceFactory`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/source.rs",
@@ -2075,8 +2342,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::source responsibilities, including Uniquely identifies source type within its PocketStation ownership scope.; Creates a stable source implementation identity.; Returns the stable string representation of `SourceTypeId`.."
+    "classification": "DECLARED",
+    "text": "Uniquely identifies source type within its PocketStation ownership scope. Creates a stable source implementation identity. Returns the stable string representation of `SourceTypeId`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2137,6 +2404,15 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/graph/partition.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/partition.rs",
@@ -2228,20 +2504,20 @@
     "pocketstation::session::extensions::source::SourceTypeId: Uniquely identifies source type within its PocketStation ownership scope.",
     "new: Creates a stable source implementation identity.",
     "as_str: Returns the stable string representation of `SourceTypeId`.",
-    "pocketstation::session::extensions::source::SourceTypeIdError: Classifies failures reported as source type id error.",
+    "pocketstation::session::extensions::source::SourceTypeIdError: Classifies failures surfaced by source type identifier operations.",
     "pocketstation::session::extensions::source::SourceTypeIdError::Empty: Represents an empty value or collection.",
-    "pocketstation::session::extensions::source::SourceTypeIdError::SurroundingWhitespace: Reported when the owning operation encounters surrounding whitespace.",
-    "pocketstation::session::extensions::source::SourceTypeIdError::TooLong: Reported when the owning operation encounters too long.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::SurroundingWhitespace: Classifies a failure at the surrounding whitespace stage or component of `SourceTypeIdError`.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::TooLong: Classifies a failure at the too long stage or component of `SourceTypeIdError`.",
     "SourceTypeIdError::TooLong::actual_bytes: Stores the actual size for `TooLong`, in bytes.",
     "SourceTypeIdError::TooLong::maximum_bytes: Stores the maximum size for `TooLong`, in bytes.",
-    "pocketstation::session::extensions::source::SourceTypeIdError::NonAscii: Reported when the owning operation encounters non ascii.",
-    "pocketstation::session::extensions::source::SourceTypeIdError::InvalidContractSyntax: Reported when the owning operation encounters invalid contract syntax.",
-    "pocketstation::session::extensions::source::SourceTypeIdError::MissingSourceCategory: Reported when the owning operation encounters missing source category.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::NonAscii: Reports that no n ascii is available.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::InvalidContractSyntax: Reports that the supplied contract syntax is invalid.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::MissingSourceCategory: Reports that the required source category is missing.",
     "pocketstation::session::extensions::source::SourceConfiguration: Configures source behavior at its owning API boundary.",
     "insert: Adds declared source configuration.",
     "get: Returns the value held by `SourceConfiguration`.",
     "iter: Iterates over the values held by `SourceConfiguration`.",
-    "pocketstation::session::extensions::source::SourceManifest: Describes the source manifest contract.",
+    "pocketstation::session::extensions::source::SourceManifest: Declares an external source's identity, outputs, preparation group, and execution requirements.",
     "new: Creates a new `SourceManifest`.",
     "source_type_id: Returns the source type identifier held by `SourceManifest`.",
     "revision: Additive descriptor revision within the compatibility major encoded by",
@@ -2253,21 +2529,21 @@
     "validate: Validates `SourceManifest` against its declared contract.",
     "output_port: Returns the output port held by `SourceManifest`.",
     "pocketstation::session::extensions::source::SourcePrepareContext: Carries the inputs and runtime context required to source prepare.",
-    "SourcePrepareContext::manifest: Stores the manifest used by `SourcePrepareContext`.",
-    "SourcePrepareContext::session: Stores the session used by `SourcePrepareContext`.",
+    "SourcePrepareContext::manifest: Stores the manifest as a `SourceManifest` value in `SourcePrepareContext`.",
+    "SourcePrepareContext::session: Stores the session component of `SourcePrepareContext`.",
     "pocketstation::session::extensions::source::SourceOutputIdentity: Identifies one declared source output by source type, output port, and stream identity.",
-    "SourceOutputIdentity::output_port: Stores the output port used by `SourceOutputIdentity`.",
+    "SourceOutputIdentity::output_port: References the output port participating in `SourceOutputIdentity`.",
     "SourceOutputIdentity::stream_id: Identifies the stream identifier recorded by `SourceOutputIdentity`.",
     "pocketstation::session::extensions::source::SourceSessionContext: Carries the inputs and runtime context required to source session.",
     "SourceSessionContext::session_id: Identifies the session identifier recorded by `SourceSessionContext`.",
     "SourceSessionContext::source_id: Identifies the source identifier recorded by `SourceSessionContext`.",
-    "SourceSessionContext::outputs: Stores the outputs used by `SourceSessionContext`.",
+    "SourceSessionContext::outputs: References the outputs participating in `SourceSessionContext`.",
     "output: Returns the output held by `SourceSessionContext`.",
     "pocketstation::session::extensions::source::SourceCancellation: Exposes the cancellation state observed by a running external source driver.",
-    "is_cancelled: Returns whether cancelled applies to `SourceCancellation`.",
+    "is_cancelled: Reports whether cancelled is true for `SourceCancellation`.",
     "pocketstation::session::extensions::source::SourceEmission: Carries one external-source emission with its output-port identity and signal envelope.",
-    "SourceEmission::output_port: Stores the output port used by `SourceEmission`.",
-    "SourceEmission::envelope: Stores the envelope used by `SourceEmission`.",
+    "SourceEmission::output_port: References the output port participating in `SourceEmission`.",
+    "SourceEmission::envelope: Stores the envelope as a `SignalEnvelope` value in `SourceEmission`.",
     "SourceEmission::terminal: Indicates whether terminal applies to `SourceEmission`.",
     "pocketstation::session::extensions::source::SourceDriver: Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract.",
     "SourceDriver::prepare: Prepares resources required by `SourceDriver`.",
@@ -2275,21 +2551,21 @@
     "SourceDriver::close: Closes `SourceDriver` to further work.",
     "pocketstation::session::extensions::source::SourceFactory: Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract.",
     "SourceFactory::manifest: Returns the manifest held by `SourceFactory`.",
-    "SourceFactory::validate_config: Validates config for `SourceFactory`.",
+    "SourceFactory::validate_config: Validates supplied node configuration against the schema declared by `SourceFactory`.",
     "SourceFactory::create: Creates the runtime implementation described by `SourceFactory`.",
     "pocketstation::session::extensions::source::SourceRegistry: Indexes registered source implementations by their stable identities.",
     "manifest: Returns the manifest held by `SourceRegistry`.",
     "register: Registers a node definition with `SourceRegistry` while preserving unique identities.",
-    "validate_config: Validates config for `SourceRegistry`.",
+    "validate_config: Validates supplied node configuration against the schema declared by `SourceRegistry`.",
     "spawn: Spawns its owned operation for `SourceRegistry`.",
     "prepare: Prepares resources required by `SourceRegistry`.",
-    "prepare_session: Prepares session for `SourceRegistry`.",
+    "prepare_session: Builds the source preparation context for the current Session through `SourceRegistry`.",
     "pocketstation::session::extensions::source::SourceOutputBranchSpec: Configures source output branch behavior at its owning API boundary.",
-    "SourceOutputBranchSpec::output_port: Stores the output port used by `SourceOutputBranchSpec`.",
-    "SourceOutputBranchSpec::branch: Stores the branch used by `SourceOutputBranchSpec`.",
+    "SourceOutputBranchSpec::output_port: References the output port participating in `SourceOutputBranchSpec`.",
+    "SourceOutputBranchSpec::branch: References the branch participating in `SourceOutputBranchSpec`.",
     "pocketstation::session::extensions::source::SourceOutputReceiver: Receives source output values across its declared ownership boundary.",
-    "SourceOutputReceiver::output_port: Stores the output port used by `SourceOutputReceiver`.",
-    "SourceOutputReceiver::receiver: Stores the receiver used by `SourceOutputReceiver`.",
+    "SourceOutputReceiver::output_port: References the output port participating in `SourceOutputReceiver`.",
+    "SourceOutputReceiver::receiver: Owns the receiver endpoint through which `SourceOutputReceiver` exchanges values.",
     "pocketstation::session::extensions::source::SourceRuntimeObservations: Reports the source runtime observations collected at an observation boundary.",
     "SourceRuntimeObservations::emitted_total: Counts the total number of emitted observed by `SourceRuntimeObservations`.",
     "SourceRuntimeObservations::dropped_total: Counts the total number of dropped observed by `SourceRuntimeObservations`.",
@@ -2299,8 +2575,8 @@
     "SourceRuntimeObservations::recovery_total: Counts the total number of recovery observed by `SourceRuntimeObservations`.",
     "SourceRuntimeObservations::policy_change_total: Counts the total number of policy change observed by `SourceRuntimeObservations`.",
     "SourceRuntimeObservations::ready: Indicates whether ready applies to `SourceRuntimeObservations`.",
-    "SourceRuntimeObservations::joined: Stores the joined used by `SourceRuntimeObservations`.",
-    "pocketstation::session::extensions::source::SourceRuntimeObservationHandle: Owns bounded access to source runtime observation.",
+    "SourceRuntimeObservations::joined: Reports whether joined is true for `SourceRuntimeObservations`.",
+    "pocketstation::session::extensions::source::SourceRuntimeObservationHandle: Holds the ownership or bounded access represented by source runtime observation handle.",
     "snapshot: Returns a point-in-time snapshot of `SourceRuntimeObservationHandle`.",
     "pocketstation::session::extensions::source::SourceRuntime: Owns an external source driver's cancellation handle, observations, and terminal worker join.",
     "pocketstation::session::extensions::source::PreparedSourceRuntime: Fully validated source resources which have not started producing signals.",
@@ -2311,42 +2587,42 @@
     "observations: Returns the observations exposed by `SourceRuntime`.",
     "join: Joins its owned operation for `SourceRuntime`.",
     "drop: Releases resources owned by `SourceRuntime`.",
-    "pocketstation::session::extensions::source::SourceManifestError: Classifies failures reported as source manifest error.",
-    "pocketstation::session::extensions::source::SourceManifestError::EmptySourceTypeId: Reported when the owning operation encounters empty source type identifier.",
-    "pocketstation::session::extensions::source::SourceManifestError::ZeroVersion: Reported when the owning operation encounters zero version.",
-    "pocketstation::session::extensions::source::SourceManifestError::NoOutputs: Reported when the owning operation encounters no outputs.",
-    "pocketstation::session::extensions::source::SourceManifestError::NonOutputPort: Reported when the owning operation encounters non output port.",
-    "pocketstation::session::extensions::source::SourceManifestError::EmptyOutputName: Reported when the owning operation encounters empty output name.",
-    "pocketstation::session::extensions::source::SourceManifestError::DuplicateOutputName: Reported when the owning operation encounters duplicate output name.",
-    "pocketstation::session::extensions::source::SourceManifestError::InvalidSignal: Reported when the owning operation encounters invalid signal.",
-    "pocketstation::session::extensions::source::SourceManifestError::SignalMediaMismatch: Reported when the owning operation encounters signal media mismatch.",
-    "pocketstation::session::extensions::source::SourceManifestError::InvalidSafetyContract: Reported when the owning operation encounters invalid safety contract.",
-    "pocketstation::session::extensions::source::SourceManifestError::UnsupportedExecutionPartition: Reported when the owning operation encounters unsupported execution partition.",
-    "pocketstation::session::extensions::source::SourceRegistrationError: Classifies failures reported as source registration error.",
-    "pocketstation::session::extensions::source::SourceRegistrationError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
-    "pocketstation::session::extensions::source::SourceRegistrationError::DuplicateSourceType: Reported when the owning operation encounters duplicate source type.",
-    "pocketstation::session::extensions::source::SourceRegistrationError::NodeTypeConflict: Reported when the owning operation encounters node type conflict.",
+    "pocketstation::session::extensions::source::SourceManifestError: Classifies failures surfaced by source manifest operations.",
+    "pocketstation::session::extensions::source::SourceManifestError::EmptySourceTypeId: Reports that source type identifier is empty.",
+    "pocketstation::session::extensions::source::SourceManifestError::ZeroVersion: Reports that version must be greater than zero.",
+    "pocketstation::session::extensions::source::SourceManifestError::NoOutputs: Reports that no outputs is available.",
+    "pocketstation::session::extensions::source::SourceManifestError::NonOutputPort: Reports that no n output port is available.",
+    "pocketstation::session::extensions::source::SourceManifestError::EmptyOutputName: Reports that output name is empty.",
+    "pocketstation::session::extensions::source::SourceManifestError::DuplicateOutputName: Reports that output name duplicates an existing declaration or record.",
+    "pocketstation::session::extensions::source::SourceManifestError::InvalidSignal: Reports that the supplied signal is invalid.",
+    "pocketstation::session::extensions::source::SourceManifestError::SignalMediaMismatch: Reports that signal media does not match the expected contract.",
+    "pocketstation::session::extensions::source::SourceManifestError::InvalidSafetyContract: Reports that the supplied safety contract is invalid.",
+    "pocketstation::session::extensions::source::SourceManifestError::UnsupportedExecutionPartition: Reports that the requested execution partition is unsupported.",
+    "pocketstation::session::extensions::source::SourceRegistrationError: Classifies failures produced during source registration.",
+    "pocketstation::session::extensions::source::SourceRegistrationError::InvalidManifest: Reports that the supplied manifest is invalid.",
+    "pocketstation::session::extensions::source::SourceRegistrationError::DuplicateSourceType: Reports that source type duplicates an existing declaration or record.",
+    "pocketstation::session::extensions::source::SourceRegistrationError::NodeTypeConflict: Reports that no de type conflict is available.",
     "fmt: Formats `SourceTypeId` with the requested formatter.",
-    "pocketstation::session::extensions::source::SourceDriverError: Classifies failures reported as source driver error.",
-    "pocketstation::session::extensions::source::SourceDriverError::Failed: Reported when the owning operation encounters failed.",
-    "pocketstation::session::extensions::source::SourceRuntimeError: Classifies failures reported as source runtime error.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::InvalidConfiguration: Reported when the owning operation encounters invalid configuration.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::Driver: Reported when the owning operation encounters driver.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::EdgeBuild: Reported when the owning operation encounters edge build.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::NoRoutedOutputs: Reported when the owning operation encounters no routed outputs.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::UnknownOutput: Reported when the owning operation encounters unknown output.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::UnroutedOutput: Reported when the owning operation encounters unrouted output.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::OutputContractMismatch: Reported when the owning operation encounters output contract mismatch.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::MissingSessionLineage: Reported when the owning operation encounters missing session lineage.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::OutputIdentityMismatch: Reported when the owning operation encounters output identity mismatch.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::Continuity: Reported when the owning operation encounters continuity.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::Publish: Reported when the owning operation encounters publish.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::Spawn: Reported when the owning operation encounters spawn.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::AlreadyJoined: Reported when the owning operation encounters already joined.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::PreparedStateConsumed: Reported when the owning operation encounters prepared state consumed.",
-    "pocketstation::session::extensions::source::SourceRuntimeError::UnregisteredSource: Reported when the owning operation encounters unregistered source."
+    "pocketstation::session::extensions::source::SourceDriverError: Classifies failures surfaced by source driver operations.",
+    "pocketstation::session::extensions::source::SourceDriverError::Failed: Reports that the requested operation failed.",
+    "pocketstation::session::extensions::source::SourceRuntimeError: Classifies failures produced during source runtime execution.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::InvalidManifest: Reports that the supplied manifest is invalid.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::InvalidConfiguration: Reports that the supplied configuration is invalid.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Driver: Classifies a failure at the driver stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::EdgeBuild: Classifies a failure at the edge build stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::NoRoutedOutputs: Reports that no routed outputs is available.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::UnknownOutput: Reports that the referenced output is not declared or registered.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::UnroutedOutput: Classifies a failure at the unrouted output stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::OutputContractMismatch: Reports that output contract does not match the expected contract.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::MissingSessionLineage: Reports that the required session lineage is missing.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::OutputIdentityMismatch: Reports that output identity does not match the expected contract.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Continuity: Classifies a failure at the continuity stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Publish: Classifies a failure at the publish stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Spawn: Classifies a failure at the spawn stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::WorkerPanicked: Reports that worker panicked while the operation was active.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::AlreadyJoined: Reports that joined already occurred before this operation.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::PreparedStateConsumed: Classifies a failure at the prepared state consumed stage or component of `SourceRuntimeError`.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::UnregisteredSource: Reports that source has not been registered."
   ],
   "retry_behavior": [],
   "serialization": [],

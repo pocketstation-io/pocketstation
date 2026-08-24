@@ -41,8 +41,8 @@
       "classification": "DIRECT",
       "content_hash": "649abfc9532679a6706d8fa995187467b7ec5c701d9328c1432863a73dd450e5",
       "lines": [
-        1,
-        85
+        2,
+        22
       ],
       "path": "scripts/check_pks_single_engine_boundary.sh",
       "symbol": null
@@ -83,7 +83,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/check_pks_single_engine_boundary.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [
     "pattern-691896feff36ac00f8fd"

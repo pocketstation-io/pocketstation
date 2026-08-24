@@ -1,6 +1,6 @@
 # Session API
 
-<!-- claims: CLM-REF-002-CAP-001,CLM-REF-002-CAP-002,CLM-REF-002-CAP-003,CLM-REF-002-CAP-004,CLM-REF-002-SOURCE-001 -->
+<!-- claims: CLM-REF-002-SCOPE-001,CLM-REF-002-TEXT-001,CLM-REF-002-TEXT-002,CLM-REF-002-SOURCE-001 -->
 
 ## Scope
 
@@ -19,48 +19,48 @@ For **Session API**, the generated [docs.rs API](https://docs.rs/pocketstation/l
 
 | Evidence record | Declaration | Kind | Purpose | Source |
 |---|---|---|---|---|
-| sym-c6a638806c91124f0676 | `pocketstation::session::declaration::endpoint::BROWSER_NODE_TYPE_ID` | constant | Defines the public browser node type identifier value. | `src/session/declaration/endpoint.rs:9` |
-| sym-fc1ec929667760d593a2 | `pocketstation::session::declaration::endpoint::BROWSER_OPERATOR_ID` | constant | Defines the public browser operator identifier value. | `src/session/declaration/endpoint.rs:10` |
-| sym-648808e081cc4f7b4163 | `pocketstation::session::declaration::endpoint::CONNECTOR_NODE_TYPE_ID` | constant | Defines the public connector node type identifier value. | `src/session/declaration/endpoint.rs:8` |
-| sym-6015373ecb248baeeb21 | `pocketstation::session::declaration::spec::SESSION_SPEC_VERSION` | constant | Defines the public session spec version value. | `src/session/declaration/spec.rs:11` |
+| sym-c6a638806c91124f0676 | `pocketstation::session::declaration::endpoint::BROWSER_NODE_TYPE_ID` | constant | Defines browser node type identifier as `"endpoint.browser.remote"` for the owning public contract. | `src/session/declaration/endpoint.rs:9` |
+| sym-fc1ec929667760d593a2 | `pocketstation::session::declaration::endpoint::BROWSER_OPERATOR_ID` | constant | Defines browser operator identifier as `"io.pocketstation.browser.webrtc.v1"` for the owning public contract. | `src/session/declaration/endpoint.rs:10` |
+| sym-648808e081cc4f7b4163 | `pocketstation::session::declaration::endpoint::CONNECTOR_NODE_TYPE_ID` | constant | Defines connector node type identifier as `"endpoint.connector.external"` for the owning public contract. | `src/session/declaration/endpoint.rs:8` |
+| sym-6015373ecb248baeeb21 | `pocketstation::session::declaration::spec::SESSION_SPEC_VERSION` | constant | Defines the stable session spec version used by the owning public contract. | `src/session/declaration/spec.rs:11` |
 | sym-990126c3b36a72a9663d | `pocketstation::session::extensions::audio_input::PCM_SOURCE_TYPE_ID` | constant | Stable runtime identity of the underlying PCM source implementation. | `src/session/extensions/audio_input/mod.rs:19` |
-| sym-f6613170e7551288121d | `pocketstation::session::extensions::builtins::APPLICATION_SOURCE_NODE_TYPE_ID` | constant | Defines the public application source node type identifier value. | `src/session/extensions/builtins.rs:23` |
-| sym-212f03d762965fddfe4d | `pocketstation::session::extensions::builtins::MICROPHONE_SOURCE_NODE_TYPE_ID` | constant | Defines the public microphone source node type identifier value. | `src/session/extensions/builtins.rs:24` |
-| sym-e8adce9ed0b589e380eb | `pocketstation::session::extensions::recording::DEFAULT_MULTISTEM_RECORDING_GROUP_ID` | constant | Defines the public default multistem recording group identifier value. | `src/session/extensions/recording.rs:24` |
-| sym-82534ca48ce3c1db5a8f | `pocketstation::session::extensions::recording::RECORDER_NODE_TYPE_ID` | constant | Defines the public recorder node type identifier value. | `src/session/extensions/recording.rs:20` |
-| sym-b22481c631aa223b9b04 | `pocketstation::session::extensions::recording::RECORDER_OPERATOR_ID` | constant | Defines the public recorder operator identifier value. | `src/session/extensions/recording.rs:21` |
-| sym-9fd7c3b1a6a29ca05799 | `pocketstation::session::extensions::recording::RECORDING_GROUP_CONFIGURATION_KEY` | constant | Defines the public recording group configuration key value. | `src/session/extensions/recording.rs:23` |
-| sym-da81e7605f4543a374ca | `pocketstation::session::extensions::recording::SESSION_RECORDING_MANIFEST_FILE_NAME` | constant | Defines the public session recording manifest file name value. | `src/session/extensions/recording.rs:25` |
-| sym-448f0aef86c8f3825184 | `pocketstation::session::extensions::recording::SESSION_RECORDING_MANIFEST_SCHEMA_VERSION` | constant | Defines the public session recording manifest schema version value. | `src/session/extensions/recording.rs:27` |
-| sym-b88918b145af6981a661 | `pocketstation::session::compile::error::SessionCompileError` | enum | Classifies failures reported as session compile error. | `src/session/compile/error.rs:7` |
-| sym-d83bf3e81e623b11c715 | `pocketstation::session::declaration::selector::ApplicationSelector` | enum | Enumerates the supported application selector cases. | `src/session/declaration/selector.rs:32` |
-| sym-be6e808aed7e0da57649 | `pocketstation::session::declaration::selector::DeviceSelector` | enum | Enumerates the supported device selector cases. | `src/session/declaration/selector.rs:107` |
-| sym-b64a7cadc7e6f7c5fa13 | `pocketstation::session::declaration::selector::Source` | enum | Enumerates the supported source cases. | `src/session/declaration/selector.rs:134` |
+| sym-f6613170e7551288121d | `pocketstation::session::extensions::builtins::APPLICATION_SOURCE_NODE_TYPE_ID` | constant | Defines application source node type identifier as `"source.application"` for the owning public contract. | `src/session/extensions/builtins.rs:23` |
+| sym-212f03d762965fddfe4d | `pocketstation::session::extensions::builtins::MICROPHONE_SOURCE_NODE_TYPE_ID` | constant | Defines microphone source node type identifier as `"source.microphone"` for the owning public contract. | `src/session/extensions/builtins.rs:24` |
+| sym-e8adce9ed0b589e380eb | `pocketstation::session::extensions::recording::DEFAULT_MULTISTEM_RECORDING_GROUP_ID` | constant | Defines default multistem recording group identifier as `"session.multistem.default.v1"` for the owning public contract. | `src/session/extensions/recording.rs:24` |
+| sym-82534ca48ce3c1db5a8f | `pocketstation::session::extensions::recording::RECORDER_NODE_TYPE_ID` | constant | Defines recorder node type identifier as `"endpoint.recording.multistem"` for the owning public contract. | `src/session/extensions/recording.rs:20` |
+| sym-b22481c631aa223b9b04 | `pocketstation::session::extensions::recording::RECORDER_OPERATOR_ID` | constant | Defines recorder operator identifier as `"io.pocketstation.recording.wav-stems.v1"` for the owning public contract. | `src/session/extensions/recording.rs:21` |
+| sym-9fd7c3b1a6a29ca05799 | `pocketstation::session::extensions::recording::RECORDING_GROUP_CONFIGURATION_KEY` | constant | Defines recording group configuration key as `MULTISTEM_GROUP_CONFIGURATION_KEY` for the owning public contract. | `src/session/extensions/recording.rs:23` |
+| sym-da81e7605f4543a374ca | `pocketstation::session::extensions::recording::SESSION_RECORDING_MANIFEST_FILE_NAME` | constant | Defines session recording manifest file name as `crate::recording::RECORDING_MANIFEST_FILE_NAME` for the owning public contract. | `src/session/extensions/recording.rs:25` |
+| sym-448f0aef86c8f3825184 | `pocketstation::session::extensions::recording::SESSION_RECORDING_MANIFEST_SCHEMA_VERSION` | constant | Defines session recording manifest schema version as `crate::recording::RECORDING_MANIFEST_SCHEMA_VERSION` for the owning public contract. | `src/session/extensions/recording.rs:27` |
+| sym-b88918b145af6981a661 | `pocketstation::session::compile::error::SessionCompileError` | enum | Classifies failures surfaced by session compile operations. | `src/session/compile/error.rs:7` |
+| sym-d83bf3e81e623b11c715 | `pocketstation::session::declaration::selector::ApplicationSelector` | enum | Selects an application by bundle identity, process identity, stable identity, or name. | `src/session/declaration/selector.rs:32` |
+| sym-be6e808aed7e0da57649 | `pocketstation::session::declaration::selector::DeviceSelector` | enum | Selects either the host default device or one stable device identity. | `src/session/declaration/selector.rs:107` |
+| sym-b64a7cadc7e6f7c5fa13 | `pocketstation::session::declaration::selector::Source` | enum | Declares the application, microphone, or system source selected by a Session. | `src/session/declaration/selector.rs:134` |
 | sym-e0648ee37d245fc7fd22 | `pocketstation::session::declaration::spec::ConnectionTarget` | enum | Stable destination of a declared Session connection. | `src/session/declaration/spec.rs:224` |
 | sym-b0dbd87bc9581e0b7066 | `pocketstation::session::declaration::spec::StreamOrigin` | enum | Stable origin of a declared Session stream. | `src/session/declaration/spec.rs:208` |
-| sym-35a864f7f5b2fbde0056 | `pocketstation::session::declaration::typed_stream::TypedStreamError` | enum | Classifies failures reported as typed stream error. | `src/session/declaration/typed_stream.rs:185` |
-| sym-1955bd9759678ed98b23 | `pocketstation::session::error::SessionError` | enum | Classifies failures reported as session error. | `src/session/error.rs:6` |
+| sym-35a864f7f5b2fbde0056 | `pocketstation::session::declaration::typed_stream::TypedStreamError` | enum | Classifies failures surfaced by typed stream operations. | `src/session/declaration/typed_stream.rs:185` |
+| sym-1955bd9759678ed98b23 | `pocketstation::session::error::SessionError` | enum | Classifies failures surfaced by session operations. | `src/session/error.rs:6` |
 | sym-4c59be13624496754b3d | `pocketstation::session::error_code::PolledAudioPollErrorCode` | enum | Stable language-neutral code for bounded polled-audio status. | `src/session/error_code.rs:131` |
 | sym-43f2c5d509dad2abb71a | `pocketstation::session::error_code::SessionDeclarationErrorCode` | enum | Stable language-neutral code for a Session declaration failure. | `src/session/error_code.rs:10` |
 | sym-cde24d045d00d42757d1 | `pocketstation::session::error_code::SessionRuntimeErrorCode` | enum | Stable language-neutral code for a running-Session projection failure. | `src/session/error_code.rs:116` |
 | sym-24efd257193601aef470 | `pocketstation::session::error_code::SessionStartErrorCode` | enum | Stable language-neutral code for Session startup. | `src/session/error_code.rs:61` |
 | sym-0b02cb5628054570780f | `pocketstation::session::error_code::SessionStopCode` | enum | Stable language-neutral status for an idempotent Session stop. | `src/session/error_code.rs:150` |
 | sym-09d3e56e9e242ad53395 | `pocketstation::session::error_code::SessionStopFailureCode` | enum | Stable language-neutral cause retained by a failed Session stop. | `src/session/error_code.rs:171` |
-| sym-59571b2eea7cbe8a23d8 | `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures reported as audio input config error. | `src/session/extensions/audio_input/mod.rs:77` |
-| sym-e62ed15b46d470f5c856 | `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` | enum | Classifies failures reported as audio input buffer acquire error. | `src/session/extensions/audio_input/buffer.rs:271` |
-| sym-cfce1a7f00670e05d9d4 | `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` | enum | Classifies failures reported as audio input buffer error. | `src/session/extensions/audio_input/buffer.rs:281` |
+| sym-59571b2eea7cbe8a23d8 | `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures surfaced by audio input config operations. | `src/session/extensions/audio_input/mod.rs:77` |
+| sym-e62ed15b46d470f5c856 | `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` | enum | Classifies failures surfaced by audio input buffer acquire operations. | `src/session/extensions/audio_input/buffer.rs:271` |
+| sym-cfce1a7f00670e05d9d4 | `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` | enum | Classifies failures surfaced by audio input buffer operations. | `src/session/extensions/audio_input/buffer.rs:281` |
 | sym-5eadd18110842a6de92b | `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind` | enum | Selects the audio input write error kind used by PocketStation. | `src/session/extensions/audio_input/buffer.rs:298` |
-| sym-fd0b5b1e3d01611befb0 | `pocketstation::session::extensions::audio_input::source::AudioInputError` | enum | Classifies failures reported as audio input error. | `src/session/extensions/audio_input/source.rs:85` |
-| sym-6f966dee9d1515e62a7e | `pocketstation::session::extensions::builtins::SessionGraphRegistrationError` | enum | Classifies failures reported as session graph registration error. | `src/session/extensions/builtins.rs:30` |
-| sym-83234335e8b4cb70f57e | `pocketstation::session::extensions::source::SourceDriverError` | enum | Classifies failures reported as source driver error. | `src/session/extensions/source.rs:748` |
-| sym-1843c1ec8aae096e1d65 | `pocketstation::session::extensions::source::SourceManifestError` | enum | Classifies failures reported as source manifest error. | `src/session/extensions/source.rs:677` |
-| sym-61d8e211defe79bbb1a6 | `pocketstation::session::extensions::source::SourceRegistrationError` | enum | Classifies failures reported as source registration error. | `src/session/extensions/source.rs:701` |
-| sym-99bca5d12c942096f8b0 | `pocketstation::session::extensions::source::SourceRuntimeError` | enum | Classifies failures reported as source runtime error. | `src/session/extensions/source.rs:754` |
-| sym-7871af4f560ec9fe3ac4 | `pocketstation::session::extensions::source::SourceTypeIdError` | enum | Classifies failures reported as source type id error. | `src/session/extensions/source.rs:68` |
-| sym-5ede7fd5e41898b0061b | `pocketstation::session::lifecycle::control::SessionStartError` | enum | Classifies failures reported as session start error. | `src/session/lifecycle/control.rs:121` |
-| sym-3c6c09975ce94069676c | `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError` | enum | Classifies failures reported as endpoint extension registration error. | `src/session/lifecycle/engine.rs:305` |
-| sym-c641398d8da3cb94c250 | `pocketstation::session::lifecycle::engine::SessionEngineBuildError` | enum | Classifies failures reported as session engine build error. | `src/session/lifecycle/engine.rs:295` |
-| sym-c5305e4d076e18066988 | `pocketstation::session::lifecycle::engine::SessionEngineStartError` | enum | Classifies failures reported as session engine start error. | `src/session/lifecycle/engine.rs:315` |
+| sym-fd0b5b1e3d01611befb0 | `pocketstation::session::extensions::audio_input::source::AudioInputError` | enum | Classifies failures surfaced by audio input operations. | `src/session/extensions/audio_input/source.rs:85` |
+| sym-6f966dee9d1515e62a7e | `pocketstation::session::extensions::builtins::SessionGraphRegistrationError` | enum | Classifies failures produced during session graph registration. | `src/session/extensions/builtins.rs:30` |
+| sym-83234335e8b4cb70f57e | `pocketstation::session::extensions::source::SourceDriverError` | enum | Classifies failures surfaced by source driver operations. | `src/session/extensions/source.rs:748` |
+| sym-1843c1ec8aae096e1d65 | `pocketstation::session::extensions::source::SourceManifestError` | enum | Classifies failures surfaced by source manifest operations. | `src/session/extensions/source.rs:677` |
+| sym-61d8e211defe79bbb1a6 | `pocketstation::session::extensions::source::SourceRegistrationError` | enum | Classifies failures produced during source registration. | `src/session/extensions/source.rs:701` |
+| sym-99bca5d12c942096f8b0 | `pocketstation::session::extensions::source::SourceRuntimeError` | enum | Classifies failures produced during source runtime execution. | `src/session/extensions/source.rs:754` |
+| sym-7871af4f560ec9fe3ac4 | `pocketstation::session::extensions::source::SourceTypeIdError` | enum | Classifies failures surfaced by source type identifier operations. | `src/session/extensions/source.rs:68` |
+| sym-5ede7fd5e41898b0061b | `pocketstation::session::lifecycle::control::SessionStartError` | enum | Classifies failures produced during session lifecycle start. | `src/session/lifecycle/control.rs:121` |
+| sym-3c6c09975ce94069676c | `pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError` | enum | Classifies failures produced during endpoint extension registration. | `src/session/lifecycle/engine.rs:305` |
+| sym-c641398d8da3cb94c250 | `pocketstation::session::lifecycle::engine::SessionEngineBuildError` | enum | Classifies failures produced during session engine construction and input validation. | `src/session/lifecycle/engine.rs:295` |
+| sym-c5305e4d076e18066988 | `pocketstation::session::lifecycle::engine::SessionEngineStartError` | enum | Classifies failures produced during session engine lifecycle start. | `src/session/lifecycle/engine.rs:315` |
 | sym-8be5244e9ac8689c706c | `pocketstation::session::lifecycle::events::SessionComponentId` | enum | Stable identity of the component that produced a session control failure. | `src/session/lifecycle/events.rs:51` |
 | sym-62d3d25fa4776760b06b | `pocketstation::session::lifecycle::events::SessionEventKind` | enum | Payload of one authoritative session event. | `src/session/lifecycle/events.rs:294` |
 | sym-c6d521bc369615540a31 | `pocketstation::session::lifecycle::events::SessionEventReceive` | enum | Result of non-blocking event polling. | `src/session/lifecycle/events.rs:492` |
@@ -68,22 +68,22 @@ For **Session API**, the generated [docs.rs API](https://docs.rs/pocketstation/l
 | sym-962361a1358c981f6a9f | `pocketstation::session::lifecycle::events::SessionLifecycleState` | enum | Public lifecycle states emitted by a running session. | `src/session/lifecycle/events.rs:19` |
 | sym-ac79480f787ee81818a0 | `pocketstation::session::lifecycle::events::SessionRollbackStage` | enum | The rollback operation that failed while unwinding a partial start. | `src/session/lifecycle/events.rs:29` |
 | sym-a2d10031270815731e7b | `pocketstation::session::lifecycle::events::SessionTerminalState` | enum | Final state carried by the terminal session event. | `src/session/lifecycle/events.rs:210` |
-| sym-da46a154618824a18994 | `pocketstation::session::lifecycle::host::SessionEngineHostBuildError` | enum | Classifies failures reported as session engine host build error. | `src/session/lifecycle/host.rs:362` |
+| sym-da46a154618824a18994 | `pocketstation::session::lifecycle::host::SessionEngineHostBuildError` | enum | Classifies failures produced during session engine host construction and input validation. | `src/session/lifecycle/host.rs:362` |
 | sym-933733f669d7719ffe7a | `pocketstation::session::lifecycle::observations::EndpointObservationStage` | enum | Selects the endpoint observation stage used by PocketStation. | `src/session/lifecycle/observations.rs:441` |
-| sym-5cc026a676e0591b94af | `pocketstation::session::lifecycle::observations::SessionRouteLatencyBoundary` | enum | Enumerates the supported session route latency boundary cases. | `src/session/lifecycle/observations.rs:196` |
-| sym-a758550b72412787e99d | `pocketstation::session::lifecycle::observations::SessionRouteLatencyUnit` | enum | Enumerates the supported session route latency unit cases. | `src/session/lifecycle/observations.rs:201` |
+| sym-5cc026a676e0591b94af | `pocketstation::session::lifecycle::observations::SessionRouteLatencyBoundary` | enum | Identifies the route boundary at which Session latency was observed. | `src/session/lifecycle/observations.rs:196` |
+| sym-a758550b72412787e99d | `pocketstation::session::lifecycle::observations::SessionRouteLatencyUnit` | enum | Declares the unit used by a Session route-latency observation. | `src/session/lifecycle/observations.rs:201` |
 | sym-08c924c4a96c2ff4640f | `pocketstation::session::lifecycle::observations::SessionRouteObservationInterval` | enum | Interval covered by monotonic route counters. | `src/session/lifecycle/observations.rs:150` |
 | sym-f9e0e26f14bb954cf294 | `pocketstation::session::lifecycle::trace::SessionTraceRecordKind` | enum | Selects the session trace record kind used by PocketStation. | `src/session/lifecycle/trace.rs:27` |
-| sym-88a327bb91bf885ce10b | `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` | enum | Classifies failures reported as session trace recorder finish error. | `src/session/lifecycle/trace.rs:98` |
-| sym-edc7211e5a9e61bcb2ea | `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` | enum | Classifies failures reported as session trace recorder start error. | `src/session/lifecycle/trace.rs:88` |
-| sym-68ce5d3bae413e0f5470 | `pocketstation::session::lifecycle::trace::SessionTraceValidationError` | enum | Classifies failures reported as session trace validation error. | `src/session/lifecycle/trace.rs:356` |
-| sym-796bbabbf84e0f47b0d8 | `pocketstation::session::prepare::error::SessionPrepareError` | enum | Classifies failures reported as session prepare error. | `src/session/prepare/error.rs:9` |
+| sym-88a327bb91bf885ce10b | `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` | enum | Classifies failures surfaced by session trace recorder finish operations. | `src/session/lifecycle/trace.rs:98` |
+| sym-edc7211e5a9e61bcb2ea | `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` | enum | Classifies failures produced during session trace recorder lifecycle start. | `src/session/lifecycle/trace.rs:88` |
+| sym-68ce5d3bae413e0f5470 | `pocketstation::session::lifecycle::trace::SessionTraceValidationError` | enum | Classifies failures produced during session trace validation. | `src/session/lifecycle/trace.rs:356` |
+| sym-796bbabbf84e0f47b0d8 | `pocketstation::session::prepare::error::SessionPrepareError` | enum | Classifies failures produced during session resource preparation. | `src/session/prepare/error.rs:9` |
 | sym-995aa9622b5ba2b4a748 | `SourceDriver::close` | function | Closes `SourceDriver` to further work. | `src/session/extensions/source.rs:273` |
 | sym-df9cd8b6772b89c63bda | `SourceDriver::next` | function | Produces the next source emission from `SourceDriver`. | `src/session/extensions/source.rs:269` |
 | sym-56f0802ba994d7ac9843 | `SourceDriver::prepare` | function | Prepares resources required by `SourceDriver`. | `src/session/extensions/source.rs:268` |
 | sym-93000b7d23bf0f46007d | `SourceFactory::create` | function | Creates the runtime implementation described by `SourceFactory`. | `src/session/extensions/source.rs:279` |
 | sym-c1d7fb39869e2d34f307 | `SourceFactory::manifest` | function | Returns the manifest held by `SourceFactory`. | `src/session/extensions/source.rs:277` |
-| sym-6a881085d8de6dbbb9e6 | `SourceFactory::validate_config` | function | Validates config for `SourceFactory`. | `src/session/extensions/source.rs:278` |
+| sym-6a881085d8de6dbbb9e6 | `SourceFactory::validate_config` | function | Validates supplied node configuration against the schema declared by `SourceFactory`. | `src/session/extensions/source.rs:278` |
 | sym-7370e5df776e21bbd7b7 | `StreamSignal::signal_spec` | function | Returns the signal spec held by `StreamSignal`. | `src/session/declaration/typed_stream.rs:16` |
 | sym-dc0c82c0beb1a6eb87e9 | `actual` | function | Returns the observed value when a compilation diagnostic compares two values. | `src/session/compile/error.rs:153` |
 | sym-1682a40407799112e8f3 | `application` | function | Returns the application held by `Source`. | `src/session/declaration/selector.rs:140` |
@@ -231,11 +231,11 @@ For **Session API**, the generated [docs.rs API](https://docs.rs/pocketstation/l
 | sym-648793e6c554ee61d325 | `into_rejected` | function | Converts `AudioInputWriteError` into rejected. | `src/session/extensions/audio_input/buffer.rs:319` |
 | sym-b0c9411e8bbf3f1bab03 | `into_start_failure` | function | Converts `SessionEngineStartError` into start failure. | `src/session/lifecycle/engine.rs:336` |
 | sym-6239186ad2720fa23c3e | `invalid_total` | function | Returns the invalid total held by `SessionAudioReentryMetrics`. | `src/session/lifecycle/observations.rs:352` |
-| sym-e0f463ea1df54f114b27 | `is_cancelled` | function | Returns whether cancelled applies to `SourceCancellation`. | `src/session/extensions/source.rs:255` |
-| sym-3a06e547847d70e25e6b | `is_complete` | function | Returns whether complete applies to `SessionTraceRecorderOutcome`. | `src/session/lifecycle/trace.rs:80` |
-| sym-5ded1e414552d586b30c | `is_requested` | function | Returns whether requested applies to `SessionStartCancellation`. | `src/session/lifecycle/control.rs:115` |
-| sym-1ad646036d38dee279d4 | `is_sensitive` | function | Returns whether sensitive applies to `EndpointConfiguration`. | `src/session/declaration/endpoint.rs:64` |
-| sym-7fcb6d2fa6694ec5e39a | `is_success` | function | Returns whether success applies to `SessionStopOutcome`. | `src/session/lifecycle/control.rs:349` |
+| sym-e0f463ea1df54f114b27 | `is_cancelled` | function | Reports whether cancelled is true for `SourceCancellation`. | `src/session/extensions/source.rs:255` |
+| sym-3a06e547847d70e25e6b | `is_complete` | function | Reports whether complete is true for `SessionTraceRecorderOutcome`. | `src/session/lifecycle/trace.rs:80` |
+| sym-5ded1e414552d586b30c | `is_requested` | function | Reports whether requested is true for `SessionStartCancellation`. | `src/session/lifecycle/control.rs:115` |
+| sym-1ad646036d38dee279d4 | `is_sensitive` | function | Reports whether sensitive is true for `EndpointConfiguration`. | `src/session/declaration/endpoint.rs:64` |
+| sym-7fcb6d2fa6694ec5e39a | `is_success` | function | Reports whether success is true for `SessionStopOutcome`. | `src/session/lifecycle/control.rs:349` |
 | sym-3b2e1392dc84776988a4 | `iter` | function | Iterates over the values held by `EndpointConfiguration`. | `src/session/declaration/endpoint.rs:68` |
 | sym-d742331b94ed5efc53cc | `iter` | function | Iterates over the values held by `SourceConfiguration`. | `src/session/extensions/source.rs:104` |
 | sym-3062cd188c729dd16e4c | `join` | function | Joins its owned operation for `SourceRuntime`. | `src/session/extensions/source.rs:583` |
@@ -339,6 +339,6 @@ The **Session API** inventory records compiler-visible or extracted evidence at 
 
 The claims on **Session API** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/mod.rs:1-145` (`DIRECT`)
+- `src/session/mod.rs:1-21` (`DIRECT`)
 
 For **Session API**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

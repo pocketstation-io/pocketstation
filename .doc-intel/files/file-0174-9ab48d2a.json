@@ -144,14 +144,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "d09c25c112efc156ec37e3011910391adc78219491e5cf8278a23f451a6e9add",
       "lines": [
         1,
-        69
+        1
       ],
       "path": "src/recording/config.rs",
-      "symbol": null
+      "symbol": "pocketstation::recording::config"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -197,10 +197,10 @@
     "super::writer::RecorderError"
   ],
   "inputs": [
-    "crate::frame::{ClockDomainId, SessionId, SourceId, StemId}",
-    "crate::timing::TimelineMapping",
-    "serde::Serialize",
-    "super::writer::RecorderError"
+    "Depends on `crate::frame::{ClockDomainId, SessionId, SourceId, StemId}` through a declared Rust import.",
+    "Depends on `crate::timing::TimelineMapping` through a declared Rust import.",
+    "Depends on `serde::Serialize` through a declared Rust import.",
+    "Depends on `super::writer::RecorderError` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -209,20 +209,20 @@
   "module": "pocketstation::recording::config",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::recording::config` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-e6449b0ec5059ec65633"
   ],
   "outputs": [
-    "enum:PermissionDecision",
-    "enum:PermissionScope",
-    "enum:RecorderLineageField",
-    "fn:as_str",
-    "fn:new",
-    "return Err(RecorderError::InvalidStemLabel(value));",
-    "struct:RecorderStemConfig",
-    "struct:StemLabel"
+    "Creates a typed failure at src/recording/config.rs:31.",
+    "Declares public enum `PermissionDecision`.",
+    "Declares public enum `PermissionScope`.",
+    "Declares public enum `RecorderLineageField`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `new`.",
+    "Declares public struct `RecorderStemConfig`.",
+    "Declares public struct `StemLabel`."
   ],
   "package": "pocketstation",
   "path": "src/recording/config.rs",
@@ -280,8 +280,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::recording::config responsibilities, including Enumerates the supported recorder lineage field cases.; Represents the session alternative defined by `RecorderLineageField`.; Represents the source alternative defined by `RecorderLineageField`.."
+    "classification": "DECLARED",
+    "text": "Validated recording declaration and lineage expectations."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -313,13 +313,14 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/recording/writer.rs",
     "REFERENCES:src/timing/timeline_mapping.rs"
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::recording::config::RecorderLineageField: Enumerates the supported recorder lineage field cases.",
+    "pocketstation::recording::config::RecorderLineageField: Identifies the lineage field that differs while validating a recording stem.",
     "pocketstation::recording::config::RecorderLineageField::Session: Represents the session alternative defined by `RecorderLineageField`.",
     "pocketstation::recording::config::RecorderLineageField::Source: Represents the source alternative defined by `RecorderLineageField`.",
     "pocketstation::recording::config::RecorderLineageField::Stem: Represents the stem alternative defined by `RecorderLineageField`.",
@@ -329,24 +330,24 @@
     "pocketstation::recording::config::StemLabel: Stores the validated human-readable label used for one recording stem.",
     "new: Creates a new `StemLabel`.",
     "as_str: Returns the stable string representation of `StemLabel`.",
-    "pocketstation::recording::config::PermissionDecision: Enumerates the supported permission decision cases.",
+    "pocketstation::recording::config::PermissionDecision: Records whether recording permission was granted, denied, or not observable.",
     "pocketstation::recording::config::PermissionDecision::Allowed: Represents the allowed alternative defined by `PermissionDecision`.",
     "pocketstation::recording::config::PermissionDecision::Denied: Represents the denied alternative defined by `PermissionDecision`.",
     "pocketstation::recording::config::PermissionScope: Selects the permission scope used by PocketStation.",
-    "pocketstation::recording::config::PermissionScope::SessionCaptureGrant: Selects session capture grant behavior for `PermissionScope`.",
+    "pocketstation::recording::config::PermissionScope::SessionCaptureGrant: Limits the permission decision to session capture grant.",
     "pocketstation::recording::config::RecorderStemConfig: Configures recorder stem behavior at its owning API boundary.",
     "RecorderStemConfig::session_id: Identifies the session identifier recorded by `RecorderStemConfig`.",
     "RecorderStemConfig::source_id: Identifies the source identifier recorded by `RecorderStemConfig`.",
     "RecorderStemConfig::stem_id: Identifies the stem identifier recorded by `RecorderStemConfig`.",
     "RecorderStemConfig::clock_id: Identifies the clock identifier recorded by `RecorderStemConfig`.",
-    "RecorderStemConfig::source_generation: Stores the source generation used by `RecorderStemConfig`.",
-    "RecorderStemConfig::permission_epoch: Stores the permission epoch used by `RecorderStemConfig`.",
-    "RecorderStemConfig::permission_scope: Stores the permission scope used by `RecorderStemConfig`.",
-    "RecorderStemConfig::permission: Stores the permission used by `RecorderStemConfig`.",
-    "RecorderStemConfig::label: Stores the label used by `RecorderStemConfig`.",
+    "RecorderStemConfig::source_generation: References the source generation participating in `RecorderStemConfig`.",
+    "RecorderStemConfig::permission_epoch: Identifies the permission-observation generation attached to `RecorderStemConfig`.",
+    "RecorderStemConfig::permission_scope: Stores the permission scope as a `PermissionScope` value in `RecorderStemConfig`.",
+    "RecorderStemConfig::permission: Stores the permission as a `PermissionDecision` value in `RecorderStemConfig`.",
+    "RecorderStemConfig::label: Stores the human-readable label used to identify `RecorderStemConfig`.",
     "RecorderStemConfig::sample_rate_hz: Stores the sample rate value for `RecorderStemConfig`, in hertz.",
-    "RecorderStemConfig::channels: Stores the channels used by `RecorderStemConfig`.",
-    "RecorderStemConfig::timeline_mapping: Stores the timeline mapping used by `RecorderStemConfig`."
+    "RecorderStemConfig::channels: Contains the channels owned or reported by `RecorderStemConfig`.",
+    "RecorderStemConfig::timeline_mapping: Maps source timestamps into the Session timeline for `RecorderStemConfig`."
   ],
   "retry_behavior": [],
   "serialization": [

@@ -79,14 +79,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "de27f2e26c91bea2974d9cd0e1802eb2bad33a955ee19ad91d92b2d4cf134cb0",
       "lines": [
         1,
-        38
+        4
       ],
       "path": "src/endpoint/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::endpoint"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -135,21 +135,21 @@
     "runtime::{ endpoint_start_gate, EndpointDriverObservationHandle, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint, RunningEndpoint, }"
   ],
   "inputs": [
-    "contract::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointReceiver, EndpointSignalReceiver, }",
-    "identity::OperatorId",
-    "identity::{EndpointGroupId, EndpointPreparationGroup}",
-    "module:contract",
-    "module:identity",
-    "module:polled_audio",
-    "module:polled_audio_driver",
-    "module:registry",
-    "module:runtime",
-    "polled_audio::POLLED_AUDIO_OPERATOR_ID",
-    "polled_audio::PolledAudioEndpoint",
-    "polled_audio_driver::{ PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }",
-    "registry::{ EndpointDriverRegistry, EndpointDriverRegistryError, EndpointPrepareError, }",
-    "runtime::{ EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureRetryability, EndpointFailureStage, EndpointInputOrigin, EndpointPrepareContext, EndpointRouteContext, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
-    "runtime::{ endpoint_start_gate, EndpointDriverObservationHandle, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint, RunningEndpoint, }"
+    "Depends on `contract::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointReceiver, EndpointSignalReceiver, }` through a declared Rust import.",
+    "Depends on `contract` through a declared Rust import.",
+    "Depends on `identity::OperatorId` through a declared Rust import.",
+    "Depends on `identity::{EndpointGroupId, EndpointPreparationGroup}` through a declared Rust import.",
+    "Depends on `identity` through a declared Rust import.",
+    "Depends on `polled_audio::POLLED_AUDIO_OPERATOR_ID` through a declared Rust import.",
+    "Depends on `polled_audio::PolledAudioEndpoint` through a declared Rust import.",
+    "Depends on `polled_audio_driver::{ PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }` through a declared Rust import.",
+    "Depends on `polled_audio_driver` through a declared Rust import.",
+    "Depends on `polled_audio` through a declared Rust import.",
+    "Depends on `registry::{ EndpointDriverRegistry, EndpointDriverRegistryError, EndpointPrepareError, }` through a declared Rust import.",
+    "Depends on `registry` through a declared Rust import.",
+    "Depends on `runtime::{ EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureRetryability, EndpointFailureStage, EndpointInputOrigin, EndpointPrepareContext, EndpointRouteContext, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }` through a declared Rust import.",
+    "Depends on `runtime::{ endpoint_start_gate, EndpointDriverObservationHandle, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint, RunningEndpoint, }` through a declared Rust import.",
+    "Depends on `runtime` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -158,7 +158,7 @@
   "module": "pocketstation::endpoint",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -214,8 +214,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint responsibilities, including endpoint."
+    "classification": "DECLARED",
+    "text": "Endpoint-driver lifecycle and registry contracts. This crate owns setup-time endpoint state transitions. It does not implement connectors, relay protocols, recording algorithms, or worker threads."
   },
   "queues": [],
   "recovery_behavior": [],

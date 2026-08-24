@@ -14,31 +14,31 @@ const LATENCY_HISTOGRAM_BUCKETS: usize = 64;
 const TIMESTAMP_CONTINUITY_TOLERANCE_NS: u64 = 1_000;
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as plan router error."]
+#[doc = "Classifies failures surfaced by plan router operations."]
 pub enum PlanRouterError {
     #[error("edge {edge_id:?} has no memory plan")]
-    #[doc = "Reported when the owning operation encounters missing memory plan."]
+    #[doc = "Reports that the required memory plan is missing."]
     MissingMemoryPlan {
         #[doc = "Identifies the edge identifier recorded by `MissingMemoryPlan`."]
         edge_id: EdgeId,
     },
     #[error("edge {edge_id:?} has zero capacity")]
-    #[doc = "Reported when the owning operation encounters zero capacity."]
+    #[doc = "Reports that capacity must be greater than zero."]
     ZeroCapacity {
         #[doc = "Identifies the edge identifier recorded by `ZeroCapacity`."]
         edge_id: EdgeId,
     },
     #[error("edge {edge_id:?} has invalid bytes_per_frame {bytes_per_frame}")]
-    #[doc = "Reported when the owning operation encounters invalid frame bytes."]
+    #[doc = "Reports that the supplied frame bytes is invalid."]
     InvalidFrameBytes {
         #[doc = "Identifies the edge identifier recorded by `InvalidFrameBytes`."]
         edge_id: EdgeId,
-        #[doc = "Stores the bytes per frame used by `InvalidFrameBytes`."]
+        #[doc = "Stores the encoded or in-memory size of one frame for `InvalidFrameBytes`, in bytes."]
         bytes_per_frame: usize,
     },
 }
 
-#[doc = "Enumerates the supported plan edge frame cases."]
+#[doc = "Carries either one routed frame or a terminal marker through a plan edge."]
 pub enum PlanEdgeFrame {
     #[doc = "Selects the exclusive case of `PlanEdgeFrame`."]
     Exclusive(LineagedAudioFrame),
@@ -637,7 +637,7 @@ impl PlanEdgeReceiver {
         self.recv_receipt_with_clock(crate::timing::monotonic_timestamp_ns)
     }
 
-    #[doc = "Returns whether abandoned applies to `PlanEdgeReceiver`."]
+    #[doc = "Reports whether abandoned is true for `PlanEdgeReceiver`."]
     pub fn is_abandoned(&self) -> bool {
         self.consumer.is_abandoned()
     }
@@ -766,15 +766,15 @@ struct RoutedEdge {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports the counters and terminal facts collected for dispatch."]
 pub struct DispatchSummary {
-    #[doc = "Stores the attempted edges used by `DispatchSummary`."]
+    #[doc = "References the attempted edges participating in `DispatchSummary`."]
     pub attempted_edges: u64,
-    #[doc = "Stores the enqueued edges used by `DispatchSummary`."]
+    #[doc = "References the enqueued edges participating in `DispatchSummary`."]
     pub enqueued_edges: u64,
-    #[doc = "Stores the dropped edges used by `DispatchSummary`."]
+    #[doc = "References the dropped edges participating in `DispatchSummary`."]
     pub dropped_edges: u64,
-    #[doc = "Stores the copy pool exhausted edges used by `DispatchSummary`."]
+    #[doc = "References the copy pool exhausted edges participating in `DispatchSummary`."]
     pub copy_pool_exhausted_edges: u64,
-    #[doc = "Stores the freeze failed edges used by `DispatchSummary`."]
+    #[doc = "References the freeze failed edges participating in `DispatchSummary`."]
     pub freeze_failed_edges: u64,
 }
 

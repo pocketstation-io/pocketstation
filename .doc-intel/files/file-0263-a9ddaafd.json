@@ -710,14 +710,112 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
       "lines": [
-        1,
-        879
+        580,
+        638
       ],
-      "path": "tests/connector_contract.rs",
-      "symbol": null
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        719,
+        751
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        638,
+        677
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        243,
+        283
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        677,
+        709
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        709,
+        719
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        836,
+        878
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        751,
+        803
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        229,
+        243
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        26,
+        41
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        803,
+        836
+      ],
+      "path": "tests/connector_contract.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        203,
+        229
+      ],
+      "path": "tests/connector_contract.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -757,14 +855,23 @@
     "std::time::Instant"
   ],
   "inputs": [
-    "#[cfg(feature = \"conformance-fixtures\")]",
-    "pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome, ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
-    "pocketstation::connector::{ ConnectorAudioRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }",
-    "pocketstation::{ AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec, }",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
-    "std::time::Duration",
-    "std::time::Instant"
+    "Consumes configuration at tests/connector_contract.rs:1.",
+    "Consumes configuration at tests/connector_contract.rs:17.",
+    "Consumes configuration at tests/connector_contract.rs:285.",
+    "Consumes configuration at tests/connector_contract.rs:295.",
+    "Consumes configuration at tests/connector_contract.rs:300.",
+    "Consumes configuration at tests/connector_contract.rs:344.",
+    "Consumes configuration at tests/connector_contract.rs:351.",
+    "Consumes configuration at tests/connector_contract.rs:421.",
+    "Consumes configuration at tests/connector_contract.rs:429.",
+    "Consumes configuration at tests/connector_contract.rs:5.",
+    "Depends on `pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome, ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }` through a declared Rust import.",
+    "Depends on `pocketstation::connector::{ ConnectorAudioRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }` through a declared Rust import.",
+    "Depends on `pocketstation::{ AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `std::time::Instant` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -894,14 +1001,14 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/connector_contract.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-4795dd3768d5a3e46d6b"
   ],
   "outputs": [
-    "Err(connector_error(",
-    "return Err(connector_error("
+    "Creates a typed failure at tests/connector_contract.rs:162.",
+    "Creates a typed failure at tests/connector_contract.rs:330."
   ],
   "package": "pocketstation",
   "path": "tests/connector_contract.rs",

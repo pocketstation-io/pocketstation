@@ -83,11 +83,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "9b159d261a448b46ea911d7d688b09b714c1e3cfb020fbccbad42aa7de5fa78f",
       "lines": [
         1,
-        168
+        9
       ],
       "path": "docs/guides/connectors.md",
       "symbol": null
@@ -136,7 +136,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "## Configuration and secrets"
+    "Consumes configuration at docs/guides/connectors.md:93."
   ],
   "invariants": [
     {
@@ -178,7 +178,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/guides/connectors.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

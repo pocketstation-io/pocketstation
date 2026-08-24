@@ -108,7 +108,7 @@
       "content_hash": "ce5c518f452c94552fe86c9ee2c25ffc1434bed500a4ba594c1549bcae092816",
       "lines": [
         1,
-        62
+        21
       ],
       "path": "src/capture/platform/linux/session_backend.rs",
       "symbol": null
@@ -148,8 +148,8 @@
     "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend, }"
   ],
   "inputs": [
-    "crate::capture::platform::linux::DesktopCaptureSource",
-    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend, }"
+    "Depends on `crate::capture::platform::linux::DesktopCaptureSource` through a declared Rust import.",
+    "Depends on `crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -158,13 +158,13 @@
   "module": "pocketstation::capture::platform::linux::session_backend",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::linux::session_backend` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-d03cf468f5067e87ca87"
   ],
   "outputs": [
-    "struct:DesktopCaptureBackend"
+    "Declares public struct `DesktopCaptureBackend`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/linux/session_backend.rs",
@@ -236,7 +236,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::linux::session backend responsibilities, including the src/capture/platform/linux/session backend boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::platform::linux::session_backend`."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/error_code.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -204,6 +207,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/error_code.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -832,16 +838,249 @@
       "classification": "DIRECT",
       "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
       "lines": [
-        1,
-        1262
+        17,
+        17
       ],
       "path": "src/recording/writer.rs",
-      "symbol": null
+      "symbol": "RECORDING_MANIFEST_FILE_NAME"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "RECORDING_MANIFEST_SCHEMA_VERSION"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "WORKER_IDLE_WAIT_MS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "MAX_MANIFEST_GAPS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "MAX_SILENCE_GAP_NS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        24,
+        82
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "RecorderError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "OutputExists"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "InvalidStemLabel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "DuplicateStemLabel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        32,
+        36
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "SessionMismatch"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "label"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "actual"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "expected"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": "PermissionDenied"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/error_code.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -994,6 +1233,9 @@
   "generated_from": "not_applicable",
   "git_object": "2fc31ec76da1b33a73fe66f6173fc5d805f6d9dd",
   "implemented_by": [
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/error_code.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -1014,6 +1256,9 @@
     "ManifestStem"
   ],
   "imported_by": [
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/error_code.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -1038,20 +1283,22 @@
     "super::config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::SessionId",
-    "crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver}",
-    "hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter}",
-    "module:tests",
-    "serde::Serialize",
-    "std::fs::{self, File}",
-    "std::io::{BufReader, BufWriter, Read, Write}",
-    "std::path::{Path, PathBuf}",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::thread::{self, JoinHandle}",
-    "std::time::Duration",
-    "super::config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }"
+    "Consumes configuration at src/recording/writer.rs:1260.",
+    "Consumes configuration at src/recording/writer.rs:250.",
+    "Consumes configuration at src/recording/writer.rs:287.",
+    "Depends on `crate::frame::SessionId` through a declared Rust import.",
+    "Depends on `crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver}` through a declared Rust import.",
+    "Depends on `hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter}` through a declared Rust import.",
+    "Depends on `serde::Serialize` through a declared Rust import.",
+    "Depends on `std::fs::{self, File}` through a declared Rust import.",
+    "Depends on `std::io::{BufReader, BufWriter, Read, Write}` through a declared Rust import.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1065,38 +1312,38 @@
   "module": "pocketstation::recording::writer",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::recording::writer` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-302861fed4a6e4c5b34c"
   ],
   "outputs": [
-    "Err(error) => StemWorkerOutcome {",
-    "Err(error) => {",
-    "const:RECORDING_MANIFEST_FILE_NAME",
-    "const:RECORDING_MANIFEST_SCHEMA_VERSION",
-    "enum:DiscontinuityKind",
-    "enum:RecorderError",
-    "enum:RecordingState",
-    "fn:cancel",
-    "fn:finish",
-    "fn:observations",
-    "fn:request_stop",
-    "fn:session_dir",
-    "fn:start_observed",
-    "return Err(RecorderError::DuplicateStemLabel(",
-    "return Err(RecorderError::FrameSpecMismatch {",
-    "return Err(RecorderError::InvalidSampleSpec {",
-    "return Err(RecorderError::OutputExists(session_dir));",
-    "return Err(RecorderError::PermissionDenied(",
-    "return Err(RecorderError::SessionMismatch {",
-    "return Err(RecorderError::SourceMismatch {",
-    "return Err(error);",
-    "struct:DiscontinuityRecord",
-    "struct:MultistemRecording",
-    "struct:RecordingObservations",
-    "struct:RecordingOutcome",
-    "struct:RecordingStemOutcome"
+    "Creates a typed failure at src/recording/writer.rs:176.",
+    "Creates a typed failure at src/recording/writer.rs:182.",
+    "Creates a typed failure at src/recording/writer.rs:189.",
+    "Creates a typed failure at src/recording/writer.rs:194.",
+    "Creates a typed failure at src/recording/writer.rs:204.",
+    "Creates a typed failure at src/recording/writer.rs:227.",
+    "Creates a typed failure at src/recording/writer.rs:235.",
+    "Creates a typed failure at src/recording/writer.rs:509.",
+    "Creates a typed failure at src/recording/writer.rs:652.",
+    "Creates a typed failure at src/recording/writer.rs:659.",
+    "Declares public const `RECORDING_MANIFEST_FILE_NAME`.",
+    "Declares public const `RECORDING_MANIFEST_SCHEMA_VERSION`.",
+    "Declares public enum `DiscontinuityKind`.",
+    "Declares public enum `RecorderError`.",
+    "Declares public enum `RecordingState`.",
+    "Declares public fn `cancel`.",
+    "Declares public fn `finish`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `request_stop`.",
+    "Declares public fn `session_dir`.",
+    "Declares public fn `start_observed`.",
+    "Declares public struct `DiscontinuityRecord`.",
+    "Declares public struct `MultistemRecording`.",
+    "Declares public struct `RecordingObservations`.",
+    "Declares public struct `RecordingOutcome`.",
+    "Declares public struct `RecordingStemOutcome`."
   ],
   "package": "pocketstation",
   "path": "src/recording/writer.rs",
@@ -1510,8 +1757,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::recording::writer responsibilities, including Classifies failures reported as recorder error.; Reported when the owning operation encounters output exists.; Reported when the owning operation encounters invalid stem label.."
+    "classification": "DECLARED",
+    "text": "Classifies failures surfaced by recorder operations. Reports that output already exists and would be overwritten. Reports that the supplied stem label is invalid."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1543,6 +1790,13 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/lifecycle/async_host.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
+    "CALLS:src/timing/timeline_mapping.rs",
     "REFERENCES:src/endpoint/identity.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/recording/config.rs",
@@ -1591,73 +1845,73 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::recording::writer::RecorderError: Classifies failures reported as recorder error.",
-    "pocketstation::recording::writer::RecorderError::OutputExists: Reported when the owning operation encounters output exists.",
-    "pocketstation::recording::writer::RecorderError::InvalidStemLabel: Reported when the owning operation encounters invalid stem label.",
-    "pocketstation::recording::writer::RecorderError::DuplicateStemLabel: Reported when the owning operation encounters duplicate stem label.",
-    "pocketstation::recording::writer::RecorderError::SessionMismatch: Reported when the owning operation encounters session mismatch.",
-    "RecorderError::SessionMismatch::label: Stores the label used by `SessionMismatch`.",
+    "pocketstation::recording::writer::RecorderError: Classifies failures surfaced by recorder operations.",
+    "pocketstation::recording::writer::RecorderError::OutputExists: Reports that output already exists and would be overwritten.",
+    "pocketstation::recording::writer::RecorderError::InvalidStemLabel: Reports that the supplied stem label is invalid.",
+    "pocketstation::recording::writer::RecorderError::DuplicateStemLabel: Reports that stem label duplicates an existing declaration or record.",
+    "pocketstation::recording::writer::RecorderError::SessionMismatch: Reports that session does not match the expected contract.",
+    "RecorderError::SessionMismatch::label: Stores the human-readable label used to identify `SessionMismatch`.",
     "RecorderError::SessionMismatch::actual: Records the value observed by `SessionMismatch`.",
     "RecorderError::SessionMismatch::expected: Records the value expected by `SessionMismatch`.",
     "pocketstation::recording::writer::RecorderError::PermissionDenied: Reports that the required permission was denied.",
-    "pocketstation::recording::writer::RecorderError::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
-    "RecorderError::InvalidSampleSpec::label: Stores the label used by `InvalidSampleSpec`.",
+    "pocketstation::recording::writer::RecorderError::InvalidSampleSpec: Reports that the supplied sample spec is invalid.",
+    "RecorderError::InvalidSampleSpec::label: Stores the human-readable label used to identify `InvalidSampleSpec`.",
     "RecorderError::InvalidSampleSpec::sample_rate_hz: Stores the sample rate value for `InvalidSampleSpec`, in hertz.",
-    "RecorderError::InvalidSampleSpec::channels: Stores the channels used by `InvalidSampleSpec`.",
-    "pocketstation::recording::writer::RecorderError::SourceMismatch: Reported when the owning operation encounters source mismatch.",
-    "RecorderError::SourceMismatch::label: Stores the label used by `SourceMismatch`.",
+    "RecorderError::InvalidSampleSpec::channels: Contains the channels owned or reported by `InvalidSampleSpec`.",
+    "pocketstation::recording::writer::RecorderError::SourceMismatch: Reports that source does not match the expected contract.",
+    "RecorderError::SourceMismatch::label: Stores the human-readable label used to identify `SourceMismatch`.",
     "RecorderError::SourceMismatch::actual: Records the value observed by `SourceMismatch`.",
     "RecorderError::SourceMismatch::expected: Records the value expected by `SourceMismatch`.",
-    "pocketstation::recording::writer::RecorderError::LineageMismatch: Reported when the owning operation encounters lineage mismatch.",
-    "RecorderError::LineageMismatch::label: Stores the label used by `LineageMismatch`.",
-    "RecorderError::LineageMismatch::field: Stores the field used by `LineageMismatch`.",
+    "pocketstation::recording::writer::RecorderError::LineageMismatch: Reports that lineage does not match the expected contract.",
+    "RecorderError::LineageMismatch::label: Stores the human-readable label used to identify `LineageMismatch`.",
+    "RecorderError::LineageMismatch::field: Stores the field as a `RecorderLineageField` value in `LineageMismatch`.",
     "RecorderError::LineageMismatch::actual: Records the value observed by `LineageMismatch`.",
     "RecorderError::LineageMismatch::expected: Records the value expected by `LineageMismatch`.",
-    "pocketstation::recording::writer::RecorderError::FrameSpecMismatch: Reported when the owning operation encounters frame spec mismatch.",
-    "RecorderError::FrameSpecMismatch::label: Stores the label used by `FrameSpecMismatch`.",
+    "pocketstation::recording::writer::RecorderError::FrameSpecMismatch: Reports that frame spec does not match the expected contract.",
+    "RecorderError::FrameSpecMismatch::label: Stores the human-readable label used to identify `FrameSpecMismatch`.",
     "RecorderError::FrameSpecMismatch::actual_rate_hz: Stores the actual rate value for `FrameSpecMismatch`, in hertz.",
-    "RecorderError::FrameSpecMismatch::actual_channels: Stores the actual channels used by `FrameSpecMismatch`.",
+    "RecorderError::FrameSpecMismatch::actual_channels: Contains the actual channels owned or reported by `FrameSpecMismatch`.",
     "RecorderError::FrameSpecMismatch::expected_rate_hz: Stores the expected rate value for `FrameSpecMismatch`, in hertz.",
-    "RecorderError::FrameSpecMismatch::expected_channels: Stores the expected channels used by `FrameSpecMismatch`.",
-    "pocketstation::recording::writer::RecorderError::UnalignedSamples: Reported when the owning operation encounters unaligned samples.",
-    "pocketstation::recording::writer::RecorderError::TimestampOutOfRange: Reported when the owning operation encounters timestamp out of range.",
-    "RecorderError::GapTooLarge::label: Stores the label used by `GapTooLarge`.",
+    "RecorderError::FrameSpecMismatch::expected_channels: Contains the expected channels owned or reported by `FrameSpecMismatch`.",
+    "pocketstation::recording::writer::RecorderError::UnalignedSamples: Reports that samples does not align to complete frames or channels.",
+    "pocketstation::recording::writer::RecorderError::TimestampOutOfRange: Reports that timestamp falls outside the supported range.",
+    "RecorderError::GapTooLarge::label: Stores the human-readable label used to identify `GapTooLarge`.",
     "RecorderError::GapTooLarge::duration_ns: Stores the duration value for `GapTooLarge`, in nanoseconds.",
-    "pocketstation::recording::writer::RecorderError::GapTooLarge: Reported when the owning operation encounters gap too large.",
-    "pocketstation::recording::writer::RecorderError::TooManyGaps: Reported when the owning operation encounters too many gaps.",
-    "pocketstation::recording::writer::RecorderError::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
-    "pocketstation::recording::writer::RecorderError::Io: Reported when the owning operation encounters I/O.",
-    "pocketstation::recording::writer::RecorderError::Wav: Reported when the owning operation encounters wav.",
-    "pocketstation::recording::writer::RecorderError::Json: Reported when the owning operation encounters json.",
+    "pocketstation::recording::writer::RecorderError::GapTooLarge: Reports that gap exceeds the supported size limit.",
+    "pocketstation::recording::writer::RecorderError::TooManyGaps: Reports that the number of gaps exceeds the supported limit.",
+    "pocketstation::recording::writer::RecorderError::WorkerPanicked: Reports that worker panicked while the operation was active.",
+    "pocketstation::recording::writer::RecorderError::Io: Reports an operating-system or filesystem I/O failure.",
+    "pocketstation::recording::writer::RecorderError::Wav: Classifies a failure at the wav stage or component of `RecorderError`.",
+    "pocketstation::recording::writer::RecorderError::Json: Reports that JSON serialization or parsing failed.",
     "pocketstation::recording::writer::RecordingState: Selects the recording state used by PocketStation.",
     "pocketstation::recording::writer::RecordingState::Recording: Identifies the recording state or stage represented by `RecordingState`.",
     "pocketstation::recording::writer::RecordingState::Complete: Identifies the complete state or stage represented by `RecordingState`.",
     "pocketstation::recording::writer::RecordingState::Incomplete: Identifies the incomplete state or stage represented by `RecordingState`.",
     "pocketstation::recording::writer::DiscontinuityRecord: Records one immutable discontinuity observation.",
     "DiscontinuityRecord::stem_id: Identifies the stem identifier recorded by `DiscontinuityRecord`.",
-    "DiscontinuityRecord::label: Stores the label used by `DiscontinuityRecord`.",
-    "DiscontinuityRecord::kind: Stores the kind used by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::label: Stores the human-readable label used to identify `DiscontinuityRecord`.",
+    "DiscontinuityRecord::kind: Records the kind selected for `DiscontinuityRecord`.",
     "DiscontinuityRecord::timestamp_start_ns: Stores the timestamp start value for `DiscontinuityRecord`, in nanoseconds.",
     "DiscontinuityRecord::timestamp_end_ns: Stores the timestamp end value for `DiscontinuityRecord`, in nanoseconds.",
-    "DiscontinuityRecord::sequence_start: Stores the sequence start used by `DiscontinuityRecord`.",
-    "DiscontinuityRecord::sequence_end: Stores the sequence end used by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::sequence_start: Records the first sequence number covered by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::sequence_end: Records the last sequence number covered by `DiscontinuityRecord`.",
     "pocketstation::recording::writer::DiscontinuityKind: Selects the discontinuity kind used by PocketStation.",
-    "pocketstation::recording::writer::DiscontinuityKind::TimestampGap: Selects timestamp gap behavior for `DiscontinuityKind`.",
-    "pocketstation::recording::writer::DiscontinuityKind::SequenceGap: Selects sequence gap behavior for `DiscontinuityKind`.",
-    "pocketstation::recording::writer::DiscontinuityKind::OverlapRejected: Selects overlap rejected behavior for `DiscontinuityKind`.",
+    "pocketstation::recording::writer::DiscontinuityKind::TimestampGap: Classifies the observed stream discontinuity as timestamp gap.",
+    "pocketstation::recording::writer::DiscontinuityKind::SequenceGap: Classifies the observed stream discontinuity as sequence gap.",
+    "pocketstation::recording::writer::DiscontinuityKind::OverlapRejected: Classifies the observed stream discontinuity as overlap rejected.",
     "pocketstation::recording::writer::RecordingOutcome: Reports the structured recording outcome.",
-    "RecordingOutcome::session_dir: Stores the session dir used by `RecordingOutcome`.",
-    "RecordingOutcome::state: Stores the state used by `RecordingOutcome`.",
-    "RecordingOutcome::completed_stems: Stores the completed stems used by `RecordingOutcome`.",
-    "RecordingOutcome::failed_stems: Stores the failed stems used by `RecordingOutcome`.",
-    "RecordingOutcome::stems: Stores the stems used by `RecordingOutcome`.",
+    "RecordingOutcome::session_dir: Points to the directory containing the Session recording represented by `RecordingOutcome`.",
+    "RecordingOutcome::state: Records the state selected for `RecordingOutcome`.",
+    "RecordingOutcome::completed_stems: Contains the completed stems owned or reported by `RecordingOutcome`.",
+    "RecordingOutcome::failed_stems: Contains the failed stems owned or reported by `RecordingOutcome`.",
+    "RecordingOutcome::stems: Contains the stems owned or reported by `RecordingOutcome`.",
     "pocketstation::recording::writer::RecordingStemOutcome: Reports the structured recording stem outcome.",
-    "RecordingStemOutcome::label: Stores the label used by `RecordingStemOutcome`.",
-    "RecordingStemOutcome::written_frames: Stores the written frames used by `RecordingStemOutcome`.",
-    "RecordingStemOutcome::stale_frames: Stores the stale frames used by `RecordingStemOutcome`.",
-    "RecordingStemOutcome::gap_ranges: Stores the gap ranges used by `RecordingStemOutcome`.",
-    "RecordingStemOutcome::error: Stores the error used by `RecordingStemOutcome`.",
-    "RecordingStemOutcome::edge_observations: Stores the edge observations used by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::label: Stores the human-readable label used to identify `RecordingStemOutcome`.",
+    "RecordingStemOutcome::written_frames: Contains the written frames owned or reported by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::stale_frames: Contains the stale frames owned or reported by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::gap_ranges: Contains the gap ranges owned or reported by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::error: Stores the error component of `RecordingStemOutcome`.",
+    "RecordingStemOutcome::edge_observations: References the edge observations participating in `RecordingStemOutcome`.",
     "pocketstation::recording::writer::RecordingObservations: Reports the recording observations collected at an observation boundary.",
     "RecordingObservations::frames_received_total: Counts the total number of frames received observed by `RecordingObservations`.",
     "RecordingObservations::frames_written_total: Counts the total number of frames written observed by `RecordingObservations`.",

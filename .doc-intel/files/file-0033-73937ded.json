@@ -240,14 +240,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "4dedd03f0610687e38c1da94d34c5180915fa352b1feefd0c62cec66a72b94fe",
       "lines": [
         1,
-        159
+        4
       ],
       "path": "examples/operator-consumer/src/lib.rs",
-      "symbol": null
+      "symbol": "not_applicable"
     }
   ],
   "example_coverage_status": "linked",
@@ -282,11 +282,11 @@
     "whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    ") -> Result<(), pocketstation::ConfigError> {",
-    "pocketstation::{ EndpointCancellationOutcome, EndpointDescriptor, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec, PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source, TextFormat, }",
-    "std::sync::Arc",
-    "whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID}"
+    "Consumes configuration at examples/operator-consumer/src/lib.rs:51.",
+    "Consumes configuration at examples/operator-consumer/src/lib.rs:6.",
+    "Depends on `pocketstation::{ EndpointCancellationOutcome, EndpointDescriptor, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec, PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source, TextFormat, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -295,13 +295,13 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/operator-consumer/src/lib.rs` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [
     "pattern-3dd96e814fdbb6001ead"
   ],
   "outputs": [
-    "return Err(EndpointFailure::new("
+    "Creates a typed failure at examples/operator-consumer/src/lib.rs:67."
   ],
   "package": "pocketstation",
   "path": "examples/operator-consumer/src/lib.rs",

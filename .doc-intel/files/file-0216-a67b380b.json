@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -111,6 +114,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -453,16 +459,249 @@
       "classification": "DIRECT",
       "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
       "lines": [
-        1,
-        367
+        26,
+        26
       ],
       "path": "src/session/extensions/audio_input/source.rs",
-      "symbol": null
+      "symbol": "OUTPUT_PORT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "DRIVER_IDLE_WAIT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "NEXT_AUDIO_INPUT_WRITER_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        33,
+        37
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "PcmSource"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "output"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "writer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        40,
+        50
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        52,
+        54
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        56,
+        58
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "output"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        60,
+        62
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "writer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        64,
+        66
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "writer_mut"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        68,
+        70
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "into_parts"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        74,
+        81
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        84,
+        84
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        85,
+        102
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "AudioInputError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        87,
+        87
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        87,
+        87
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": "Configuration"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -482,6 +721,9 @@
   "generated_from": "not_applicable",
   "git_object": "11b5f2dd545ed924b7d3d5406183b4d67e9ce953",
   "implemented_by": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -496,6 +738,9 @@
     "AudioInputDriver"
   ],
   "imported_by": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -518,24 +763,24 @@
     "super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}"
   ],
   "inputs": [
-    "AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity,",
-    "Configuration(#[from] AudioInputConfigError),",
-    "Err(ConfigError::Invalid {",
-    "crate::frame::{AudioBufferPool, AudioFrame}",
-    "crate::graph::{ AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming, }",
-    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
-    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
-    "crate::timing::{monotonic_timestamp_ns, PROCESS_MONOTONIC_CLOCK_DOMAIN_ID}",
-    "crate::{SampleSpec, SessionError}",
-    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
-    "std::collections::BTreeMap",
-    "std::fmt",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::{Arc, Mutex}",
-    "std::time::Duration",
-    "super::buffer::{AudioInputState, AudioInputWriter, QueuedAudioInputFrame}",
-    "super::super::source::{ SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourcePrepareContext, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
-    "super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}"
+    "Consumes configuration at src/session/extensions/audio_input/source.rs:135.",
+    "Consumes configuration at src/session/extensions/audio_input/source.rs:137.",
+    "Consumes configuration at src/session/extensions/audio_input/source.rs:87.",
+    "Consumes configuration at src/session/extensions/audio_input/source.rs:9.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming, }` through a declared Rust import.",
+    "Depends on `crate::runtime::{SignalEdge, SignalEdgeReceiver}` through a declared Rust import.",
+    "Depends on `crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}` through a declared Rust import.",
+    "Depends on `crate::timing::{monotonic_timestamp_ns, PROCESS_MONOTONIC_CLOCK_DOMAIN_ID}` through a declared Rust import.",
+    "Depends on `crate::{SampleSpec, SessionError}` through a declared Rust import.",
+    "Depends on `std::collections::BTreeMap` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::buffer::{AudioInputState, AudioInputWriter, QueuedAudioInputFrame}` through a declared Rust import.",
+    "Depends on `super::super::source::{ SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourcePrepareContext, SourceSessionContext, SourceTypeId, SourceTypeIdError, }` through a declared Rust import.",
+    "Depends on `super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -566,7 +811,7 @@
   "module": "pocketstation::session::extensions::audio_input::source",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::audio_input::source` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-02730342ffe5edf1a1a0",
@@ -575,22 +820,22 @@
     "pattern-cacf21a0bf3a8603fa63"
   ],
   "outputs": [
-    "Err(ConfigError::Invalid {",
-    "_ => return Err(AudioInputConfigError::UnsupportedChannelCount.into()),",
-    "enum:AudioInputError",
-    "fn:bind",
-    "fn:cancel",
-    "fn:into_parts",
-    "fn:new",
-    "fn:output",
-    "fn:reserve",
-    "fn:source",
-    "fn:writer",
-    "fn:writer_mut",
-    "return Err(AudioInputError::IncompatibleContract);",
-    "struct:AudioInputFactory",
-    "struct:AudioInputReservation",
-    "struct:PcmSource"
+    "Creates a typed failure at src/session/extensions/audio_input/source.rs:137.",
+    "Creates a typed failure at src/session/extensions/audio_input/source.rs:168.",
+    "Creates a typed failure at src/session/extensions/audio_input/source.rs:205.",
+    "Declares public enum `AudioInputError`.",
+    "Declares public fn `bind`.",
+    "Declares public fn `cancel`.",
+    "Declares public fn `into_parts`.",
+    "Declares public fn `new`.",
+    "Declares public fn `output`.",
+    "Declares public fn `reserve`.",
+    "Declares public fn `source`.",
+    "Declares public fn `writer_mut`.",
+    "Declares public fn `writer`.",
+    "Declares public struct `AudioInputFactory`.",
+    "Declares public struct `AudioInputReservation`.",
+    "Declares public struct `PcmSource`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/audio_input/source.rs",
@@ -769,8 +1014,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::audio input::source responsibilities, including Low-level PCM source ownership for integrations that separately retain the; Returns the source held by `PcmSource`.; Returns the output held by `PcmSource`.."
+    "classification": "DECLARED",
+    "text": "Low-level PCM source ownership for integrations that separately retain the. Returns the source held by `PcmSource`. Returns the output held by `PcmSource`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -831,6 +1076,14 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/envelope.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
+    "IMPLEMENTS:src/session/error.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/mod.rs",
+    "IMPLEMENTS:src/session/extensions/source.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/node.rs",
@@ -903,14 +1156,14 @@
     "writer_mut: Returns the writer mut held by `PcmSource`.",
     "into_parts: Consumes `PcmSource` and returns its component values.",
     "fmt: Formats `PcmSource` with the requested formatter.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError: Classifies failures reported as audio input error.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::Configuration: Reported when the owning operation encounters configuration.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::SourceTypeId: Reported when the owning operation encounters source type identifier.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::Manifest: Reported when the owning operation encounters manifest.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::Session: Reported when the owning operation encounters session.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::IncompatibleContract: Reported when the owning operation encounters incompatible contract.",
-    "pocketstation::session::extensions::audio_input::source::AudioInputError::InstanceIdentityExhausted: Reported when the owning operation encounters instance identity exhausted."
+    "pocketstation::session::extensions::audio_input::source::AudioInputError: Classifies failures surfaced by audio input operations.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Configuration: Classifies a failure at the configuration stage or component of `AudioInputError`.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::SourceTypeId: Classifies a failure at the source type identifier stage or component of `AudioInputError`.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Manifest: Classifies a failure at the manifest stage or component of `AudioInputError`.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Session: Classifies a failure at the session stage or component of `AudioInputError`.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::RegistrationStateUnavailable: Reports that registration state is unavailable.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::IncompatibleContract: Reports that contract is incompatible with the required contract.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::InstanceIdentityExhausted: Reports that the available instance identity range or capacity is exhausted."
   ],
   "retry_behavior": [],
   "serialization": [],

@@ -1,7 +1,7 @@
 //! Host platform identity; not part of audio-buffer ownership.
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[doc = "Enumerates the supported platform cases."]
+#[doc = "Identifies the operating-system platform attached to captured lineage."]
 pub enum Platform {
     #[doc = "Represents the macos case of `Platform`."]
     Macos,

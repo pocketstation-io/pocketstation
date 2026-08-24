@@ -150,19 +150,19 @@ impl SignalEnvelope {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as signal envelope error."]
+#[doc = "Classifies failures surfaced by signal envelope operations."]
 pub enum SignalEnvelopeError {
     #[error("signal envelope has an invalid SignalSpec")]
-    #[doc = "Reports invalid signal spec."]
+    #[doc = "Reports that the supplied signal spec is invalid."]
     InvalidSignalSpec,
     #[error("signal payload does not match its declared SignalSpec")]
-    #[doc = "Reports payload spec mismatch."]
+    #[doc = "Reports that payload spec does not match the expected contract."]
     PayloadSpecMismatch,
     #[error("signal envelope sequence does not match its lineage")]
-    #[doc = "Reports sequence mismatch."]
+    #[doc = "Reports that sequence does not match the expected contract."]
     SequenceMismatch,
     #[error("signal envelope source does not match its lineage")]
-    #[doc = "Reports source mismatch."]
+    #[doc = "Reports that source does not match the expected contract."]
     SourceMismatch,
 }
 

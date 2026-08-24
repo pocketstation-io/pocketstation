@@ -108,7 +108,7 @@
       "content_hash": "4adccc5f0ae1b6fbf89653fd28fff675b3cf7a4ea960d56b60d80a902b71b74a",
       "lines": [
         1,
-        94
+        21
       ],
       "path": "benches/generated_audio_bridge.rs",
       "symbol": null
@@ -141,11 +141,11 @@
     "std::hint::spin_loop"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
-    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
-    "pocketstation::internal::graph::{EdgeContract, NodeId, SignalEnvelope}",
-    "pocketstation::internal::runtime::{ plan_source_channel, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }",
-    "std::hint::spin_loop"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::{EdgeContract, NodeId, SignalEnvelope}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::runtime::{ plan_source_channel, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }` through a declared Rust import.",
+    "Depends on `std::hint::spin_loop` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -154,7 +154,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/generated_audio_bridge.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-5a0f5b7bd0ef141c31d8",
@@ -194,8 +194,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/generated audio bridge boundary."
+    "classification": "DECLARED",
+    "text": "Measures generated audio bridge by repeatedly exercising AudioBufferPool::new, AudioFrame::try_new, ClockDomainId::new, EdgeContract::bounded_async."
   },
   "queues": [],
   "recovery_behavior": [],

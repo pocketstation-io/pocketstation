@@ -60,7 +60,7 @@
       "content_hash": "01df226b83f387be71609cfca7c7b96e3e7e7184849b1d9c4a70fcd378321c26",
       "lines": [
         1,
-        42
+        21
       ],
       "path": "benches/captured_frame_stream.rs",
       "symbol": null
@@ -92,10 +92,10 @@
     "pocketstation::{SampleFormat, SampleSpec}"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
-    "pocketstation::internal::captured_frame_stream",
-    "pocketstation::internal::{AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES}",
-    "pocketstation::{SampleFormat, SampleSpec}"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::captured_frame_stream` through a declared Rust import.",
+    "Depends on `pocketstation::internal::{AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES}` through a declared Rust import.",
+    "Depends on `pocketstation::{SampleFormat, SampleSpec}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -113,7 +113,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/captured_frame_stream.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-e3effd83e86b8cf6d8e2"
@@ -141,8 +141,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/captured frame stream boundary."
+    "classification": "DECLARED",
+    "text": "Measures captured frame stream by repeatedly exercising AudioBufferPool::new, AudioFrame::try_new, SampleSpec::new, SourceId::new."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -7,7 +7,7 @@ use serde::Serialize;
 use super::writer::RecorderError;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported recorder lineage field cases."]
+#[doc = "Identifies the lineage field that differs while validating a recording stem."]
 pub enum RecorderLineageField {
     #[doc = "Selects the session case of `RecorderLineageField`."]
     Session,
@@ -50,7 +50,7 @@ impl StemLabel {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
-#[doc = "Enumerates the supported permission decision cases."]
+#[doc = "Records whether recording permission was granted, denied, or not observable."]
 pub enum PermissionDecision {
     #[doc = "Selects the allowed case of `PermissionDecision`."]
     Allowed,
@@ -62,7 +62,7 @@ pub enum PermissionDecision {
 #[serde(rename_all = "snake_case")]
 #[doc = "Selects the permission scope used by PocketStation."]
 pub enum PermissionScope {
-    #[doc = "Selects session capture grant behavior for `PermissionScope`."]
+    #[doc = "Limits the permission decision to session capture grant."]
     SessionCaptureGrant,
 }
 
@@ -77,20 +77,20 @@ pub struct RecorderStemConfig {
     pub stem_id: StemId,
     #[doc = "Identifies the clock identifier recorded by `RecorderStemConfig`."]
     pub clock_id: ClockDomainId,
-    #[doc = "Stores the source generation used by `RecorderStemConfig`."]
+    #[doc = "References the source generation participating in `RecorderStemConfig`."]
     pub source_generation: u32,
-    #[doc = "Stores the permission epoch used by `RecorderStemConfig`."]
+    #[doc = "Identifies the permission-observation generation attached to `RecorderStemConfig`."]
     pub permission_epoch: u64,
-    #[doc = "Stores the permission scope used by `RecorderStemConfig`."]
+    #[doc = "Stores the permission scope as a `PermissionScope` value in `RecorderStemConfig`."]
     pub permission_scope: PermissionScope,
-    #[doc = "Stores the permission used by `RecorderStemConfig`."]
+    #[doc = "Stores the permission as a `PermissionDecision` value in `RecorderStemConfig`."]
     pub permission: PermissionDecision,
-    #[doc = "Stores the label used by `RecorderStemConfig`."]
+    #[doc = "Stores the human-readable label used to identify `RecorderStemConfig`."]
     pub label: StemLabel,
     #[doc = "Stores the sample rate value for `RecorderStemConfig`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels used by `RecorderStemConfig`."]
+    #[doc = "Contains the channels owned or reported by `RecorderStemConfig`."]
     pub channels: u8,
-    #[doc = "Stores the timeline mapping used by `RecorderStemConfig`."]
+    #[doc = "Maps source timestamps into the Session timeline for `RecorderStemConfig`."]
     pub timeline_mapping: TimelineMapping,
 }

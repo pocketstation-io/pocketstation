@@ -354,14 +354,14 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "660110b4ee1146f6631c2e0b22b9a13207d47e184ff309f208b2d361091d4df9",
       "lines": [
         1,
-        335
+        14
       ],
       "path": "src/capture/platform/macos/loopback.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::platform::macos::loopback"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -413,13 +413,13 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(feature = \"internal-testing\")]",
-    "#[cfg(test)]",
-    "crate::capture::platform::macos::macos_asp::AspReader",
-    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, }",
-    "crate::frame::{AudioBufferPool, AudioFrame, StreamId}",
-    "std::time::Duration",
-    "super::*"
+    "Consumes configuration at src/capture/platform/macos/loopback.rs:315.",
+    "Consumes configuration at src/capture/platform/macos/loopback.rs:56.",
+    "Depends on `crate::capture::platform::macos::macos_asp::AspReader` through a declared Rust import.",
+    "Depends on `crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, }` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, StreamId}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -437,7 +437,7 @@
   "module": "pocketstation::capture::platform::macos::loopback",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::macos::loopback` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-55b152cec6c363114987",
@@ -445,17 +445,18 @@
     "pattern-f05736b45ad77eaf0de6"
   ],
   "outputs": [
-    "Err(LoopbackError::BackendSetupRequired {",
-    "Err(_) => {",
-    "fn:capture_mode",
-    "fn:capture_mode_with_runtime_event_sender",
-    "fn:observation_handle",
-    "fn:observations",
-    "fn:source_id",
-    "fn:stop_and_join",
-    "if let Err(payload) = worker {",
-    "other => return Err(LoopbackError::ModeUnsupported(other)),",
-    "struct:SystemLoopbackSource"
+    "Creates a typed failure at src/capture/platform/macos/loopback.rs:166.",
+    "Creates a typed failure at src/capture/platform/macos/loopback.rs:219.",
+    "Creates a typed failure at src/capture/platform/macos/loopback.rs:308.",
+    "Creates a typed failure at src/capture/platform/macos/loopback.rs:328.",
+    "Creates a typed failure at src/capture/platform/macos/loopback.rs:85.",
+    "Declares public fn `capture_mode_with_runtime_event_sender`.",
+    "Declares public fn `capture_mode`.",
+    "Declares public fn `observation_handle`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `stop_and_join`.",
+    "Declares public struct `SystemLoopbackSource`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/macos/loopback.rs",
@@ -579,8 +580,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::macos::loopback responsibilities, including Manages a macOS loopback capture session.; Returns the capture mode held by `SystemLoopbackSource`.; Returns the observations exposed by `SystemLoopbackSource`.."
+    "classification": "DECLARED",
+    "text": "macOS audio loopback capture backend. On macOS 14.4+ (public support), uses `AudioHardwareCreateProcessTap` / `CATapDescription` (the process tap path). No HAL plugin installation, no Screen Recording permission, no deadlock. On older macOS, an externally provisioned AudioServerPlugin can expose the POSIX SHM ring. The SDK never installs privileged components or restarts Core Audio. # Hot-path invariants No allocation, locking, logging, or panicking on the audio delivery path. Pool slot acquisition is lock-free (CAS bitset in `AudioBufferPool::acquire`)."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -635,6 +636,16 @@
     "docs/best-practices/source-identity.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/authorization.rs",
+    "CALLS:src/capture/capture_owner.rs",
+    "CALLS:src/capture/events.rs",
+    "CALLS:src/capture/observations.rs",
+    "CALLS:src/capture/platform/macos/macos_asp.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/capture/timeline.rs",
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/capture/authorization.rs",
     "REFERENCES:src/capture/events.rs",
     "REFERENCES:src/capture/observations.rs",

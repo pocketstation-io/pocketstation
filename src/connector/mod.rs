@@ -61,7 +61,7 @@ pub use worker::{
     ConnectorWorker,
 };
 
-#[doc = "Declares a connector endpoint and the manifest-backed configuration used to instantiate it."]
+#[doc = "Connector manifests, configuration, workers, transport records, readiness, and observations."]
 pub struct Connector {
     manifest: Arc<ConnectorManifest>,
     endpoint_factory: Arc<dyn EndpointDriverFactory>,
@@ -213,7 +213,7 @@ impl NodeDefinition for ConnectorDefinition {
 }
 
 impl Session {
-    #[doc = "Registers connector for `Session`."]
+    #[doc = "Registers one connector implementation for use by `Session`."]
     pub fn register_connector(
         &self,
         connector: Connector,
@@ -235,29 +235,29 @@ impl Session {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as connector registration error."]
+#[doc = "Classifies failures produced during connector registration."]
 pub enum ConnectorRegistrationError {
     #[error(transparent)]
-    #[doc = "Reports invalid manifest."]
+    #[doc = "Reports that the supplied manifest is invalid."]
     InvalidManifest(#[from] ConnectorManifestError),
     #[error(transparent)]
-    #[doc = "Reports session."]
+    #[doc = "Classifies a failure at the session stage or component of `ConnectorRegistrationError`."]
     Session(#[from] crate::SessionEndpointError),
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as connector declaration error."]
+#[doc = "Classifies failures surfaced by connector declaration operations."]
 pub enum ConnectorDeclarationError {
     #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
-    #[doc = "Reports wrong session."]
+    #[doc = "Reports that session does not match the required identity or contract."]
     WrongSession {
-        #[doc = "Stores the registered used by `WrongSession`."]
+        #[doc = "Stores the registered as a `SessionId` value in `WrongSession`."]
         registered: crate::SessionId,
-        #[doc = "Stores the requested used by `WrongSession`."]
+        #[doc = "Stores the requested as a `SessionId` value in `WrongSession`."]
         requested: crate::SessionId,
     },
     #[error(transparent)]
-    #[doc = "Reports configuration."]
+    #[doc = "Classifies a failure at the configuration stage or component of `ConnectorDeclarationError`."]
     Configuration(#[from] ConnectorConfigurationError),
     #[error(transparent)]
     #[doc = "Reports session."]
@@ -265,7 +265,7 @@ pub enum ConnectorDeclarationError {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector observation lookup error."]
+#[doc = "Classifies failures surfaced by connector observation lookup operations."]
 pub enum ConnectorObservationLookupError {
     #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
     #[doc = "Reports wrong session."]

@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -57,6 +58,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -272,19 +274,20 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "be7c9e6fc1efb092bb28e3b162bbe22899ec47770e6d335a36dc3733eea3d681",
       "lines": [
         1,
-        255
+        1
       ],
       "path": "src/session/lifecycle/endpoint_setup.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::lifecycle::endpoint_setup"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -303,12 +306,14 @@
   "generated_from": "not_applicable",
   "git_object": "2b9cfca5bb5c504e5ca957facc03b76fff396a94",
   "implemented_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
   ],
   "implements": [],
   "imported_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -323,13 +328,13 @@
     "super::telemetry::DerivedRouteObservationBinding"
   ],
   "inputs": [
-    "crate::endpoint::{ EndpointDriverRegistry, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, PreparedEndpoint, SessionTimelineOrigin, }",
-    "crate::frame::{EndpointId, RouteId}",
-    "crate::runtime::AsyncOperatorOutputObservationHandle",
-    "crate::session::prepare::{PreparedWorkerMapping, PreparedWorkerOrigin}",
-    "crate::session::{ SessionComponentId, SessionControlFailure, SessionRollbackFailure, SessionRollbackStage, SessionSpec, SessionStartError, }",
-    "super::rollback::StartupRollback",
-    "super::telemetry::DerivedRouteObservationBinding"
+    "Depends on `crate::endpoint::{ EndpointDriverRegistry, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, PreparedEndpoint, SessionTimelineOrigin, }` through a declared Rust import.",
+    "Depends on `crate::frame::{EndpointId, RouteId}` through a declared Rust import.",
+    "Depends on `crate::runtime::AsyncOperatorOutputObservationHandle` through a declared Rust import.",
+    "Depends on `crate::session::prepare::{PreparedWorkerMapping, PreparedWorkerOrigin}` through a declared Rust import.",
+    "Depends on `crate::session::{ SessionComponentId, SessionControlFailure, SessionRollbackFailure, SessionRollbackStage, SessionSpec, SessionStartError, }` through a declared Rust import.",
+    "Depends on `super::rollback::StartupRollback` through a declared Rust import.",
+    "Depends on `super::telemetry::DerivedRouteObservationBinding` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -338,22 +343,23 @@
   "module": "pocketstation::session::lifecycle::endpoint_setup",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::endpoint_setup` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-c13a71b118dc7c9e0585"
   ],
   "outputs": [
-    "Err(source) => {",
-    "fn:prepare_endpoint_batches",
-    "fn:prepare_endpoints",
-    "fn:rollback_prepared_endpoints",
-    "if let Err(error) = outcome.result {",
-    "return Err((",
-    "return Err((SessionStartError::UnsupportedSourceTopology, Vec::new()));",
-    "struct:PendingEndpointPortInput",
-    "struct:PreparedEndpointBinding",
-    "type:EndpointBatchPreparation"
+    "Creates a typed failure at src/session/lifecycle/endpoint_setup.rs:107.",
+    "Creates a typed failure at src/session/lifecycle/endpoint_setup.rs:167.",
+    "Creates a typed failure at src/session/lifecycle/endpoint_setup.rs:169.",
+    "Creates a typed failure at src/session/lifecycle/endpoint_setup.rs:209.",
+    "Creates a typed failure at src/session/lifecycle/endpoint_setup.rs:41.",
+    "Declares public fn `prepare_endpoint_batches`.",
+    "Declares public fn `prepare_endpoints`.",
+    "Declares public fn `rollback_prepared_endpoints`.",
+    "Declares public struct `PendingEndpointPortInput`.",
+    "Declares public struct `PreparedEndpointBinding`.",
+    "Declares public type `EndpointBatchPreparation`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/endpoint_setup.rs",
@@ -405,8 +411,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::endpoint setup responsibilities, including endpoint setup; prepared endpoint binding; identities."
+    "classification": "DECLARED",
+    "text": "Origin-independent endpoint preparation, grouping, and rollback."
   },
   "queues": [],
   "recovery_behavior": [
@@ -524,6 +530,10 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/endpoint/registry.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/graph/signal/spec.rs",
     "REFERENCES:src/endpoint/contract.rs",
     "REFERENCES:src/endpoint/registry.rs",
     "REFERENCES:src/endpoint/runtime.rs",

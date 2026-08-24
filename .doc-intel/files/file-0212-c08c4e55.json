@@ -5,6 +5,12 @@
   "callbacks": [],
   "called_by": [
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/session/compile/error.rs",
+    "IMPLEMENTS:src/session/declaration/typed_stream.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -30,6 +36,12 @@
   "configuration_read": [],
   "constructed_by": [
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/session/compile/error.rs",
+    "IMPLEMENTS:src/session/declaration/typed_stream.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -99,17 +111,253 @@
       "classification": "DIRECT",
       "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
       "lines": [
-        1,
-        67
+        5,
+        5
       ],
       "path": "src/session/error.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        6,
+        66
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "SessionError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "NoSources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "NoRoutes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        12,
+        14
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "NoSourceOutputs"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "source_instance_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        18,
+        21
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "NoSourceOutputRoutes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "source_instance_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "output_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "reason"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "InvalidSelector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "reason"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "InvalidEndpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "reason"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "InvalidOperator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "reason"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "InvalidRoute"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        31,
+        34
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "ForeignEndpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "expected"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/error.rs",
+      "symbol": "actual"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/session/compile/error.rs",
+    "IMPLEMENTS:src/session/declaration/typed_stream.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -141,6 +389,12 @@
   "git_object": "eea99404e0aae4ade9533775a117761820d45960",
   "implemented_by": [
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/session/compile/error.rs",
+    "IMPLEMENTS:src/session/declaration/typed_stream.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -160,6 +414,12 @@
   "implements": [],
   "imported_by": [
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/mod.rs",
+    "IMPLEMENTS:src/session/compile/error.rs",
+    "IMPLEMENTS:src/session/declaration/typed_stream.rs",
+    "IMPLEMENTS:src/session/extensions/audio_input/source.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -181,8 +441,8 @@
     "crate::session::{OperatorInstanceId, SourceInstanceId}"
   ],
   "inputs": [
-    "crate::frame::{EndpointId, SessionId, StemId}",
-    "crate::session::{OperatorInstanceId, SourceInstanceId}"
+    "Depends on `crate::frame::{EndpointId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::session::{OperatorInstanceId, SourceInstanceId}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -196,11 +456,11 @@
   "module": "pocketstation::session::error",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::error` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:SessionError"
+    "Declares public enum `SessionError`."
   ],
   "package": "pocketstation",
   "path": "src/session/error.rs",
@@ -222,8 +482,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::error responsibilities, including Classifies failures reported as session error.; Reported when the owning operation encounters no sources.; Identifies the stem identifier recorded by `NoRoutes`.."
+    "classification": "DECLARED",
+    "text": "Classifies failures surfaced by session operations. Reports that no sources is available. Identifies the stem identifier recorded by `NoRoutes`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -289,45 +549,45 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::session::error::SessionError: Classifies failures reported as session error.",
-    "pocketstation::session::error::SessionError::NoSources: Reported when the owning operation encounters no sources.",
+    "pocketstation::session::error::SessionError: Classifies failures surfaced by session operations.",
+    "pocketstation::session::error::SessionError::NoSources: Reports that no sources is available.",
     "SessionError::NoRoutes::stem_id: Identifies the stem identifier recorded by `NoRoutes`.",
-    "pocketstation::session::error::SessionError::NoRoutes: Reported when the owning operation encounters no routes.",
-    "pocketstation::session::error::SessionError::NoSourceOutputs: Reported when the owning operation encounters no source outputs.",
+    "pocketstation::session::error::SessionError::NoRoutes: Reports that no routes is available.",
+    "pocketstation::session::error::SessionError::NoSourceOutputs: Reports that no source outputs is available.",
     "SessionError::NoSourceOutputs::source_instance_id: Identifies the source instance identifier recorded by `NoSourceOutputs`.",
-    "pocketstation::session::error::SessionError::NoSourceOutputRoutes: Reported when the owning operation encounters no source output routes.",
+    "pocketstation::session::error::SessionError::NoSourceOutputRoutes: Reports that no source output routes is available.",
     "SessionError::NoSourceOutputRoutes::source_instance_id: Identifies the source instance identifier recorded by `NoSourceOutputRoutes`.",
-    "SessionError::NoSourceOutputRoutes::output_port: Stores the output port used by `NoSourceOutputRoutes`.",
+    "SessionError::NoSourceOutputRoutes::output_port: References the output port participating in `NoSourceOutputRoutes`.",
     "SessionError::InvalidSelector::reason: Carries the reason reported by `InvalidSelector`.",
-    "pocketstation::session::error::SessionError::InvalidSelector: Reported when the owning operation encounters invalid selector.",
+    "pocketstation::session::error::SessionError::InvalidSelector: Reports that the supplied selector is invalid.",
     "SessionError::InvalidEndpoint::reason: Carries the reason reported by `InvalidEndpoint`.",
-    "pocketstation::session::error::SessionError::InvalidEndpoint: Reported when the owning operation encounters invalid endpoint.",
+    "pocketstation::session::error::SessionError::InvalidEndpoint: Reports that the supplied endpoint is invalid.",
     "SessionError::InvalidOperator::reason: Carries the reason reported by `InvalidOperator`.",
-    "pocketstation::session::error::SessionError::InvalidOperator: Reported when the owning operation encounters invalid operator.",
+    "pocketstation::session::error::SessionError::InvalidOperator: Reports that the supplied operator is invalid.",
     "SessionError::InvalidRoute::reason: Carries the reason reported by `InvalidRoute`.",
-    "pocketstation::session::error::SessionError::InvalidRoute: Reported when the owning operation encounters invalid route.",
-    "pocketstation::session::error::SessionError::ForeignEndpoint: Reported when the owning operation encounters foreign endpoint.",
+    "pocketstation::session::error::SessionError::InvalidRoute: Reports that the supplied route is invalid.",
+    "pocketstation::session::error::SessionError::ForeignEndpoint: Reports that endpoint belongs to a different owning Session or declaration.",
     "SessionError::ForeignEndpoint::expected: Records the value expected by `ForeignEndpoint`.",
     "SessionError::ForeignEndpoint::actual: Records the value observed by `ForeignEndpoint`.",
     "SessionError::DraftFrozen::session_id: Identifies the session identifier recorded by `DraftFrozen`.",
-    "pocketstation::session::error::SessionError::DraftFrozen: Reported when the owning operation encounters draft frozen.",
-    "pocketstation::session::error::SessionError::DraftPoisoned: Reported when the owning operation encounters draft poisoned.",
-    "pocketstation::session::error::SessionError::IdExhausted: Reported when the owning operation encounters id exhausted.",
-    "SessionError::UnsupportedVersion::major: Stores the major used by `UnsupportedVersion`.",
-    "SessionError::UnsupportedVersion::minor: Stores the minor used by `UnsupportedVersion`.",
-    "pocketstation::session::error::SessionError::UnsupportedVersion: Reported when the owning operation encounters unsupported version.",
+    "pocketstation::session::error::SessionError::DraftFrozen: Classifies a failure at the draft frozen stage or component of `SessionError`.",
+    "pocketstation::session::error::SessionError::DraftPoisoned: Reports that shared draft became unavailable after a panic while locked.",
+    "pocketstation::session::error::SessionError::IdExhausted: Reports that the available id range or capacity is exhausted.",
+    "SessionError::UnsupportedVersion::major: Stores the major component of `UnsupportedVersion`.",
+    "SessionError::UnsupportedVersion::minor: Stores the minor component of `UnsupportedVersion`.",
+    "pocketstation::session::error::SessionError::UnsupportedVersion: Reports that the requested version is unsupported.",
     "SessionError::UnknownEndpoint::endpoint_id: Identifies the endpoint identifier recorded by `UnknownEndpoint`.",
-    "pocketstation::session::error::SessionError::UnknownEndpoint: Reported when the owning operation encounters unknown endpoint.",
+    "pocketstation::session::error::SessionError::UnknownEndpoint: Reports that the referenced endpoint is not declared or registered.",
     "SessionError::UnknownStem::stem_id: Identifies the stem identifier recorded by `UnknownStem`.",
-    "pocketstation::session::error::SessionError::UnknownStem: Reported when the owning operation encounters unknown stem.",
-    "pocketstation::session::error::SessionError::UnknownSourceInstance: Reported when the owning operation encounters unknown source instance.",
+    "pocketstation::session::error::SessionError::UnknownStem: Reports that the referenced stem is not declared or registered.",
+    "pocketstation::session::error::SessionError::UnknownSourceInstance: Reports that the referenced source instance is not declared or registered.",
     "SessionError::UnknownSourceInstance::source_instance_id: Identifies the source instance identifier recorded by `UnknownSourceInstance`.",
-    "pocketstation::session::error::SessionError::UnknownSourceOutput: Reported when the owning operation encounters unknown source output.",
+    "pocketstation::session::error::SessionError::UnknownSourceOutput: Reports that the referenced source output is not declared or registered.",
     "SessionError::UnknownSourceOutput::source_instance_id: Identifies the source instance identifier recorded by `UnknownSourceOutput`.",
-    "SessionError::UnknownSourceOutput::output_port: Stores the output port used by `UnknownSourceOutput`.",
-    "pocketstation::session::error::SessionError::UnknownOperatorInstance: Reported when the owning operation encounters unknown operator instance.",
+    "SessionError::UnknownSourceOutput::output_port: References the output port participating in `UnknownSourceOutput`.",
+    "pocketstation::session::error::SessionError::UnknownOperatorInstance: Reports that the referenced operator instance is not declared or registered.",
     "SessionError::UnknownOperatorInstance::operator_instance_id: Identifies the operator instance identifier recorded by `UnknownOperatorInstance`.",
-    "pocketstation::session::error::SessionError::OperatorHasNoDestination: Reported when the owning operation encounters operator has no destination.",
+    "pocketstation::session::error::SessionError::OperatorHasNoDestination: Classifies a failure at the operator has no destination stage or component of `SessionError`.",
     "SessionError::OperatorHasNoDestination::operator_instance_id: Identifies the operator instance identifier recorded by `OperatorHasNoDestination`."
   ],
   "retry_behavior": [],

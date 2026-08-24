@@ -1,6 +1,6 @@
 # Release and version information
 
-<!-- claims: CLM-DOC-057-CAP-001,CLM-DOC-057-CAP-002,CLM-DOC-057-SOURCE-001 -->
+<!-- claims: CLM-DOC-057-SCOPE-001,CLM-DOC-057-TEXT-001,CLM-DOC-057-TEXT-002,CLM-DOC-057-TEXT-003,CLM-DOC-057-TEXT-004,CLM-DOC-057-TEXT-005,CLM-DOC-057-TEXT-006,CLM-DOC-057-SOURCE-001 -->
 
 PocketStation's package version at the analyzed snapshot is 1.1.2. Release automation and package metadata remain the publication authority; this page preserves the repository's declared release record.
 
@@ -123,7 +123,7 @@ Release notes are declared evidence. They do not replace executable checks, phys
 
 The claims on **Release and version information** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
-- `.github/workflows/publish.yml:1-171` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
+- `.github/workflows/publish.yml:1-21` (`DIRECT`)
 
 For **Release and version information**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -88,30 +88,30 @@ impl fmt::Debug for PcmSource {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as audio input error."]
+#[doc = "Classifies failures surfaced by audio input operations."]
 pub enum AudioInputError {
     #[error("invalid audio input configuration: {0}")]
-    #[doc = "Reports configuration."]
+    #[doc = "Classifies a failure at the configuration stage or component of `AudioInputError`."]
     Configuration(#[from] AudioInputConfigError),
     #[error("invalid PCM source identity: {0}")]
-    #[doc = "Reports source type identifier."]
+    #[doc = "Classifies a failure at the source type identifier stage or component of `AudioInputError`."]
     SourceTypeId(#[from] SourceTypeIdError),
     #[error("audio input manifest failed: {0}")]
-    #[doc = "Reports manifest."]
+    #[doc = "Classifies a failure at the manifest stage or component of `AudioInputError`."]
     Manifest(#[from] SourceManifestError),
     #[error("audio input Session declaration failed: {0}")]
-    #[doc = "Reports session."]
+    #[doc = "Classifies a failure at the session stage or component of `AudioInputError`."]
     Session(#[from] SessionError),
     #[error("audio input registration state is unavailable")]
-    #[doc = "Reports registration state unavailable."]
+    #[doc = "Reports that registration state is unavailable."]
     RegistrationStateUnavailable,
     #[error(
         "all audio inputs in one Session must use the same concrete sample and frame contract"
     )]
-    #[doc = "Reports incompatible contract."]
+    #[doc = "Reports that contract is incompatible with the required contract."]
     IncompatibleContract,
     #[error("audio input instance identity space is exhausted")]
-    #[doc = "Reports instance identity exhausted."]
+    #[doc = "Reports that the available instance identity range or capacity is exhausted."]
     InstanceIdentityExhausted,
 }
 

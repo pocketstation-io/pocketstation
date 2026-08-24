@@ -8,7 +8,7 @@ const MUSIC_STEREO_10MS_BITRATE_KBPS: u32 = 192;
 const HIFI_STEREO_BITRATE_KBPS: u32 = 224;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported stream profile cases."]
+#[doc = "Selects the supported Opus stream profile used for codec validation."]
 pub enum StreamProfile {
     #[doc = "Represents the voice mono20ms case of `StreamProfile`."]
     VoiceMono20ms,
@@ -78,7 +78,7 @@ impl StreamProfile {
         }
     }
 
-    #[doc = "Returns whether stereo applies to `StreamProfile`."]
+    #[doc = "Reports whether stereo is true for `StreamProfile`."]
     pub const fn is_stereo(self) -> bool {
         matches!(self.channels(), OpusChannels::Stereo)
     }

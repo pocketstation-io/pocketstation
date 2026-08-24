@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -110,6 +111,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -340,19 +342,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "cc098c7a37a78a44d5a88db82707eb4742abe800f39329567beb2fdd420d60e7",
       "lines": [
         1,
-        107
+        1
       ],
       "path": "src/session/compile/compiled.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::compile::compiled"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -377,6 +380,7 @@
   "generated_from": "not_applicable",
   "git_object": "3d0c470cf699adc4b8e1f847cca776595cf40ccf",
   "implemented_by": [
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -389,6 +393,7 @@
     "CompiledSession"
   ],
   "imported_by": [
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -405,12 +410,21 @@
     "super::CompiledSessionBindings"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::graph::ir::GraphIr",
-    "crate::session::SessionId",
-    "crate::session::SessionSpec",
-    "crate::session::declaration::{EndpointSpec, SourceInstanceSpec, StemSpec}",
-    "super::CompiledSessionBindings"
+    "Consumes configuration at src/session/compile/compiled.rs:21.",
+    "Consumes configuration at src/session/compile/compiled.rs:26.",
+    "Consumes configuration at src/session/compile/compiled.rs:31.",
+    "Consumes configuration at src/session/compile/compiled.rs:36.",
+    "Consumes configuration at src/session/compile/compiled.rs:41.",
+    "Consumes configuration at src/session/compile/compiled.rs:46.",
+    "Consumes configuration at src/session/compile/compiled.rs:51.",
+    "Consumes configuration at src/session/compile/compiled.rs:56.",
+    "Consumes configuration at src/session/compile/compiled.rs:6.",
+    "Consumes configuration at src/session/compile/compiled.rs:8.",
+    "Depends on `crate::graph::ir::GraphIr` through a declared Rust import.",
+    "Depends on `crate::session::SessionId` through a declared Rust import.",
+    "Depends on `crate::session::SessionSpec` through a declared Rust import.",
+    "Depends on `crate::session::declaration::{EndpointSpec, SourceInstanceSpec, StemSpec}` through a declared Rust import.",
+    "Depends on `super::CompiledSessionBindings` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -419,27 +433,27 @@
   "module": "pocketstation::session::compile::compiled",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::compile::compiled` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:bindings",
-    "fn:bindings_mut",
-    "fn:edge_count",
-    "fn:endpoint_declarations",
-    "fn:external_source_declarations",
-    "fn:graph_ir",
-    "fn:graph_ir_mut",
-    "fn:into_runtime_parts",
-    "fn:node_count",
-    "fn:planned_audio_edge_count",
-    "fn:planned_edge_count",
-    "fn:planned_source_output_count",
-    "fn:planned_typed_edge_count",
-    "fn:session_id",
-    "fn:source_declarations",
-    "fn:spec",
-    "struct:CompiledSession"
+    "Declares public fn `bindings_mut`.",
+    "Declares public fn `bindings`.",
+    "Declares public fn `edge_count`.",
+    "Declares public fn `endpoint_declarations`.",
+    "Declares public fn `external_source_declarations`.",
+    "Declares public fn `graph_ir_mut`.",
+    "Declares public fn `graph_ir`.",
+    "Declares public fn `into_runtime_parts`.",
+    "Declares public fn `node_count`.",
+    "Declares public fn `planned_audio_edge_count`.",
+    "Declares public fn `planned_edge_count`.",
+    "Declares public fn `planned_source_output_count`.",
+    "Declares public fn `planned_typed_edge_count`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `source_declarations`.",
+    "Declares public fn `spec`.",
+    "Declares public struct `CompiledSession`."
   ],
   "package": "pocketstation",
   "path": "src/session/compile/compiled.rs",
@@ -557,8 +571,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::compile::compiled responsibilities, including Owns the validated Session specification and declarations produced by compilation.; Returns the session identifier held by `CompiledSession`.; Returns the spec associated with `CompiledSession`.."
+    "classification": "DECLARED",
+    "text": "Immutable compiled Session plus its typed runtime bindings."
   },
   "queues": [],
   "recovery_behavior": [],

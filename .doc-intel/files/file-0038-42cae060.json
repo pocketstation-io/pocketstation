@@ -1664,14 +1664,112 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
       "lines": [
-        1,
-        1440
+        1129,
+        1180
       ],
-      "path": "examples/whisper-transcribe/src/lib.rs",
-      "symbol": null
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1419,
+        1438
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1400,
+        1419
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1180,
+        1220
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1379,
+        1400
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1263,
+        1311
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1338,
+        1379
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1311,
+        1338
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1073,
+        1098
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1220,
+        1263
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1055,
+        1073
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1108,
+        1129
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs"
     }
   ],
   "example_coverage_status": "linked",
@@ -1782,27 +1880,29 @@
     "tokio::process::{Child, Command}"
   ],
   "inputs": [
-    ") -> Result<AsyncOperatorManifest, ConfigError> {",
-    ".unwrap_or(DEFAULT_PROCESS_TIMEOUT_MS);",
-    "AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract,",
-    "ConfigError::Invalid {",
-    "const DEFAULT_PROCESS_TIMEOUT_MS: u32 = 60_000;",
-    "fn validate_config(&self, configuration: &OperatorConfiguration) -> Result<(), ConfigError> {",
-    "module:process_evidence",
-    "pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SampleFormat, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat, }",
-    "pocketstation::{ AudioBufferPool, AudioFrame, BinaryFormat, ClockDomainId, FrameLineage, PortPrepareContext, SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId, StemId, StreamId, }",
-    "process_evidence::ActiveProcessEvidence",
-    "process_evidence::{ ProcessEvidenceError, ProcessOutcome, WhisperProcessEvidence, WhisperProcessReceipt, }",
-    "process_timeout_ms: DEFAULT_PROCESS_TIMEOUT_MS",
-    "return Err(ConfigError::Invalid {",
-    "std::io::Cursor",
-    "std::os::unix::fs::PermissionsExt",
-    "std::path::{Path, PathBuf}",
-    "std::process::Stdio",
-    "std::time::Duration",
-    "super::*",
-    "tempfile::TempDir",
-    "tokio::process::{Child, Command}"
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:139.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:167.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:172.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:183.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:195.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:202.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:215.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:219.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:72.",
+    "Consumes configuration at examples/whisper-transcribe/src/lib.rs:8.",
+    "Depends on `pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SampleFormat, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat, }` through a declared Rust import.",
+    "Depends on `pocketstation::{ AudioBufferPool, AudioFrame, BinaryFormat, ClockDomainId, FrameLineage, PortPrepareContext, SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `process_evidence::ActiveProcessEvidence` through a declared Rust import.",
+    "Depends on `process_evidence::{ ProcessEvidenceError, ProcessOutcome, WhisperProcessEvidence, WhisperProcessReceipt, }` through a declared Rust import.",
+    "Depends on `process_evidence` through a declared Rust import.",
+    "Depends on `std::io::Cursor` through a declared Rust import.",
+    "Depends on `std::os::unix::fs::PermissionsExt` through a declared Rust import.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::process::Stdio` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `tempfile::TempDir` through a declared Rust import.",
+    "Depends on `tokio::process::{Child, Command}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1936,7 +2036,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/whisper-transcribe/src/lib.rs` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [
     "pattern-05350b66e882a52b5fe0",
@@ -1944,26 +2044,30 @@
     "pattern-ab77075f8e2f3f9c0d25"
   ],
   "outputs": [
-    "Err(ConfigError::Invalid {",
-    "Err(_) => {",
-    "const:EVIDENCE_CASE_ID_CONFIGURATION_KEY",
-    "const:EVIDENCE_ROOT_CONFIGURATION_KEY",
-    "const:TRANSCRIPT_FINAL_ROLE",
-    "const:TRANSCRIPT_PARTIAL_ROLE",
-    "const:WHISPER_OPERATOR_ID",
-    "fn:new",
-    "fn:transcript_final_spec",
-    "fn:transcript_partial_spec",
-    "fn:with_gpu",
-    "fn:with_process_evidence",
-    "fn:with_process_timeout_ms",
-    "fn:with_window_duration_ms",
-    "return Err(ConfigError::Invalid {",
-    "return Err(NodeError::Prepare(format!(",
-    "return Err(NodeError::Process(format!(",
-    "return Err(NodeError::ProcessTimeout {",
-    "struct:WhisperConnector",
-    "struct:WhisperOperatorFactory"
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:172.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:183.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:202.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:285.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:346.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:451.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:454.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:463.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:585.",
+    "Creates a typed failure at examples/whisper-transcribe/src/lib.rs:591.",
+    "Declares public const `EVIDENCE_CASE_ID_CONFIGURATION_KEY`.",
+    "Declares public const `EVIDENCE_ROOT_CONFIGURATION_KEY`.",
+    "Declares public const `TRANSCRIPT_FINAL_ROLE`.",
+    "Declares public const `TRANSCRIPT_PARTIAL_ROLE`.",
+    "Declares public const `WHISPER_OPERATOR_ID`.",
+    "Declares public fn `new`.",
+    "Declares public fn `transcript_final_spec`.",
+    "Declares public fn `transcript_partial_spec`.",
+    "Declares public fn `with_gpu`.",
+    "Declares public fn `with_process_evidence`.",
+    "Declares public fn `with_process_timeout_ms`.",
+    "Declares public fn `with_window_duration_ms`.",
+    "Declares public struct `WhisperConnector`.",
+    "Declares public struct `WhisperOperatorFactory`."
   ],
   "package": "pocketstation",
   "path": "examples/whisper-transcribe/src/lib.rs",

@@ -5,6 +5,9 @@
   "callbacks": [],
   "called_by": [
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/builtins.rs",
     "REFERENCES:src/graph/registry.rs",
@@ -22,6 +25,9 @@
   "configuration_read": [],
   "constructed_by": [
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/builtins.rs",
     "REFERENCES:src/graph/registry.rs",
@@ -74,17 +80,40 @@
       "classification": "DIRECT",
       "content_hash": "e9d778ff29721b16ffb7d04b9335fe2e951704326a3842d37812cf0aff4ead8c",
       "lines": [
-        1,
-        11
+        7,
+        10
       ],
       "path": "src/graph/runtime_node.rs",
-      "symbol": null
+      "symbol": "RuntimeNode"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e9d778ff29721b16ffb7d04b9335fe2e951704326a3842d37812cf0aff4ead8c",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/graph/runtime_node.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e9d778ff29721b16ffb7d04b9335fe2e951704326a3842d37812cf0aff4ead8c",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/graph/runtime_node.rs",
+      "symbol": "process"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/builtins.rs",
     "REFERENCES:src/graph/registry.rs",
@@ -107,6 +136,9 @@
   "git_object": "86c497bb7b53c0381bf6e0444173bd490e600d97",
   "implemented_by": [
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/builtins.rs",
     "REFERENCES:src/graph/registry.rs",
@@ -117,6 +149,9 @@
   "implements": [],
   "imported_by": [
     "CONTAINS:src/graph/mod.rs",
+    "IMPLEMENTS:src/graph/builtins.rs",
+    "IMPLEMENTS:src/runtime/nodes.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/builtins.rs",
     "REFERENCES:src/graph/registry.rs",
@@ -129,8 +164,8 @@
     "crate::graph::node::{NodeError, PrepareContext}"
   ],
   "inputs": [
-    "crate::frame::AudioFrame",
-    "crate::graph::node::{NodeError, PrepareContext}"
+    "Depends on `crate::frame::AudioFrame` through a declared Rust import.",
+    "Depends on `crate::graph::node::{NodeError, PrepareContext}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -148,13 +183,13 @@
   "module": "pocketstation::graph::runtime_node",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::runtime_node` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-4b495789777872e04c34"
   ],
   "outputs": [
-    "trait:RuntimeNode"
+    "Declares public trait `RuntimeNode`."
   ],
   "package": "pocketstation",
   "path": "src/graph/runtime_node.rs",
@@ -189,8 +224,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::runtime node responsibilities, including Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process(); Prepares resources required by `RuntimeNode`.; Processes an input value through `RuntimeNode`.."
+    "classification": "DECLARED",
+    "text": "Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process(). Prepares resources required by `RuntimeNode`. Processes an input value through `RuntimeNode`."
   },
   "queues": [],
   "recovery_behavior": [],

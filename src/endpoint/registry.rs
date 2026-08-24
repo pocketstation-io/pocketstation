@@ -13,18 +13,18 @@ struct RegisteredEndpointDriver {
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as endpoint driver registry error."]
+#[doc = "Classifies failures surfaced by endpoint driver registry operations."]
 pub enum EndpointDriverRegistryError {
     #[error("endpoint operator id cannot be empty")]
-    #[doc = "Reports empty operator identifier."]
+    #[doc = "Reports that operator identifier is empty."]
     EmptyOperatorId,
     #[error("endpoint node type id cannot be empty")]
-    #[doc = "Reports empty node type identifier."]
+    #[doc = "Reports that node type identifier is empty."]
     EmptyNodeTypeId,
     #[error(
         "endpoint driver already registered for operator '{operator_id}' and node type '{node_type_id}'"
     )]
-    #[doc = "Reports duplicate."]
+    #[doc = "Reports that the supplied value duplicates an existing record."]
     Duplicate {
         #[doc = "Identifies the operator identifier recorded by `Duplicate`."]
         operator_id: String,
@@ -34,7 +34,7 @@ pub enum EndpointDriverRegistryError {
     #[error(
         "endpoint operator '{operator_id}' is already mapped to node type '{registered_node_type_id}', not '{requested_node_type_id}'"
     )]
-    #[doc = "Reports operator node type conflict."]
+    #[doc = "Reports that operator node type conflicts with an existing registration or declaration."]
     OperatorNodeTypeConflict {
         #[doc = "Identifies the operator identifier recorded by `OperatorNodeTypeConflict`."]
         operator_id: String,
@@ -46,15 +46,15 @@ pub enum EndpointDriverRegistryError {
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as endpoint prepare error."]
+#[doc = "Classifies failures produced during endpoint resource preparation."]
 pub enum EndpointPrepareError {
     #[error("endpoint driver batch cannot be empty")]
-    #[doc = "Reports empty batch."]
+    #[doc = "Reports that batch is empty."]
     EmptyBatch,
     #[error(
         "no endpoint driver registered for operator '{operator_id}' and node type '{node_type_id}'"
     )]
-    #[doc = "Reports not registered."]
+    #[doc = "Reports that no t registered is available."]
     NotRegistered {
         #[doc = "Identifies the operator identifier recorded by `NotRegistered`."]
         operator_id: String,
@@ -62,7 +62,7 @@ pub enum EndpointPrepareError {
         node_type_id: String,
     },
     #[error(transparent)]
-    #[doc = "Reports driver."]
+    #[doc = "Classifies a failure at the driver stage or component of `EndpointPrepareError`."]
     Driver(#[from] EndpointFailure),
 }
 

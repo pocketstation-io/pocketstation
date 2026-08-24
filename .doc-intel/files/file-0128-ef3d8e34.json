@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/endpoint/contract.rs",
     "CONTAINS:src/endpoint/mod.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -31,6 +34,9 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/endpoint/contract.rs",
     "CONTAINS:src/endpoint/mod.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -122,16 +128,199 @@
       "classification": "DIRECT",
       "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
       "lines": [
-        1,
-        27
+        7,
+        7
       ],
       "path": "src/endpoint/identity.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "serialize"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "deserialize"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "EndpointGroupId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        12,
+        14
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        16,
+        18
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "as_str"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        23,
+        26
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "EndpointPreparationGroup"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "Route"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "87c189cedf5af27a3ea22be59942ef927bc8a32bb507d8d2c4d657619d0af7c4",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/endpoint/identity.rs",
+      "symbol": "Shared"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/endpoint/contract.rs",
     "CONTAINS:src/endpoint/mod.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -157,6 +346,9 @@
   "generated_from": "not_applicable",
   "git_object": "63a4588ce3de97e50a30bd519a17c38cc998b6ae",
   "implemented_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/endpoint/contract.rs",
     "CONTAINS:src/endpoint/mod.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -172,6 +364,9 @@
     "EndpointGroupId"
   ],
   "imported_by": [
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/endpoint/contract.rs",
     "CONTAINS:src/endpoint/mod.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/connector/sidecar.rs",
@@ -187,7 +382,7 @@
     "crate::graph::OperatorId"
   ],
   "inputs": [
-    "crate::graph::OperatorId"
+    "Depends on `crate::graph::OperatorId` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -201,14 +396,14 @@
   "module": "pocketstation::endpoint::identity",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::identity` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:EndpointPreparationGroup",
-    "fn:as_str",
-    "fn:new",
-    "struct:EndpointGroupId"
+    "Declares public enum `EndpointPreparationGroup`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `new`.",
+    "Declares public struct `EndpointGroupId`."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/identity.rs",
@@ -248,8 +443,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::identity responsibilities, including Explicit Session-scoped grouping key for endpoints that share one lifecycle.; Creates a new `EndpointGroupId`.; Returns the stable string representation of `EndpointGroupId`.."
+    "classification": "DECLARED",
+    "text": "Explicit Session-scoped grouping key for endpoints that share one lifecycle. Creates a new `EndpointGroupId`. Returns the stable string representation of `EndpointGroupId`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -286,6 +481,7 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/frame/identity.rs"
   ],
   "resource_ownership": [

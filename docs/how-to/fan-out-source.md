@@ -1,6 +1,6 @@
 # Fan out one source
 
-<!-- claims: CLM-GUIDE-007-CAP-001,CLM-GUIDE-007-CAP-002,CLM-GUIDE-007-CAP-003,CLM-GUIDE-007-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-007-SCOPE-001,CLM-GUIDE-007-TEXT-001,CLM-GUIDE-007-TEXT-002,CLM-GUIDE-007-TEXT-003,CLM-GUIDE-007-TEXT-004,CLM-GUIDE-007-TEXT-005,CLM-GUIDE-007-TEXT-006,CLM-GUIDE-007-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,36 @@ One declared source and two independently configured destinations.
 3. Connect the same source output to each endpoint.
 4. Set explicit edge policy where the default is unsuitable.
 5. Observe each route separately so saturation remains attributable.
+
+## Concrete repository example
+
+The executable repository test `given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated` (`test-2dfdf77222ba4754d494`) shows the concrete API sequence and asserted outcome at `src/runtime/audio/router.rs:1211`.
+
+```rust
+    }
+
+    #[test]
+    fn given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated() {
+        let telemetry = EdgeTelemetry::new(1);
+        let pool = AudioBufferPool::new(1, 2);
+        let frame = lineaged_frame_with_clock(&pool, 7, 1, 100, 0, ClockDomainId(99));
+        let queued = QueuedPlanEdgeFrame {
+            frame: PlanEdgeFrame::Exclusive(frame),
+            enqueued_at_ns: 150,
+        };
+
+        telemetry.observe_delivery(&queued, 200);
+        let observations = telemetry.snapshot();
+
+        assert_eq!(observations.source_timestamp_to_receive_samples_total, 0);
+        assert_eq!(observations.source_timestamp_to_receive_missing_total, 1);
+        assert_eq!(observations.source_timestamp_to_receive_future_total, 0);
+    }
+```
+
+```bash
+cargo test --all-features given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated
+```
 
 ## Important consequence
 
@@ -67,10 +97,10 @@ Executable evidence selected for **Fan out one source** is limited to each test'
 |---|---|---|---|
 | `pocketstation::runtime::audio::runner::PlanSourceInput` | struct | Carries typed input for plan source. | `src/runtime/audio/runner.rs:188` |
 | `pocketstation::runtime::audio::runner::PlanSourceInputObservations` | struct | Reports the plan source input observations collected at an observation boundary. | `src/runtime/audio/runner.rs:22` |
-| `pocketstation::runtime::audio::runner::PlanSourceObservationHandle` | struct | Owns bounded access to plan source observation. | `src/runtime/audio/runner.rs:138` |
+| `pocketstation::runtime::audio::runner::PlanSourceObservationHandle` | struct | Holds the ownership or bounded access represented by plan source observation handle. | `src/runtime/audio/runner.rs:138` |
 | `pocketstation::runtime::audio::runner::PlanSourceSender` | struct | Sends plan source values across its declared ownership boundary. | `src/runtime/audio/runner.rs:131` |
-| `pocketstation::session::declaration::draft::SourceInstanceHandle` | struct | Owns bounded access to source instance. | `src/session/declaration/draft.rs:834` |
-| `pocketstation::session::declaration::draft::SourceOutputHandle` | struct | Owns bounded access to source output. | `src/session/declaration/draft.rs:910` |
+| `pocketstation::session::declaration::draft::SourceInstanceHandle` | struct | Holds the ownership or bounded access represented by source instance handle. | `src/session/declaration/draft.rs:834` |
+| `pocketstation::session::declaration::draft::SourceOutputHandle` | struct | Holds the ownership or bounded access represented by source output handle. | `src/session/declaration/draft.rs:910` |
 | `pocketstation::session::declaration::spec::SourceInstanceId` | struct | Uniquely identifies source instance within its PocketStation ownership scope. | `src/session/declaration/spec.rs:14` |
 | `pocketstation::session::declaration::spec::SourceInstanceSpec` | struct | Configures source instance behavior at its owning API boundary. | `src/session/declaration/spec.rs:68` |
 
@@ -89,7 +119,30 @@ Executable evidence selected for **Fan out one source** is limited to each test'
 
 The claims on **Fan out one source** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/declaration/draft.rs:1-1405` (`DIRECT`)
-- `src/runtime/audio/router.rs:1-1646` (`DIRECT`)
+- `src/session/declaration/draft.rs:19-19` (`DIRECT`)
+- `src/session/declaration/draft.rs:21-21` (`DIRECT`)
+- `src/session/declaration/draft.rs:22-25` (`DIRECT`)
+- `src/session/declaration/draft.rs:23-23` (`DIRECT`)
+- `src/session/declaration/draft.rs:24-24` (`DIRECT`)
+- `src/session/declaration/draft.rs:27-27` (`DIRECT`)
+- `src/session/declaration/draft.rs:28-33` (`DIRECT`)
+- `src/session/declaration/draft.rs:29-29` (`DIRECT`)
+- `src/session/declaration/draft.rs:30-30` (`DIRECT`)
+- `src/session/declaration/draft.rs:31-31` (`DIRECT`)
+- `src/session/declaration/draft.rs:32-32` (`DIRECT`)
+- `src/session/declaration/draft.rs:35-35` (`DIRECT`)
+- `src/session/declaration/draft.rs:36-40` (`DIRECT`)
+- `src/session/declaration/draft.rs:37-37` (`DIRECT`)
+- `src/session/declaration/draft.rs:38-38` (`DIRECT`)
+- `src/session/declaration/draft.rs:39-39` (`DIRECT`)
+- `src/session/declaration/draft.rs:42-42` (`DIRECT`)
+- `src/session/declaration/draft.rs:43-47` (`DIRECT`)
+- `src/session/declaration/draft.rs:44-44` (`DIRECT`)
+- `src/session/declaration/draft.rs:45-45` (`DIRECT`)
+- `src/session/declaration/draft.rs:46-46` (`DIRECT`)
+- `src/session/declaration/draft.rs:49-49` (`DIRECT`)
+- `src/session/declaration/draft.rs:50-53` (`DIRECT`)
+- `src/session/declaration/draft.rs:51-51` (`DIRECT`)
+- `src/runtime/audio/router.rs:1-1` (`DECLARED`)
 
 For **Fan out one source**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

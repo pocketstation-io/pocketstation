@@ -1,6 +1,6 @@
 # Application capture
 
-<!-- claims: CLM-DOC-008-CAP-001,CLM-DOC-008-SOURCE-001 -->
+<!-- claims: CLM-DOC-008-SCOPE-001,CLM-DOC-008-TEXT-001,CLM-DOC-008-TEXT-002,CLM-DOC-008-TEXT-003,CLM-DOC-008-TEXT-004,CLM-DOC-008-TEXT-005,CLM-DOC-008-TEXT-006,CLM-DOC-008-SOURCE-001 -->
 
 ## What it is
 
@@ -88,6 +88,29 @@ Executable evidence selected for **Application capture** is limited to each test
 
 The claims on **Application capture** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/capture_owner.rs:1-626` (`DIRECT`)
+- `src/capture/capture_owner.rs:20-21` (`DIRECT`)
+- `src/capture/capture_owner.rs:24-24` (`DIRECT`)
+- `src/capture/capture_owner.rs:24-24` (`DIRECT`)
+- `src/capture/capture_owner.rs:24-24` (`DIRECT`)
+- `src/capture/capture_owner.rs:25-28` (`DIRECT`)
+- `src/capture/capture_owner.rs:26-26` (`DIRECT`)
+- `src/capture/capture_owner.rs:27-27` (`DIRECT`)
+- `src/capture/capture_owner.rs:31-36` (`DIRECT`)
+- `src/capture/capture_owner.rs:38-40` (`DIRECT`)
+- `src/capture/capture_owner.rs:42-44` (`DIRECT`)
+- `src/capture/capture_owner.rs:48-48` (`DIRECT`)
+- `src/capture/capture_owner.rs:48-48` (`DIRECT`)
+- `src/capture/capture_owner.rs:48-48` (`DIRECT`)
+- `src/capture/capture_owner.rs:49-57` (`DIRECT`)
+- `src/capture/capture_owner.rs:50-50` (`DIRECT`)
+- `src/capture/capture_owner.rs:51-51` (`DIRECT`)
+- `src/capture/capture_owner.rs:52-52` (`DIRECT`)
+- `src/capture/capture_owner.rs:53-53` (`DIRECT`)
+- `src/capture/capture_owner.rs:54-54` (`DIRECT`)
+- `src/capture/capture_owner.rs:55-55` (`DIRECT`)
+- `src/capture/capture_owner.rs:56-56` (`DIRECT`)
+- `src/capture/capture_owner.rs:60-60` (`DIRECT`)
+- `src/capture/capture_owner.rs:60-60` (`DIRECT`)
+- `src/capture/capture_owner.rs:60-60` (`DIRECT`)
 
 For **Application capture**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

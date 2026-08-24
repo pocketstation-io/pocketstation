@@ -1,6 +1,6 @@
 # Realtime audio lane
 
-<!-- claims: CLM-DOC-050-CAP-001,CLM-DOC-050-CAP-002,CLM-DOC-050-SOURCE-001 -->
+<!-- claims: CLM-DOC-050-SCOPE-001,CLM-DOC-050-TEXT-001,CLM-DOC-050-TEXT-002,CLM-DOC-050-TEXT-003,CLM-DOC-050-TEXT-004,CLM-DOC-050-SOURCE-001 -->
 
 ## Scope
 
@@ -22,18 +22,18 @@ The scope of **Realtime audio lane** ends at the native contracts and executable
 | `pocketstation::runtime::audio::router::PlanEdgeReceiver` | struct | Receives plan edge values across its declared ownership boundary. | `src/runtime/audio/router.rs:508` |
 | `pocketstation::runtime::audio::router::PlanEdgeRouter` | struct | Routes plan edge according to the compiled edge contracts. | `src/runtime/audio/router.rs:704` |
 | `pocketstation::runtime::audio::runner::RealtimePlanRunner` | struct | Executes realtime plan according to its compiled plan and cancellation contract. | `src/runtime/audio/runner.rs:305` |
-| `pocketstation::runtime::audio::router::PlanEdgeFrame` | enum | Enumerates the supported plan edge frame cases. | `src/runtime/audio/router.rs:29` |
+| `pocketstation::runtime::audio::router::PlanEdgeFrame` | enum | Carries either one routed frame or a terminal marker through a plan edge. | `src/runtime/audio/router.rs:29` |
 | `pocketstation::runtime::audio::router::PlanEdgeFrame::Exclusive` | variant | Represents the exclusive alternative defined by `PlanEdgeFrame`. | `src/runtime/audio/router.rs:30` |
 | `pocketstation::runtime::audio::router::PlanEdgeFrame::Shared` | variant | Represents the shared alternative defined by `PlanEdgeFrame`. | `src/runtime/audio/router.rs:31` |
-| `audio` | module | Types and operations for audio. | `src/frame/audio.rs:1` |
+| `audio` | module | Realtime audio routing, execution, plan-runner, and runtime observation types. | `src/frame/audio.rs:1` |
 | `pocketstation::frame::audio::AudioFrame` | struct | Carries one audio payload together with its declared metadata. | `src/frame/audio.rs:39` |
 | `pocketstation::frame::audio::LineagedAudioFrame` | struct | An exclusive audio frame and the immutable lineage snapshot captured before the frame crosses a bounded edge. | `src/frame/audio.rs:266` |
 | `pocketstation::frame::audio::SampleSpec` | struct | Configures sample behavior at its owning API boundary. | `src/frame/audio.rs:18` |
 | `pocketstation::frame::audio::SharedAudioFrame` | struct | Carries one shared audio payload together with its declared metadata. | `src/frame/audio.rs:176` |
 | `pocketstation::frame::audio::SharedLineagedAudioFrame` | struct | Carries one shared lineaged audio payload together with its declared metadata. | `src/frame/audio.rs:298` |
-| `pocketstation::frame::pool::AudioBufferHandle` | struct | Owns bounded access to audio buffer. | `src/frame/pool.rs:198` |
+| `pocketstation::frame::pool::AudioBufferHandle` | struct | Holds the ownership or bounded access represented by audio buffer handle. | `src/frame/pool.rs:198` |
 | `pocketstation::frame::pool::AudioBufferPool` | struct | Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame. | `src/frame/pool.rs:24` |
-| `pocketstation::frame::pool::SharedAudioBufferHandle` | struct | Owns bounded access to shared audio buffer. | `src/frame/pool.rs:281` |
+| `pocketstation::frame::pool::SharedAudioBufferHandle` | struct | Holds the ownership or bounded access represented by shared audio buffer handle. | `src/frame/pool.rs:281` |
 | `pocketstation::runtime::audio::router::DispatchSummary` | struct | Reports the counters and terminal facts collected for dispatch. | `src/runtime/audio/router.rs:696` |
 | `pocketstation::runtime::audio::router::EdgeObservations` | struct | Reports the edge observations collected at an observation boundary. | `src/runtime/audio/router.rs:142` |
 | `pocketstation::runtime::audio::runner::PlanRunnerCancellation` | struct | Shares a lock-free cancellation flag between the Session owner and the realtime plan runner. | `src/runtime/audio/runner.rs:89` |
@@ -41,7 +41,7 @@ The scope of **Realtime audio lane** ends at the native contracts and executable
 | `pocketstation::runtime::audio::runner::PlanRunnerStepSummary` | struct | Reports the counters and terminal facts collected for plan runner step. | `src/runtime/audio/runner.rs:270` |
 | `pocketstation::runtime::audio::runner::PlanSourceInput` | struct | Carries typed input for plan source. | `src/runtime/audio/runner.rs:188` |
 | `pocketstation::runtime::audio::runner::PlanSourceInputObservations` | struct | Reports the plan source input observations collected at an observation boundary. | `src/runtime/audio/runner.rs:22` |
-| `pocketstation::runtime::audio::runner::PlanSourceObservationHandle` | struct | Owns bounded access to plan source observation. | `src/runtime/audio/runner.rs:138` |
+| `pocketstation::runtime::audio::runner::PlanSourceObservationHandle` | struct | Holds the ownership or bounded access represented by plan source observation handle. | `src/runtime/audio/runner.rs:138` |
 
 ## Observed implementation patterns
 
@@ -112,7 +112,7 @@ Executable evidence selected for **Realtime audio lane** is limited to each test
 
 The claims on **Realtime audio lane** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/audio/runner.rs:1-746` (`DIRECT`)
-- `src/frame/pool.rs:1-336` (`DIRECT`)
+- `src/runtime/audio/runner.rs:1-4` (`DECLARED`)
+- `src/frame/pool.rs:1-4` (`DECLARED`)
 
 For **Realtime audio lane**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

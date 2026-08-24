@@ -28,8 +28,8 @@
       "classification": "DIRECT",
       "content_hash": "7791a8cd51a6c1106b9cd6f7f629580eb4819e70625eeee9ecf77725d3df8f02",
       "lines": [
-        1,
-        78
+        3,
+        23
       ],
       "path": "scripts/test-single-package-publish.sh",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/test-single-package-publish.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

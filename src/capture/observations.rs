@@ -38,7 +38,7 @@ struct CaptureObservationValues {
 }
 
 #[derive(Clone, Debug, Default)]
-#[doc = "Owns bounded access to capture observation."]
+#[doc = "Holds the ownership or bounded access represented by capture observation handle."]
 pub struct CaptureObservationHandle {
     values: Arc<CaptureObservationValues>,
 }

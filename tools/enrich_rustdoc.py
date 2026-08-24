@@ -23,6 +23,30 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / ".doc-intel"
 IMPL_OWNERS: dict[int, str] = {}
+NATIVE_FILLER = (
+    re.compile(r"^Stores the .+ used by ", re.I),
+    re.compile(r"^Selects .+ behavior for ", re.I),
+    re.compile(r"^Reported when the owning operation encounters ", re.I),
+    re.compile(r"^Owns bounded access to ", re.I),
+    re.compile(r"^Returns whether .+ applies to ", re.I),
+    re.compile(r"^Executes the graph-node behavior defined for ", re.I),
+    re.compile(r"^Carries the .+ value required by ", re.I),
+    re.compile(r"^Names the .+ represented by ", re.I),
+    re.compile(r"^`[^`]+` chooses the .+ option for this contract\.$", re.I),
+    re.compile(r"^Enumerates the supported .+ cases\.$", re.I),
+    re.compile(r"^Defines the public .+ value\.$", re.I),
+    re.compile(r"^Names the .+ type used by the public API\.$", re.I),
+    re.compile(r"^Types and operations for .+\.$", re.I),
+    re.compile(r"^Describes the .+ contract\.$", re.I),
+    re.compile(r"^Returns `[^`]+` when the owning operation detects ", re.I),
+    re.compile(r"^Classifies failures reported as ", re.I),
+    re.compile(r"^Reports the .+ failure case defined by ", re.I),
+    re.compile(r"^Reports a [aeiou]", re.I),
+    re.compile(
+        r"^(?:Adds|Cancels|Compiles|Executes|Inserts|Joins|Plans|Polls for|Prepares|Publishes|Reads|Receives|Records|Registers|Removes|Resolves|Sends|Spawns|Starts|Stops|Validates|Writes) [a-z]+ for `",
+        re.I,
+    ),
+)
 SOURCE_DOC_IMPROVEMENTS = {
     "pocketstation::codec::encoder::OpusApplication": "Selects the Opus encoder mode used to tune speech or general audio.",
     "OpusConfig::channels": "Selects the mono or stereo channel layout accepted by the encoder.",
@@ -78,7 +102,7 @@ STRUCT_DOCS = {
     "RuntimePlanner": "Validates the graph and produces the bounded runtime execution and memory plan.",
     "AudioCaps": "Declares the sample formats, channel layouts, and rates accepted by an audio port.",
     "ResolvedEdge": "Binds one compiled graph edge to its resolved source, destination, and contract.",
-    "GraphIr": "Stores the resolved nodes, edges, and topological order used by runtime planning.",
+    "GraphIr": "Contains the resolved nodes, edges, and topological order consumed by runtime planning.",
     "AsyncOperatorWorker": "Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result.",
     "StemLabel": "Stores the validated human-readable label used for one recording stem.",
     "EndpointDriverFinalization": "Reports an endpoint driver's terminal observations and any finalization failure.",
@@ -105,6 +129,52 @@ STRUCT_DOCS = {
     "SessionSpecVersion": "Identifies the major and minor version of the immutable Session declaration schema.",
     "MultistemRecording": "Owns the per-stem recording workers and coordinates their terminal finalization outcome.",
     "TypedEdgePublishReport": "Reports how many fan-out branches accepted or dropped one published signal.",
+    "PksExtensionDescriptor": "Declares a native extension's ABI version, library callbacks, and registration entrypoint.",
+    "EndpointDescriptor": "Declares an endpoint's node identity, media contract, configuration, and execution requirements.",
+    "ConnectorManifest": "Declares connector identity, API revision, ports, capabilities, requirements, and configuration schema.",
+    "AsyncOperatorManifest": "Declares an asynchronous operator's ports, execution partition, failure policy, and cancellation policy.",
+    "NodeDescriptor": "Declares a graph node's stable type identity, ports, execution partition, and safety contract.",
+    "SourceManifest": "Declares an external source's identity, outputs, preparation group, and execution requirements.",
+    "PksExtensionPipelineDeclaration": "Declares one extension pipeline instance and the native registrations it uses.",
+}
+
+ENUM_DOCS = {
+    "ConnectorConfigurationConstraint": "Classifies validation constraints applied to connector configuration fields.",
+    "PermissionDecision": "Records whether recording permission was granted, denied, or not observable.",
+    "Multiplicity": "Declares whether a graph port accepts one edge or multiple edges.",
+    "StreamProfile": "Selects the supported Opus stream profile used for codec validation.",
+    "ConnectorRecovery": "Declares the recovery state exposed after a connector failure.",
+    "EndpointStartFailureCause": "Classifies the lifecycle stage responsible for an endpoint start failure.",
+    "ConnectorRetryability": "Declares whether a connector failure may be retried under the connector contract.",
+    "ConnectorConfigurationErrorCode": "Provides stable categories for connector configuration validation failures.",
+    "CapturedFrameDelivery": "Reports whether a captured frame was accepted, dropped, or rejected by delivery.",
+    "CaptureSessionGrant": "Reports the Session-specific authorization available for capture.",
+    "ConnectorDeliveryReadiness": "Reports whether connector delivery is ready, degraded, or unavailable.",
+    "SourceRuntimeEventReceive": "Reports the outcome of receiving a source-runtime event.",
+    "SessionRouteLatencyBoundary": "Identifies the route boundary at which Session latency was observed.",
+    "SourceIdentityStrength": "Classifies how reliably a capture source identity binds to the same resource.",
+    "ConnectorConfigurationValue": "Carries one validated connector configuration value in its declared scalar or secret form.",
+    "RecorderLineageField": "Identifies the lineage field that differs while validating a recording stem.",
+    "Platform": "Identifies the operating-system platform attached to captured lineage.",
+    "PksSessionStatusCode": "Provides stable C ABI status categories returned by Session operations.",
+    "MediaCaps": "Declares the media capabilities accepted by a graph port.",
+    "ChannelLayout": "Declares the number and arrangement of channels in an audio signal.",
+    "PlanEdgeFrame": "Carries either one routed frame or a terminal marker through a plan edge.",
+    "ConnectorHealth": "Reports the current operational health of a connector worker.",
+    "NodeDefinitionRef": "Borrows either a synchronous or asynchronous registered node definition.",
+    "CaptureRuntimeFailureClass": "Classifies the platform, permission, source, or worker cause of a capture failure.",
+    "SessionRouteLatencyUnit": "Declares the unit used by a Session route-latency observation.",
+    "Source": "Declares the application, microphone, or system source selected by a Session.",
+    "DeviceSelector": "Selects either the host default device or one stable device identity.",
+    "NativeExtensionLibraryErrorCode": "Provides stable categories for native-extension load and validation failures.",
+    "InputDeviceSelector": "Selects either the default input device or one exact device identity.",
+    "ClockDomain": "Identifies the clock used to interpret signal timestamps.",
+    "SignalPayload": "Carries the typed audio, text, event, or binary body of a signal envelope.",
+    "SourceRuntimeEventDelivery": "Reports whether a source-runtime event was delivered, dropped, or rejected.",
+    "ApplicationSelector": "Selects an application by bundle identity, process identity, stable identity, or name.",
+    "SourceGenerationTransition": "Records whether a capture source disappeared, reappeared, or changed generation.",
+    "SourceQuery": "Describes the source kind and optional application or device selector used for discovery.",
+    "EndpointReceiver": "Owns the bounded receiver for the media class accepted by an endpoint.",
 }
 
 
@@ -153,7 +223,7 @@ def owner_for(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
     return "PocketStation"
 
 
-def field_doc(name: str, owner: str) -> str:
+def field_doc(name: str, owner: str, record: dict[str, Any]) -> str:
     exact = {
         "struct_size_bytes": f"Stores the byte size of the `{owner}` ABI structure.",
         "abi_major": f"Stores the major ABI version expected by `{owner}`.",
@@ -178,6 +248,48 @@ def field_doc(name: str, owner: str) -> str:
         "failure": f"Carries the failure reported by `{owner}`.",
         "outcome": f"Carries the terminal outcome reported by `{owner}`.",
         "observations": f"Carries the observations collected for `{owner}`.",
+        "generation": f"Identifies the generation of the resource represented by `{owner}`.",
+        "previous_generation": f"Identifies the generation that preceded the transition recorded by `{owner}`.",
+        "permission_epoch": f"Identifies the permission-observation generation attached to `{owner}`.",
+        "sequence_number": f"Orders `{owner}` within its protocol or stream sequence.",
+        "sequence_start": f"Records the first sequence number covered by `{owner}`.",
+        "sequence_end": f"Records the last sequence number covered by `{owner}`.",
+        "sample_spec": f"Declares the sample rate, channel layout, and format used by `{owner}`.",
+        "signal_spec": f"Declares the signal class and format accepted by `{owner}`.",
+        "bytes_per_frame": f"Stores the encoded or in-memory size of one frame for `{owner}`, in bytes.",
+        "samples_per_frame": f"Stores the number of samples in each channel of a frame handled by `{owner}`.",
+        "requested_samples_per_channel": f"Records the requested frame length, in samples per channel, that caused `{owner}`.",
+        "maximum_samples_per_channel": f"Records the configured maximum frame length, in samples per channel, enforced by `{owner}`.",
+        "drift_ppm": f"Reports the estimated clock drift for `{owner}`, in parts per million.",
+        "status_code": f"Preserves the platform or protocol status code reported by `{owner}`.",
+        "operation": f"Names the operation that produced `{owner}`.",
+        "action": f"Describes the corrective action reported with `{owner}`.",
+        "stable_key": f"Stores the stable source key associated with `{owner}`.",
+        "lineage_seed": f"Supplies the initial lineage identity used when `{owner}` opens capture.",
+        "lineage": f"Preserves the source and stream lineage attached to `{owner}`.",
+        "topo_order": f"Lists graph nodes in the validated topological execution order for `{owner}`.",
+        "memory_plan": f"Carries the bounded buffer and allocation plan compiled into `{owner}`.",
+        "fan_in": f"Lists compiled edge groups that converge on one input in `{owner}`.",
+        "fan_out": f"Lists compiled edge groups that branch from one output in `{owner}`.",
+        "payload": f"Contains the encoded message body carried by `{owner}`.",
+        "program": f"Points to the executable launched for `{owner}`.",
+        "configuration": f"Contains the serialized configuration passed to `{owner}`.",
+        "rolling_hash": f"Stores the rolling integrity hash computed for `{owner}`.",
+        "session_dir": f"Points to the directory containing the Session recording represented by `{owner}`.",
+        "runtime_event_sender": f"Sends capture lifecycle and failure events from `{owner}` to the Session runtime.",
+        "frame_sender": f"Sends captured frames from `{owner}` into the Session runtime.",
+        "channel_layout": f"Declares the channel arrangement accepted by `{owner}`.",
+        "semantic_role": f"Names the semantic role assigned to the extension port in `{owner}`.",
+        "timeline_mapping": f"Maps source timestamps into the Session timeline for `{owner}`.",
+        "copy_policy": f"Declares whether routing through `{owner}` may share or must copy frame storage.",
+        "recovery_requirement": f"Declares the recovery action required after the source event in `{owner}`.",
+        "discontinuity_epoch": f"Identifies the discontinuity generation attached to `{owner}`.",
+        "identity_strength": f"Reports how strongly the selected source identity is bound in `{owner}`.",
+        "application_policy": f"Reports the application-level capture policy observed by `{owner}`.",
+        "os_permission": f"Reports the operating-system permission state observed by `{owner}`.",
+        "session_grant": f"Reports whether the Session-specific capture grant is present for `{owner}`.",
+        "capture_scope": f"Declares the exact resource scope authorized by `{owner}`.",
+        "open_outcome": f"Reports whether opening capture is allowed, denied, or requires setup in `{owner}`.",
     }
     if name in exact:
         return exact[name]
@@ -200,10 +312,27 @@ def field_doc(name: str, owner: str) -> str:
         return f"Reports the {phrase} observed by `{owner}`."
     if name.startswith(("is_", "has_")) or name.endswith("_enabled") or name in {"enabled", "ready", "required", "terminal"}:
         return f"Indicates whether {phrase} applies to `{owner}`."
+    signature_type = record.get("signature", {}).get("type", {})
+    if signature_type.get("primitive") == "bool":
+        boolean_suffixes = {
+            " requested": "was requested",
+            " observed": "was observed",
+            " allowed": "is allowed",
+            " exhausted": "was exhausted",
+            " changed": "changed",
+            " closed": "is closed",
+            " cancelled": "was cancelled",
+            " joined": "has joined",
+            " panicked": "panicked",
+        }
+        for suffix, predicate in boolean_suffixes.items():
+            if phrase.endswith(suffix):
+                return f"Reports whether {phrase.removesuffix(suffix)} {predicate} for `{owner}`."
+        return f"Reports whether {phrase} is true for `{owner}`."
     if name.endswith("_count") or name.startswith("number_of_"):
         return f"Stores the number of {words(name.removesuffix('_count'))} represented by `{owner}`."
     if name.endswith("_index") or name == "index":
-        return f"Stores the {phrase} used by `{owner}`."
+        return f"Identifies the {phrase} position within `{owner}`."
     if name.endswith("_error"):
         return f"Carries the {phrase} reported by `{owner}`."
     if name.endswith("_callback") or name in {
@@ -212,7 +341,146 @@ def field_doc(name: str, owner: str) -> str:
         "validate_configuration", "acquire_registration",
     }:
         return f"Provides the {phrase} callback used by `{owner}`."
-    return f"Stores the {phrase} used by `{owner}`."
+    if name in {"name", "label", "port_name", "type_name"} or name.endswith(("_name", "_label")):
+        subject = phrase.removesuffix(" name").removesuffix(" label")
+        return f"Stores the human-readable {subject or 'name'} used to identify `{owner}`."
+    if name == "path" or name.endswith(("_path", "_root", "_directory")):
+        return f"Points to the {phrase} used by `{owner}`."
+    if name in {"receiver", "sender", "writer", "reader"}:
+        return f"Owns the {phrase} endpoint through which `{owner}` exchanges values."
+    if any(token in name for token in ("port", "node", "edge", "endpoint", "source", "input", "output", "branch")):
+        return f"References the {phrase} participating in `{owner}`."
+    if name.endswith("s") or name in {"samples", "stems", "records", "targets"}:
+        return f"Contains the {phrase} owned or reported by `{owner}`."
+    if name in {"kind", "state", "direction", "format", "policy", "stage", "status", "execution", "media", "role", "schema"}:
+        return f"Records the {phrase} selected for `{owner}`."
+    type_name = rustdoc_type_name(signature_type)
+    if name == "requested":
+        subject = f" `{type_name}`" if type_name and type_name not in {"Option", "Vec", "Arc", "Box"} else ""
+        return f"Records the{subject} value requested by the caller in `{owner}`."
+    if name == "registered":
+        subject = f" `{type_name}`" if type_name and type_name not in {"Option", "Vec", "Arc", "Box"} else ""
+        return f"Records the{subject} value already registered with `{owner}`."
+    if name == "observed":
+        return f"Records the value observed when `{owner}` was produced."
+    if name == "found":
+        return f"Records the value found while validating `{owner}`."
+    if type_name == "Result":
+        return f"Records whether the {phrase} operation succeeded and preserves its typed failure for `{owner}`."
+    if type_name == "String":
+        return f"Stores the {phrase} text reported by `{owner}`."
+    if type_name == "Duration":
+        return f"Sets the {phrase} duration enforced by `{owner}`."
+    if type_name and type_name not in {"Option", "Vec", "Arc", "Box"}:
+        return f"Stores the {phrase} as a `{type_name}` value in `{owner}`."
+    return f"Stores the {phrase} component of `{owner}`."
+
+
+def error_variant_doc(name: str, owner: str) -> str:
+    """Describe an error case as a condition, not as a restated identifier."""
+    phrase = words(name)
+    rules = (
+        (r"^Unknown(.+)$", lambda value: f"Reports that the referenced {words(value)} is not declared or registered."),
+        (r"^Unregistered(.+)$", lambda value: f"Reports that {words(value)} has not been registered."),
+        (r"^Undeclared(.+)$", lambda value: f"Reports that {words(value)} was emitted or requested without a declaration."),
+        (r"^Missing(.+)$", lambda value: f"Reports that the required {words(value)} is missing."),
+        (r"^Invalid(.+)$", lambda value: f"Reports that the supplied {words(value)} is invalid."),
+        (r"^Unsupported(.+)$", lambda value: f"Reports that the requested {words(value)} is unsupported."),
+        (r"^Duplicate(.+)$", lambda value: f"Reports that {words(value)} duplicates an existing declaration or record."),
+        (r"^Empty(.+)$", lambda value: f"Reports that {words(value)} is empty."),
+        (r"^TooMany(.+)$", lambda value: f"Reports that the number of {words(value)} exceeds the supported limit."),
+        (r"^Zero(.+)$", lambda value: f"Reports that {words(value)} must be greater than zero."),
+        (r"^No(.+)$", lambda value: f"Reports that no {words(value)} is available."),
+        (r"^Wrong(.+)$", lambda value: f"Reports that {words(value)} does not match the required identity or contract."),
+        (r"^Foreign(.+)$", lambda value: f"Reports that {words(value)} belongs to a different owning Session or declaration."),
+        (r"^Ambiguous(.+)$", lambda value: f"Reports that {words(value)} resolves to more than one candidate."),
+        (r"^Unexpected(.+)$", lambda value: f"Reports that {words(value)} is not valid in the current protocol or lifecycle state."),
+        (r"^Already(.+)$", lambda value: f"Reports that {words(value)} already occurred before this operation."),
+        (r"^Incompatible(.+)$", lambda value: f"Reports that {words(value)} is incompatible with the required contract."),
+        (r"^Misaligned(.+)$", lambda value: f"Reports that {words(value)} does not satisfy the required alignment."),
+        (r"^Unaligned(.+)$", lambda value: f"Reports that {words(value)} does not align to complete frames or channels."),
+        (r"^(.+)TooLarge$", lambda value: f"Reports that {words(value)} exceeds the supported size limit."),
+        (r"^(.+)TooSmall$", lambda value: f"Reports that {words(value)} is below the supported minimum."),
+        (r"^(.+)TooLong$", lambda value: f"Reports that {words(value)} exceeds the supported length limit."),
+        (r"^(.+)Mismatch$", lambda value: f"Reports that {words(value)} does not match the expected contract."),
+        (r"^(.+)OutOfRange$", lambda value: f"Reports that {words(value)} falls outside the supported range."),
+        (r"^(.+)Overflow$", lambda value: f"Reports that {words(value)} exceeds its numeric range."),
+        (r"^(.+)Underflow$", lambda value: f"Reports that {words(value)} falls below its numeric range."),
+        (r"^(.+)Panicked$", lambda value: f"Reports that {words(value)} panicked while the operation was active."),
+        (r"^(.+)TimedOut$", lambda value: f"Reports that {words(value)} exceeded its deadline."),
+        (r"^(.+)Timeout$", lambda value: f"Reports that {words(value)} exceeded its deadline."),
+        (r"^(.+)Unavailable$", lambda value: f"Reports that {words(value)} is unavailable."),
+        (r"^(.+)Closed$", lambda value: f"Reports that {words(value)} closed before the operation completed."),
+        (r"^(.+)Failed$", lambda value: f"Reports that {words(value)} failed."),
+        (r"^(.+)Failure$", lambda value: f"Reports a failure while performing {words(value)}."),
+        (r"^(.+)Regressed$", lambda value: f"Reports that {words(value)} moved backward instead of remaining monotonic."),
+        (r"^(.+)Regression$", lambda value: f"Reports that {words(value)} moved backward instead of remaining monotonic."),
+        (r"^(.+)MovedBackward$", lambda value: f"Reports that {words(value)} moved backward instead of remaining monotonic."),
+        (r"^(.+)Exhausted$", lambda value: f"Reports that the available {words(value)} range or capacity is exhausted."),
+        (r"^(.+)Exists$", lambda value: f"Reports that {words(value)} already exists and would be overwritten."),
+        (r"^(.+)Denied$", lambda value: f"Reports that {words(value)} was denied by the active permission or policy boundary."),
+        (r"^(.+)Cancelled$", lambda value: f"Reports that {words(value)} was cancelled before completion."),
+        (r"^(.+)Dropped$", lambda value: f"Reports that {words(value)} was dropped before delivery completed."),
+        (r"^(.+)Rejected$", lambda value: f"Reports that {words(value)} was rejected by the destination contract."),
+        (r"^(.+)Poisoned$", lambda value: f"Reports that shared {words(value)} became unavailable after a panic while locked."),
+        (r"^(.+)Full$", lambda value: f"Reports that the bounded {words(value)} has no remaining capacity."),
+        (r"^(.+)NotSupported$", lambda value: f"Reports that {words(value)} is not supported by this boundary."),
+        (r"^(.+)Unsupported$", lambda value: f"Reports that {words(value)} is unsupported by the active backend or contract."),
+        (r"^(.+)Forbidden$", lambda value: f"Reports that {words(value)} is forbidden by the declared safety contract."),
+        (r"^(.+)NotExclusive$", lambda value: f"Reports that {words(value)} must have exclusive ownership but is shared."),
+        (r"^(.+)Conflict$", lambda value: f"Reports that {words(value)} conflicts with an existing registration or declaration."),
+        (r"^Conflicting(.+)$", lambda value: f"Reports that {words(value)} conflicts with an existing registration or declaration."),
+        (r"^(.+)Changed$", lambda value: f"Reports that {words(value)} changed across a boundary that requires stability."),
+    )
+    for pattern, render in rules:
+        match = re.match(pattern, name)
+        if match:
+            return render(match.group(1))
+    exact = {
+        "Truncated": "Reports that the encoded input ended before the complete record was available.",
+        "TrailingBytes": "Reports that bytes remain after decoding the complete record.",
+        "ReservedFieldSet": "Reports that a reserved compatibility field contains a nonzero value.",
+        "CycleDetected": "Reports that the declared graph contains a dependency cycle.",
+        "WouldBlock": "Reports that the non-blocking operation cannot proceed without waiting.",
+        "Cancelled": "Reports that cancellation was requested before the operation completed.",
+        "Closed": "Reports that the underlying channel or resource closed before completion.",
+        "Full": "Reports that the bounded destination has no remaining capacity.",
+        "Poisoned": "Reports that shared state became unavailable after a panic while locked.",
+        "Io": "Reports an operating-system or filesystem I/O failure.",
+        "Json": "Reports that JSON serialization or parsing failed.",
+        "Utf8": "Reports that the supplied bytes are not valid UTF-8.",
+        "Invalid": "Reports that validation rejected the supplied value.",
+        "Duplicate": "Reports that the supplied value duplicates an existing record.",
+        "Missing": "Reports that a required value is missing.",
+        "Failed": "Reports that the requested operation failed.",
+        "Timeout": "Reports that the operation exceeded its deadline.",
+        "Incomplete": "Reports that the operation ended without producing a complete terminal result.",
+    }
+    if name in exact:
+        return exact[name]
+    return f"Classifies a failure at the {phrase} stage or component of `{owner}`."
+
+
+def error_type_doc(name: str) -> str:
+    """Describe the operation or boundary represented by an error type."""
+    subject = words(re.sub(r"(?:Build|Start|Prepare|Runtime|Registration|Validation|Write|Read|Encode|Decode|Protocol)?Error$", "", name))
+    suffixes = (
+        ("BuildError", "construction and input validation"),
+        ("StartError", "lifecycle start"),
+        ("PrepareError", "resource preparation"),
+        ("RuntimeError", "runtime execution"),
+        ("RegistrationError", "registration"),
+        ("ValidationError", "validation"),
+        ("WriteError", "writing"),
+        ("ReadError", "reading"),
+        ("EncodeError", "encoding"),
+        ("DecodeError", "decoding"),
+        ("ProtocolError", "protocol parsing and state transitions"),
+    )
+    for suffix, operation in suffixes:
+        if name.endswith(suffix):
+            return f"Classifies failures produced during {subject} {operation}."
+    return f"Classifies failures surfaced by {subject} operations."
 
 
 def variant_doc(name: str, owner: str) -> str:
@@ -234,13 +502,55 @@ def variant_doc(name: str, owner: str) -> str:
     }
     if name in explicit:
         return explicit[name]
+    owner_templates = {
+        "SidecarMessageKind": "Identifies a sidecar protocol message carrying or representing {phrase}.",
+        "MediaKind": "Declares that the signal carries {phrase} media.",
+        "ConnectorConfigurationValueKind": "Declares that a connector configuration value is encoded as {phrase}.",
+        "CaptureMode": "Requests capture in {phrase} mode.",
+        "SessionTraceRecordKind": "Tags a Session trace record as {phrase}.",
+        "ApplicationSelector": "Selects applications by {phrase}.",
+        "SelectorPersistenceScope": "Limits selector persistence to the {phrase} scope.",
+        "SessionStartErrorKind": "Classifies a Session start failure attributed to {phrase}.",
+        "SourceKind": "Classifies a capture source as {phrase}.",
+        "ApplicationPolicyObservation": "Reports the observed application policy as {phrase}.",
+        "ProcessTreeScope": "Limits process capture to {phrase}.",
+        "BackpressurePolicy": "Handles bounded queue pressure using the {phrase} policy.",
+        "BinaryFormat": "Declares the binary payload representation as {phrase}.",
+        "CaptureScope": "Limits capture authorization to {phrase}.",
+        "CopyPolicy": "Applies the {phrase} storage-sharing policy to routed values.",
+        "ConnectorRetryability": "Declares a connector failure to be {phrase}.",
+        "DiscontinuityKind": "Classifies the observed stream discontinuity as {phrase}.",
+        "PksExtensionKind": "Registers the native extension as a {phrase} implementation.",
+        "NativeExtensionKind": "Classifies the loaded native extension as {phrase}.",
+        "TextFormat": "Declares the text payload representation as {phrase}.",
+        "LossPolicy": "Handles delivery loss using the {phrase} policy.",
+        "ConnectorConfigurationRequirement": "Declares the connector configuration field to be {phrase}.",
+        "EndpointFailureRetryability": "Declares an endpoint failure to be {phrase}.",
+        "ClockDomainKind": "Identifies timestamps as belonging to the {phrase} clock domain.",
+        "InputDeviceSelector": "Selects an input device by {phrase}.",
+        "OperatorCancellationPolicy": "Cancels an operator using the {phrase} policy.",
+        "OperatorFailurePolicy": "Handles an operator failure using the {phrase} policy.",
+        "PksExtensionPortDirection": "Declares a native-extension port as {phrase}.",
+        "DeviceSelector": "Selects an audio device by {phrase}.",
+        "PlanRunnerDrainPolicy": "Drains the runtime plan using the {phrase} policy.",
+        "EndpointShutdownMode": "Shuts an endpoint down using the {phrase} mode.",
+        "PortDirection": "Declares a graph port as {phrase}.",
+        "ConnectorReadinessPolicyError": "Reports that the connector readiness {phrase} value is invalid.",
+        "EdgeObservabilityLevel": "Exposes {phrase} observations for a graph edge.",
+        "SourceRecoveryRequirement": "Requires {phrase} recovery after source loss.",
+        "SampleFormat": "Declares PCM samples in {phrase} format.",
+        "PermissionScope": "Limits the permission decision to {phrase}.",
+        "AudioInputWriteErrorKind": "Classifies an external-audio write failure as {phrase}.",
+    }
+    if owner in owner_templates:
+        return owner_templates[owner].format(phrase=phrase)
     if any(token in lower_owner for token in ("status", "state", "stage", "phase", "outcome", "disposition", "event", "delivery")):
-        return f"Identifies the {phrase} state or stage represented by `{owner}`."
+        return f"`{owner}::{name}` denotes the {phrase} state, stage, event, or outcome."
     if any(token in lower_owner for token in ("policy", "mode", "kind", "scope", "direction", "format", "semantics", "level", "requirement", "selector", "retryability")):
-        return f"Selects {phrase} behavior for `{owner}`."
+        return f"`{owner}::{name}` selects the {phrase} behavior represented by `{owner}`."
     if any(token in lower_owner for token in ("error", "failure")):
-        return f"Reported when the owning operation encounters {phrase}."
-    return f"Represents the {phrase} alternative defined by `{owner}`."
+        return error_variant_doc(name, owner)
+    return f"`{owner}::{name}` is the {phrase} alternative of this enum."
 
 
 def function_doc(name: str, owner: str) -> str:
@@ -315,6 +625,30 @@ def function_doc(name: str, owner: str) -> str:
         "new_with_output_channels": f"Creates {subject} with the supplied output channels.",
         "process_ready": f"Processes the ready inputs for {subject}.",
         "declares_multistem_recording": f"Returns whether {subject} declares multistem recording.",
+        "validate_config": f"Validates supplied node configuration against the schema declared by {subject}.",
+        "send_audio": f"Sends one audio signal through the bounded input owned by {subject}.",
+        "cancel_preparation": f"Cancels resources created while preparing {subject}.",
+        "receive_signal": f"Receives and decodes the next signal message from {subject}.",
+        "start_failure": f"Returns the transactional start failure carried by {subject}, if this error represents one.",
+        "prepare_session": f"Builds the source preparation context for the current Session through {subject}.",
+        "add_node": f"Adds one node declaration to the graph owned by {subject}.",
+        "register_definition": f"Registers one validated node definition with {subject}.",
+        "register_operator": f"Registers one asynchronous operator implementation for use by {subject}.",
+        "register_connector": f"Registers one connector implementation for use by {subject}.",
+        "register_endpoint": f"Registers one endpoint implementation with {subject}.",
+        "record_failure": f"Records a connector failure and its retry classification in {subject}.",
+        "record_retry": f"Increments the retry-attempt observation recorded by {subject}.",
+        "record_discontinuity": f"Increments the discontinuity observation recorded by {subject}.",
+        "spawn_composed": f"Spawns {subject} with the supplied typed input and fan-out outputs.",
+        "resolve_manifest": f"Resolves and validates the operator manifest exposed by {subject}.",
+        "register_builtins": "Registers the passthrough, gain, and mono-mix node factories in the supplied registry.",
+        "send_to": f"Connects the current stream to one explicit endpoint input through {subject}.",
+        "start_compiled": f"Starts a previously compiled Session through {subject}.",
+        "execute_from": f"Executes one lineaged frame from the named source node through {subject}.",
+        "register_async": f"Validates and registers one asynchronous operator factory with {subject}.",
+        "prepare_context": f"Returns the immutable preparation context retained by {subject}.",
+        "start_cancellable": f"Starts {subject} transactionally while observing the supplied cancellation handle.",
+        "resolve_query": "Filters discovered capture sources using the supplied source query.",
     }
     if name in exact:
         return exact[name]
@@ -334,7 +668,7 @@ def function_doc(name: str, owner: str) -> str:
     if name in predicates:
         return f"Returns whether {phrase} is true for {subject}."
     if name.startswith(("is_", "has_", "accepts_", "supports_")):
-        return f"Returns whether {words(name.removeprefix('is_').removeprefix('has_'))} applies to {subject}."
+        return f"Reports whether {words(name.removeprefix('is_').removeprefix('has_'))} is true for {subject}."
     if name.startswith("with_"):
         return f"Sets the {words(name[5:])} on {subject} and returns the updated value."
     if name.startswith("set_"):
@@ -405,6 +739,30 @@ def function_doc(name: str, owner: str) -> str:
         "connector": f"Declares a connector endpoint on {subject} with the supplied operator identity and configuration.",
         "engine_builder": f"Borrows the mutable engine builder owned by {subject}.",
         "dispatch_from": f"Routes one lineaged audio frame from the named plan output through {subject}.",
+        "validate_config": f"Validates supplied node configuration against the schema declared by {subject}.",
+        "send_audio": f"Sends one audio signal through the bounded input owned by {subject}.",
+        "cancel_preparation": f"Cancels resources created while preparing {subject}.",
+        "receive_signal": f"Receives and decodes the next signal message from {subject}.",
+        "start_failure": f"Returns the transactional start failure carried by {subject}, if this error represents one.",
+        "prepare_session": f"Builds the source preparation context for the current Session through {subject}.",
+        "add_node": f"Adds one node declaration to the graph owned by {subject}.",
+        "register_definition": f"Registers one validated node definition with {subject}.",
+        "register_operator": f"Registers one asynchronous operator implementation for use by {subject}.",
+        "register_connector": f"Registers one connector implementation for use by {subject}.",
+        "register_endpoint": f"Registers one endpoint implementation with {subject}.",
+        "record_failure": f"Records a connector failure and its retry classification in {subject}.",
+        "record_retry": f"Increments the retry-attempt observation recorded by {subject}.",
+        "record_discontinuity": f"Increments the discontinuity observation recorded by {subject}.",
+        "spawn_composed": f"Spawns {subject} with the supplied typed input and fan-out outputs.",
+        "resolve_manifest": f"Resolves and validates the operator manifest exposed by {subject}.",
+        "register_builtins": "Registers the passthrough, gain, and mono-mix node factories in the supplied registry.",
+        "send_to": f"Connects the current stream to one explicit endpoint input through {subject}.",
+        "start_compiled": f"Starts a previously compiled Session through {subject}.",
+        "execute_from": f"Executes one lineaged frame from the named source node through {subject}.",
+        "register_async": f"Validates and registers one asynchronous operator factory with {subject}.",
+        "prepare_context": f"Returns the immutable preparation context retained by {subject}.",
+        "start_cancellable": f"Starts {subject} transactionally while observing the supplied cancellation handle.",
+        "resolve_query": "Filters discovered capture sources using the supplied source query.",
     }
     if name in semantic_actions:
         return semantic_actions[name]
@@ -476,18 +834,22 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
     phrase = words(name)
     lower = name.lower()
     if kind == "struct_field":
-        return field_doc(name, owner)
+        return field_doc(name, owner, record)
     if kind == "variant":
         return variant_doc(name, owner)
     if kind == "function":
         return function_doc(name, owner)
     if kind == "module":
-        return f"Types and operations for {phrase}."
+        if name == "connector":
+            return "Connector manifests, configuration, workers, transport records, readiness, and observations."
+        if name == "audio":
+            return "Realtime audio routing, execution, plan-runner, and runtime observation types."
+        return f"Groups the public {phrase} types and operations."
     if kind == "struct":
         if name in STRUCT_DOCS:
             return STRUCT_DOCS[name]
         if lower.endswith(("error", "failure")):
-            return f"Reports a {phrase}."
+            return error_type_doc(name)
         if lower.endswith(("config", "configuration", "options", "policy", "spec")):
             subject = phrase.removesuffix(' configuration').removesuffix(' config').removesuffix(' options').removesuffix(' policy').removesuffix(' spec')
             return f"Configures {subject} behavior at its owning API boundary."
@@ -502,7 +864,7 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
         if lower.endswith(("manifest", "descriptor", "declaration")):
             return f"Describes the {phrase} contract."
         if lower.endswith(("handle", "lease", "guard")):
-            return f"Owns bounded access to {phrase.removesuffix(' handle').removesuffix(' lease').removesuffix(' guard')}."
+            return f"Holds the ownership or bounded access represented by {phrase}."
         roles = (
             (("context",), "Carries the inputs and runtime context required to {subject}."),
             (("factory",), "Constructs {subject} implementations from validated declarations."),
@@ -522,7 +884,7 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
             (("receipt",), "Retains the identity and observation access returned for {subject}."),
             (("input",), "Carries typed input for {subject}."),
             (("output",), "Carries typed output from {subject}."),
-            (("node",), "Executes the graph-node behavior defined for {subject}."),
+            (("node",), "Represents the executable graph node for {subject}."),
             (("source",), "Owns production of {subject} values and its lifecycle state."),
         )
         for suffixes, template in roles:
@@ -533,8 +895,10 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
                 return template.format(subject=subject_name or phrase)
         return f"Carries the typed state and values defined by the `{name}` public contract."
     if kind == "enum":
+        if name in ENUM_DOCS:
+            return ENUM_DOCS[name]
         if lower.endswith(("error", "failure")):
-            return f"Classifies failures reported as {phrase}."
+            return error_type_doc(name)
         if lower.endswith(("policy", "mode", "kind", "scope", "direction", "format", "state", "status", "stage", "requirement", "semantics", "level")):
             return f"Selects the {phrase} used by PocketStation."
         if lower.endswith(("event", "outcome", "result", "disposition", "observation")):
@@ -564,7 +928,12 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
             )
         if lower.endswith("future"):
             return f"Names the future returned by {phrase.removesuffix(' future')} operations."
-        return f"Names the {phrase} type used by the public API."
+        target = rustdoc_type_name(record.get("signature", {}))
+        if target:
+            return f"Exposes `{target}` as the public `{name}` alias at this API boundary."
+        if lower.endswith("entrypoint"):
+            return "Defines the unsafe C-unwind function pointer exported by a native extension library."
+        return f"Exposes the `{name}` alias used at this API boundary."
     if kind in {"constant", "assoc_const"}:
         if name == "INITIAL":
             return f"Provides the initial value for `{owner}`."
@@ -574,7 +943,11 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
             return f"Defines the major version of {words(name[:-6])}."
         if name.endswith("_MINOR"):
             return f"Defines the minor version of {words(name[:-6])}."
-        return f"Defines the public {phrase} value."
+        value = record.get("signature", {}).get("value", {})
+        expression = value.get("expr") or value.get("value")
+        if expression and expression != "_":
+            return f"Defines {phrase} as `{expression}` for the owning public contract."
+        return f"Defines the stable {phrase} used by the owning public contract."
     if kind == "assoc_type":
         return f"Specifies the error type returned by `{owner}` operations."
     return f"Documents the public {phrase} API item."
@@ -641,6 +1014,11 @@ def main() -> None:
         action="store_true",
         help="Repair known first-pass wording in current source documentation attributes",
     )
+    parser.add_argument(
+        "--rewrite-filler-docs",
+        action="store_true",
+        help="Replace generated filler attributes with declaration-specific descriptions and update the native-doc ledger",
+    )
     args = parser.parse_args()
 
     records = read_jsonl(DB / "symbol-manifest.jsonl")
@@ -658,6 +1036,95 @@ def main() -> None:
             continue
         for child in impl.get("items", []):
             IMPL_OWNERS[int(child)] = owner
+
+    if args.rewrite_filler_docs:
+        native_rows = read_jsonl(DB / "native-docs.jsonl")
+        native_by_id = {row["symbol_id"]: row for row in native_rows}
+        by_path: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for record in records:
+            row = native_by_id.get(record["symbol_id"])
+            if not row or not any(pattern.search(row["documentation"]) for pattern in NATIVE_FILLER):
+                continue
+            by_path[record["source_file"]].append(record)
+        changed = 0
+        for path, path_records in sorted(by_path.items()):
+            source_path = ROOT / path
+            lines = source_path.read_text().splitlines(keepends=True)
+            for record in sorted(path_records, key=lambda value: value["source_lines"][0], reverse=True):
+                row = native_by_id[record["symbol_id"]]
+                old_doc = row["documentation"]
+                new_doc = item_doc(record, by_id)
+                if any(pattern.search(new_doc) for pattern in NATIVE_FILLER):
+                    raise SystemExit(f"replacement remains filler for {record['symbol_id']}: {new_doc}")
+                old = f"#[doc = {json.dumps(old_doc, ensure_ascii=False)}]"
+                new = f"#[doc = {json.dumps(new_doc, ensure_ascii=False)}]"
+                if any(new in line_text for line_text in lines):
+                    row["documentation"] = new_doc
+                    row["origin"] = "declaration_specific_generated_source"
+                    continue
+                location = next((
+                    index for index, line_text in enumerate(lines)
+                    if old in line_text
+                    and record["name"] in "".join(lines[index:min(len(lines), index + 4)])
+                ), None)
+                if location is None:
+                    declaration_patterns = {
+                        "struct_field": rf"^\s*(?:pub(?:\([^)]*\))?\s+)?{re.escape(record['name'])}\s*:",
+                        "variant": rf"^\s*{re.escape(record['name'])}\s*(?:\{{|\(|=|,)",
+                        "function": rf"\bfn\s+{re.escape(record['name'])}\s*[<(]",
+                        "struct": rf"\bstruct\s+{re.escape(record['name'])}\b",
+                        "enum": rf"\benum\s+{re.escape(record['name'])}\b",
+                        "trait": rf"\btrait\s+{re.escape(record['name'])}\b",
+                        "type_alias": rf"\btype\s+{re.escape(record['name'])}\b",
+                    }
+                    declaration = re.compile(
+                        declaration_patterns.get(record["kind"], rf"\b{re.escape(record['name'])}\b")
+                    )
+                    for declaration_line in (
+                        index for index, line_text in enumerate(lines) if declaration.search(line_text)
+                    ):
+                        location = next((
+                            index for index in range(declaration_line, max(-1, declaration_line - 8), -1)
+                            if "#[doc = " in lines[index]
+                        ), None)
+                        if location is not None:
+                            break
+                if location is None:
+                    raise SystemExit(f"generated documentation attribute not found for {record['symbol_id']} in {path}")
+                if old in lines[location]:
+                    lines[location] = lines[location].replace(old, new, 1)
+                else:
+                    lines[location], substitutions = re.subn(
+                        r'#\[doc = "(?:\\.|[^"\\])*"\]', new, lines[location], count=1
+                    )
+                    if substitutions != 1:
+                        raise SystemExit(f"unable to replace generated attribute for {record['symbol_id']} in {path}")
+                row["documentation"] = new_doc
+                row["origin"] = "declaration_specific_generated_source"
+                changed += 1
+            source_path.write_text("".join(lines))
+        with (DB / "native-docs.jsonl").open("w") as handle:
+            for row in sorted(native_rows, key=lambda value: value["symbol_id"]):
+                handle.write(json.dumps(row, sort_keys=True, separators=(",", ":")) + "\n")
+        remaining = [
+            row["symbol_id"] for row in native_rows
+            if any(pattern.search(row["documentation"]) for pattern in NATIVE_FILLER)
+        ]
+        checkpoint = {
+            "snapshot": json.loads((DB / "state.json").read_text())["snapshot"],
+            "public_records_documented": len(native_rows),
+            "filler_docs_rewritten_this_run": changed,
+            "generic_filler_remaining": len(remaining),
+            "remaining_symbol_ids": sorted(remaining),
+            "files_examined": len(by_path),
+            "native_docs_sha256": sha256((DB / "native-docs.jsonl").read_bytes()),
+        }
+        (DB / "checkpoints").mkdir(parents=True, exist_ok=True)
+        (DB / "checkpoints" / "rustdoc-enrichment.json").write_text(
+            json.dumps(checkpoint, indent=2, sort_keys=True) + "\n"
+        )
+        print(f"filler_docs_rewritten={changed} files={len(by_path)}")
+        return
 
     if args.polish_current_attributes:
         changed = 0

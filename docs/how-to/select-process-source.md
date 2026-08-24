@@ -1,6 +1,6 @@
 # Select a process-scoped source
 
-<!-- claims: CLM-GUIDE-004-CAP-001,CLM-GUIDE-004-CAP-002,CLM-GUIDE-004-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-004-SCOPE-001,CLM-GUIDE-004-TEXT-001,CLM-GUIDE-004-TEXT-002,CLM-GUIDE-004-TEXT-003,CLM-GUIDE-004-TEXT-004,CLM-GUIDE-004-TEXT-005,CLM-GUIDE-004-TEXT-006,CLM-GUIDE-004-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,36 @@ A discovery result that exposes process-instance identity rather than only a dis
 3. Resolve the query and retain stable source identity.
 4. Observe generation changes instead of assuming process identity is permanent.
 5. Handle empty or ambiguous resolution as a typed result.
+
+## Concrete repository example
+
+The executable repository test `given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed` (`test-575dc7b197243c56d8f1`) shows the concrete API sequence and asserted outcome at `src/capture/platform/linux/pipewire.rs:1980`.
+
+```rust
+    }
+
+    #[test]
+    fn given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed()
+    {
+        let nodes = vec![discovered_application(
+            "pw-transient:91",
+            41,
+            ApplicationIdentityScope::ProcessLifetime,
+            "812",
+        )];
+        let selector =
+            StableSourceId::new(Platform::Linux, SourceKind::Application, "pw-transient:91");
+
+        let selected = select_unique_exact_application(&nodes, &selector, Some(41))
+            .expect("process-scoped exact selector may use a transient identity");
+
+        assert_eq!(selected.target_object.as_deref(), Some("812"));
+    }
+```
+
+```bash
+cargo test --all-features given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed
+```
 
 ## Important consequence
 
@@ -62,11 +92,11 @@ Executable evidence selected for **Select a process-scoped source** is limited t
 | `pocketstation::capture::selection::ProcessTreeScope` | enum | Selects the process tree scope used by PocketStation. | `src/capture/selection.rs:83` |
 | `pocketstation::capture::authorization::SourceIdentityStrength::ApplicationIdAndProcessId` | variant | Represents the application id and process identifier alternative defined by `SourceIdentityStrength`. | `src/capture/authorization.rs:258` |
 | `pocketstation::capture::authorization::SourceIdentityStrength::ProcessId` | variant | Represents the process identifier alternative defined by `SourceIdentityStrength`. | `src/capture/authorization.rs:260` |
-| `pocketstation::capture::selection::CaptureMode::Process` | variant | Selects process behavior for `CaptureMode`. | `src/capture/selection.rs:20` |
-| `pocketstation::capture::selection::ProcessTreeScope::ApplicationIdentity` | variant | Selects application identity behavior for `ProcessTreeScope`. | `src/capture/selection.rs:86` |
-| `pocketstation::capture::selection::ProcessTreeScope::NotApplicable` | variant | Selects not applicable behavior for `ProcessTreeScope`. | `src/capture/selection.rs:87` |
-| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessAndDescendants` | variant | Selects selected process and descendants behavior for `ProcessTreeScope`. | `src/capture/selection.rs:85` |
-| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessOnly` | variant | Selects selected process only behavior for `ProcessTreeScope`. | `src/capture/selection.rs:84` |
+| `pocketstation::capture::selection::CaptureMode::Process` | variant | Requests capture in process mode. | `src/capture/selection.rs:20` |
+| `pocketstation::capture::selection::ProcessTreeScope::ApplicationIdentity` | variant | Limits process capture to application identity. | `src/capture/selection.rs:86` |
+| `pocketstation::capture::selection::ProcessTreeScope::NotApplicable` | variant | Limits process capture to not applicable. | `src/capture/selection.rs:87` |
+| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessAndDescendants` | variant | Limits process capture to selected process and descendants. | `src/capture/selection.rs:85` |
+| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessOnly` | variant | Limits process capture to selected process only. | `src/capture/selection.rs:84` |
 
 ## Related documentation
 
@@ -83,6 +113,29 @@ Executable evidence selected for **Select a process-scoped source** is limited t
 
 The claims on **Select a process-scoped source** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/declaration/selector.rs:1-215` (`DIRECT`)
+- `src/session/declaration/selector.rs:5-5` (`DIRECT`)
+- `src/session/declaration/selector.rs:5-5` (`DIRECT`)
+- `src/session/declaration/selector.rs:5-5` (`DIRECT`)
+- `src/session/declaration/selector.rs:5-5` (`DIRECT`)
+- `src/session/declaration/selector.rs:6-6` (`DIRECT`)
+- `src/session/declaration/selector.rs:6-6` (`DIRECT`)
+- `src/session/declaration/selector.rs:9-11` (`DIRECT`)
+- `src/session/declaration/selector.rs:13-15` (`DIRECT`)
+- `src/session/declaration/selector.rs:18-18` (`DIRECT`)
+- `src/session/declaration/selector.rs:18-18` (`DIRECT`)
+- `src/session/declaration/selector.rs:18-18` (`DIRECT`)
+- `src/session/declaration/selector.rs:18-18` (`DIRECT`)
+- `src/session/declaration/selector.rs:19-19` (`DIRECT`)
+- `src/session/declaration/selector.rs:19-19` (`DIRECT`)
+- `src/session/declaration/selector.rs:22-24` (`DIRECT`)
+- `src/session/declaration/selector.rs:26-28` (`DIRECT`)
+- `src/session/declaration/selector.rs:31-31` (`DIRECT`)
+- `src/session/declaration/selector.rs:31-31` (`DIRECT`)
+- `src/session/declaration/selector.rs:31-31` (`DIRECT`)
+- `src/session/declaration/selector.rs:32-41` (`DIRECT`)
+- `src/session/declaration/selector.rs:33-33` (`DIRECT`)
+- `src/session/declaration/selector.rs:33-33` (`DIRECT`)
+- `src/session/declaration/selector.rs:34-34` (`DIRECT`)
+- `src/session/declaration/selector.rs:34-34` (`DIRECT`)
 
 For **Select a process-scoped source**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -30,8 +30,8 @@
       "classification": "DIRECT",
       "content_hash": "4ff6108fb67e20f4e8ca1dc510b5b8f9c45694e32f7cefb3dc06c71ff0792666",
       "lines": [
-        1,
-        7
+        6,
+        6
       ],
       "path": "native/macos/asp/authorization.h",
       "symbol": null
@@ -67,7 +67,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/authorization.h` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [],
   "outputs": [

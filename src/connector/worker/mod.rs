@@ -37,7 +37,7 @@ pub trait ConnectorWorker: Send + 'static {
     #[doc = "Runs `ConnectorWorker` until completion or cancellation."]
     fn run(self: Box<Self>, context: ConnectorContext) -> ConnectorRunOutcome;
 
-    #[doc = "Cancels preparation for `ConnectorWorker`."]
+    #[doc = "Cancels resources created while preparing `ConnectorWorker`."]
     fn cancel_preparation(self: Box<Self>) -> Result<(), ConnectorError> {
         drop(self);
         Ok(())

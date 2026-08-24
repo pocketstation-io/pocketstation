@@ -4,6 +4,18 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/native_extension/library.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/frame/audio.rs",
@@ -88,6 +100,18 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/native_extension/library.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/frame/audio.rs",
@@ -567,14 +591,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "23f32ed6c30dbb69f7e4723634987be006a00cec77f32598ffe850ca927d9ffa",
       "lines": [
         1,
-        336
+        4
       ],
       "path": "src/frame/pool.rs",
-      "symbol": null
+      "symbol": "pocketstation::frame::pool"
     }
   ],
   "example_coverage_status": "linked",
@@ -582,6 +606,18 @@
     "example-015ad57d56d019a5d285"
   ],
   "extended_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/native_extension/library.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/frame/audio.rs",
@@ -621,6 +657,18 @@
   "generated_from": "not_applicable",
   "git_object": "ea7bfec84cd8cda899cc9c1a11aeaa2c3369f5e0",
   "implemented_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/native_extension/library.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/frame/audio.rs",
@@ -639,6 +687,18 @@
     "fmt::Debug for SharedAudioBufferHandle"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/native_extension/library.rs",
+    "CALLS:src/runtime/bridge/audio.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/frame/audio.rs",
@@ -654,11 +714,12 @@
     "std::sync::atomic::{AtomicU64, AtomicUsize, Ordering}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "std::cell::UnsafeCell",
-    "std::fmt",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicU64, AtomicUsize, Ordering}"
+    "Consumes configuration at src/frame/pool.rs:108.",
+    "Consumes configuration at src/frame/pool.rs:113.",
+    "Depends on `std::cell::UnsafeCell` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, AtomicUsize, Ordering}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -708,40 +769,41 @@
   "module": "pocketstation::frame::pool",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::frame::pool` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-145c92021b15c7666c35",
     "pattern-c7c57018931d0870377f"
   ],
   "outputs": [
-    "Err(observed) => current = observed,",
-    "const:POOL_MAX_SLOTS",
-    "enum:AudioBufferWriteError",
-    "fn:acquire",
-    "fn:acquire_failures",
-    "fn:as_mut_slice",
-    "fn:as_slice",
-    "fn:available_slots",
-    "fn:freeze",
-    "fn:index",
-    "fn:is_empty",
-    "fn:is_in_use",
-    "fn:len",
-    "fn:new",
-    "fn:release_shared_for_testing",
-    "fn:set_shared_ref_count_for_testing",
-    "fn:shared_ref_count",
-    "fn:slot_count",
-    "fn:slot_size",
-    "fn:try_clone",
-    "fn:try_copy_from_slice",
-    "fn:try_set_len",
-    "return Err(AudioBufferWriteError::CapacityExceeded {",
-    "return Err(self);",
-    "struct:AudioBufferHandle",
-    "struct:AudioBufferPool",
-    "struct:SharedAudioBufferHandle"
+    "Creates a typed failure at src/frame/pool.rs:144.",
+    "Creates a typed failure at src/frame/pool.rs:170.",
+    "Creates a typed failure at src/frame/pool.rs:230.",
+    "Creates a typed failure at src/frame/pool.rs:248.",
+    "Declares public const `POOL_MAX_SLOTS`.",
+    "Declares public enum `AudioBufferWriteError`.",
+    "Declares public fn `acquire_failures`.",
+    "Declares public fn `acquire`.",
+    "Declares public fn `as_mut_slice`.",
+    "Declares public fn `as_slice`.",
+    "Declares public fn `available_slots`.",
+    "Declares public fn `freeze`.",
+    "Declares public fn `index`.",
+    "Declares public fn `is_empty`.",
+    "Declares public fn `is_in_use`.",
+    "Declares public fn `len`.",
+    "Declares public fn `new`.",
+    "Declares public fn `release_shared_for_testing`.",
+    "Declares public fn `set_shared_ref_count_for_testing`.",
+    "Declares public fn `shared_ref_count`.",
+    "Declares public fn `slot_count`.",
+    "Declares public fn `slot_size`.",
+    "Declares public fn `try_clone`.",
+    "Declares public fn `try_copy_from_slice`.",
+    "Declares public fn `try_set_len`.",
+    "Declares public struct `AudioBufferHandle`.",
+    "Declares public struct `AudioBufferPool`.",
+    "Declares public struct `SharedAudioBufferHandle`."
   ],
   "package": "pocketstation",
   "path": "src/frame/pool.rs",
@@ -992,8 +1054,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::frame::pool responsibilities, including Fixed-capacity realtime audio storage and ownership handles.; Defines the public pool max slots value.; Classifies failures reported as audio buffer write error.."
+    "classification": "DECLARED",
+    "text": "Fixed-capacity realtime audio storage and ownership handles. Allocation happens only when the pool is constructed. Acquire, share, and final `Drop` use atomics and never allocate, lock, block, or log."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1025,7 +1087,11 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/best-practices/source-identity.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/session/extensions/audio_input/buffer.rs",
+    "CALLS:src/session/lifecycle/trace.rs"
+  ],
   "resource_ownership": [
     {
       "line": 4,
@@ -1098,10 +1164,10 @@
   ],
   "responsibilities": [
     "pool: Fixed-capacity realtime audio storage and ownership handles.",
-    "pocketstation::frame::pool::POOL_MAX_SLOTS: Defines the public pool max slots value.",
-    "pocketstation::frame::pool::AudioBufferWriteError: Classifies failures reported as audio buffer write error.",
-    "pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded: Reported when the owning operation encounters capacity exceeded.",
-    "pool::AudioBufferWriteError::CapacityExceeded::requested_samples: Stores the requested samples used by `CapacityExceeded`.",
+    "pocketstation::frame::pool::POOL_MAX_SLOTS: Defines pool max slots as `64` for the owning public contract.",
+    "pocketstation::frame::pool::AudioBufferWriteError: Classifies failures produced during audio buffer writing.",
+    "pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded: Classifies a failure at the capacity exceeded stage or component of `AudioBufferWriteError`.",
+    "pool::AudioBufferWriteError::CapacityExceeded::requested_samples: Contains the requested samples owned or reported by `CapacityExceeded`.",
     "pool::AudioBufferWriteError::CapacityExceeded::capacity_samples: Sets the capacity samples available to `CapacityExceeded`.",
     "pocketstation::frame::pool::AudioBufferPool: Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame.",
     "new: Creates a new `AudioBufferPool`.",
@@ -1110,9 +1176,9 @@
     "acquire_failures: Returns the acquire failures associated with `AudioBufferPool`.",
     "available_slots: Returns the available slots associated with `AudioBufferPool`.",
     "acquire: Attempts to acquire an available buffer slot from `AudioBufferPool`.",
-    "is_in_use: Returns whether in use applies to `AudioBufferPool`.",
+    "is_in_use: Reports whether in use is true for `AudioBufferPool`.",
     "shared_ref_count: Returns the shared ref count held by `AudioBufferPool`.",
-    "pocketstation::frame::pool::AudioBufferHandle: Owns bounded access to audio buffer.",
+    "pocketstation::frame::pool::AudioBufferHandle: Holds the ownership or bounded access represented by audio buffer handle.",
     "len: Returns the number of values held by `AudioBufferHandle`.",
     "is_empty: Returns whether `AudioBufferHandle` contains no values.",
     "index: Returns the index held by `AudioBufferHandle`.",
@@ -1123,7 +1189,7 @@
     "freeze: Freezes mutable storage owned by `AudioBufferHandle` into its shared immutable form.",
     "drop: Releases resources owned by `AudioBufferHandle`.",
     "fmt: Formats `AudioBufferHandle` with the requested formatter.",
-    "pocketstation::frame::pool::SharedAudioBufferHandle: Owns bounded access to shared audio buffer.",
+    "pocketstation::frame::pool::SharedAudioBufferHandle: Holds the ownership or bounded access represented by shared audio buffer handle.",
     "len: Returns the number of values held by `SharedAudioBufferHandle`.",
     "is_empty: Returns whether `SharedAudioBufferHandle` contains no values.",
     "index: Returns the index held by `SharedAudioBufferHandle`.",

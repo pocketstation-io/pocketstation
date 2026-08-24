@@ -13,6 +13,10 @@
     }
   ],
   "called_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs"
   ],
@@ -70,6 +74,10 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs"
   ],
@@ -216,19 +224,23 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "4c1d8f8ac0ba0fd2502453ebd99932faa5af1b22a80176f227d2a60193d7f2e9",
       "lines": [
         1,
-        130
+        1
       ],
       "path": "src/capture/timeline.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::timeline"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs"
   ],
@@ -250,6 +262,10 @@
   "generated_from": "not_applicable",
   "git_object": "c7dbd70939e7cc6abfc817f4e7d6f37217aabf22",
   "implemented_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs"
   ],
@@ -257,6 +273,10 @@
     "CaptureSampleTimeline"
   ],
   "imported_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/graph/signal/timing.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs"
   ],
@@ -264,9 +284,13 @@
     "std::num::NonZeroU32"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
-    "#[cfg(any(test, target_os = \"linux\", target_os = \"macos\"))]",
-    "std::num::NonZeroU32"
+    "Consumes configuration at src/capture/timeline.rs:10.",
+    "Consumes configuration at src/capture/timeline.rs:3.",
+    "Consumes configuration at src/capture/timeline.rs:30.",
+    "Consumes configuration at src/capture/timeline.rs:40.",
+    "Consumes configuration at src/capture/timeline.rs:50.",
+    "Consumes configuration at src/capture/timeline.rs:73.",
+    "Depends on `std::num::NonZeroU32` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -284,22 +308,22 @@
   "module": "pocketstation::capture::timeline",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::timeline` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-fd544521a3d6795c5818"
   ],
   "outputs": [
-    "enum:CaptureSampleTimelineError",
-    "fn:advance",
-    "fn:advance_from_source_position",
-    "fn:anchored",
-    "fn:initialize_monotonic_timestamp_domain",
-    "fn:monotonic_timestamp_ns",
-    "fn:new",
-    "return Err(CaptureSampleTimelineError::MixedAdvanceModes);",
-    "return Err(CaptureSampleTimelineError::SourcePositionMovedBackward {",
-    "struct:CaptureSampleTimeline"
+    "Creates a typed failure at src/capture/timeline.rs:103.",
+    "Creates a typed failure at src/capture/timeline.rs:96.",
+    "Declares public enum `CaptureSampleTimelineError`.",
+    "Declares public fn `advance_from_source_position`.",
+    "Declares public fn `advance`.",
+    "Declares public fn `anchored`.",
+    "Declares public fn `initialize_monotonic_timestamp_domain`.",
+    "Declares public fn `monotonic_timestamp_ns`.",
+    "Declares public fn `new`.",
+    "Declares public struct `CaptureSampleTimeline`."
   ],
   "package": "pocketstation",
   "path": "src/capture/timeline.rs",
@@ -364,8 +388,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::timeline responsibilities, including Initializes the process-wide capture timestamp domain from a setup thread.; Process-wide monotonic timestamp domain used by every capture adapter.; Source-time clock for capture streams whose media cadence is defined by."
+    "classification": "DECLARED",
+    "text": "Source-sample time mapped into PocketStation's monotonic clock domain."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -425,12 +449,12 @@
     "pocketstation::capture::timeline::initialize_monotonic_timestamp_domain: Initializes the process-wide capture timestamp domain from a setup thread.",
     "pocketstation::capture::timeline::monotonic_timestamp_ns: Process-wide monotonic timestamp domain used by every capture adapter.",
     "pocketstation::capture::timeline::CaptureSampleTimeline: Source-time clock for capture streams whose media cadence is defined by",
-    "pocketstation::capture::timeline::CaptureSampleTimelineError: Classifies failures reported as capture sample timeline error.",
-    "pocketstation::capture::timeline::CaptureSampleTimelineError::MixedAdvanceModes: Reported when the owning operation encounters mixed advance modes.",
-    "pocketstation::capture::timeline::CaptureSampleTimelineError::SourcePositionOverflow: Reported when the owning operation encounters source position overflow.",
-    "pocketstation::capture::timeline::CaptureSampleTimelineError::SourcePositionMovedBackward: Reported when the owning operation encounters source position moved backward.",
-    "CaptureSampleTimelineError::SourcePositionMovedBackward::expected_at_least: Stores the expected at least used by `SourcePositionMovedBackward`.",
-    "CaptureSampleTimelineError::SourcePositionMovedBackward::observed: Stores the observed used by `SourcePositionMovedBackward`.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError: Classifies failures surfaced by capture sample timeline operations.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError::MixedAdvanceModes: Classifies a failure at the mixed advance modes stage or component of `CaptureSampleTimelineError`.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError::SourcePositionOverflow: Reports that source position exceeds its numeric range.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError::SourcePositionMovedBackward: Reports that source position moved backward instead of remaining monotonic.",
+    "CaptureSampleTimelineError::SourcePositionMovedBackward::expected_at_least: Stores the expected at least component of `SourcePositionMovedBackward`.",
+    "CaptureSampleTimelineError::SourcePositionMovedBackward::observed: Stores the observed component of `SourcePositionMovedBackward`.",
     "new: Creates a new `CaptureSampleTimeline`.",
     "anchored: Creates a sample timeline whose first buffer starts at the supplied nonzero monotonic timestamp.",
     "advance: Returns this buffer's source-time start and advances the next start.",

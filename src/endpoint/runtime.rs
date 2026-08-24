@@ -191,17 +191,17 @@ pub enum EndpointFailureStage {
 /// Machine-readable recovery classification retained in Session outcomes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EndpointFailureRetryability {
-    #[doc = "Reports never."]
+    #[doc = "Declares an endpoint failure to be never."]
     Never,
-    #[doc = "Reports retryable."]
+    #[doc = "Declares an endpoint failure to be retryable."]
     Retryable,
-    #[doc = "Reports reconfiguration required."]
+    #[doc = "Declares an endpoint failure to be reconfiguration required."]
     ReconfigurationRequired,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 #[error("endpoint {stage:?} failed: {message}")]
-#[doc = "Reports a endpoint failure."]
+#[doc = "Classifies failures surfaced by endpoint failure operations."]
 pub struct EndpointFailure {
     stage: EndpointFailureStage,
     message: String,
@@ -332,7 +332,7 @@ fn increment(counter: &AtomicU64, amount: u64) {
 pub struct EndpointCancellationOutcome {
     #[doc = "Carries the observations collected for `EndpointCancellationOutcome`."]
     pub observations: EndpointDriverObservations,
-    #[doc = "Stores the result used by `EndpointCancellationOutcome`."]
+    #[doc = "Records whether the result operation succeeded and preserves its typed failure for `EndpointCancellationOutcome`."]
     pub result: Result<(), EndpointFailure>,
 }
 
@@ -341,7 +341,7 @@ pub struct EndpointCancellationOutcome {
 pub struct EndpointDriverFinalization {
     #[doc = "Carries the observations collected for `EndpointDriverFinalization`."]
     pub observations: EndpointDriverObservations,
-    #[doc = "Stores the result used by `EndpointDriverFinalization`."]
+    #[doc = "Records whether the result operation succeeded and preserves its typed failure for `EndpointDriverFinalization`."]
     pub result: Result<(), EndpointFailure>,
 }
 
@@ -350,9 +350,9 @@ pub struct EndpointDriverFinalization {
 pub struct EndpointFinalizationOutcome {
     #[doc = "Carries the observations collected for `EndpointFinalizationOutcome`."]
     pub observations: EndpointDriverObservations,
-    #[doc = "Stores the request stop result used by `EndpointFinalizationOutcome`."]
+    #[doc = "Records whether the request stop result operation succeeded and preserves its typed failure for `EndpointFinalizationOutcome`."]
     pub request_stop_result: Result<(), EndpointFailure>,
-    #[doc = "Stores the join finalize result used by `EndpointFinalizationOutcome`."]
+    #[doc = "Records whether the join finalize result operation succeeded and preserves its typed failure for `EndpointFinalizationOutcome`."]
     pub join_finalize_result: Result<(), EndpointFailure>,
 }
 
@@ -377,7 +377,7 @@ pub trait PreparedEndpointDriver: Send {
         start_gate: Arc<EndpointStartGate>,
     ) -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure>;
 
-    #[doc = "Cancels preparation for `PreparedEndpointDriver`."]
+    #[doc = "Cancels resources created while preparing `PreparedEndpointDriver`."]
     fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome;
 }
 
@@ -411,9 +411,9 @@ pub trait RunningEndpointDriver: Send {
 /// behavior through the default `request_shutdown` adapter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EndpointShutdownMode {
-    #[doc = "Selects drain behavior for `EndpointShutdownMode`."]
+    #[doc = "Shuts an endpoint down using the drain mode."]
     Drain,
-    #[doc = "Selects abort behavior for `EndpointShutdownMode`."]
+    #[doc = "Shuts an endpoint down using the abort mode."]
     Abort,
 }
 
@@ -432,7 +432,7 @@ pub struct EndpointStartGate {
 }
 
 impl EndpointStartGate {
-    #[doc = "Returns whether open applies to `EndpointStartGate`."]
+    #[doc = "Reports whether open is true for `EndpointStartGate`."]
     pub fn is_open(&self) -> bool {
         self.open.load(Ordering::Acquire)
     }
@@ -496,15 +496,15 @@ impl PreparedEndpoint {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported endpoint start failure cause cases."]
+#[doc = "Classifies the lifecycle stage responsible for an endpoint start failure."]
 pub enum EndpointStartFailureCause {
-    #[doc = "Reports gate already open."]
+    #[doc = "Classifies a failure at the gate already open stage or component of `EndpointStartFailureCause`."]
     GateAlreadyOpen,
-    #[doc = "Reports driver."]
+    #[doc = "Classifies a failure at the driver stage or component of `EndpointStartFailureCause`."]
     Driver(EndpointFailure),
 }
 
-#[doc = "Reports a endpoint start failure."]
+#[doc = "Classifies failures surfaced by endpoint start failure operations."]
 pub struct EndpointStartFailure {
     cause: EndpointStartFailureCause,
     prepared: Option<PreparedEndpoint>,

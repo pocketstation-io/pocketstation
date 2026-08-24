@@ -1,6 +1,6 @@
 # Size bounded routes from observations
 
-<!-- claims: CLM-BEST-001-CAP-001,CLM-BEST-001-CAP-002,CLM-BEST-001-CAP-003,CLM-BEST-001-SOURCE-001 -->
+<!-- claims: CLM-BEST-001-SCOPE-001,CLM-BEST-001-TEXT-001,CLM-BEST-001-TEXT-002,CLM-BEST-001-TEXT-003,CLM-BEST-001-TEXT-004,CLM-BEST-001-TEXT-005,CLM-BEST-001-SOURCE-001 -->
 
 ## Problem
 
@@ -58,7 +58,30 @@ Executable evidence selected for **Size bounded routes from observations** is li
 
 The claims on **Size bounded routes from observations** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/audio/router.rs:1-1646` (`DIRECT`)
-- `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
+- `src/runtime/audio/router.rs:1-1` (`DECLARED`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:17-29` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:19-19` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:25-25` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:27-27` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:36-44` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:39-39` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:40-40` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:41-41` (`DIRECT`)
 
 For **Size bounded routes from observations**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

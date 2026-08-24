@@ -104,7 +104,7 @@
       "content_hash": "4e6e8f93a1b079cb631b61e725ead5927c58aea4f833c956a0a99f62fc94afa0",
       "lines": [
         1,
-        75
+        21
       ],
       "path": "examples/whisper-transcribe/src/main.rs",
       "symbol": null
@@ -142,10 +142,10 @@
     "whisper_transcribe_example::WhisperConnector"
   ],
   "inputs": [
-    "let mut arguments = std::env::args_os().skip(1).map(PathBuf::from);",
-    "pocketstation::{ AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection, PortPrepareContext, SampleFormat, SignalEnvelope, SignalPayload, SignalSpec, TextFormat, }",
-    "std::path::PathBuf",
-    "whisper_transcribe_example::WhisperConnector"
+    "Consumes configuration at examples/whisper-transcribe/src/main.rs:17.",
+    "Depends on `pocketstation::{ AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection, PortPrepareContext, SampleFormat, SignalEnvelope, SignalPayload, SignalSpec, TextFormat, }` through a declared Rust import.",
+    "Depends on `std::path::PathBuf` through a declared Rust import.",
+    "Depends on `whisper_transcribe_example::WhisperConnector` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -154,13 +154,13 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/whisper-transcribe/src/main.rs` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [
     "pattern-b3ae5e0d6b047003e494"
   ],
   "outputs": [
-    "_ => return Err(\"Whisper connector returned a non-text signal\".into()),"
+    "Creates a typed failure at examples/whisper-transcribe/src/main.rs:71."
   ],
   "package": "pocketstation",
   "path": "examples/whisper-transcribe/src/main.rs",

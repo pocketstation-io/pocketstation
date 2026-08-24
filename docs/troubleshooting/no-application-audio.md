@@ -1,6 +1,6 @@
 # No application audio arrives
 
-<!-- claims: CLM-TRBL-002-CAP-001,CLM-TRBL-002-CAP-002,CLM-TRBL-002-CAP-003,CLM-TRBL-002-CAP-004,CLM-TRBL-002-CAP-005,CLM-TRBL-002-SOURCE-001 -->
+<!-- claims: CLM-TRBL-002-SCOPE-001,CLM-TRBL-002-TEXT-001,CLM-TRBL-002-TEXT-002,CLM-TRBL-002-TEXT-003,CLM-TRBL-002-TEXT-004,CLM-TRBL-002-TEXT-005,CLM-TRBL-002-TEXT-006,CLM-TRBL-002-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,7 +78,7 @@ Opening or routing failures do not establish safe automatic retry. Frames alread
 
 The claims on **No application audio arrives** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/events.rs:1-344` (`DIRECT`)
-- `src/capture/observations.rs:1-130` (`DIRECT`)
+- `src/capture/events.rs:1-1` (`DECLARED`)
+- `src/capture/observations.rs:1-1` (`DECLARED`)
 
 For **No application audio arrives**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

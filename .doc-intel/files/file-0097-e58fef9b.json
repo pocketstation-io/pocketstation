@@ -326,14 +326,76 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
       "lines": [
-        1,
-        204
+        169,
+        186
       ],
-      "path": "src/capture/platform/windows/open_lifecycle.rs",
-      "symbol": null
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        107,
+        117
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        141,
+        152
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        186,
+        202
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        97,
+        107
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        129,
+        141
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        152,
+        169
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        117,
+        129
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -371,12 +433,12 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::sync::mpsc::{Receiver, RecvTimeoutError}",
-    "std::time::{Duration, Instant}",
-    "super::*"
+    "Consumes configuration at src/capture/platform/windows/open_lifecycle.rs:95.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::mpsc::{Receiver, RecvTimeoutError}` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -390,30 +452,30 @@
   "module": "pocketstation::capture::platform::windows::open_lifecycle",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::windows::open_lifecycle` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-c515a2ba9879e5831820"
   ],
   "outputs": [
-    "Err(OpenReportError::Cancelled)",
-    "Err(OpenReportError::ReceiverUnavailable)",
-    "Err(RecvTimeoutError::Disconnected) => OpenWaitOutcome::WorkerExited,",
-    "Err(RecvTimeoutError::Disconnected) => {",
-    "Err(RecvTimeoutError::Timeout) => OpenWaitOutcome::TimedOut,",
-    "Err(RecvTimeoutError::Timeout) => {}",
-    "Ok(Err(error)) => OpenWaitOutcome::Failed(error),",
-    "enum:CancellableWaitOutcome",
-    "enum:OpenReportError",
-    "enum:OpenWaitOutcome",
-    "fn:cancel",
-    "fn:is_cancelled",
-    "fn:report_open",
-    "fn:wait_for_completion",
-    "fn:wait_for_open",
-    "open_tx.send(Err(\"activation failed\".to_owned())).unwrap();",
-    "return Err(OpenReportError::Cancelled);",
-    "struct:OpenCancellation"
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:127.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:139.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:146.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:62.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:65.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:76.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:77.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:78.",
+    "Creates a typed failure at src/capture/platform/windows/open_lifecycle.rs:88.",
+    "Declares public enum `CancellableWaitOutcome`.",
+    "Declares public enum `OpenReportError`.",
+    "Declares public enum `OpenWaitOutcome`.",
+    "Declares public fn `cancel`.",
+    "Declares public fn `is_cancelled`.",
+    "Declares public fn `report_open`.",
+    "Declares public fn `wait_for_completion`.",
+    "Declares public fn `wait_for_open`.",
+    "Declares public struct `OpenCancellation`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/open_lifecycle.rs",
@@ -539,7 +601,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::windows::open lifecycle responsibilities, including the src/capture/platform/windows/open lifecycle boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::platform::windows::open_lifecycle`."
   },
   "queues": [],
   "recovery_behavior": [],

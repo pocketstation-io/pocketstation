@@ -28,8 +28,8 @@
       "classification": "DIRECT",
       "content_hash": "d21d64a5b1242412f7d53ff305bd388e88ef0da13384e99686e6e271d38461b2",
       "lines": [
-        1,
-        7
+        2,
+        6
       ],
       "path": ".github/CODEOWNERS",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`.github/CODEOWNERS` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

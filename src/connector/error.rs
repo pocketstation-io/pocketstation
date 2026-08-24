@@ -54,16 +54,16 @@ impl fmt::Display for ConnectorErrorCode {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector error code error."]
+#[doc = "Classifies failures surfaced by connector error code operations."]
 pub enum ConnectorErrorCodeError {
     #[error("connector error code cannot be empty")]
     #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("connector error code exceeds the byte limit")]
-    #[doc = "Reports too long."]
+    #[doc = "Classifies a failure at the too long stage or component of `ConnectorErrorCodeError`."]
     TooLong,
     #[error("connector error code contains an invalid character")]
-    #[doc = "Reports invalid character."]
+    #[doc = "Reports that the supplied character is invalid."]
     InvalidCharacter,
 }
 
@@ -89,13 +89,13 @@ pub enum ConnectorErrorStage {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported connector retryability cases."]
+#[doc = "Declares whether a connector failure may be retried under the connector contract."]
 pub enum ConnectorRetryability {
-    #[doc = "Represents the never case of `ConnectorRetryability`."]
+    #[doc = "Declares a connector failure to be never."]
     Never,
-    #[doc = "Represents the retryable case of `ConnectorRetryability`."]
+    #[doc = "Declares a connector failure to be retryable."]
     Retryable,
-    #[doc = "Represents the retry after reconfiguration case of `ConnectorRetryability`."]
+    #[doc = "Declares a connector failure to be retry after reconfiguration."]
     RetryAfterReconfiguration,
 }
 
@@ -212,12 +212,12 @@ impl ConnectorError {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector error build error."]
+#[doc = "Classifies failures produced during connector error construction and input validation."]
 pub enum ConnectorErrorBuildError {
     #[error("connector error message cannot be empty")]
-    #[doc = "Reports empty message."]
+    #[doc = "Reports that message is empty."]
     EmptyMessage,
     #[error("connector error message exceeds the byte limit")]
-    #[doc = "Reports message too large."]
+    #[doc = "Reports that message exceeds the supported size limit."]
     MessageTooLarge,
 }

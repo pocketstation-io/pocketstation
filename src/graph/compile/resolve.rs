@@ -23,13 +23,13 @@ use crate::graph::spec::{
 const MONO_DOWNMIX_ADAPTER_TYPE: &str = "transform.mono_mix";
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as compile error."]
+#[doc = "Classifies failures surfaced by compile operations."]
 pub enum CompileError {
     #[error("unknown node type: {0}")]
-    #[doc = "Reports unknown node type."]
+    #[doc = "Reports that the referenced node type is not declared or registered."]
     UnknownNodeType(String),
     #[error("node {type_id} has invalid config: {reason}")]
-    #[doc = "Reports invalid config."]
+    #[doc = "Reports that the supplied config is invalid."]
     InvalidConfig {
         #[doc = "Identifies the type identifier recorded by `InvalidConfig`."]
         type_id: String,
@@ -37,40 +37,40 @@ pub enum CompileError {
         reason: String,
     },
     #[error("edge references unknown node {0}")]
-    #[doc = "Reports unknown node."]
+    #[doc = "Reports that the referenced node is not declared or registered."]
     UnknownNode(u32),
     #[error("node {node}: unknown port {port}")]
-    #[doc = "Reports unknown port."]
+    #[doc = "Reports that the referenced port is not declared or registered."]
     UnknownPort {
-        #[doc = "Stores the node used by `UnknownPort`."]
+        #[doc = "References the node participating in `UnknownPort`."]
         node: u32,
-        #[doc = "Stores the port used by `UnknownPort`."]
+        #[doc = "References the port participating in `UnknownPort`."]
         port: String,
     },
     #[error("node {node}: port {port} connected against its declared direction")]
-    #[doc = "Reports wrong port direction."]
+    #[doc = "Reports that port direction does not match the required identity or contract."]
     WrongPortDirection {
-        #[doc = "Stores the node used by `WrongPortDirection`."]
+        #[doc = "References the node participating in `WrongPortDirection`."]
         node: u32,
-        #[doc = "Stores the port used by `WrongPortDirection`."]
+        #[doc = "References the port participating in `WrongPortDirection`."]
         port: String,
     },
     #[error("node {node}: input port {port} fans in clock domains {expected:?} and {found:?} without a clock adapter")]
-    #[doc = "Reports clock domain mismatch."]
+    #[doc = "Reports that clock domain does not match the expected contract."]
     ClockDomainMismatch {
-        #[doc = "Stores the node used by `ClockDomainMismatch`."]
+        #[doc = "References the node participating in `ClockDomainMismatch`."]
         node: u32,
-        #[doc = "Stores the port used by `ClockDomainMismatch`."]
+        #[doc = "References the port participating in `ClockDomainMismatch`."]
         port: String,
         #[doc = "Records the value expected by `ClockDomainMismatch`."]
         expected: ClockDomain,
-        #[doc = "Stores the found used by `ClockDomainMismatch`."]
+        #[doc = "Stores the found as a `ClockDomain` value in `ClockDomainMismatch`."]
         found: ClockDomain,
     },
     #[error("edge {edge}: media {from} incompatible with {to}")]
-    #[doc = "Reports media mismatch."]
+    #[doc = "Reports that media does not match the expected contract."]
     MediaMismatch {
-        #[doc = "Stores the edge used by `MediaMismatch`."]
+        #[doc = "References the edge participating in `MediaMismatch`."]
         edge: u32,
         #[doc = "Identifies the origin represented by `MediaMismatch`."]
         from: String,
@@ -78,9 +78,9 @@ pub enum CompileError {
         to: String,
     },
     #[error("edge {edge}: signal {from} incompatible with {to}")]
-    #[doc = "Reports signal mismatch."]
+    #[doc = "Reports that signal does not match the expected contract."]
     SignalMismatch {
-        #[doc = "Stores the edge used by `SignalMismatch`."]
+        #[doc = "References the edge participating in `SignalMismatch`."]
         edge: u32,
         #[doc = "Identifies the origin represented by `SignalMismatch`."]
         from: String,
@@ -90,32 +90,32 @@ pub enum CompileError {
     #[error(
         "node {node} ({type_id}) safety {safety:?} is incompatible with partition {execution:?}"
     )]
-    #[doc = "Reports invalid safety contract."]
+    #[doc = "Reports that the supplied safety contract is invalid."]
     InvalidSafetyContract {
-        #[doc = "Stores the node used by `InvalidSafetyContract`."]
+        #[doc = "References the node participating in `InvalidSafetyContract`."]
         node: u32,
         #[doc = "Identifies the type identifier recorded by `InvalidSafetyContract`."]
         type_id: String,
-        #[doc = "Stores the execution used by `InvalidSafetyContract`."]
+        #[doc = "Records the execution selected for `InvalidSafetyContract`."]
         execution: crate::graph::partition::ExecutionPartition,
-        #[doc = "Stores the safety used by `InvalidSafetyContract`."]
+        #[doc = "Stores the safety as a `SafetyContract` value in `InvalidSafetyContract`."]
         safety: crate::graph::partition::SafetyContract,
     },
     #[error("edge {edge}: invalid realtime boundary: {reason}")]
-    #[doc = "Reports invalid realtime edge."]
+    #[doc = "Reports that the supplied realtime edge is invalid."]
     InvalidRealtimeEdge {
-        #[doc = "Stores the edge used by `InvalidRealtimeEdge`."]
+        #[doc = "References the edge participating in `InvalidRealtimeEdge`."]
         edge: u32,
         #[doc = "Carries the reason reported by `InvalidRealtimeEdge`."]
         reason: String,
     },
     #[error("graph contains a cycle")]
-    #[doc = "Reports cycle detected."]
+    #[doc = "Reports that the declared graph contains a dependency cycle."]
     CycleDetected,
     #[error("edge {edge} needs adapter {type_id} but it is not registered")]
-    #[doc = "Reports adapter unavailable."]
+    #[doc = "Reports that adapter is unavailable."]
     AdapterUnavailable {
-        #[doc = "Stores the edge used by `AdapterUnavailable`."]
+        #[doc = "References the edge participating in `AdapterUnavailable`."]
         edge: u32,
         #[doc = "Identifies the type identifier recorded by `AdapterUnavailable`."]
         type_id: String,

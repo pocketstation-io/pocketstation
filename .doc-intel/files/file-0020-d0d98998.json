@@ -150,7 +150,7 @@
       "content_hash": "6ec7c12a1aaed4ca4d5e03e84a48a381594053361d5a9316bc1eb2cbe44a865e",
       "lines": [
         1,
-        118
+        21
       ],
       "path": "build.rs",
       "symbol": null
@@ -192,18 +192,21 @@
     "std::path::PathBuf"
   ],
   "inputs": [
-    "#[cfg(target_os = \"macos\")]",
-    "CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT",
-    "CARGO_FEATURE_NATIVE_CAPTURE",
-    "CARGO_MANIFEST_DIR",
-    "OUT_DIR",
-    "SDKROOT",
-    "if std::env::var_os(\"CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT\").is_some() {",
-    "if std::env::var_os(\"CARGO_FEATURE_NATIVE_CAPTURE\").is_some() {",
-    "let manifest = PathBuf::from(std::env::var(\"CARGO_MANIFEST_DIR\").expect(\"manifest dir\"));",
-    "let out_dir = PathBuf::from(std::env::var(\"OUT_DIR\").expect(\"OUT_DIR\"));",
-    "let sdk = std::env::var(\"SDKROOT\").unwrap_or_else(|_| {",
-    "std::path::PathBuf"
+    "Consumes configuration at build.rs:13.",
+    "Consumes configuration at build.rs:17.",
+    "Consumes configuration at build.rs:2.",
+    "Consumes configuration at build.rs:4.",
+    "Consumes configuration at build.rs:55.",
+    "Consumes configuration at build.rs:59.",
+    "Consumes configuration at build.rs:60.",
+    "Consumes configuration at build.rs:69.",
+    "Consumes configuration at build.rs:7.",
+    "Depends on `std::path::PathBuf` through a declared Rust import.",
+    "Reads process environment variable `CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT`.",
+    "Reads process environment variable `CARGO_FEATURE_NATIVE_CAPTURE`.",
+    "Reads process environment variable `CARGO_MANIFEST_DIR`.",
+    "Reads process environment variable `OUT_DIR`.",
+    "Reads process environment variable `SDKROOT`."
   ],
   "invariants": [
     {
@@ -217,7 +220,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`build.rs` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

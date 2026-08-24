@@ -1,6 +1,6 @@
 # Runtime planner
 
-<!-- claims: CLM-DOC-049-CAP-001,CLM-DOC-049-CAP-002,CLM-DOC-049-SOURCE-001 -->
+<!-- claims: CLM-DOC-049-SCOPE-001,CLM-DOC-049-TEXT-001,CLM-DOC-049-TEXT-002,CLM-DOC-049-TEXT-003,CLM-DOC-049-TEXT-004,CLM-DOC-049-SOURCE-001 -->
 
 ## Scope
 
@@ -28,7 +28,7 @@ The scope of **Runtime planner** ends at the native contracts and executable con
 | `pocketstation::session::prepare::mappings::PreparedSourceMapping` | struct | Correlates the prepared identities and runtime resources for prepared source. | `src/session/prepare/mappings.rs:18` |
 | `pocketstation::session::prepare::mappings::PreparedWorkerMapping` | struct | Correlates the prepared identities and runtime resources for prepared worker. | `src/session/prepare/mappings.rs:35` |
 | `pocketstation::session::prepare::prepared::PreparedSession` | struct | Setup-time ownership for one compiled Session. | `src/session/prepare/prepared.rs:18` |
-| `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures reported as compile error. | `src/graph/compile/resolve.rs:26` |
+| `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures surfaced by compile operations. | `src/graph/compile/resolve.rs:26` |
 | `cancellation_requested` | function | Returns whether cancellation requested is true for `PreparedSession`. | `src/session/prepare/prepared.rs:73` |
 | `compile` | function | Compiles its owned operation for `Compiler`. | `src/graph/compile/resolve.rs:464` |
 | `compile` | function | Compiles its owned operation for `SessionCompiler`. | `src/session/compile/mod.rs:103` |
@@ -112,7 +112,7 @@ Executable evidence selected for **Runtime planner** is limited to each test's r
 
 The claims on **Runtime planner** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/graph/compile/plan.rs:1-860` (`DIRECT`)
-- `src/session/compile/compiled.rs:1-107` (`DIRECT`)
+- `src/graph/compile/plan.rs:1-4` (`DECLARED`)
+- `src/session/compile/compiled.rs:1-1` (`DECLARED`)
 
 For **Runtime planner**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

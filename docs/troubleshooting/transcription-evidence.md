@@ -1,6 +1,6 @@
 # Transcription process evidence is missing
 
-<!-- claims: CLM-TRBL-014-CAP-001,CLM-TRBL-014-CAP-002,CLM-TRBL-014-SOURCE-001 -->
+<!-- claims: CLM-TRBL-014-SCOPE-001,CLM-TRBL-014-TEXT-001,CLM-TRBL-014-TEXT-002,CLM-TRBL-014-TEXT-003,CLM-TRBL-014-TEXT-004,CLM-TRBL-014-TEXT-005,CLM-TRBL-014-TEXT-006,CLM-TRBL-014-SOURCE-001 -->
 
 ## Symptom
 
@@ -64,6 +64,6 @@ Do not treat a compile-only rerun as execution evidence. Capture or process outp
 
 The claims on **Transcription process evidence is missing** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/whisper-transcribe/src/process_evidence.rs:1-211` (`DIRECT`)
+- `examples/whisper-transcribe/src/process_evidence.rs:1-21` (`DIRECT`)
 
 For **Transcription process evidence is missing**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

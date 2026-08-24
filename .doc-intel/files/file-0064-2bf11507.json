@@ -33,8 +33,8 @@
       "classification": "DIRECT",
       "content_hash": "45c3168af834a7e6f37cb3d1d32f0f5aa126eaa01e68b2eead311e10bee06bf0",
       "lines": [
-        1,
-        52
+        2,
+        22
       ],
       "path": "scripts/test-session-c-conformance.sh",
       "symbol": null
@@ -61,7 +61,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "--features conformance-fixtures \\"
+    "Consumes configuration at scripts/test-session-c-conformance.sh:14."
   ],
   "invariants": [],
   "language": "Shell",
@@ -70,7 +70,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/test-session-c-conformance.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

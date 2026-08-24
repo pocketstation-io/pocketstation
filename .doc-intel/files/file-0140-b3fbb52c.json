@@ -255,14 +255,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "e21e823ab1837692170db0e567a3b15b5f7b24c38ac0d48cf49e875ac32a9a3f",
       "lines": [
         1,
-        101
+        1
       ],
       "path": "src/frame/lineage.rs",
-      "symbol": null
+      "symbol": "pocketstation::frame::lineage"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -323,7 +323,7 @@
     "crate::frame::{ClockDomainId, SessionId, SourceId, StemId}"
   ],
   "inputs": [
-    "crate::frame::{ClockDomainId, SessionId, SourceId, StemId}"
+    "Depends on `crate::frame::{ClockDomainId, SessionId, SourceId, StemId}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -341,29 +341,29 @@
   "module": "pocketstation::frame::lineage",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::frame::lineage` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-2d286b9960d2b063cf36",
     "pattern-503fc1d95fe068d3ac6f"
   ],
   "outputs": [
-    "enum:FrameLineageBuildError",
-    "fn:clock_id",
-    "fn:discontinuity_epoch",
-    "fn:duration_ns",
-    "fn:permission_epoch",
-    "fn:sequence_number",
-    "fn:session_id",
-    "fn:source_generation",
-    "fn:source_id",
-    "fn:stem_id",
-    "fn:timestamp_end_ns",
-    "fn:timestamp_start_ns",
-    "fn:try_new",
-    "return Err(FrameLineageBuildError::ZeroDuration);",
-    "return Err(FrameLineageBuildError::ZeroSourceGeneration);",
-    "struct:FrameLineage"
+    "Creates a typed failure at src/frame/lineage.rs:34.",
+    "Creates a typed failure at src/frame/lineage.rs:37.",
+    "Declares public enum `FrameLineageBuildError`.",
+    "Declares public fn `clock_id`.",
+    "Declares public fn `discontinuity_epoch`.",
+    "Declares public fn `duration_ns`.",
+    "Declares public fn `permission_epoch`.",
+    "Declares public fn `sequence_number`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `source_generation`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `stem_id`.",
+    "Declares public fn `timestamp_end_ns`.",
+    "Declares public fn `timestamp_start_ns`.",
+    "Declares public fn `try_new`.",
+    "Declares public struct `FrameLineage`."
   ],
   "package": "pocketstation",
   "path": "src/frame/lineage.rs",
@@ -463,8 +463,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::frame::lineage responsibilities, including Compact source-aware lineage carried on realtime audio frames.; Preserves source, stream, sequence, clock, generation, and discontinuity identity for an audio frame.; Creates a new `FrameLineage` after validating its inputs.."
+    "classification": "DECLARED",
+    "text": "Compact source-aware lineage carried on realtime audio frames."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -515,10 +515,10 @@
     "discontinuity_epoch: Returns the discontinuity epoch associated with `FrameLineage`.",
     "permission_epoch: Returns the permission epoch held by `FrameLineage`.",
     "timestamp_end_ns: Returns the timestamp end nanoseconds held by `FrameLineage`.",
-    "pocketstation::frame::lineage::FrameLineageBuildError: Classifies failures reported as frame lineage build error.",
-    "pocketstation::frame::lineage::FrameLineageBuildError::ZeroDuration: Reported when the owning operation encounters zero duration.",
-    "pocketstation::frame::lineage::FrameLineageBuildError::ZeroSourceGeneration: Reported when the owning operation encounters zero source generation.",
-    "pocketstation::frame::lineage::FrameLineageBuildError::TimestampOverflow: Reported when the owning operation encounters timestamp overflow."
+    "pocketstation::frame::lineage::FrameLineageBuildError: Classifies failures produced during frame lineage construction and input validation.",
+    "pocketstation::frame::lineage::FrameLineageBuildError::ZeroDuration: Reports that duration must be greater than zero.",
+    "pocketstation::frame::lineage::FrameLineageBuildError::ZeroSourceGeneration: Reports that source generation must be greater than zero.",
+    "pocketstation::frame::lineage::FrameLineageBuildError::TimestampOverflow: Reports that timestamp exceeds its numeric range."
   ],
   "retry_behavior": [],
   "serialization": [],

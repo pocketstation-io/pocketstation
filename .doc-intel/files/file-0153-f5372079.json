@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -136,6 +139,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -787,16 +793,249 @@
       "classification": "DIRECT",
       "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
       "lines": [
-        1,
-        411
+        12,
+        12
       ],
       "path": "src/graph/node.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "NodeTypeId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        16,
+        18
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "as_str"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        25,
+        27
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "is_well_formed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        31,
+        33
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        37,
+        39
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "from"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        43,
+        45
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "NodeConfig"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        44,
+        44
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "values"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        47,
+        47
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        48,
+        51
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "NodeConfigValue"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "value"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        50,
+        50
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "sensitive"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        54,
+        58
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "drop"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        62,
+        64
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        66,
+        75
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "with"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        81,
+        90
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "with_sensitive"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        92,
+        94
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "get"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        96,
+        98
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": "is_sensitive"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -850,6 +1089,9 @@
   "generated_from": "not_applicable",
   "git_object": "65b92e255ffaf2f67498962ee16ae6e5dc3d851c",
   "implemented_by": [
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -902,6 +1144,9 @@
     "PortPrepareContext"
   ],
   "imported_by": [
+    "CALLS:src/graph/builtins.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -953,18 +1198,18 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "Config(#[from] ConfigError),",
-    "crate::frame::SampleSpec",
-    "crate::graph::EdgeId",
-    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
-    "crate::graph::ports::{EdgeContract, MediaCaps, PortDirection, PortSpec}",
-    "crate::graph::signal::SignalSpec",
-    "pub enum ConfigError {",
-    "std::collections::HashMap",
-    "std::fmt",
-    "std::sync::Arc",
-    "super::*"
+    "Consumes configuration at src/graph/node.rs:141.",
+    "Consumes configuration at src/graph/node.rs:161.",
+    "Consumes configuration at src/graph/node.rs:366.",
+    "Depends on `crate::frame::SampleSpec` through a declared Rust import.",
+    "Depends on `crate::graph::EdgeId` through a declared Rust import.",
+    "Depends on `crate::graph::partition::{ExecutionPartition, SafetyContract}` through a declared Rust import.",
+    "Depends on `crate::graph::ports::{EdgeContract, MediaCaps, PortDirection, PortSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::signal::SignalSpec` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -994,46 +1239,48 @@
   "module": "pocketstation::graph::node",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::node` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-5809ef0408789597b842"
   ],
   "outputs": [
-    "enum:ConfigError",
-    "enum:NodeDescriptorError",
-    "enum:NodeError",
-    "fn:as_str",
-    "fn:display_name",
-    "fn:edge_id",
-    "fn:execution",
-    "fn:get",
-    "fn:get_f32",
-    "fn:get_u32",
-    "fn:inputs",
-    "fn:is_sensitive",
-    "fn:is_stateful",
-    "fn:is_well_formed",
-    "fn:iter",
-    "fn:new",
-    "fn:outputs",
-    "fn:port_name",
-    "fn:safety",
-    "fn:type_id",
-    "fn:with",
-    "fn:with_sensitive",
-    "return Err(NodeDescriptorError::DuplicatePort);",
-    "return Err(NodeDescriptorError::EmptyDisplayName);",
-    "return Err(NodeDescriptorError::EmptyTypeId);",
-    "return Err(NodeDescriptorError::InvalidSafetyContract);",
-    "return Err(NodeDescriptorError::PortDirectionMismatch);",
-    "return Err(NodeError::Prepare(",
-    "return Err(NodeError::Prepare(format!(",
-    "struct:NodeConfig",
-    "struct:NodeDescriptor",
-    "struct:NodeTypeId",
-    "struct:PortPrepareContext",
-    "struct:PrepareContext"
+    "Creates a typed failure at src/graph/node.rs:186.",
+    "Creates a typed failure at src/graph/node.rs:189.",
+    "Creates a typed failure at src/graph/node.rs:192.",
+    "Creates a typed failure at src/graph/node.rs:201.",
+    "Creates a typed failure at src/graph/node.rs:209.",
+    "Creates a typed failure at src/graph/node.rs:304.",
+    "Creates a typed failure at src/graph/node.rs:309.",
+    "Creates a typed failure at src/graph/node.rs:317.",
+    "Creates a typed failure at src/graph/node.rs:322.",
+    "Declares public enum `ConfigError`.",
+    "Declares public enum `NodeDescriptorError`.",
+    "Declares public enum `NodeError`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `display_name`.",
+    "Declares public fn `edge_id`.",
+    "Declares public fn `execution`.",
+    "Declares public fn `get_f32`.",
+    "Declares public fn `get_u32`.",
+    "Declares public fn `get`.",
+    "Declares public fn `inputs`.",
+    "Declares public fn `is_sensitive`.",
+    "Declares public fn `is_stateful`.",
+    "Declares public fn `is_well_formed`.",
+    "Declares public fn `iter`.",
+    "Declares public fn `new`.",
+    "Declares public fn `outputs`.",
+    "Declares public fn `port_name`.",
+    "Declares public fn `safety`.",
+    "Declares public fn `type_id`.",
+    "Declares public fn `with_sensitive`.",
+    "Declares public fn `with`.",
+    "Declares public struct `NodeConfig`.",
+    "Declares public struct `NodeDescriptor`.",
+    "Declares public struct `NodeTypeId`.",
+    "Declares public struct `PortPrepareContext`.",
+    "Declares public struct `PrepareContext`."
   ],
   "package": "pocketstation",
   "path": "src/graph/node.rs",
@@ -1344,8 +1591,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::node responsibilities, including Uniquely identifies node type within its PocketStation ownership scope.; Returns the stable string representation of `NodeTypeId`.; Reports whether this value follows the portable node-type syntax.."
+    "classification": "DECLARED",
+    "text": "Uniquely identifies node type within its PocketStation ownership scope. Returns the stable string representation of `NodeTypeId`. Reports whether this value follows the portable node-type syntax."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1384,6 +1631,15 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/graph/identifier.rs",
+    "CALLS:src/graph/partition.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/secret.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "REFERENCES:src/frame/audio.rs",
     "REFERENCES:src/graph/partition.rs",
     "REFERENCES:src/graph/ports.rs",
@@ -1419,25 +1675,25 @@
     "with: Returns `NodeConfig` with the supplied entry applied.",
     "with_sensitive: Adds a setup-time value whose normal debug representation is redacted.",
     "get: Returns the value held by `NodeConfig`.",
-    "is_sensitive: Returns whether sensitive applies to `NodeConfig`.",
+    "is_sensitive: Reports whether sensitive is true for `NodeConfig`.",
     "get_f32: Returns the get f32 associated with `NodeConfig`.",
     "get_u32: Returns the get u32 associated with `NodeConfig`.",
     "iter: Iterates over the values held by `NodeConfig`.",
     "fmt: Formats `NodeConfig` with the requested formatter.",
-    "pocketstation::graph::node::ConfigError: Classifies failures reported as config error.",
-    "pocketstation::graph::node::ConfigError::Missing: Reported when the owning operation encounters missing.",
-    "ConfigError::Invalid::key: Stores the key used by `Invalid`.",
+    "pocketstation::graph::node::ConfigError: Classifies failures surfaced by config operations.",
+    "pocketstation::graph::node::ConfigError::Missing: Reports that a required value is missing.",
+    "ConfigError::Invalid::key: Stores the key text reported by `Invalid`.",
     "ConfigError::Invalid::reason: Carries the reason reported by `Invalid`.",
-    "pocketstation::graph::node::ConfigError::Invalid: Reported when the owning operation encounters invalid.",
-    "pocketstation::graph::node::NodeError: Classifies failures reported as node error.",
-    "pocketstation::graph::node::NodeError::Prepare: Reported when the owning operation encounters prepare.",
-    "pocketstation::graph::node::NodeError::Process: Reported when the owning operation encounters process.",
+    "pocketstation::graph::node::ConfigError::Invalid: Reports that validation rejected the supplied value.",
+    "pocketstation::graph::node::NodeError: Classifies failures surfaced by node operations.",
+    "pocketstation::graph::node::NodeError::Prepare: Classifies a failure at the prepare stage or component of `NodeError`.",
+    "pocketstation::graph::node::NodeError::Process: Classifies a failure at the process stage or component of `NodeError`.",
     "NodeError::ProcessTimeout::timeout_ms: Stores the timeout value for `ProcessTimeout`, in milliseconds.",
-    "pocketstation::graph::node::NodeError::ProcessTimeout: Reported when the owning operation encounters process timeout.",
+    "pocketstation::graph::node::NodeError::ProcessTimeout: Reports that process exceeded its deadline.",
     "NodeError::ExternalBoundaryExecution::node_type_id: Identifies the node type identifier recorded by `ExternalBoundaryExecution`.",
-    "pocketstation::graph::node::NodeError::ExternalBoundaryExecution: Reported when the owning operation encounters external boundary execution.",
-    "pocketstation::graph::node::NodeError::Config: Reported when the owning operation encounters config.",
-    "pocketstation::graph::node::NodeDescriptor: Describes the node descriptor contract.",
+    "pocketstation::graph::node::NodeError::ExternalBoundaryExecution: Classifies a failure at the external boundary execution stage or component of `NodeError`.",
+    "pocketstation::graph::node::NodeError::Config: Classifies a failure at the config stage or component of `NodeError`.",
+    "pocketstation::graph::node::NodeDescriptor: Declares a graph node's stable type identity, ports, execution partition, and safety contract.",
     "new: Creates a new `NodeDescriptor`.",
     "type_id: Returns the type identifier held by `NodeDescriptor`.",
     "display_name: Returns the display name held by `NodeDescriptor`.",
@@ -1445,15 +1701,15 @@
     "outputs: Returns the outputs associated with `NodeDescriptor`.",
     "execution: Returns the execution held by `NodeDescriptor`.",
     "safety: Returns the safety held by `NodeDescriptor`.",
-    "is_stateful: Returns whether stateful applies to `NodeDescriptor`.",
-    "pocketstation::graph::node::NodeDescriptorError: Classifies failures reported as node descriptor error.",
-    "pocketstation::graph::node::NodeDescriptorError::EmptyTypeId: Reported when the owning operation encounters empty type identifier.",
-    "pocketstation::graph::node::NodeDescriptorError::EmptyDisplayName: Reported when the owning operation encounters empty display name.",
-    "pocketstation::graph::node::NodeDescriptorError::InvalidSafetyContract: Reported when the owning operation encounters invalid safety contract.",
-    "pocketstation::graph::node::NodeDescriptorError::PortDirectionMismatch: Reported when the owning operation encounters port direction mismatch.",
-    "pocketstation::graph::node::NodeDescriptorError::DuplicatePort: Reported when the owning operation encounters duplicate port.",
+    "is_stateful: Reports whether stateful is true for `NodeDescriptor`.",
+    "pocketstation::graph::node::NodeDescriptorError: Classifies failures surfaced by node descriptor operations.",
+    "pocketstation::graph::node::NodeDescriptorError::EmptyTypeId: Reports that type identifier is empty.",
+    "pocketstation::graph::node::NodeDescriptorError::EmptyDisplayName: Reports that display name is empty.",
+    "pocketstation::graph::node::NodeDescriptorError::InvalidSafetyContract: Reports that the supplied safety contract is invalid.",
+    "pocketstation::graph::node::NodeDescriptorError::PortDirectionMismatch: Reports that port direction does not match the expected contract.",
+    "pocketstation::graph::node::NodeDescriptorError::DuplicatePort: Reports that port duplicates an existing declaration or record.",
     "pocketstation::graph::node::PrepareContext: Carries the inputs and runtime context required to prepare.",
-    "PrepareContext::sample_spec: Stores the sample spec used by `PrepareContext`.",
+    "PrepareContext::sample_spec: Declares the sample rate, channel layout, and format used by `PrepareContext`.",
     "new: Creates a new `PrepareContext`.",
     "pocketstation::graph::node::PortPrepareContext: Exact graph-owned contract for one prepared node port.",
     "new: Creates a new `PortPrepareContext`.",

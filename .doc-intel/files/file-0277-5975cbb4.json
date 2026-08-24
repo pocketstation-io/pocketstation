@@ -35,8 +35,8 @@
       "classification": "DIRECT",
       "content_hash": "3e4fecc49f11cef9e51cceb3e9da431338841ced198e2970327dbd4477998ac1",
       "lines": [
-        1,
-        59
+        7,
+        27
       ],
       "path": "tools/abi-layout-probe.c",
       "symbol": null
@@ -72,7 +72,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`tools/abi-layout-probe.c` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

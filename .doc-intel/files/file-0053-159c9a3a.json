@@ -28,8 +28,8 @@
       "classification": "DIRECT",
       "content_hash": "a2d4eef5a83b946dd52dec4f99dba16819d98bb322a40d3472f5ee3de8e11bf4",
       "lines": [
-        1,
-        8
+        7,
+        7
       ],
       "path": "proptest-regressions/planner.txt",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`proptest-regressions/planner.txt` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

@@ -31,8 +31,8 @@
       "classification": "DIRECT",
       "content_hash": "d7b13f748496a9c45decb1c1a92033e3c8abade17c2479646222152eefddb18d",
       "lines": [
-        1,
-        35
+        2,
+        22
       ],
       "path": "scripts/check_builtin_lowering_boundary.sh",
       "symbol": null
@@ -68,7 +68,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/check_builtin_lowering_boundary.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

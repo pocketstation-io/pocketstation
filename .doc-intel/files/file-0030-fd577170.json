@@ -170,7 +170,7 @@
       "content_hash": "575948ebeab30978b34666d5681268602bdcbd17356d1b0013c08b943272a54d",
       "lines": [
         1,
-        167
+        21
       ],
       "path": "examples/connector_authoring.rs",
       "symbol": null
@@ -208,12 +208,12 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "CARGO_PKG_VERSION",
-    "pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRetryability, ConnectorSecret, }",
-    "pocketstation::{ ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, Session, SignalSpec, Source, }",
-    "std::error::Error",
-    "std::sync::Arc",
-    "std::time::Duration"
+    "Depends on `pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRetryability, ConnectorSecret, }` through a declared Rust import.",
+    "Depends on `pocketstation::{ ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, Session, SignalSpec, Source, }` through a declared Rust import.",
+    "Depends on `std::error::Error` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Reads process environment variable `CARGO_PKG_VERSION`."
   ],
   "invariants": [],
   "language": "Rust",
@@ -227,13 +227,13 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/connector_authoring.rs` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [
     "pattern-6e31e7a838ec8f9bc6b1"
   ],
   "outputs": [
-    "return Err(connector_error("
+    "Creates a typed failure at examples/connector_authoring.rs:33."
   ],
   "package": "pocketstation",
   "path": "examples/connector_authoring.rs",

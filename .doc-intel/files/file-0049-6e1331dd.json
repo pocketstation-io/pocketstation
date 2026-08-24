@@ -51,7 +51,7 @@
       "content_hash": "a20351b242cbea9ee2285b6955f1e9ff15b9e6390ac48322c17e9060f58cfb35",
       "lines": [
         1,
-        183
+        21
       ],
       "path": "native/macos/asp/shm_reader.c",
       "symbol": null
@@ -97,7 +97,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/shm_reader.c` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [],
   "outputs": [

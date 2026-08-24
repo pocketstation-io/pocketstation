@@ -44,11 +44,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "2ed460648a7e822008746b0b6a15e2002a6ead331e2c3d4b382ee13dd6bb2aa0",
       "lines": [
         1,
-        47
+        9
       ],
       "path": "native/macos/asp/README.md",
       "symbol": null
@@ -89,8 +89,8 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "There is no legacy `asp` Cargo feature and no compiled fallback stub. The SDK never",
-    "cargo build --release --features macos-asp-driver-artifact"
+    "Consumes configuration at native/macos/asp/README.md:17.",
+    "Consumes configuration at native/macos/asp/README.md:25."
   ],
   "invariants": [
     {
@@ -104,7 +104,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/README.md` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [],
   "outputs": [

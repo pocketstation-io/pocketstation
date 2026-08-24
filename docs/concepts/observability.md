@@ -1,6 +1,6 @@
 # Observations and metrics
 
-<!-- claims: CLM-DOC-030-CAP-001,CLM-DOC-030-SOURCE-001 -->
+<!-- claims: CLM-DOC-030-SCOPE-001,CLM-DOC-030-TEXT-001,CLM-DOC-030-TEXT-002,CLM-DOC-030-TEXT-003,CLM-DOC-030-TEXT-004,CLM-DOC-030-TEXT-005,CLM-DOC-030-TEXT-006,CLM-DOC-030-SOURCE-001 -->
 
 ## What it is
 
@@ -55,7 +55,7 @@ The scope of **Observations and metrics** ends at the native contracts and execu
 | `pocketstation::session::lifecycle::observations::SessionRouteMetrics` | struct | Reports the session route metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:139` |
 | `pocketstation::session::lifecycle::observations::SessionSidecarMetrics` | struct | Exact bounded-queue and process-lifecycle accounting for one Session-owned language-neutral sidecar. | `src/session/lifecycle/observations.rs:133` |
 | `pocketstation::session::lifecycle::observations::SessionSourceMetrics` | struct | Reports the session source metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:117` |
-| `pocketstation::runtime::signal::observations::AsyncOperatorObservationHandle` | struct | Owns bounded access to async operator observation. | `src/runtime/signal/observations.rs:47` |
+| `pocketstation::runtime::signal::observations::AsyncOperatorObservationHandle` | struct | Holds the ownership or bounded access represented by async operator observation handle. | `src/runtime/signal/observations.rs:47` |
 
 ## Executable evidence
 
@@ -89,6 +89,29 @@ Executable evidence selected for **Observations and metrics** is limited to each
 
 The claims on **Observations and metrics** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:17-29` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:19-19` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:25-25` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:27-27` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:36-44` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:39-39` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:40-40` (`DIRECT`)
+- `src/session/lifecycle/observations.rs:41-41` (`DIRECT`)
 
 For **Observations and metrics**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

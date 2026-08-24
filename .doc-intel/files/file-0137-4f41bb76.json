@@ -111,11 +111,31 @@
       "classification": "DIRECT",
       "content_hash": "7ef92ffc12af6a5b37cd5134b682686c90ffed0feeada61787c5e3e631ce14ff",
       "lines": [
-        1,
-        81
+        5,
+        11
       ],
       "path": "src/error_code.rs",
-      "symbol": null
+      "symbol": "code"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ef92ffc12af6a5b37cd5134b682686c90ffed0feeada61787c5e3e631ce14ff",
+      "lines": [
+        15,
+        24
+      ],
+      "path": "src/error_code.rs",
+      "symbol": "code"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ef92ffc12af6a5b37cd5134b682686c90ffed0feeada61787c5e3e631ce14ff",
+      "lines": [
+        26,
+        28
+      ],
+      "path": "src/error_code.rs",
+      "symbol": "failure_codes"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -156,11 +176,11 @@
     "crate::{SessionRuntimeError, SessionStopDisposition, SessionStopResult}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::session::{ SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, }",
-    "crate::session::{SessionStopCode, SessionStopFailureCode}",
-    "crate::{SessionError, SessionRuntimeError, SessionStartError}",
-    "crate::{SessionRuntimeError, SessionStopDisposition, SessionStopResult}"
+    "Consumes configuration at src/error_code.rs:31.",
+    "Depends on `crate::session::{ SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, }` through a declared Rust import.",
+    "Depends on `crate::session::{SessionStopCode, SessionStopFailureCode}` through a declared Rust import.",
+    "Depends on `crate::{SessionError, SessionRuntimeError, SessionStartError}` through a declared Rust import.",
+    "Depends on `crate::{SessionRuntimeError, SessionStopDisposition, SessionStopResult}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -169,12 +189,12 @@
   "module": "pocketstation::error_code",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::error_code` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:code",
-    "fn:failure_codes"
+    "Declares public fn `code`.",
+    "Declares public fn `failure_codes`."
   ],
   "package": "pocketstation",
   "path": "src/error_code.rs",
@@ -227,8 +247,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::error code responsibilities, including Returns the stable error or status code represented by `SessionRuntimeError`.; Returns the stable error or status code represented by `SessionStopResult`.; Returns the failure codes associated with `SessionStopResult`.."
+    "classification": "DECLARED",
+    "text": "Returns the stable error or status code represented by `SessionRuntimeError`. Returns the stable error or status code represented by `SessionStopResult`. Returns the failure codes associated with `SessionStopResult`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -249,6 +269,7 @@
     "docs/reference/lifecycle-evidence.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/session/error_code.rs",
     "REFERENCES:src/session/error_code.rs"
   ],
   "resource_ownership": [

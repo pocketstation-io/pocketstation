@@ -41,8 +41,8 @@
       "classification": "DIRECT",
       "content_hash": "3e38cc96c81a84579dd29de1a408b7a9c44667f059b2d5998c3972bd109b03df",
       "lines": [
-        1,
-        89
+        9,
+        29
       ],
       "path": "tests/abi_session_c_metrics_canary.c",
       "symbol": null
@@ -92,7 +92,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/abi_session_c_metrics_canary.c` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

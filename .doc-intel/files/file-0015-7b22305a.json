@@ -100,14 +100,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "8e79e70322ae79945bd2e82e6a45a8298f752a09d46d1326182a3dd59f28c27e",
       "lines": [
         1,
-        154
+        8
       ],
       "path": "benches/opus_encode.rs",
-      "symbol": null
+      "symbol": "not_applicable"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -135,9 +135,9 @@
     "pocketstation::internal::codec::{ OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate, }"
   ],
   "inputs": [
-    "criterion::{criterion_group, criterion_main, BenchmarkId, Criterion}",
-    "opus::{Application, Channels}",
-    "pocketstation::internal::codec::{ OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate, }"
+    "Depends on `criterion::{criterion_group, criterion_main, BenchmarkId, Criterion}` through a declared Rust import.",
+    "Depends on `opus::{Application, Channels}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::codec::{ OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate, }` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -151,7 +151,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/opus_encode.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -201,8 +201,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/opus encode boundary."
+    "classification": "DECLARED",
+    "text": "Measures opus encode by repeatedly exercising BenchmarkId::new, OpusEncoder::from_config, Vec::with_capacity, bench_function."
   },
   "queues": [],
   "recovery_behavior": [],

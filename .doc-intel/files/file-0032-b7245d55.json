@@ -29,7 +29,7 @@
       "content_hash": "8e67f5c14f4099510a62cb528cf3d081b5ba0ce89ff7912d20922e19c5dfc8c2",
       "lines": [
         1,
-        14
+        13
       ],
       "path": "examples/operator-consumer/Cargo.toml",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/operator-consumer/Cargo.toml` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [],
   "outputs": [

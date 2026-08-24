@@ -71,7 +71,7 @@ impl SessionEngineHost {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
-    #[doc = "Starts compiled for `SessionEngineHost`."]
+    #[doc = "Starts a previously compiled Session through `SessionEngineHost`."]
     pub fn start_compiled(
         &self,
         compiled: CompiledSession,
@@ -174,13 +174,13 @@ impl SessionEngineHost {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Configures native session engine host behavior at its owning API boundary."]
 pub struct NativeSessionEngineHostOptions {
-    #[doc = "Stores the sample spec used by `NativeSessionEngineHostOptions`."]
+    #[doc = "Declares the sample rate, channel layout, and format used by `NativeSessionEngineHostOptions`."]
     pub sample_spec: SampleSpec,
     #[doc = "Sets the source queue capacity frames available to `NativeSessionEngineHostOptions`."]
     pub source_queue_capacity_frames: usize,
-    #[doc = "Stores the start options used by `NativeSessionEngineHostOptions`."]
+    #[doc = "Contains the start options owned or reported by `NativeSessionEngineHostOptions`."]
     pub start_options: SessionStartOptions,
-    #[doc = "Stores the polled audio endpoint used by `NativeSessionEngineHostOptions`."]
+    #[doc = "References the polled audio endpoint participating in `NativeSessionEngineHostOptions`."]
     pub polled_audio_endpoint: PolledAudioEndpointConfig,
 }
 
@@ -312,7 +312,7 @@ impl SessionEngineHostBuilder {
         Ok(self)
     }
 
-    #[doc = "Registers endpoint for `SessionEngineHostBuilder`."]
+    #[doc = "Registers one endpoint implementation with `SessionEngineHostBuilder`."]
     pub fn register_endpoint(
         &mut self,
         operator_id: OperatorId,
@@ -386,31 +386,31 @@ impl SessionEngineHostBuilder {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session engine host build error."]
+#[doc = "Classifies failures produced during session engine host construction and input validation."]
 pub enum SessionEngineHostBuildError {
     #[error(transparent)]
-    #[doc = "Reports engine."]
+    #[doc = "Classifies a failure at the engine stage or component of `SessionEngineHostBuildError`."]
     Engine(#[from] SessionEngineBuildError),
     #[error(transparent)]
-    #[doc = "Reports endpoint registration."]
+    #[doc = "Classifies a failure at the endpoint registration stage or component of `SessionEngineHostBuildError`."]
     EndpointRegistration(#[from] EndpointDriverRegistryError),
     #[error(transparent)]
-    #[doc = "Reports endpoint extension registration."]
+    #[doc = "Classifies a failure at the endpoint extension registration stage or component of `SessionEngineHostBuildError`."]
     EndpointExtensionRegistration(#[from] crate::session::EndpointExtensionRegistrationError),
     #[error(transparent)]
-    #[doc = "Reports operator registration."]
+    #[doc = "Classifies a failure at the operator registration stage or component of `SessionEngineHostBuildError`."]
     OperatorRegistration(#[from] NodeRegistrationError),
     #[error(transparent)]
-    #[doc = "Reports polled audio endpoint."]
+    #[doc = "Classifies a failure at the polled audio endpoint stage or component of `SessionEngineHostBuildError`."]
     PolledAudioEndpoint(#[from] PolledAudioEndpointConfigError),
     #[error("application capture backend is required")]
-    #[doc = "Reports missing application backend."]
+    #[doc = "Reports that the required application backend is missing."]
     MissingApplicationBackend,
     #[error("microphone capture backend is required")]
-    #[doc = "Reports missing microphone backend."]
+    #[doc = "Reports that the required microphone backend is missing."]
     MissingMicrophoneBackend,
     #[error("native Session capture composition is unsupported on this target")]
-    #[doc = "Reports unsupported platform."]
+    #[doc = "Reports that the requested platform is unsupported."]
     UnsupportedPlatform,
 }
 

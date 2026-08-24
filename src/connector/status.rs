@@ -1,7 +1,7 @@
 use super::ConnectorErrorCode;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
-#[doc = "Enumerates the supported connector delivery readiness cases."]
+#[doc = "Reports whether connector delivery is ready, degraded, or unavailable."]
 pub enum ConnectorDeliveryReadiness {
     #[doc = "Indicates the not ready state for `ConnectorDeliveryReadiness`."]
     NotReady = 0,
@@ -10,7 +10,7 @@ pub enum ConnectorDeliveryReadiness {
 }
 
 impl ConnectorDeliveryReadiness {
-    #[doc = "Returns whether accepts delivery applies to `ConnectorDeliveryReadiness`."]
+    #[doc = "Reports whether accepts delivery is true for `ConnectorDeliveryReadiness`."]
     pub const fn accepts_delivery(self) -> bool {
         matches!(self, Self::Ready)
     }
@@ -18,7 +18,7 @@ impl ConnectorDeliveryReadiness {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
-#[doc = "Enumerates the supported connector health cases."]
+#[doc = "Reports the current operational health of a connector worker."]
 pub enum ConnectorHealth {
     #[doc = "Represents the healthy case of `ConnectorHealth`."]
     Healthy = 0,
@@ -28,7 +28,7 @@ pub enum ConnectorHealth {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
-#[doc = "Enumerates the supported connector recovery cases."]
+#[doc = "Declares the recovery state exposed after a connector failure."]
 pub enum ConnectorRecovery {
     #[doc = "Represents the idle case of `ConnectorRecovery`."]
     Idle = 0,
@@ -90,7 +90,7 @@ impl ConnectorServiceStatus {
         self.last_transition_elapsed_ns
     }
 
-    #[doc = "Returns whether accepts delivery applies to `ConnectorServiceStatus`."]
+    #[doc = "Reports whether accepts delivery is true for `ConnectorServiceStatus`."]
     pub const fn accepts_delivery(&self) -> bool {
         self.delivery_readiness.accepts_delivery()
             && matches!(self.recovery, ConnectorRecovery::Idle)

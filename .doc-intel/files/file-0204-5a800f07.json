@@ -589,14 +589,112 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
       "lines": [
-        1,
-        889
+        849,
+        867
       ],
-      "path": "src/session/compile/tests.rs",
-      "symbol": null
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        308,
+        384
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        587,
+        639
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        497,
+        543
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        659,
+        685
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        741,
+        755
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        755,
+        769
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        867,
+        888
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        709,
+        741
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        639,
+        659
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        769,
+        803
+      ],
+      "path": "src/session/compile/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        685,
+        709
+      ],
+      "path": "src/session/compile/tests.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -639,16 +737,16 @@
     "super::*"
   ],
   "inputs": [
-    "ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy,",
-    "crate::endpoint::{ EndpointDriverFactory, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
-    "crate::frame::{SampleFormat, SampleSpec}",
-    "crate::graph::compile::CompileError",
-    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
-    "crate::session::{ register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::sync::Arc",
-    "super::*"
+    "Consumes configuration at src/session/compile/tests.rs:11.",
+    "Consumes configuration at src/session/compile/tests.rs:157.",
+    "Consumes configuration at src/session/compile/tests.rs:190.",
+    "Depends on `crate::endpoint::{ EndpointDriverFactory, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::frame::{SampleFormat, SampleSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::compile::CompileError` through a declared Rust import.",
+    "Depends on `crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat, }` through a declared Rust import.",
+    "Depends on `crate::session::{ register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -719,19 +817,19 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::compile::tests` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-0f5d415b7192b8e10569"
   ],
   "outputs": [
-    "Err(EndpointFailure::new(",
-    "Err(NodeError::Prepare(",
-    "Err(SessionCompileError::GraphCompile(",
-    "Err(SessionCompileError::MissingRequiredOperatorInput { port_name, .. })",
-    "Err(SessionCompileError::OperatorNodeTypeMismatch { .. })",
-    "Err(SessionCompileError::UnknownAsyncOperator { .. })",
-    "Err(SessionCompileError::UnknownOperator { .. })"
+    "Creates a typed failure at src/session/compile/tests.rs:162.",
+    "Creates a typed failure at src/session/compile/tests.rs:200.",
+    "Creates a typed failure at src/session/compile/tests.rs:427.",
+    "Creates a typed failure at src/session/compile/tests.rs:657.",
+    "Creates a typed failure at src/session/compile/tests.rs:737.",
+    "Creates a typed failure at src/session/compile/tests.rs:753.",
+    "Creates a typed failure at src/session/compile/tests.rs:767."
   ],
   "package": "pocketstation",
   "path": "src/session/compile/tests.rs",
@@ -1012,7 +1110,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::session::compile::tests responsibilities, including the src/session/compile/tests boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::session::compile::tests`."
   },
   "queues": [],
   "recovery_behavior": [],

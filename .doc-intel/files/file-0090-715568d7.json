@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -37,6 +39,8 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -225,19 +229,21 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "1887bb14ff3e2aca760538229558101290d20d60169b2a3cea00dc4936fd8705",
       "lines": [
         1,
-        106
+        1
       ],
       "path": "src/capture/platform/macos/macos_asp.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::platform::macos::macos_asp"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -336,6 +342,8 @@
   "generated_from": "not_applicable",
   "git_object": "0aedd32a346f3f4b7923d1ec7e3a477375474854",
   "implemented_by": [
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -344,6 +352,8 @@
     "Drop for AspReader"
   ],
   "imported_by": [
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -352,8 +362,8 @@
     "std::ffi::c_uint"
   ],
   "inputs": [
-    "std::ffi::c_float",
-    "std::ffi::c_uint"
+    "Depends on `std::ffi::c_float` through a declared Rust import.",
+    "Depends on `std::ffi::c_uint` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -367,19 +377,19 @@
   "module": "pocketstation::capture::platform::macos::macos_asp",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::macos::macos_asp` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:asp_is_installed",
-    "fn:channels",
-    "fn:drop_count",
-    "fn:open",
-    "fn:read_frames",
-    "fn:sample_rate",
-    "fn:timeline_reject_callback_count",
-    "struct:AspReadBatch",
-    "struct:AspReader"
+    "Declares public fn `asp_is_installed`.",
+    "Declares public fn `channels`.",
+    "Declares public fn `drop_count`.",
+    "Declares public fn `open`.",
+    "Declares public fn `read_frames`.",
+    "Declares public fn `sample_rate`.",
+    "Declares public fn `timeline_reject_callback_count`.",
+    "Declares public struct `AspReadBatch`.",
+    "Declares public struct `AspReader`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/macos/macos_asp.rs",
@@ -505,8 +515,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::macos::macos asp responsibilities, including macos asp; pks asp is installed; pks asp open reader."
+    "classification": "DECLARED",
+    "text": "Reads from the PocketStation HAL plugin POSIX shared memory ring."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -560,7 +570,10 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/codec/encoder.rs"
+  ],
   "resource_ownership": [
     {
       "line": 100,

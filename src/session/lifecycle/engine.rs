@@ -236,7 +236,7 @@ impl SessionEngine {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
-    #[doc = "Starts compiled for `SessionEngine`."]
+    #[doc = "Starts a previously compiled Session through `SessionEngine`."]
     pub fn start_compiled(
         &self,
         compiled: CompiledSession,
@@ -300,19 +300,19 @@ impl SessionEngine {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session engine build error."]
+#[doc = "Classifies failures produced during session engine construction and input validation."]
 pub enum SessionEngineBuildError {
     #[error(transparent)]
-    #[doc = "Reports structural node registration."]
+    #[doc = "Classifies a failure at the structural node registration stage or component of `SessionEngineBuildError`."]
     StructuralNodeRegistration(#[from] SessionGraphRegistrationError),
     #[error("Session engine configuration is invalid: {reason}")]
-    #[doc = "Reports invalid configuration."]
+    #[doc = "Reports that the supplied configuration is invalid."]
     InvalidConfiguration {
         #[doc = "Carries the reason reported by `InvalidConfiguration`."]
         reason: &'static str,
     },
     #[error("sidecar process ID {sidecar_id} is already registered")]
-    #[doc = "Reports duplicate sidecar identifier."]
+    #[doc = "Reports that sidecar identifier duplicates an existing declaration or record."]
     DuplicateSidecarId {
         #[doc = "Identifies the sidecar identifier recorded by `DuplicateSidecarId`."]
         sidecar_id: u64,
@@ -320,16 +320,16 @@ pub enum SessionEngineBuildError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as endpoint extension registration error."]
+#[doc = "Classifies failures produced during endpoint extension registration."]
 pub enum EndpointExtensionRegistrationError {
     #[error(transparent)]
-    #[doc = "Reports definition."]
+    #[doc = "Classifies a failure at the definition stage or component of `EndpointExtensionRegistrationError`."]
     Definition(#[from] NodeRegistrationError),
     #[error(transparent)]
-    #[doc = "Reports driver."]
+    #[doc = "Classifies a failure at the driver stage or component of `EndpointExtensionRegistrationError`."]
     Driver(#[from] EndpointDriverRegistryError),
     #[error("endpoint node type {node_type_id} is already registered with a different contract")]
-    #[doc = "Reports conflicting definition."]
+    #[doc = "Reports that definition conflicts with an existing registration or declaration."]
     ConflictingDefinition {
         #[doc = "Identifies the node type identifier recorded by `ConflictingDefinition`."]
         node_type_id: String,
@@ -337,27 +337,27 @@ pub enum EndpointExtensionRegistrationError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session engine start error."]
+#[doc = "Classifies failures produced during session engine lifecycle start."]
 pub enum SessionEngineStartError {
     #[error("Session declaration freeze failed: {0}")]
-    #[doc = "Reports freeze."]
+    #[doc = "Classifies a failure at the freeze stage or component of `SessionEngineStartError`."]
     Freeze(#[from] SessionError),
     #[error("Session compilation failed: {0}")]
-    #[doc = "Reports compile."]
+    #[doc = "Classifies a failure at the compile stage or component of `SessionEngineStartError`."]
     Compile(#[from] SessionCompileError),
     #[error("Session runtime preparation failed: {0}")]
-    #[doc = "Reports prepare."]
+    #[doc = "Classifies a failure at the prepare stage or component of `SessionEngineStartError`."]
     Prepare(#[from] SessionPrepareError),
     #[error("Session transactional start failed: {0}")]
-    #[doc = "Reports start."]
+    #[doc = "Classifies a failure at the start stage or component of `SessionEngineStartError`."]
     Start(#[source] SessionStartFailure),
     #[error("Session sidecar start failed: {0}")]
-    #[doc = "Reports sidecar."]
+    #[doc = "Classifies a failure at the sidecar stage or component of `SessionEngineStartError`."]
     Sidecar(#[from] SidecarHostError),
 }
 
 impl SessionEngineStartError {
-    #[doc = "Starts failure for `SessionEngineStartError`."]
+    #[doc = "Returns the transactional start failure carried by `SessionEngineStartError`, if this error represents one."]
     pub const fn start_failure(&self) -> Option<&SessionStartFailure> {
         match self {
             Self::Start(failure) => Some(failure),

@@ -1,6 +1,6 @@
 # Poll audio without unbounded buffering
 
-<!-- claims: CLM-GUIDE-006-CAP-001,CLM-GUIDE-006-CAP-002,CLM-GUIDE-006-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-006-SCOPE-001,CLM-GUIDE-006-TEXT-001,CLM-GUIDE-006-TEXT-002,CLM-GUIDE-006-TEXT-003,CLM-GUIDE-006-TEXT-004,CLM-GUIDE-006-TEXT-005,CLM-GUIDE-006-TEXT-006,CLM-GUIDE-006-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,73 @@ A declared source or stream and a finite `PolledAudioEndpointConfig` appropriate
 3. Call try_poll_audio for an immediate check or wait_poll with a finite timeout from non-realtime application code.
 4. Iterate only indices below the returned batch length and retain the route, endpoint, and poll observation timestamps needed for diagnosis.
 5. Release the lease promptly and inspect polling observations.
+
+## Concrete repository example
+
+This is the frozen, repository-owned example `example-64188d831f3c13af50ff` at `examples/product_quickstart.rs`. It is validated by the examples checkpoint.
+
+```rust
+use std::collections::BTreeMap;
+use std::error::Error;
+use std::time::{Duration, Instant};
+
+use pocketstation as pks;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let session = pks::Session::builder()
+        .recording_root("pocketstation-recordings")
+        .build();
+    let app = session.capture(pks::Source::application(pks::ApplicationSelector::name(
+        "PocketStation Demo",
+    )))?;
+    let mic = session.capture(pks::Source::microphone_default())?;
+    let app_audio = session.polled_audio()?;
+    let mic_audio = session.polled_audio()?;
+
+    app.send(app_audio)?;
+    mic.send(mic_audio)?;
+    app.record("application")?;
+    mic.record("microphone")?;
+
+    let mut running = session.start()?;
+    let deadline = Instant::now() + Duration::from_secs(10);
+    let mut frames_by_stem = BTreeMap::<u64, usize>::new();
+    while Instant::now() < deadline
+        && frames_by_stem.values().filter(|count| **count >= 2).count() < 2
+    {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let frame = batch
+                    .frame(index)
+                    .ok_or("bounded audio batch returned an invalid frame index")?;
+                let count = frames_by_stem
+                    .entry(frame.lineage().stem_id().get())
+                    .or_default();
+                *count = count.saturating_add(1);
+            }
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    if frames_by_stem.values().filter(|count| **count >= 2).count() != 2 {
+        return Err("application and microphone media were not both observed".into());
+    }
+
+    let outcome = running.stop();
+    if !outcome.is_success() {
+        return Err("PocketStation Session did not finalize cleanly".into());
+    }
+    let recording = running
+        .recording_outcome()
+        .ok_or("PocketStation Session did not expose a recording outcome")?;
+    if recording.state != pks::SessionRecordingState::Complete
+        || recording.completed_stems != 2
+        || recording.failed_stems != 0
+    {
+        return Err("PocketStation multistem recording did not complete".into());
+    }
+    Ok(())
+}
+```
 
 ## Important consequence
 
@@ -65,13 +132,13 @@ Executable evidence selected for **Poll audio without unbounded buffering** is l
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::endpoint::polled_audio::PolledAudioEndpoint` | struct | Declares application-polled audio and retains its bounded receipt. | `src/endpoint/polled_audio.rs:16` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioBatchLease` | struct | Owns bounded access to polled audio batch. | `src/endpoint/polled_audio_driver.rs:218` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioBatchLease` | struct | Holds the ownership or bounded access represented by polled audio batch lease. | `src/endpoint/polled_audio_driver.rs:218` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfig` | struct | Configures polled audio endpoint behavior at its owning API boundary. | `src/endpoint/polled_audio_driver.rs:23` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioFrame` | struct | Carries one polled audio payload together with its declared metadata. | `src/endpoint/polled_audio_driver.rs:256` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioObservations` | struct | Reports the polled audio observations collected at an observation boundary. | `src/endpoint/polled_audio_driver.rs:56` |
 | `pocketstation::endpoint::polled_audio_driver::PolledAudioReceipt` | struct | Retains the identity and observation access returned for polled audio. | `src/endpoint/polled_audio_driver.rs:105` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` | enum | Classifies failures reported as polled audio endpoint config error. | `src/endpoint/polled_audio_driver.rs:40` |
-| `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` | enum | Classifies failures reported as polled audio poll error. | `src/endpoint/polled_audio_driver.rs:74` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` | enum | Classifies failures surfaced by polled audio endpoint config operations. | `src/endpoint/polled_audio_driver.rs:40` |
+| `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` | enum | Classifies failures surfaced by polled audio poll operations. | `src/endpoint/polled_audio_driver.rs:74` |
 
 ## Related documentation
 
@@ -88,7 +155,30 @@ Executable evidence selected for **Poll audio without unbounded buffering** is l
 
 The claims on **Poll audio without unbounded buffering** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/product_quickstart.rs:1-61` (`DIRECT`)
-- `src/endpoint/polled_audio_driver.rs:1-853` (`DIRECT`)
+- `examples/product_quickstart.rs:1-21` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:16-16` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:17-17` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:18-18` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:19-19` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:20-20` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:22-22` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:22-22` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:22-22` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:23-27` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:24-24` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:25-25` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:26-26` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:30-36` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:39-39` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:40-53` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:42-42` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:44-44` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:46-46` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:48-48` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:50-50` (`DIRECT`)
+- `src/endpoint/polled_audio_driver.rs:52-52` (`DIRECT`)
 
 For **Poll audio without unbounded buffering**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

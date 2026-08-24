@@ -1,6 +1,6 @@
 # Asynchronous operators
 
-<!-- claims: CLM-DOC-021-CAP-001,CLM-DOC-021-SOURCE-001 -->
+<!-- claims: CLM-DOC-021-SCOPE-001,CLM-DOC-021-TEXT-001,CLM-DOC-021-TEXT-002,CLM-DOC-021-TEXT-003,CLM-DOC-021-TEXT-004,CLM-DOC-021-TEXT-005,CLM-DOC-021-TEXT-006,CLM-DOC-021-SOURCE-001 -->
 
 ## What it is
 
@@ -45,13 +45,13 @@ The scope of **Asynchronous operators** ends at the native contracts and executa
 |---|---|---|---|
 | `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
 | `pocketstation::graph::signal::operator::AsyncOperatorFactory` | trait | Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract. | `src/graph/signal/operator.rs:368` |
-| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Describes the async operator manifest contract. | `src/graph/signal/operator.rs:127` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Declares an asynchronous operator's ports, execution partition, failure policy, and cancellation policy. | `src/graph/signal/operator.rs:127` |
 | `pocketstation::graph::signal::operator::OperatorDeadlinePolicy` | struct | Configures operator deadline behavior at its owning API boundary. | `src/graph/signal/operator.rs:52` |
 | `pocketstation::graph::signal::operator::OperatorOutputRolePolicy` | struct | Configures operator output role behavior at its owning API boundary. | `src/graph/signal/operator.rs:69` |
 | `pocketstation::graph::signal::operator::OperatorPermissionPolicy` | struct | Configures operator permission behavior at its owning API boundary. | `src/graph/signal/operator.rs:46` |
 | `pocketstation::runtime::signal::operator::AsyncOperatorWorker` | struct | Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result. | `src/runtime/signal/operator.rs:250` |
 | `pocketstation::runtime::signal::operator::CompiledOperatorInputContract` | struct | Declares the validated constraints applied to compiled operator input. | `src/runtime/signal/operator.rs:103` |
-| `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures reported as async operator manifest error. | `src/graph/signal/operator.rs:321` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures surfaced by async operator manifest operations. | `src/graph/signal/operator.rs:321` |
 | `pocketstation::graph::signal::operator::OperatorCancellationPolicy` | enum | Selects the operator cancellation policy used by PocketStation. | `src/graph/signal/operator.rs:57` |
 
 ## Executable evidence
@@ -86,6 +86,29 @@ Executable evidence selected for **Asynchronous operators** is limited to each t
 
 The claims on **Asynchronous operators** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/graph/signal/operator.rs:1-380` (`DIRECT`)
+- `src/graph/signal/operator.rs:13-43` (`DIRECT`)
+- `src/graph/signal/operator.rs:14-17` (`DIRECT`)
+- `src/graph/signal/operator.rs:19-22` (`DIRECT`)
+- `src/graph/signal/operator.rs:24-30` (`DIRECT`)
+- `src/graph/signal/operator.rs:32-34` (`DIRECT`)
+- `src/graph/signal/operator.rs:36-38` (`DIRECT`)
+- `src/graph/signal/operator.rs:40-42` (`DIRECT`)
+- `src/graph/signal/operator.rs:45-45` (`DIRECT`)
+- `src/graph/signal/operator.rs:45-45` (`DIRECT`)
+- `src/graph/signal/operator.rs:45-45` (`DIRECT`)
+- `src/graph/signal/operator.rs:46-49` (`DIRECT`)
+- `src/graph/signal/operator.rs:47-47` (`DIRECT`)
+- `src/graph/signal/operator.rs:48-48` (`DIRECT`)
+- `src/graph/signal/operator.rs:51-51` (`DIRECT`)
+- `src/graph/signal/operator.rs:51-51` (`DIRECT`)
+- `src/graph/signal/operator.rs:51-51` (`DIRECT`)
+- `src/graph/signal/operator.rs:52-54` (`DIRECT`)
+- `src/graph/signal/operator.rs:53-53` (`DIRECT`)
+- `src/graph/signal/operator.rs:56-56` (`DIRECT`)
+- `src/graph/signal/operator.rs:56-56` (`DIRECT`)
+- `src/graph/signal/operator.rs:56-56` (`DIRECT`)
+- `src/graph/signal/operator.rs:57-60` (`DIRECT`)
+- `src/graph/signal/operator.rs:58-58` (`DIRECT`)
+- `src/graph/signal/operator.rs:59-59` (`DIRECT`)
 
 For **Asynchronous operators**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

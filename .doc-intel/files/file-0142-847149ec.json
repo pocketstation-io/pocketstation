@@ -51,14 +51,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "d8d8a9c0c1a2127a2fcb8c2e63bdd933bfe07fabe28a62a987c80e4b7920eb86",
       "lines": [
         1,
-        13
+        1
       ],
       "path": "src/frame/platform.rs",
-      "symbol": null
+      "symbol": "pocketstation::frame::platform"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -106,11 +106,11 @@
   "module": "pocketstation::frame::platform",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::frame::platform` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:Platform"
+    "Declares public enum `Platform`."
   ],
   "package": "pocketstation",
   "path": "src/frame/platform.rs",
@@ -132,8 +132,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::frame::platform responsibilities, including Enumerates the supported platform cases.; Represents the macos alternative defined by `Platform`.; Represents the windows alternative defined by `Platform`.."
+    "classification": "DECLARED",
+    "text": "Host platform identity; not part of audio-buffer ownership."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -168,7 +168,7 @@
   "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::frame::platform::Platform: Enumerates the supported platform cases.",
+    "pocketstation::frame::platform::Platform: Identifies the operating-system platform attached to captured lineage.",
     "pocketstation::frame::platform::Platform::Macos: Represents the macos alternative defined by `Platform`.",
     "pocketstation::frame::platform::Platform::Windows: Represents the windows alternative defined by `Platform`.",
     "pocketstation::frame::platform::Platform::Linux: Represents the linux alternative defined by `Platform`.",

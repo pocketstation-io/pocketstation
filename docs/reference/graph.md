@@ -1,6 +1,6 @@
 # Graph and route contracts
 
-<!-- claims: CLM-REF-006-CAP-001,CLM-REF-006-CAP-002,CLM-REF-006-CAP-003,CLM-REF-006-CAP-004,CLM-REF-006-SOURCE-001 -->
+<!-- claims: CLM-REF-006-SCOPE-001,CLM-REF-006-TEXT-001,CLM-REF-006-TEXT-002,CLM-REF-006-SOURCE-001 -->
 
 ## Scope
 
@@ -21,46 +21,46 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 |---|---|---|---|---|
 | sym-7e71261c61f78cefd417 | `pocketstation::graph::operator::OPERATOR_ID_SYNTAX_VERSION` | constant | Version of the serialized operator-identifier syntax. | `src/graph/operator.rs:6` |
 | sym-3cc63fdcaf2e3841e729 | `pocketstation::graph::plan::EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES` | constant | A sequential edge receiver may retain the frame it just popped while it processes that frame. Copy-pool sizing must cover that owned frame in addition to every frame that can still be queued. | `src/graph/plan.rs:16` |
-| sym-a7b4280132651539cc89 | `pocketstation::graph::plan::EDGE_RING_CAPACITY_FRAMES` | constant | Defines the public edge ring capacity frames value. | `src/graph/plan.rs:12` |
-| sym-202840de95069aac7815 | `pocketstation::graph::plan::FRAME_BYTES_MONO_48K` | constant | Defines the public frame bytes mono 48 k value. | `src/graph/plan.rs:11` |
+| sym-a7b4280132651539cc89 | `pocketstation::graph::plan::EDGE_RING_CAPACITY_FRAMES` | constant | Defines edge ring capacity frames as `8` for the owning public contract. | `src/graph/plan.rs:12` |
+| sym-202840de95069aac7815 | `pocketstation::graph::plan::FRAME_BYTES_MONO_48K` | constant | Defines the stable frame bytes mono 48 k used by the owning public contract. | `src/graph/plan.rs:11` |
 | sym-eec261911eeb3838d12f | `pocketstation::graph::plan::MAX_EDGE_RING_CAPACITY_FRAMES` | constant | Sets the maximum supported edge ring capacity frames. | `src/graph/plan.rs:17` |
 | sym-6104a324170be362b4e2 | `pocketstation::graph::ports::MAX_ASYNC_PAYLOAD_BYTES` | constant | Sets the maximum supported async payload bytes. | `src/graph/ports.rs:13` |
-| sym-ef308cb6434678c35687 | `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures reported as compile error. | `src/graph/compile/resolve.rs:26` |
-| sym-f23fbf485a1abdca3ff2 | `pocketstation::graph::node::ConfigError` | enum | Classifies failures reported as config error. | `src/graph/node.rs:141` |
-| sym-63eacff5c07a2f53dc8d | `pocketstation::graph::node::NodeDescriptorError` | enum | Classifies failures reported as node descriptor error. | `src/graph/node.rs:252` |
-| sym-8839c0168f2c08f2c049 | `pocketstation::graph::node::NodeError` | enum | Classifies failures reported as node error. | `src/graph/node.rs:149` |
+| sym-ef308cb6434678c35687 | `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures surfaced by compile operations. | `src/graph/compile/resolve.rs:26` |
+| sym-f23fbf485a1abdca3ff2 | `pocketstation::graph::node::ConfigError` | enum | Classifies failures surfaced by config operations. | `src/graph/node.rs:141` |
+| sym-63eacff5c07a2f53dc8d | `pocketstation::graph::node::NodeDescriptorError` | enum | Classifies failures surfaced by node descriptor operations. | `src/graph/node.rs:252` |
+| sym-8839c0168f2c08f2c049 | `pocketstation::graph::node::NodeError` | enum | Classifies failures surfaced by node operations. | `src/graph/node.rs:149` |
 | sym-62ce3a27efa7fea45df0 | `pocketstation::graph::partition::ExecutionPartition` | enum | WHERE an operator runs. | `src/graph/partition.rs:18` |
 | sym-142ebf4cccf857875822 | `pocketstation::graph::partition::SafetyContract` | enum | WHAT an operator guarantees about its runtime behaviour. | `src/graph/partition.rs:82` |
-| sym-04dd5abde97700d6bea8 | `pocketstation::graph::plan::PlanError` | enum | Classifies failures reported as plan error. | `src/graph/plan.rs:21` |
+| sym-04dd5abde97700d6bea8 | `pocketstation::graph::plan::PlanError` | enum | Classifies failures surfaced by plan operations. | `src/graph/plan.rs:21` |
 | sym-bb29d2e9bc5ef5790a5b | `pocketstation::graph::ports::BackpressurePolicy` | enum | Selects the backpressure policy used by PocketStation. | `src/graph/ports.rs:265` |
-| sym-8c71eb7bf77b533a3950 | `pocketstation::graph::ports::ChannelLayout` | enum | Enumerates the supported channel layout cases. | `src/graph/ports.rs:27` |
-| sym-c994bd3c6236b085ea39 | `pocketstation::graph::ports::ClockDomain` | enum | Enumerates the supported clock domain cases. | `src/graph/ports.rs:249` |
+| sym-8c71eb7bf77b533a3950 | `pocketstation::graph::ports::ChannelLayout` | enum | Declares the number and arrangement of channels in an audio signal. | `src/graph/ports.rs:27` |
+| sym-c994bd3c6236b085ea39 | `pocketstation::graph::ports::ClockDomain` | enum | Identifies the clock used to interpret signal timestamps. | `src/graph/ports.rs:249` |
 | sym-b708b27c76144c20fa7b | `pocketstation::graph::ports::CopyPolicy` | enum | Selects the copy policy used by PocketStation. | `src/graph/ports.rs:280` |
 | sym-780123bab167f93fc9d2 | `pocketstation::graph::ports::DeliverySemantics` | enum | Selects the delivery semantics used by PocketStation. | `src/graph/ports.rs:273` |
 | sym-7cb8e2639c16f6f287d7 | `pocketstation::graph::ports::EdgeObservabilityLevel` | enum | Selects the edge observability level used by PocketStation. | `src/graph/ports.rs:294` |
 | sym-0940509ee3453cf34ddf | `pocketstation::graph::ports::LossPolicy` | enum | Selects the loss policy used by PocketStation. | `src/graph/ports.rs:287` |
-| sym-822c3c845e91e2ffb25a | `pocketstation::graph::ports::MediaCaps` | enum | Enumerates the supported media caps cases. | `src/graph/ports.rs:85` |
+| sym-822c3c845e91e2ffb25a | `pocketstation::graph::ports::MediaCaps` | enum | Declares the media capabilities accepted by a graph port. | `src/graph/ports.rs:85` |
 | sym-74305f5acfae6a732e2b | `pocketstation::graph::ports::MediaKind` | enum | Selects the media kind used by PocketStation. | `src/graph/ports.rs:16` |
-| sym-1b42b2cf2aa6f3bb4d1a | `pocketstation::graph::ports::Multiplicity` | enum | Enumerates the supported multiplicity cases. | `src/graph/ports.rs:169` |
+| sym-1b42b2cf2aa6f3bb4d1a | `pocketstation::graph::ports::Multiplicity` | enum | Declares whether a graph port accepts one edge or multiple edges. | `src/graph/ports.rs:169` |
 | sym-c3e0d763e39512ba85d5 | `pocketstation::graph::ports::PortDirection` | enum | Selects the port direction used by PocketStation. | `src/graph/ports.rs:163` |
-| sym-b9f6cf6d84646f2f54cd | `pocketstation::graph::ports::PortSpecError` | enum | Classifies failures reported as port spec error. | `src/graph/ports.rs:239` |
-| sym-9f1d225abf797e856b20 | `pocketstation::graph::registry::NodeDefinitionRef` | enum | Enumerates the supported node definition ref cases. | `src/graph/registry.rs:32` |
-| sym-08a016336466041e5717 | `pocketstation::graph::registry::NodeRegistrationError` | enum | Classifies failures reported as node registration error. | `src/graph/registry.rs:57` |
-| sym-578043ee573a0f9b99e6 | `pocketstation::graph::signal::continuity::SignalContinuityError` | enum | Classifies failures reported as signal continuity error. | `src/graph/signal/continuity.rs:89` |
-| sym-a4afff76933f8071989c | `pocketstation::graph::signal::envelope::SignalEnvelopeError` | enum | Classifies failures reported as signal envelope error. | `src/graph/signal/envelope.rs:137` |
-| sym-5b1af0913743b3dc15fe | `pocketstation::graph::signal::lineage::SignalDerivationError` | enum | Classifies failures reported as signal derivation error. | `src/graph/signal/lineage.rs:159` |
-| sym-321d364165d7c21bacec | `pocketstation::graph::signal::lineage::SignalLineageError` | enum | Classifies failures reported as signal lineage error. | `src/graph/signal/lineage.rs:86` |
-| sym-7c4acf8b5348e2b02362 | `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures reported as async operator manifest error. | `src/graph/signal/operator.rs:321` |
+| sym-b9f6cf6d84646f2f54cd | `pocketstation::graph::ports::PortSpecError` | enum | Classifies failures surfaced by port spec operations. | `src/graph/ports.rs:239` |
+| sym-9f1d225abf797e856b20 | `pocketstation::graph::registry::NodeDefinitionRef` | enum | Borrows either a synchronous or asynchronous registered node definition. | `src/graph/registry.rs:32` |
+| sym-08a016336466041e5717 | `pocketstation::graph::registry::NodeRegistrationError` | enum | Classifies failures produced during node registration. | `src/graph/registry.rs:57` |
+| sym-578043ee573a0f9b99e6 | `pocketstation::graph::signal::continuity::SignalContinuityError` | enum | Classifies failures surfaced by signal continuity operations. | `src/graph/signal/continuity.rs:89` |
+| sym-a4afff76933f8071989c | `pocketstation::graph::signal::envelope::SignalEnvelopeError` | enum | Classifies failures surfaced by signal envelope operations. | `src/graph/signal/envelope.rs:137` |
+| sym-5b1af0913743b3dc15fe | `pocketstation::graph::signal::lineage::SignalDerivationError` | enum | Classifies failures surfaced by signal derivation operations. | `src/graph/signal/lineage.rs:159` |
+| sym-321d364165d7c21bacec | `pocketstation::graph::signal::lineage::SignalLineageError` | enum | Classifies failures surfaced by signal lineage operations. | `src/graph/signal/lineage.rs:86` |
+| sym-7c4acf8b5348e2b02362 | `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures surfaced by async operator manifest operations. | `src/graph/signal/operator.rs:321` |
 | sym-de8d9bf729d99cd1b90c | `pocketstation::graph::signal::operator::OperatorCancellationPolicy` | enum | Selects the operator cancellation policy used by PocketStation. | `src/graph/signal/operator.rs:57` |
 | sym-c2d8be1a7356019be8c9 | `pocketstation::graph::signal::operator::OperatorFailurePolicy` | enum | Selects the operator failure policy used by PocketStation. | `src/graph/signal/operator.rs:63` |
-| sym-d1b44af5c9c63b1683e8 | `pocketstation::graph::signal::payload::SignalPayload` | enum | Enumerates the supported signal payload cases. | `src/graph/signal/payload.rs:10` |
+| sym-d1b44af5c9c63b1683e8 | `pocketstation::graph::signal::payload::SignalPayload` | enum | Carries the typed audio, text, event, or binary body of a signal envelope. | `src/graph/signal/payload.rs:10` |
 | sym-5ee081d3cfce2f617af2 | `pocketstation::graph::signal::spec::BinaryFormat` | enum | Binary encoding hint for `SignalClass::Binary`. | `src/graph/signal/spec.rs:141` |
 | sym-1b3317725d97bbefcd4d | `pocketstation::graph::signal::spec::Codec` | enum | Audio encoding format for `SignalClass::EncodedAudio`. | `src/graph/signal/spec.rs:113` |
 | sym-1effef32701817ca9bef | `pocketstation::graph::signal::spec::EventFormat` | enum | Event structure hint for `SignalClass::Event`. | `src/graph/signal/spec.rs:132` |
 | sym-24b831fc21a3c9d7c3d3 | `pocketstation::graph::signal::spec::SignalClass` | enum | The fundamental class of data flowing through a port. | `src/graph/signal/spec.rs:156` |
-| sym-b386818365cee36fb88f | `pocketstation::graph::signal::spec::SignalSpecError` | enum | Classifies failures reported as signal spec error. | `src/graph/signal/spec.rs:351` |
+| sym-b386818365cee36fb88f | `pocketstation::graph::signal::spec::SignalSpecError` | enum | Classifies failures surfaced by signal spec operations. | `src/graph/signal/spec.rs:351` |
 | sym-30151b96c6d0821dc2db | `pocketstation::graph::signal::spec::TextFormat` | enum | Text encoding hint for `SignalClass::Text`. | `src/graph/signal/spec.rs:124` |
-| sym-d6d356025cf7255edba3 | `pocketstation::graph::signal::timing::SignalTimingError` | enum | Classifies failures reported as signal timing error. | `src/graph/signal/timing.rs:89` |
+| sym-d6d356025cf7255edba3 | `pocketstation::graph::signal::timing::SignalTimingError` | enum | Classifies failures surfaced by signal timing operations. | `src/graph/signal/timing.rs:89` |
 | sym-9642176d7ce0fae2cfdb | `AsyncNode::cancel` | function | Requests cancellation of `AsyncNode`. | `src/graph/signal/operator.rs:36` |
 | sym-5c9e1eb4c40189e4507c | `AsyncNode::close` | function | Closes `AsyncNode` to further work. | `src/graph/signal/operator.rs:40` |
 | sym-d19b1106016b42c888a3 | `AsyncNode::flush` | function | Flushes pending output from `AsyncNode` at the end of a run. | `src/graph/signal/operator.rs:32` |
@@ -69,17 +69,17 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-f7b2dd8f4291dd8d5924 | `AsyncNode::process_port` | function | Returns the process port held by `AsyncNode`. | `src/graph/signal/operator.rs:24` |
 | sym-ab50a788828394fe1a21 | `AsyncOperatorFactory::create` | function | Creates the runtime implementation described by `AsyncOperatorFactory`. | `src/graph/signal/operator.rs:378` |
 | sym-0a1384e3fd04b4d39049 | `AsyncOperatorFactory::manifest` | function | Returns the manifest held by `AsyncOperatorFactory`. | `src/graph/signal/operator.rs:369` |
-| sym-807e19db4b5ec22d82c8 | `AsyncOperatorFactory::resolve_manifest` | function | Resolves manifest for `AsyncOperatorFactory`. | `src/graph/signal/operator.rs:371` |
-| sym-058eb6025ed335fcad46 | `AsyncOperatorFactory::validate_config` | function | Validates config for `AsyncOperatorFactory`. | `src/graph/signal/operator.rs:370` |
+| sym-807e19db4b5ec22d82c8 | `AsyncOperatorFactory::resolve_manifest` | function | Resolves and validates the operator manifest exposed by `AsyncOperatorFactory`. | `src/graph/signal/operator.rs:371` |
+| sym-058eb6025ed335fcad46 | `AsyncOperatorFactory::validate_config` | function | Validates supplied node configuration against the schema declared by `AsyncOperatorFactory`. | `src/graph/signal/operator.rs:370` |
 | sym-95d186f05bc1b9a0e1fc | `NodeDefinition::descriptor` | function | Returns the descriptor associated with `NodeDefinition`. | `src/graph/registry.rs:22` |
-| sym-756730521855d6410b74 | `NodeDefinition::validate_config` | function | Validates config for `NodeDefinition`. | `src/graph/registry.rs:23` |
+| sym-756730521855d6410b74 | `NodeDefinition::validate_config` | function | Validates supplied node configuration against the schema declared by `NodeDefinition`. | `src/graph/registry.rs:23` |
 | sym-5f3b142ed649e97a8a16 | `NodeFactory::descriptor` | function | Returns the descriptor associated with `NodeFactory`. | `src/graph/registry.rs:12` |
 | sym-308f05bdc22e7d8614b8 | `NodeFactory::instantiate` | function | Instantiates the runtime node described by `NodeFactory`. | `src/graph/registry.rs:14` |
-| sym-0c7ecbd3f919b7ef72eb | `NodeFactory::validate_config` | function | Validates config for `NodeFactory`. | `src/graph/registry.rs:13` |
+| sym-0c7ecbd3f919b7ef72eb | `NodeFactory::validate_config` | function | Validates supplied node configuration against the schema declared by `NodeFactory`. | `src/graph/registry.rs:13` |
 | sym-910d45960a7a0e969a3b | `RuntimeNode::prepare` | function | Prepares resources required by `RuntimeNode`. | `src/graph/runtime_node.rs:8` |
 | sym-f6799f84a742f4bbb94e | `RuntimeNode::process` | function | Processes an input value through `RuntimeNode`. | `src/graph/runtime_node.rs:9` |
 | sym-1dc345935cb016e9ada7 | `accepts` | function | Returns whether accepts is true for `OperatorOutputRolePolicy`. | `src/graph/signal/operator.rs:75` |
-| sym-33c855e1e7e0d665cbfb | `add_node` | function | Adds node for `Pipeline`. | `src/graph/dsl.rs:44` |
+| sym-33c855e1e7e0d665cbfb | `add_node` | function | Adds one node declaration to the graph owned by `Pipeline`. | `src/graph/dsl.rs:44` |
 | sym-2e9bb7ccca392ce72b7f | `any` | function | Convenience constructor for a deliberately open boundary port. | `src/graph/signal/spec.rs:264` |
 | sym-c4d691ed75e3107f9e7d | `as_str` | function | Returns the stable string representation of `NodeTypeId`. | `src/graph/node.rs:16` |
 | sym-c1514acd18e430e01b9c | `as_str` | function | Returns the stable string representation of `OperatorId`. | `src/graph/operator.rs:23` |
@@ -167,18 +167,18 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-c64fa9fb69d22a43a170 | `into_payload` | function | Converts `SignalEnvelope` into payload. | `src/graph/signal/envelope.rs:86` |
 | sym-577f70ac8cddb985786a | `into_spec` | function | Converts `Pipeline` into spec. | `src/graph/dsl.rs:90` |
 | sym-b906c1bced2bdb6a5317 | `is_audio` | function | Returns `true` for classes that carry real-time audio on the hot path. | `src/graph/signal/spec.rs:180` |
-| sym-13ba64b8902a67ddb451 | `is_compatible_with` | function | Returns whether compatible with applies to `ChannelLayout`. | `src/graph/ports.rs:42` |
-| sym-ba6f1a5ae34c37391c97 | `is_compatible_with` | function | Returns whether compatible with applies to `AudioCaps`. | `src/graph/ports.rs:56` |
-| sym-1660e53891c50aea7f58 | `is_compatible_with` | function | Returns whether compatible with applies to `MediaCaps`. | `src/graph/ports.rs:110` |
+| sym-13ba64b8902a67ddb451 | `is_compatible_with` | function | Reports whether compatible with is true for `ChannelLayout`. | `src/graph/ports.rs:42` |
+| sym-ba6f1a5ae34c37391c97 | `is_compatible_with` | function | Reports whether compatible with is true for `AudioCaps`. | `src/graph/ports.rs:56` |
+| sym-1660e53891c50aea7f58 | `is_compatible_with` | function | Reports whether compatible with is true for `MediaCaps`. | `src/graph/ports.rs:110` |
 | sym-53a017982fc527349282 | `is_compatible_with` | function | Returns `true` if two signal classes are compatible for edge wiring. | `src/graph/signal/spec.rs:188` |
 | sym-5762003566d065479b7e | `is_compatible_with` | function | Returns `true` if this spec can connect to `other` on an edge. | `src/graph/signal/spec.rs:324` |
 | sym-b2fd5f431d9ee97ce804 | `is_empty` | function | Returns whether `NodeRegistry` contains no values. | `src/graph/registry.rs:174` |
 | sym-6ece39cf3776addca714 | `is_portable` | function | Reports whether this value is a portable implementation contract ID. | `src/graph/operator.rs:31` |
 | sym-93b640de9e9b9e6dae8c | `is_portable` | function | Reports whether this custom signal ID is portable across packages, languages, and processes. | `src/graph/signal/spec.rs:35` |
-| sym-0d8267066ef89ab05c61 | `is_realtime` | function | Returns whether realtime applies to `ClockDomain`. | `src/graph/ports.rs:259` |
-| sym-963f249bd1aea6af2b47 | `is_sensitive` | function | Returns whether sensitive applies to `NodeConfig`. | `src/graph/node.rs:96` |
-| sym-2afbd1ea7c3f124dfc31 | `is_stateful` | function | Returns whether stateful applies to `NodeDescriptor`. | `src/graph/node.rs:246` |
-| sym-aade164ba212f0ffdcd9 | `is_terminal` | function | Returns whether terminal applies to `OperatorOutputRolePolicy`. | `src/graph/signal/operator.rs:86` |
+| sym-0d8267066ef89ab05c61 | `is_realtime` | function | Reports whether realtime is true for `ClockDomain`. | `src/graph/ports.rs:259` |
+| sym-963f249bd1aea6af2b47 | `is_sensitive` | function | Reports whether sensitive is true for `NodeConfig`. | `src/graph/node.rs:96` |
+| sym-2afbd1ea7c3f124dfc31 | `is_stateful` | function | Reports whether stateful is true for `NodeDescriptor`. | `src/graph/node.rs:246` |
+| sym-aade164ba212f0ffdcd9 | `is_terminal` | function | Reports whether terminal is true for `OperatorOutputRolePolicy`. | `src/graph/signal/operator.rs:86` |
 | sym-62d0ddd2396f4158a7c8 | `is_valid_for` | function | Returns `true` if this contract is compatible with the given partition. | `src/graph/partition.rs:107` |
 | sym-5c57b5f3925d88b78690 | `is_well_formed` | function | Reports whether this value follows the portable node-type syntax. | `src/graph/node.rs:25` |
 | sym-e800a22871e2d39d4a92 | `iter` | function | Iterates over the values held by `NodeConfig`. | `src/graph/node.rs:108` |
@@ -241,7 +241,7 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-5fa61a47369bd239fced | `payload_size_bytes` | function | Returns the payload size bytes held by `SignalEnvelope`. | `src/graph/signal/envelope.rs:66` |
 | sym-c3632754280e719cb8a0 | `permission` | function | Returns the permission associated with `AsyncOperatorManifest`. | `src/graph/signal/operator.rs:204` |
 | sym-221910aa2a407a20b2a6 | `plan` | function | Lower a verified IR into an execution-ready plan. | `src/graph/compile/plan.rs:24` |
-| sym-874507cffde971fe579a | `pocketstation::graph::builtins::register_builtins` | function | Registers builtins for `builtins`. | `src/graph/builtins.rs:220` |
+| sym-874507cffde971fe579a | `pocketstation::graph::builtins::register_builtins` | function | Registers the passthrough, gain, and mono-mix node factories in the supplied registry. | `src/graph/builtins.rs:220` |
 | sym-7db5666d2dff33bc81b5 | `policy_epoch` | function | Returns the policy epoch associated with `SignalLineage`. | `src/graph/signal/lineage.rs:80` |
 | sym-0321107d9ee385b6a2d9 | `port_name` | function | Returns the port name held by `PortPrepareContext`. | `src/graph/node.rs:341` |
 | sym-1b072df2e8c199b88812 | `prepare` | function | Prepares resources required by `PassthroughNode`. | `src/graph/builtins.rs:98` |
@@ -255,8 +255,8 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-b1f93c6ba89bb907ab5e | `rank` | function | Returns the rank associated with `EdgeObservabilityLevel`. | `src/graph/ports.rs:301` |
 | sym-f2823e099d189909ba5f | `realtime_audio` | function | Generic realtime PCM edge. Concrete sample rate, frame size, and channel layout are negotiated from connected ports. | `src/graph/ports.rs:391` |
 | sym-127d4e8eac621aa2cd73 | `register` | function | Registers a node definition with `NodeRegistry` while preserving unique identities. | `src/graph/registry.rs:77` |
-| sym-d26f92546b597ee8eef7 | `register_async` | function | Registers async for `NodeRegistry`. | `src/graph/registry.rs:89` |
-| sym-38ceb9e02ee487d3eb18 | `register_definition` | function | Registers definition for `NodeRegistry`. | `src/graph/registry.rs:112` |
+| sym-d26f92546b597ee8eef7 | `register_async` | function | Validates and registers one asynchronous operator factory with `NodeRegistry`. | `src/graph/registry.rs:89` |
+| sym-38ceb9e02ee487d3eb18 | `register_definition` | function | Registers one validated node definition with `NodeRegistry`. | `src/graph/registry.rs:112` |
 | sym-7a0c4d40c5310e826b12 | `required` | function | Returns the required held by `PortSpec`. | `src/graph/ports.rs:233` |
 | sym-6127dbc8a3fa24244d1a | `requires_realtime_safety` | function | Returns `true` if the partition requires strict real-time safety. | `src/graph/partition.rs:55` |
 | sym-8a92331d70fc48323ebd | `revision` | function | Returns the revision held by `AsyncOperatorManifest`. | `src/graph/signal/operator.rs:180` |
@@ -278,7 +278,7 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-67a67719d3a5121b84ba | `spec` | function | Returns the spec associated with `Pipeline`. | `src/graph/dsl.rs:86` |
 | sym-428715befe67be9cea63 | `stream_id` | function | Returns the stream identifier held by `SignalLineage`. | `src/graph/signal/lineage.rs:62` |
 | sym-ba4f5e56d43535277f59 | `supports` | function | Returns whether supports is true for `SignalPayload`. | `src/graph/signal/payload.rs:17` |
-| sym-e855bceefb46d8582818 | `supports_signal` | function | Returns whether supports signal applies to `MediaCaps`. | `src/graph/ports.rs:142` |
+| sym-e855bceefb46d8582818 | `supports_signal` | function | Reports whether supports signal is true for `MediaCaps`. | `src/graph/ports.rs:142` |
 | sym-e8e668a7e4cace617ce0 | `syntax_version` | function | Returns the syntax version held by `OperatorId`. | `src/graph/operator.rs:35` |
 | sym-a455ae640500e774203c | `text` | function | Convenience constructor for text ports. | `src/graph/signal/spec.rs:279` |
 | sym-50d2b8c719e7733cec6b | `timestamp_end_ns` | function | Returns the timestamp end nanoseconds held by `SignalTiming`. | `src/graph/signal/timing.rs:65` |
@@ -298,10 +298,10 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-1a9b138a5be7f705864e | `validate` | function | Validates `SignalEnvelope` against its declared contract. | `src/graph/signal/envelope.rs:117` |
 | sym-de5e159b7b99c2a19739 | `validate` | function | Validates `AsyncOperatorManifest` against its declared contract. | `src/graph/signal/operator.rs:238` |
 | sym-9f7dee1de2898f998aab | `validate` | function | Validates `SignalSpec` against its declared contract. | `src/graph/signal/spec.rs:328` |
-| sym-f633d73f182b59133294 | `validate_config` | function | Validates config for `PassthroughFactory`. | `src/graph/builtins.rs:82` |
-| sym-c4442f34c129c1d217e7 | `validate_config` | function | Validates config for `GainFactory`. | `src/graph/builtins.rs:122` |
-| sym-fd6807d3d194959e8584 | `validate_config` | function | Validates config for `MonoMixFactory`. | `src/graph/builtins.rs:181` |
-| sym-cf0afdda5671d8271d09 | `validate_config` | function | Validates config for `NodeDefinitionRef`. | `src/graph/registry.rs:47` |
+| sym-f633d73f182b59133294 | `validate_config` | function | Validates supplied node configuration against the schema declared by `PassthroughFactory`. | `src/graph/builtins.rs:82` |
+| sym-c4442f34c129c1d217e7 | `validate_config` | function | Validates supplied node configuration against the schema declared by `GainFactory`. | `src/graph/builtins.rs:122` |
+| sym-fd6807d3d194959e8584 | `validate_config` | function | Validates supplied node configuration against the schema declared by `MonoMixFactory`. | `src/graph/builtins.rs:181` |
+| sym-cf0afdda5671d8271d09 | `validate_config` | function | Validates supplied node configuration against the schema declared by `NodeDefinitionRef`. | `src/graph/registry.rs:47` |
 | sym-b8f00f5913d4dc0b8ea1 | `wire_id` | function | Stable language-neutral identifier for the fundamental wire class. Semantic role and schema remain separate fields. | `src/graph/signal/spec.rs:236` |
 | sym-5c3a13ef33fc1607a0a2 | `with` | function | Returns `NodeConfig` with the supplied entry applied. | `src/graph/node.rs:66` |
 | sym-4e45baf748617df48a70 | `with_backpressure` | function | Sets the backpressure on `EdgeContract` and returns the updated value. | `src/graph/ports.rs:370` |
@@ -317,7 +317,7 @@ For **Graph and route contracts**, the generated [docs.rs API](https://docs.rs/p
 | sym-887474f5adecb94d44db | `with_sensitive` | function | Adds a setup-time value whose normal debug representation is redacted. | `src/graph/node.rs:81` |
 | sym-85c70119164eb3ec742a | `pocketstation::graph` | module | Stable signal, port, capability, partition, and extension contracts. | `src/graph/mod.rs:1` |
 | sym-c29c3e128aaa67f89e86 | `pocketstation::graph::builtins::GainFactory` | struct | Constructs gain implementations from validated declarations. | `src/graph/builtins.rs:107` |
-| sym-8434e3c12de20a019e55 | `pocketstation::graph::builtins::GainNode` | struct | Executes the graph-node behavior defined for gain. | `src/graph/builtins.rs:149` |
+| sym-8434e3c12de20a019e55 | `pocketstation::graph::builtins::GainNode` | struct | Represents the executable graph node for gain. | `src/graph/builtins.rs:149` |
 | sym-b9cafd7e4da90ab989df | `pocketstation::graph::builtins::MonoMixFactory` | struct | Constructs mono mix implementations from validated declarations. | `src/graph/builtins.rs:166` |
 
 ## Interpretation
@@ -339,6 +339,6 @@ The **Graph and route contracts** inventory records compiler-visible or extracte
 
 The claims on **Graph and route contracts** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/graph/mod.rs:1-67` (`DIRECT`)
+- `src/graph/mod.rs:1-5` (`DECLARED`)
 
 For **Graph and route contracts**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

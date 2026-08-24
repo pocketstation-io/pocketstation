@@ -4,7 +4,13 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/runtime/audio/router.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -84,7 +90,13 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/runtime/audio/router.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -671,17 +683,253 @@
       "classification": "DIRECT",
       "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
       "lines": [
-        1,
-        276
+        18,
+        22
       ],
       "path": "src/endpoint/contract.rs",
-      "symbol": null
+      "symbol": "EndpointAudioFrame"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "frame"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "route_enqueued_at_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "route_received_at_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        25,
+        35
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "from_route_delivery"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        37,
+        39
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "into_inner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        41,
+        43
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "source_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        45,
+        47
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "stream_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        49,
+        51
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "sequence_number"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        53,
+        55
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "timestamp_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        57,
+        59
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "sample_rate_hz"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        61,
+        63
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "channels"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        65,
+        67
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "sample_format"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        69,
+        71
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "samples"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        73,
+        75
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "lineage"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        78,
+        80
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "route_enqueued_at_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        83,
+        85
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "route_received_at_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        92,
+        94
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "EndpointAudioReceiver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        93,
+        93
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "receiver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        97,
+        99
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        101,
+        103
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "into_inner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        106,
+        108
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "into_plan_edge_receiver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        110,
+        120
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "try_recv"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6296b4fe066f187819c8bf6d62af45ce8278ae4d30234a22523e850115f4df9d",
+      "lines": [
+        122,
+        124
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": "is_abandoned"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/runtime/audio/router.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -714,7 +962,13 @@
   "generated_from": "not_applicable",
   "git_object": "b669ae1d8393ce02515644f69c20554c493ef225",
   "implemented_by": [
+    "CALLS:src/runtime/audio/router.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -738,7 +992,13 @@
     "EndpointPortInput"
   ],
   "imported_by": [
+    "CALLS:src/runtime/audio/router.rs",
     "CONTAINS:src/endpoint/mod.rs",
+    "IMPLEMENTS:src/abi/executable_extension.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/recording/endpoint.rs",
     "IMPORTS:src/endpoint/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/conformance.rs",
@@ -763,12 +1023,13 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "#[cfg(feature = \"internal-testing\")]",
-    "crate::endpoint::{ EndpointFailure, EndpointPreparationGroup, EndpointPrepareContext, PreparedEndpointDriver, }",
-    "crate::frame::{FrameLineage, SampleFormat, SampleSpec, SourceId, StreamId}",
-    "crate::graph::{EdgeContract, MediaCaps, PrepareContext, SignalEnvelope, SignalSpec}",
-    "crate::runtime::{ PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver, TypedEdgeReceiver, }",
-    "std::sync::Arc"
+    "Consumes configuration at src/endpoint/contract.rs:105.",
+    "Consumes configuration at src/endpoint/contract.rs:146.",
+    "Depends on `crate::endpoint::{ EndpointFailure, EndpointPreparationGroup, EndpointPrepareContext, PreparedEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::frame::{FrameLineage, SampleFormat, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, MediaCaps, PrepareContext, SignalEnvelope, SignalSpec}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver, TypedEdgeReceiver, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -777,36 +1038,36 @@
   "module": "pocketstation::endpoint::contract",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::contract` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:channels",
-    "fn:from_route_delivery",
-    "fn:into_inner",
-    "fn:into_plan_edge_receiver",
-    "fn:is_abandoned",
-    "fn:lineage",
-    "fn:mark_discontinuity",
-    "fn:mark_worker_failure",
-    "fn:new",
-    "fn:observation_handle",
-    "fn:observations",
-    "fn:plan_edge_observation_handle",
-    "fn:recv",
-    "fn:route_enqueued_at_ns",
-    "fn:route_received_at_ns",
-    "fn:sample_format",
-    "fn:sample_rate_hz",
-    "fn:samples",
-    "fn:sequence_number",
-    "fn:source_id",
-    "fn:stream_id",
-    "fn:timestamp_ns",
-    "fn:try_recv",
-    "struct:EndpointAudioFrame",
-    "struct:EndpointAudioReceiver",
-    "struct:EndpointSignalReceiver"
+    "Declares public fn `channels`.",
+    "Declares public fn `from_route_delivery`.",
+    "Declares public fn `into_inner`.",
+    "Declares public fn `into_plan_edge_receiver`.",
+    "Declares public fn `is_abandoned`.",
+    "Declares public fn `lineage`.",
+    "Declares public fn `mark_discontinuity`.",
+    "Declares public fn `mark_worker_failure`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observation_handle`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `plan_edge_observation_handle`.",
+    "Declares public fn `recv`.",
+    "Declares public fn `route_enqueued_at_ns`.",
+    "Declares public fn `route_received_at_ns`.",
+    "Declares public fn `sample_format`.",
+    "Declares public fn `sample_rate_hz`.",
+    "Declares public fn `samples`.",
+    "Declares public fn `sequence_number`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `stream_id`.",
+    "Declares public fn `timestamp_ns`.",
+    "Declares public fn `try_recv`.",
+    "Declares public struct `EndpointAudioFrame`.",
+    "Declares public struct `EndpointAudioReceiver`.",
+    "Declares public struct `EndpointSignalReceiver`."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/contract.rs",
@@ -1087,8 +1348,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::contract responsibilities, including Read-only audio frame delivered to an external endpoint.; Returns the source identifier held by `EndpointAudioFrame`.; Returns the stream identifier held by `EndpointAudioFrame`.."
+    "classification": "DECLARED",
+    "text": "Read-only audio frame delivered to an external endpoint. Returns the source identifier held by `EndpointAudioFrame`. Returns the stream identifier held by `EndpointAudioFrame`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1125,6 +1386,9 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/identity.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/runtime/audio/router.rs",
     "REFERENCES:src/endpoint/identity.rs",
     "REFERENCES:src/endpoint/runtime.rs",
     "REFERENCES:src/frame/audio.rs",
@@ -1171,7 +1435,7 @@
     "pocketstation::endpoint::contract::EndpointAudioReceiver: Exclusive consumer for one bounded realtime-audio endpoint edge.",
     "into_plan_edge_receiver: Converts `EndpointAudioReceiver` into plan edge receiver.",
     "try_recv: Attempts to receive the next value from `EndpointAudioReceiver` without waiting.",
-    "is_abandoned: Returns whether abandoned applies to `EndpointAudioReceiver`.",
+    "is_abandoned: Reports whether abandoned is true for `EndpointAudioReceiver`.",
     "mark_discontinuity: Marks the next value from `EndpointAudioReceiver` as discontinuous.",
     "mark_worker_failure: Returns the mark worker failure held by `EndpointAudioReceiver`.",
     "observations: Snapshots the bounded edge counters for this endpoint input.",
@@ -1179,11 +1443,11 @@
     "pocketstation::endpoint::contract::EndpointSignalReceiver: Exclusive consumer for one bounded asynchronous signal endpoint edge.",
     "try_recv: Attempts to receive the next value from `EndpointSignalReceiver` without waiting.",
     "recv: Receives the next value from `EndpointSignalReceiver`.",
-    "is_abandoned: Returns whether abandoned applies to `EndpointSignalReceiver`.",
-    "pocketstation::endpoint::contract::EndpointReceiver: Enumerates the supported endpoint receiver cases.",
+    "is_abandoned: Reports whether abandoned is true for `EndpointSignalReceiver`.",
+    "pocketstation::endpoint::contract::EndpointReceiver: Owns the bounded receiver for the media class accepted by an endpoint.",
     "pocketstation::endpoint::contract::EndpointReceiver::Audio: Represents the audio alternative defined by `EndpointReceiver`.",
-    "EndpointReceiver::Audio::receiver: Stores the receiver used by `Audio`.",
-    "EndpointReceiver::Audio::sample_spec: Stores the sample spec used by `Audio`.",
+    "EndpointReceiver::Audio::receiver: Owns the receiver endpoint through which `Audio` exchanges values.",
+    "EndpointReceiver::Audio::sample_spec: Declares the sample rate, channel layout, and format used by `Audio`.",
     "pocketstation::endpoint::contract::EndpointReceiver::Signal: Represents the signal alternative defined by `EndpointReceiver`.",
     "pocketstation::endpoint::contract::EndpointPortInput: Carries typed input for endpoint port.",
     "port_name: Returns the port name held by `EndpointPortInput`.",

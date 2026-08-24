@@ -54,7 +54,7 @@
       "content_hash": "c7b43681119009247762bd2338b1a0a8bb3573cbe8dd5876d799d17b4f5eb455",
       "lines": [
         1,
-        46
+        21
       ],
       "path": "docs/architecture/CAPTURE_PATHS.json",
       "symbol": null
@@ -90,7 +90,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`docs/architecture/CAPTURE_PATHS.json` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [

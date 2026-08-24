@@ -62,8 +62,8 @@
       "classification": "DIRECT",
       "content_hash": "ae7e186966ffb98349726e64500521d45cb8211454bf7aff6793516b28d61410",
       "lines": [
-        1,
-        183
+        6,
+        26
       ],
       "path": "native/macos/asp/SharedRing.h",
       "symbol": null
@@ -129,7 +129,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/SharedRing.h` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [],
   "outputs": [

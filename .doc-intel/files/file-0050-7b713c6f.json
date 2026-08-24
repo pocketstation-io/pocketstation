@@ -53,8 +53,8 @@
       "classification": "DIRECT",
       "content_hash": "81e625b15d12bc6a6f4675899231c89ced8cc86df0dc4829b7840a88cf9c8866",
       "lines": [
-        1,
-        76
+        6,
+        26
       ],
       "path": "native/macos/asp/source_discovery.h",
       "symbol": null
@@ -90,7 +90,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/source_discovery.h` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [],
   "outputs": [

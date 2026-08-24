@@ -511,14 +511,67 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
       "lines": [
-        1,
-        643
+        599,
+        642
       ],
-      "path": "src/session/lifecycle/tests/engine.rs",
-      "symbol": null
+      "path": "src/session/lifecycle/tests/engine.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        536,
+        574
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        574,
+        599
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        317,
+        365
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        440,
+        536
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        365,
+        405
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        405,
+        440
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -562,14 +615,14 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
-    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointDriverRegistryError, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
-    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
-    "crate::graph::{NodeTypeId, PrepareContext}",
-    "crate::session::{ ApplicationSelector, CaptureBackendSet, DeviceSelector, EndpointConfiguration, EndpointExtensionRegistrationError, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioPollError, Session, SessionCompileError, SessionEngineBuilder, SessionEngineStartError, SessionStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::time::{Duration, Instant}"
+    "Depends on `crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }` through a declared Rust import.",
+    "Depends on `crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointDriverRegistryError, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::{NodeTypeId, PrepareContext}` through a declared Rust import.",
+    "Depends on `crate::session::{ ApplicationSelector, CaptureBackendSet, DeviceSelector, EndpointConfiguration, EndpointExtensionRegistrationError, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioPollError, Session, SessionCompileError, SessionEngineBuilder, SessionEngineStartError, SessionStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -636,18 +689,20 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::tests::engine` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-690f1327b10f770a5f78",
     "pattern-95f5108aef0b18289bdb"
   ],
   "outputs": [
-    "Err(CaptureError::BackendInit(",
-    "Err(EndpointExtensionRegistrationError::Driver(",
-    "Err(PolledAudioPollError::Empty) if Instant::now() < deadline => {",
-    "Err(error) => error,",
-    "Err(error) => panic!(\"polled endpoint did not receive capture: {error}\"),"
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:496.",
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:499.",
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:558.",
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:570.",
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:592.",
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:62.",
+    "Creates a typed failure at src/session/lifecycle/tests/engine.rs:633."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/tests/engine.rs",
@@ -921,7 +976,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::tests::engine responsibilities, including the src/session/lifecycle/tests/engine boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::session::lifecycle::tests::engine`."
   },
   "queues": [],
   "recovery_behavior": [],

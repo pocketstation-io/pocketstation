@@ -29,7 +29,7 @@
       "content_hash": "2d9400cdf4e31b5fdfdab7926da812f8d46891388c3b3e4e38a3136296d4d0a5",
       "lines": [
         1,
-        76
+        21
       ],
       "path": "docs/compatibility/c-abi-v1.baseline",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`docs/compatibility/c-abi-v1.baseline` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [

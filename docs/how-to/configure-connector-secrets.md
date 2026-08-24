@@ -1,6 +1,6 @@
 # Configure connector secrets
 
-<!-- claims: CLM-GUIDE-016-CAP-001,CLM-GUIDE-016-CAP-002,CLM-GUIDE-016-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-016-SCOPE-001,CLM-GUIDE-016-TEXT-001,CLM-GUIDE-016-TEXT-002,CLM-GUIDE-016-TEXT-003,CLM-GUIDE-016-TEXT-004,CLM-GUIDE-016-TEXT-005,CLM-GUIDE-016-TEXT-006,CLM-GUIDE-016-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,47 @@ A manifest field for every accepted value and a decision about which fields cont
 3. Construct ConnectorSecret instead of ordinary text values.
 4. Read validated values during preparation.
 5. Keep diagnostics on redacted representations.
+
+## Concrete repository example
+
+The executable repository test `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` (`test-c7a1a4edccbfbf6d9c04`) shows the concrete API sequence and asserted outcome at `src/connector/configuration.rs:642`.
+
+```rust
+    use super::*;
+
+    #[test]
+    fn given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely() {
+        let schema = ConnectorConfigurationSchema::new(
+            1,
+            vec![ConnectorConfigurationField::new(
+                "bootstrap.servers",
+                ConnectorConfigurationValueKind::Text,
+                ConnectorConfigurationRequirement::Required,
+                "Provider-native bootstrap address",
+            )],
+        )
+        .expect("provider-owned schema");
+        let configuration = ConnectorConfiguration::new().with(
+            "bootstrap.servers",
+            ConnectorConfigurationValue::Text("relay.example:443".to_owned()),
+        );
+
+        let resolved = schema
+            .resolve(&configuration)
+            .expect("resolved configuration");
+
+        assert_eq!(
+            resolved.get("bootstrap.servers"),
+            Some(&ConnectorConfigurationValue::Text(
+                "relay.example:443".to_owned()
+            ))
+        );
+    }
+```
+
+```bash
+cargo test --all-features given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely
+```
 
 ## Important consequence
 
@@ -71,7 +112,7 @@ Executable evidence selected for **Configure connector secrets** is limited to e
 | `pocketstation::connector::configuration::ConnectorSecret` | struct | Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop. | `src/connector/configuration.rs:11` |
 | `pocketstation::connector::configuration::ResolvedConnectorConfiguration` | struct | Configures resolved connector behavior at its owning API boundary. | `src/connector/configuration.rs:391` |
 | `pocketstation::connector::manifest::ConnectorCapability` | struct | Declares a capability advertised by a connector manifest. | `src/connector/manifest.rs:12` |
-| `pocketstation::connector::manifest::ConnectorManifest` | struct | Describes the connector manifest contract. | `src/connector/manifest.rs:75` |
+| `pocketstation::connector::manifest::ConnectorManifest` | struct | Declares connector identity, API revision, ports, capabilities, requirements, and configuration schema. | `src/connector/manifest.rs:75` |
 
 ## Related documentation
 
@@ -88,7 +129,30 @@ Executable evidence selected for **Configure connector secrets** is limited to e
 
 The claims on **Configure connector secrets** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/connector/configuration.rs:1-673` (`DIRECT`)
-- `src/secret.rs:1-13` (`DIRECT`)
+- `src/connector/configuration.rs:7-7` (`DIRECT`)
+- `src/connector/configuration.rs:8-8` (`DIRECT`)
+- `src/connector/configuration.rs:10-10` (`DIRECT`)
+- `src/connector/configuration.rs:10-10` (`DIRECT`)
+- `src/connector/configuration.rs:11-11` (`DIRECT`)
+- `src/connector/configuration.rs:11-11` (`DIRECT`)
+- `src/connector/configuration.rs:14-31` (`DIRECT`)
+- `src/connector/configuration.rs:37-39` (`DIRECT`)
+- `src/connector/configuration.rs:43-45` (`DIRECT`)
+- `src/connector/configuration.rs:49-51` (`DIRECT`)
+- `src/connector/configuration.rs:54-54` (`DIRECT`)
+- `src/connector/configuration.rs:54-54` (`DIRECT`)
+- `src/connector/configuration.rs:54-54` (`DIRECT`)
+- `src/connector/configuration.rs:55-63` (`DIRECT`)
+- `src/connector/configuration.rs:56-56` (`DIRECT`)
+- `src/connector/configuration.rs:57-57` (`DIRECT`)
+- `src/connector/configuration.rs:58-58` (`DIRECT`)
+- `src/connector/configuration.rs:59-59` (`DIRECT`)
+- `src/connector/configuration.rs:60-60` (`DIRECT`)
+- `src/connector/configuration.rs:61-61` (`DIRECT`)
+- `src/connector/configuration.rs:62-62` (`DIRECT`)
+- `src/connector/configuration.rs:65-65` (`DIRECT`)
+- `src/connector/configuration.rs:65-65` (`DIRECT`)
+- `src/connector/configuration.rs:65-65` (`DIRECT`)
+- `src/secret.rs:3-12` (`DIRECT`)
 
 For **Configure connector secrets**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

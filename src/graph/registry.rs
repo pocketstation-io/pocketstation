@@ -12,7 +12,7 @@ use crate::graph::OperatorId;
 pub trait NodeFactory: Send + Sync {
     #[doc = "Returns the descriptor held by `NodeFactory`."]
     fn descriptor(&self) -> NodeDescriptor;
-    #[doc = "Validates config for `NodeFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `NodeFactory`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;
     #[doc = "Instantiates the runtime node described by `NodeFactory`."]
     fn instantiate(
@@ -26,7 +26,7 @@ pub trait NodeFactory: Send + Sync {
 pub trait NodeDefinition: Send + Sync {
     #[doc = "Returns the descriptor held by `NodeDefinition`."]
     fn descriptor(&self) -> NodeDescriptor;
-    #[doc = "Validates config for `NodeDefinition`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `NodeDefinition`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;
 }
 
@@ -36,7 +36,7 @@ enum RegistryEntry {
     Definition(Arc<dyn NodeDefinition>),
 }
 
-#[doc = "Enumerates the supported node definition ref cases."]
+#[doc = "Borrows either a synchronous or asynchronous registered node definition."]
 pub enum NodeDefinitionRef<'registry> {
     #[doc = "Represents the runtime case of `NodeDefinitionRef`."]
     Runtime(&'registry Arc<dyn NodeFactory>),
@@ -56,7 +56,7 @@ impl NodeDefinitionRef<'_> {
         }
     }
 
-    #[doc = "Validates config for `NodeDefinitionRef`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `NodeDefinitionRef`."]
     pub fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
         match self {
             Self::Runtime(factory) => factory.validate_config(config),
@@ -67,19 +67,19 @@ impl NodeDefinitionRef<'_> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as node registration error."]
+#[doc = "Classifies failures produced during node registration."]
 pub enum NodeRegistrationError {
     #[error(transparent)]
-    #[doc = "Reports invalid async manifest."]
+    #[doc = "Reports that the supplied async manifest is invalid."]
     InvalidAsyncManifest(#[from] AsyncOperatorManifestError),
     #[error("node type is already registered: {node_type_id}")]
-    #[doc = "Reports duplicate node type."]
+    #[doc = "Reports that node type duplicates an existing declaration or record."]
     DuplicateNodeType {
         #[doc = "Identifies the node type identifier recorded by `DuplicateNodeType`."]
         node_type_id: String,
     },
     #[error("operator id is already registered: {operator_id}")]
-    #[doc = "Reports duplicate operator identifier."]
+    #[doc = "Reports that operator identifier duplicates an existing declaration or record."]
     DuplicateOperatorId {
         #[doc = "Identifies the operator identifier recorded by `DuplicateOperatorId`."]
         operator_id: String,
@@ -112,7 +112,7 @@ impl NodeRegistry {
         Ok(())
     }
 
-    #[doc = "Registers async for `NodeRegistry`."]
+    #[doc = "Validates and registers one asynchronous operator factory with `NodeRegistry`."]
     pub fn register_async(
         &mut self,
         factory: Arc<dyn AsyncOperatorFactory>,
@@ -136,7 +136,7 @@ impl NodeRegistry {
         Ok(())
     }
 
-    #[doc = "Registers definition for `NodeRegistry`."]
+    #[doc = "Registers one validated node definition with `NodeRegistry`."]
     pub fn register_definition(
         &mut self,
         definition: Arc<dyn NodeDefinition>,

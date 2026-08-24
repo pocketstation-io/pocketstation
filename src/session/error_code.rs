@@ -8,39 +8,39 @@ use crate::session::{PolledAudioPollError, SessionError, SessionStartError, Sess
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionDeclarationErrorCode {
-    #[doc = "Reports no sources."]
+    #[doc = "Reports that no sources is available."]
     NoSources,
-    #[doc = "Reports no routes."]
+    #[doc = "Reports that no routes is available."]
     NoRoutes,
-    #[doc = "Reports no source outputs."]
+    #[doc = "Reports that no source outputs is available."]
     NoSourceOutputs,
-    #[doc = "Reports invalid selector."]
+    #[doc = "Reports that the supplied selector is invalid."]
     InvalidSelector,
-    #[doc = "Reports invalid endpoint."]
+    #[doc = "Reports that the supplied endpoint is invalid."]
     InvalidEndpoint,
-    #[doc = "Reports invalid operator."]
+    #[doc = "Reports that the supplied operator is invalid."]
     InvalidOperator,
-    #[doc = "Reports invalid route."]
+    #[doc = "Reports that the supplied route is invalid."]
     InvalidRoute,
-    #[doc = "Reports foreign endpoint."]
+    #[doc = "Reports that endpoint belongs to a different owning Session or declaration."]
     ForeignEndpoint,
-    #[doc = "Reports draft frozen."]
+    #[doc = "Classifies a failure at the draft frozen stage or component of `SessionDeclarationErrorCode`."]
     DraftFrozen,
-    #[doc = "Reports internal state unavailable."]
+    #[doc = "Reports that internal state is unavailable."]
     InternalStateUnavailable,
-    #[doc = "Reports id exhausted."]
+    #[doc = "Reports that the available id range or capacity is exhausted."]
     IdExhausted,
-    #[doc = "Reports unsupported version."]
+    #[doc = "Reports that the requested version is unsupported."]
     UnsupportedVersion,
-    #[doc = "Reports unknown endpoint."]
+    #[doc = "Reports that the referenced endpoint is not declared or registered."]
     UnknownEndpoint,
-    #[doc = "Reports unknown stem."]
+    #[doc = "Reports that the referenced stem is not declared or registered."]
     UnknownStem,
-    #[doc = "Reports unknown source."]
+    #[doc = "Reports that the referenced source is not declared or registered."]
     UnknownSource,
-    #[doc = "Reports unknown operator instance."]
+    #[doc = "Reports that the referenced operator instance is not declared or registered."]
     UnknownOperatorInstance,
-    #[doc = "Reports operator has no destination."]
+    #[doc = "Classifies a failure at the operator has no destination stage or component of `SessionDeclarationErrorCode`."]
     OperatorHasNoDestination,
 }
 
@@ -77,47 +77,47 @@ impl SessionDeclarationErrorCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStartErrorCode {
-    #[doc = "Reports host setup failed."]
+    #[doc = "Reports that host setup failed."]
     HostSetupFailed,
-    #[doc = "Reports unsupported platform."]
+    #[doc = "Reports that the requested platform is unsupported."]
     UnsupportedPlatform,
-    #[doc = "Reports start cancelled."]
+    #[doc = "Reports that start was cancelled before completion."]
     StartCancelled,
     #[doc = "Reports invalid selector."]
     InvalidSelector,
-    #[doc = "Reports declaration invalid."]
+    #[doc = "Classifies a failure at the declaration invalid stage or component of `SessionStartErrorCode`."]
     DeclarationInvalid,
-    #[doc = "Reports compile failed."]
+    #[doc = "Reports that compile failed."]
     CompileFailed,
-    #[doc = "Reports runtime prepare failed."]
+    #[doc = "Reports that runtime prepare failed."]
     RuntimePrepareFailed,
-    #[doc = "Reports invalid start options."]
+    #[doc = "Reports that the supplied start options is invalid."]
     InvalidStartOptions,
-    #[doc = "Reports unsupported source topology."]
+    #[doc = "Reports that the requested source topology is unsupported."]
     UnsupportedSourceTopology,
-    #[doc = "Reports missing endpoint declaration."]
+    #[doc = "Reports that the required endpoint declaration is missing."]
     MissingEndpointDeclaration,
-    #[doc = "Reports endpoint prepare failed."]
+    #[doc = "Reports that endpoint prepare failed."]
     EndpointPrepareFailed,
-    #[doc = "Reports capture permission denied."]
+    #[doc = "Reports that capture permission was denied by the active permission or policy boundary."]
     CapturePermissionDenied,
-    #[doc = "Reports capture source unavailable."]
+    #[doc = "Reports that capture source is unavailable."]
     CaptureSourceUnavailable,
-    #[doc = "Reports capture unsupported."]
+    #[doc = "Reports that capture is unsupported by the active backend or contract."]
     CaptureUnsupported,
-    #[doc = "Reports capture backend failed."]
+    #[doc = "Reports that capture backend failed."]
     CaptureBackendFailed,
-    #[doc = "Reports endpoint start failed."]
+    #[doc = "Reports that endpoint start failed."]
     EndpointStartFailed,
-    #[doc = "Reports runtime start failed."]
+    #[doc = "Reports that runtime start failed."]
     RuntimeStartFailed,
-    #[doc = "Reports missing audio receipt."]
+    #[doc = "Reports that the required audio receipt is missing."]
     MissingAudioReceipt,
-    #[doc = "Reports missing recording configuration."]
+    #[doc = "Reports that the required recording configuration is missing."]
     MissingRecordingConfiguration,
-    #[doc = "Reports missing event receiver."]
+    #[doc = "Reports that the required event receiver is missing."]
     MissingEventReceiver,
-    #[doc = "Reports trace recorder setup failed."]
+    #[doc = "Reports that trace recorder setup failed."]
     TraceRecorderSetupFailed,
 }
 
@@ -154,7 +154,7 @@ impl SessionStartErrorCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionRuntimeErrorCode {
-    #[doc = "Reports missing metrics snapshot."]
+    #[doc = "Reports that the required metrics snapshot is missing."]
     MissingMetricsSnapshot,
 }
 
@@ -173,7 +173,7 @@ impl SessionRuntimeErrorCode {
 pub enum PolledAudioPollErrorCode {
     #[doc = "Represents an empty value or collection."]
     Empty,
-    #[doc = "Reports lease capacity exhausted."]
+    #[doc = "Reports that the available lease capacity range or capacity is exhausted."]
     LeaseCapacityExhausted,
     #[doc = "Reports internal state unavailable."]
     InternalStateUnavailable,
@@ -219,19 +219,19 @@ impl SessionStopCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStopFailureCode {
-    #[doc = "Reports runtime worker panicked."]
+    #[doc = "Reports that runtime worker panicked while the operation was active."]
     RuntimeWorkerPanicked,
-    #[doc = "Reports capture finalization failed."]
+    #[doc = "Reports that capture finalization failed."]
     CaptureFinalizationFailed,
-    #[doc = "Reports operator finalization failed."]
+    #[doc = "Reports that operator finalization failed."]
     OperatorFinalizationFailed,
-    #[doc = "Reports endpoint finalization failed."]
+    #[doc = "Reports that endpoint finalization failed."]
     EndpointFinalizationFailed,
-    #[doc = "Reports runtime failed."]
+    #[doc = "Reports that runtime failed."]
     RuntimeFailed,
-    #[doc = "Reports lineage failed."]
+    #[doc = "Reports that lineage failed."]
     LineageFailed,
-    #[doc = "Reports source send rejected."]
+    #[doc = "Reports that source send was rejected by the destination contract."]
     SourceSendRejected,
 }
 

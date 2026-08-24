@@ -21,6 +21,7 @@
     }
   ],
   "called_by": [
+    "CALLS:src/session/extensions/native_library.rs",
     "CONTAINS:src/native_extension/mod.rs",
     "IMPORTS:src/native_extension/mod.rs"
   ],
@@ -71,6 +72,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/extensions/native_library.rs",
     "CONTAINS:src/native_extension/mod.rs",
     "IMPORTS:src/native_extension/mod.rs"
   ],
@@ -254,16 +256,77 @@
       "classification": "DIRECT",
       "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
       "lines": [
-        1,
-        272
+        19,
+        19
       ],
       "path": "src/native_extension/library.rs",
-      "symbol": null
+      "symbol": "EXTENSION_LIBRARY_ENTRYPOINT_V1_NUL"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        21,
+        24
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": "LoadedNativeExtensionLibrary"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": "receipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": "registrations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        33,
+        230
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": "load_native_extension_library"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        232,
+        263
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": "validate_library_descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        265,
+        271
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": "status_ok"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/extensions/native_library.rs",
     "CONTAINS:src/native_extension/mod.rs",
     "IMPORTS:src/native_extension/mod.rs"
   ],
@@ -330,11 +393,13 @@
   "generated_from": "not_applicable",
   "git_object": "3b256be44541e176fad2fc10899c2cd1b4ad85ab",
   "implemented_by": [
+    "CALLS:src/session/extensions/native_library.rs",
     "CONTAINS:src/native_extension/mod.rs",
     "IMPORTS:src/native_extension/mod.rs"
   ],
   "implements": [],
   "imported_by": [
+    "CALLS:src/session/extensions/native_library.rs",
     "CONTAINS:src/native_extension/mod.rs",
     "IMPORTS:src/native_extension/mod.rs"
   ],
@@ -347,13 +412,13 @@
     "super::{ NativeExtensionKind, NativeExtensionLibrary, NativeExtensionLibraryError, NativeExtensionLibraryErrorCode, NativeExtensionRegistration, PksExtensionCallbacks, PksExtensionDescriptor, PksExtensionKind, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksSessionStatus, PksSessionStatusCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }"
   ],
   "inputs": [
-    "// function pointer Options and raw pointers use null as their empty",
-    "crate::abi::executable_extension::{ build_registration_with_library, destroy_acquired_registration, ExecutableExtensionRegistration, MAX_LIBRARY_REGISTRATIONS, }",
-    "libloading::Library",
-    "std::collections::BTreeSet",
-    "std::path::Path",
-    "std::sync::Arc",
-    "super::{ NativeExtensionKind, NativeExtensionLibrary, NativeExtensionLibraryError, NativeExtensionLibraryErrorCode, NativeExtensionRegistration, PksExtensionCallbacks, PksExtensionDescriptor, PksExtensionKind, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksSessionStatus, PksSessionStatusCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }"
+    "Consumes configuration at src/native_extension/library.rs:130.",
+    "Depends on `crate::abi::executable_extension::{ build_registration_with_library, destroy_acquired_registration, ExecutableExtensionRegistration, MAX_LIBRARY_REGISTRATIONS, }` through a declared Rust import.",
+    "Depends on `libloading::Library` through a declared Rust import.",
+    "Depends on `std::collections::BTreeSet` through a declared Rust import.",
+    "Depends on `std::path::Path` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::{ NativeExtensionKind, NativeExtensionLibrary, NativeExtensionLibraryError, NativeExtensionLibraryErrorCode, NativeExtensionRegistration, PksExtensionCallbacks, PksExtensionDescriptor, PksExtensionKind, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksSessionStatus, PksSessionStatusCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -367,16 +432,22 @@
   "module": "pocketstation::native_extension::library",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::native_extension::library` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-00fd4d7df26c1bff9fd0"
   ],
   "outputs": [
-    "Err(format!(\"status={} detail={}\", status.code, status.detail))",
-    "fn:load_native_extension_library",
-    "return Err(NativeExtensionLibraryError::new(",
-    "struct:LoadedNativeExtensionLibrary"
+    "Creates a typed failure at src/native_extension/library.rs:169.",
+    "Creates a typed failure at src/native_extension/library.rs:201.",
+    "Creates a typed failure at src/native_extension/library.rs:237.",
+    "Creates a typed failure at src/native_extension/library.rs:244.",
+    "Creates a typed failure at src/native_extension/library.rs:256.",
+    "Creates a typed failure at src/native_extension/library.rs:269.",
+    "Creates a typed failure at src/native_extension/library.rs:37.",
+    "Creates a typed failure at src/native_extension/library.rs:58.",
+    "Declares public fn `load_native_extension_library`.",
+    "Declares public struct `LoadedNativeExtensionLibrary`."
   ],
   "package": "pocketstation",
   "path": "src/native_extension/library.rs",
@@ -425,7 +496,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::native extension::library responsibilities, including library; extension library entrypoint v1 nul; loaded native extension library."
+    "text": "Owns the internal library module, extension library entrypoint v1 nul constant, loaded native extension library struct, receipt struct field used by `pocketstation::native_extension::library`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -453,6 +524,9 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/session/extensions/native_library.rs",
     "REFERENCES:src/abi/executable_extension.rs",
     "REFERENCES:src/abi/session/abi.rs",
     "REFERENCES:src/native_extension/mod.rs"

@@ -1,6 +1,6 @@
 # Frames or signals are dropped
 
-<!-- claims: CLM-TRBL-006-CAP-001,CLM-TRBL-006-CAP-002,CLM-TRBL-006-CAP-003,CLM-TRBL-006-CAP-004,CLM-TRBL-006-CAP-005,CLM-TRBL-006-CAP-006,CLM-TRBL-006-CAP-007,CLM-TRBL-006-SOURCE-001 -->
+<!-- claims: CLM-TRBL-006-SCOPE-001,CLM-TRBL-006-TEXT-001,CLM-TRBL-006-TEXT-002,CLM-TRBL-006-TEXT-003,CLM-TRBL-006-TEXT-004,CLM-TRBL-006-TEXT-005,CLM-TRBL-006-TEXT-006,CLM-TRBL-006-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,7 +78,30 @@ A dropped item cannot be recovered by retry unless the producer and contract sup
 
 The claims on **Frames or signals are dropped** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/audio/router.rs:1-1646` (`DIRECT`)
-- `src/runtime/signal/edge.rs:1-651` (`DIRECT`)
+- `src/runtime/audio/router.rs:1-1` (`DECLARED`)
+- `src/runtime/signal/edge.rs:15-15` (`DIRECT`)
+- `src/runtime/signal/edge.rs:17-17` (`DIRECT`)
+- `src/runtime/signal/edge.rs:18-28` (`DIRECT`)
+- `src/runtime/signal/edge.rs:19-19` (`DIRECT`)
+- `src/runtime/signal/edge.rs:20-20` (`DIRECT`)
+- `src/runtime/signal/edge.rs:21-21` (`DIRECT`)
+- `src/runtime/signal/edge.rs:22-22` (`DIRECT`)
+- `src/runtime/signal/edge.rs:23-23` (`DIRECT`)
+- `src/runtime/signal/edge.rs:24-24` (`DIRECT`)
+- `src/runtime/signal/edge.rs:25-25` (`DIRECT`)
+- `src/runtime/signal/edge.rs:26-26` (`DIRECT`)
+- `src/runtime/signal/edge.rs:27-27` (`DIRECT`)
+- `src/runtime/signal/edge.rs:30-30` (`DIRECT`)
+- `src/runtime/signal/edge.rs:30-30` (`DIRECT`)
+- `src/runtime/signal/edge.rs:30-30` (`DIRECT`)
+- `src/runtime/signal/edge.rs:31-46` (`DIRECT`)
+- `src/runtime/signal/edge.rs:32-32` (`DIRECT`)
+- `src/runtime/signal/edge.rs:33-33` (`DIRECT`)
+- `src/runtime/signal/edge.rs:34-34` (`DIRECT`)
+- `src/runtime/signal/edge.rs:35-35` (`DIRECT`)
+- `src/runtime/signal/edge.rs:36-36` (`DIRECT`)
+- `src/runtime/signal/edge.rs:37-37` (`DIRECT`)
+- `src/runtime/signal/edge.rs:38-38` (`DIRECT`)
+- `src/runtime/signal/edge.rs:44-44` (`DIRECT`)
 
 For **Frames or signals are dropped**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

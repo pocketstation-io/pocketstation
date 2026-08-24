@@ -212,14 +212,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "3d467a2897d8480751323078d2aefb1a68f817f5010ed2cdbb538485667d386c",
       "lines": [
         1,
-        77
+        1
       ],
       "path": "src/session/prepare/prepared.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::prepare::prepared"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -270,11 +270,19 @@
     "super::{ PreparedExternalSourceMapping, PreparedOperatorMapping, PreparedSourceMapping, PreparedWorkerMapping, }"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::frame::{RouteId, SessionId}",
-    "crate::runtime::{PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor}",
-    "crate::session::SessionSpec",
-    "super::{ PreparedExternalSourceMapping, PreparedOperatorMapping, PreparedSourceMapping, PreparedWorkerMapping, }"
+    "Consumes configuration at src/session/prepare/prepared.rs:3.",
+    "Consumes configuration at src/session/prepare/prepared.rs:30.",
+    "Consumes configuration at src/session/prepare/prepared.rs:35.",
+    "Consumes configuration at src/session/prepare/prepared.rs:40.",
+    "Consumes configuration at src/session/prepare/prepared.rs:45.",
+    "Consumes configuration at src/session/prepare/prepared.rs:50.",
+    "Consumes configuration at src/session/prepare/prepared.rs:55.",
+    "Consumes configuration at src/session/prepare/prepared.rs:60.",
+    "Consumes configuration at src/session/prepare/prepared.rs:72.",
+    "Depends on `crate::frame::{RouteId, SessionId}` through a declared Rust import.",
+    "Depends on `crate::runtime::{PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor}` through a declared Rust import.",
+    "Depends on `crate::session::SessionSpec` through a declared Rust import.",
+    "Depends on `super::{ PreparedExternalSourceMapping, PreparedOperatorMapping, PreparedSourceMapping, PreparedWorkerMapping, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -283,19 +291,19 @@
   "module": "pocketstation::session::prepare::prepared",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::prepare::prepared` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:cancellation_requested",
-    "fn:operator_mappings",
-    "fn:route_observations",
-    "fn:session_id",
-    "fn:source_input_count",
-    "fn:source_mappings",
-    "fn:spec",
-    "fn:worker_mappings",
-    "struct:PreparedSession"
+    "Declares public fn `cancellation_requested`.",
+    "Declares public fn `operator_mappings`.",
+    "Declares public fn `route_observations`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `source_input_count`.",
+    "Declares public fn `source_mappings`.",
+    "Declares public fn `spec`.",
+    "Declares public fn `worker_mappings`.",
+    "Declares public struct `PreparedSession`."
   ],
   "package": "pocketstation",
   "path": "src/session/prepare/prepared.rs",
@@ -365,8 +373,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::prepare::prepared responsibilities, including Setup-time ownership for one compiled Session.; Returns the session identifier held by `PreparedSession`.; Returns the spec associated with `PreparedSession`.."
+    "classification": "DECLARED",
+    "text": "Setup-time ownership produced from one compiled Session."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -427,6 +435,7 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/session/lifecycle/running.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/runtime/audio/executor.rs",
     "REFERENCES:src/runtime/audio/router.rs",

@@ -4,7 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/session/extensions/builtins.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
@@ -138,7 +141,10 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/session/extensions/builtins.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
@@ -682,17 +688,250 @@
       "classification": "DIRECT",
       "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
       "lines": [
-        1,
-        790
+        25,
+        25
       ],
       "path": "src/session/compile/mod.rs",
-      "symbol": null
+      "symbol": "AUDIO_OUTPUT_PORT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "AUDIO_INPUT_PORT"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "LoweredStemNodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "LoweredExternalSourceNodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "LoweredExternalAudioIngressNodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        32,
+        39
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "SessionSourceLoweringContext"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "source_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "pipeline"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "source_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "external_source_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "external_audio_ingress_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "bindings"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        41,
+        46
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "SessionCompiler"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "node_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "endpoint_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        44,
+        44
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "source_registry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "graph_lowerers"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        51,
+        73
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "SessionGraphLowerer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        52,
+        56
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "lower_source_nodes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        58,
+        64
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "lower_operator_edges"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        66,
+        72
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "endpoint_config"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        77,
+        87
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        89,
+        101
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "with_sources"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "764faaa68c073083cd611c4d153524cec20de5a6fd7fc69a64ccd5d500f67778",
+      "lines": [
+        103,
+        119
+      ],
+      "path": "src/session/compile/mod.rs",
+      "symbol": "compile"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/session/extensions/builtins.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
@@ -713,7 +952,10 @@
   "generated_from": "not_applicable",
   "git_object": "ae88baa640ef8f331607a15ac043f1d925fd9ec5",
   "implemented_by": [
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/session/extensions/builtins.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
@@ -722,7 +964,10 @@
     "SessionCompiler<'registry>"
   ],
   "imported_by": [
+    "CALLS:src/session/extensions/builtins.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/mod.rs",
+    "IMPLEMENTS:src/session/extensions/builtins.rs",
     "IMPORTS:src/session/mod.rs",
     "REFERENCES:src/session/extensions/builtins.rs",
     "REFERENCES:src/session/lifecycle/engine.rs"
@@ -744,22 +989,23 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "bindings::{CompiledNodeBinding, CompiledSessionBindings}",
-    "compiled::CompiledSession",
-    "crate::endpoint::EndpointDriverRegistry",
-    "crate::graph::compile::{Compiler, RuntimePlanner}",
-    "crate::graph::{ EdgeContract, MediaCaps, NodeConfig, NodeHandle, NodeId, NodeRegistry, NodeTypeId, OutputPortRef, Pipeline, }",
-    "crate::session::extensions::builtins::default_session_graph_lowerers",
-    "crate::session::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionError, SessionSpec, SourceInstanceId, SourceRegistry, StreamOrigin, }",
-    "error::{SessionCompileDiagnostic, SessionCompileError}",
-    "module:bindings",
-    "module:compiled",
-    "module:error",
-    "module:tests",
-    "std::collections::HashMap",
-    "std::sync::Arc"
+    "Consumes configuration at src/session/compile/mod.rs:19.",
+    "Consumes configuration at src/session/compile/mod.rs:76.",
+    "Consumes configuration at src/session/compile/mod.rs:788.",
+    "Depends on `bindings::{CompiledNodeBinding, CompiledSessionBindings}` through a declared Rust import.",
+    "Depends on `bindings` through a declared Rust import.",
+    "Depends on `compiled::CompiledSession` through a declared Rust import.",
+    "Depends on `compiled` through a declared Rust import.",
+    "Depends on `crate::endpoint::EndpointDriverRegistry` through a declared Rust import.",
+    "Depends on `crate::graph::compile::{Compiler, RuntimePlanner}` through a declared Rust import.",
+    "Depends on `crate::graph::{ EdgeContract, MediaCaps, NodeConfig, NodeHandle, NodeId, NodeRegistry, NodeTypeId, OutputPortRef, Pipeline, }` through a declared Rust import.",
+    "Depends on `crate::session::extensions::builtins::default_session_graph_lowerers` through a declared Rust import.",
+    "Depends on `crate::session::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionError, SessionSpec, SourceInstanceId, SourceRegistry, StreamOrigin, }` through a declared Rust import.",
+    "Depends on `error::{SessionCompileDiagnostic, SessionCompileError}` through a declared Rust import.",
+    "Depends on `error` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -777,34 +1023,34 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::compile` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-2fc0afbc238501417320"
   ],
   "outputs": [
-    "Err(SessionError::UnknownStem { stem_id }.into())",
-    "fn:compile",
-    "fn:endpoint_node_config",
-    "fn:new",
-    "fn:select_operator_port",
-    "fn:with_sources",
-    "return Err(SessionCompileError::AmbiguousEndpointInput {",
-    "return Err(SessionCompileError::DuplicateOperatorInputConnection {",
-    "return Err(SessionCompileError::MissingRequiredOperatorInput {",
-    "return Err(SessionCompileError::OperatorNodeTypeMismatch {",
-    "return Err(SessionCompileError::UnknownAsyncOperator {",
-    "return Err(SessionCompileError::UnknownExternalSourceOutput {",
-    "return Err(SessionCompileError::UnknownOperator {",
-    "return Err(SessionCompileError::UnknownSourceNodeType {",
-    "return Err(SessionError::UnknownStem { stem_id: *stem_id }.into());",
-    "struct:LoweredOperator",
-    "struct:SessionCompiler",
-    "struct:SessionSourceLoweringContext",
-    "trait:SessionGraphLowerer",
-    "type:LoweredExternalAudioIngressNodes",
-    "type:LoweredExternalSourceNodes",
-    "type:LoweredStemNodes"
+    "Creates a typed failure at src/session/compile/mod.rs:147.",
+    "Creates a typed failure at src/session/compile/mod.rs:155.",
+    "Creates a typed failure at src/session/compile/mod.rs:168.",
+    "Creates a typed failure at src/session/compile/mod.rs:173.",
+    "Creates a typed failure at src/session/compile/mod.rs:190.",
+    "Creates a typed failure at src/session/compile/mod.rs:218.",
+    "Creates a typed failure at src/session/compile/mod.rs:226.",
+    "Creates a typed failure at src/session/compile/mod.rs:273.",
+    "Creates a typed failure at src/session/compile/mod.rs:562.",
+    "Creates a typed failure at src/session/compile/mod.rs:661.",
+    "Declares public fn `compile`.",
+    "Declares public fn `endpoint_node_config`.",
+    "Declares public fn `new`.",
+    "Declares public fn `select_operator_port`.",
+    "Declares public fn `with_sources`.",
+    "Declares public struct `LoweredOperator`.",
+    "Declares public struct `SessionCompiler`.",
+    "Declares public struct `SessionSourceLoweringContext`.",
+    "Declares public trait `SessionGraphLowerer`.",
+    "Declares public type `LoweredExternalAudioIngressNodes`.",
+    "Declares public type `LoweredExternalSourceNodes`.",
+    "Declares public type `LoweredStemNodes`."
   ],
   "package": "pocketstation",
   "path": "src/session/compile/mod.rs",
@@ -1025,8 +1271,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::compile responsibilities, including Compiles an immutable Session declaration into a validated graph and runtime plan.; Creates a new `SessionCompiler`.; Compiles its owned operation for `SessionCompiler`.."
+    "classification": "DECLARED",
+    "text": "Compiles an immutable Session declaration into a validated graph and runtime plan. Creates a new `SessionCompiler`. Compiles its owned operation for `SessionCompiler`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1090,6 +1336,14 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/handle.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/registry.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/compile/bindings.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/session/compile/bindings.rs",
     "CONTAINS:src/session/compile/compiled.rs",
     "CONTAINS:src/session/compile/error.rs",

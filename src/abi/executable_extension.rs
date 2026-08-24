@@ -165,7 +165,7 @@ pub struct PksExtensionLibrary {
     pub acquire_registration: PksExtensionAcquireRegistrationCallback,
 }
 
-#[doc = "Names the extension library entrypoint type used by the public API."]
+#[doc = "Exposes `PksSessionStatus` as the public `PksExtensionLibraryEntrypoint` alias at this API boundary."]
 pub type PksExtensionLibraryEntrypoint =
     unsafe extern "C-unwind" fn(output_library: *mut PksExtensionLibrary) -> PksSessionStatus;
 
@@ -191,7 +191,7 @@ pub struct PksExtensionSignalView {
     pub source_timestamp_ns: u64,
     #[doc = "Stores the duration value for `PksExtensionSignalView`, in nanoseconds."]
     pub duration_ns: u64,
-    #[doc = "Stores the sequence number used by `PksExtensionSignalView`."]
+    #[doc = "Orders `PksExtensionSignalView` within its protocol or stream sequence."]
     pub sequence_number: u64,
 }
 
@@ -223,7 +223,7 @@ pub struct PksExtensionSignalBuffer {
 
 #[repr(C)]
 #[derive(Clone, Copy)]
-#[doc = "Describes the extension pipeline declaration contract."]
+#[doc = "Declares one extension pipeline instance and the native registrations it uses."]
 pub struct PksExtensionPipelineDeclaration {
     #[doc = "Stores the byte size of the `PksExtensionPipelineDeclaration` ABI structure."]
     pub struct_size_bytes: u32,
@@ -233,17 +233,17 @@ pub struct PksExtensionPipelineDeclaration {
     pub abi_minor: u16,
     #[doc = "Identifies the source identifier recorded by `PksExtensionPipelineDeclaration`."]
     pub source_id: PksSessionUtf8,
-    #[doc = "Stores the source output port used by `PksExtensionPipelineDeclaration`."]
+    #[doc = "References the source output port participating in `PksExtensionPipelineDeclaration`."]
     pub source_output_port: PksSessionUtf8,
     #[doc = "Identifies the operator identifier recorded by `PksExtensionPipelineDeclaration`."]
     pub operator_id: PksSessionUtf8,
-    #[doc = "Stores the operator input port used by `PksExtensionPipelineDeclaration`."]
+    #[doc = "References the operator input port participating in `PksExtensionPipelineDeclaration`."]
     pub operator_input_port: PksSessionUtf8,
-    #[doc = "Stores the operator output port used by `PksExtensionPipelineDeclaration`."]
+    #[doc = "References the operator output port participating in `PksExtensionPipelineDeclaration`."]
     pub operator_output_port: PksSessionUtf8,
     #[doc = "Identifies the endpoint identifier recorded by `PksExtensionPipelineDeclaration`."]
     pub endpoint_id: PksSessionUtf8,
-    #[doc = "Stores the endpoint input port used by `PksExtensionPipelineDeclaration`."]
+    #[doc = "References the endpoint input port participating in `PksExtensionPipelineDeclaration`."]
     pub endpoint_input_port: PksSessionUtf8,
 }
 

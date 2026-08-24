@@ -1,6 +1,6 @@
 # Timestamps diverge or discontinuities appear
 
-<!-- claims: CLM-TRBL-016-CAP-001,CLM-TRBL-016-CAP-002,CLM-TRBL-016-CAP-003,CLM-TRBL-016-CAP-004,CLM-TRBL-016-SOURCE-001 -->
+<!-- claims: CLM-TRBL-016-SCOPE-001,CLM-TRBL-016-TEXT-001,CLM-TRBL-016-TEXT-002,CLM-TRBL-016-TEXT-003,CLM-TRBL-016-TEXT-004,CLM-TRBL-016-TEXT-005,CLM-TRBL-016-TEXT-006,CLM-TRBL-016-SOURCE-001 -->
 
 ## Symptom
 
@@ -70,7 +70,30 @@ Do not retry by rewriting old timestamps. Downstream data around a discontinuity
 
 The claims on **Timestamps diverge or discontinuities appear** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/timing/clock_drift.rs:1-175` (`DIRECT`)
-- `src/capture/timeline.rs:1-130` (`DIRECT`)
+- `src/timing/clock_drift.rs:1-1` (`DIRECT`)
+- `src/timing/clock_drift.rs:3-3` (`DIRECT`)
+- `src/timing/clock_drift.rs:3-3` (`DIRECT`)
+- `src/timing/clock_drift.rs:3-3` (`DIRECT`)
+- `src/timing/clock_drift.rs:3-3` (`DIRECT`)
+- `src/timing/clock_drift.rs:4-8` (`DIRECT`)
+- `src/timing/clock_drift.rs:5-5` (`DIRECT`)
+- `src/timing/clock_drift.rs:6-6` (`DIRECT`)
+- `src/timing/clock_drift.rs:7-7` (`DIRECT`)
+- `src/timing/clock_drift.rs:10-19` (`DIRECT`)
+- `src/timing/clock_drift.rs:11-11` (`DIRECT`)
+- `src/timing/clock_drift.rs:12-12` (`DIRECT`)
+- `src/timing/clock_drift.rs:13-13` (`DIRECT`)
+- `src/timing/clock_drift.rs:14-14` (`DIRECT`)
+- `src/timing/clock_drift.rs:15-15` (`DIRECT`)
+- `src/timing/clock_drift.rs:16-16` (`DIRECT`)
+- `src/timing/clock_drift.rs:17-17` (`DIRECT`)
+- `src/timing/clock_drift.rs:18-18` (`DIRECT`)
+- `src/timing/clock_drift.rs:22-33` (`DIRECT`)
+- `src/timing/clock_drift.rs:35-57` (`DIRECT`)
+- `src/timing/clock_drift.rs:59-61` (`DIRECT`)
+- `src/timing/clock_drift.rs:62-64` (`DIRECT`)
+- `src/timing/clock_drift.rs:66-72` (`DIRECT`)
+- `src/timing/clock_drift.rs:74-111` (`DIRECT`)
+- `src/capture/timeline.rs:1-1` (`DECLARED`)
 
 For **Timestamps diverge or discontinuities appear**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

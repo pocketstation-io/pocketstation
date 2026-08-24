@@ -1,6 +1,6 @@
 # Graph contracts
 
-<!-- claims: CLM-DOC-020-CAP-001,CLM-DOC-020-SOURCE-001 -->
+<!-- claims: CLM-DOC-020-SCOPE-001,CLM-DOC-020-TEXT-001,CLM-DOC-020-TEXT-002,CLM-DOC-020-TEXT-003,CLM-DOC-020-TEXT-004,CLM-DOC-020-TEXT-005,CLM-DOC-020-TEXT-006,CLM-DOC-020-SOURCE-001 -->
 
 ## What it is
 
@@ -85,6 +85,6 @@ Executable evidence selected for **Graph contracts** is limited to each test's r
 
 The claims on **Graph contracts** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/graph/ports.rs:1-618` (`DIRECT`)
+- `src/graph/ports.rs:1-3` (`DECLARED`)
 
 For **Graph contracts**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -12,7 +12,7 @@ use super::{
 };
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to connector observation."]
+#[doc = "Holds the ownership or bounded access represented by connector observation handle."]
 pub struct ConnectorObservationHandle {
     inner: Arc<ConnectorObservationState>,
 }
@@ -159,7 +159,7 @@ impl ConnectorObservationHandle {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Reports the connector observations collected at an observation boundary."]
 pub struct ConnectorObservations {
-    #[doc = "Stores the service status used by `ConnectorObservations`."]
+    #[doc = "Contains the service status owned or reported by `ConnectorObservations`."]
     pub service_status: ConnectorServiceStatus,
     #[doc = "Counts the total number of status transitions observed by `ConnectorObservations`."]
     pub status_transitions_total: u64,
@@ -178,17 +178,17 @@ pub struct ConnectorObservations {
 pub struct ConnectorRuntimeObservations {
     #[doc = "Identifies the endpoint identifiers recorded by `ConnectorRuntimeObservations`."]
     pub endpoint_ids: Arc<[EndpointId]>,
-    #[doc = "Stores the connector used by `ConnectorRuntimeObservations`."]
+    #[doc = "Stores the connector as a `ConnectorObservations` value in `ConnectorRuntimeObservations`."]
     pub connector: ConnectorObservations,
-    #[doc = "Stores the endpoint used by `ConnectorRuntimeObservations`."]
+    #[doc = "References the endpoint participating in `ConnectorRuntimeObservations`."]
     pub endpoint: EndpointDriverObservations,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector observation error."]
+#[doc = "Classifies failures surfaced by connector observation operations."]
 pub enum ConnectorObservationError {
     #[error("connector observation state is unavailable")]
-    #[doc = "Reports state unavailable."]
+    #[doc = "Reports that state is unavailable."]
     StateUnavailable,
 }
 

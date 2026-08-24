@@ -42,6 +42,15 @@
     }
   ],
   "called_by": [
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/preparation.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/resolve.rs",
@@ -82,6 +91,15 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/preparation.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/resolve.rs",
@@ -258,19 +276,28 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "1b85b74401cd4fd807b2bab54137b47c6d61e29cd4a2e7c3fa388e0aa53bcb26",
       "lines": [
         1,
-        201
+        10
       ],
       "path": "src/graph/partition.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::partition"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/preparation.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/resolve.rs",
@@ -293,6 +320,15 @@
   "generated_from": "not_applicable",
   "git_object": "916d9df2625d8ef9497f88e479f1019b131d9475",
   "implemented_by": [
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/preparation.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/resolve.rs",
@@ -306,6 +342,15 @@
     "SafetyContract"
   ],
   "imported_by": [
+    "CALLS:src/graph/compile/plan.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/ports.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "CALLS:src/graph/signal/preparation.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/resolve.rs",
@@ -318,8 +363,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/graph/partition.rs:126.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -429,16 +474,16 @@
   "module": "pocketstation::graph::partition",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::partition` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:ExecutionPartition",
-    "enum:SafetyContract",
-    "fn:is_valid_for",
-    "fn:needs_bridge_to",
-    "fn:rank",
-    "fn:requires_realtime_safety"
+    "Declares public enum `ExecutionPartition`.",
+    "Declares public enum `SafetyContract`.",
+    "Declares public fn `is_valid_for`.",
+    "Declares public fn `needs_bridge_to`.",
+    "Declares public fn `rank`.",
+    "Declares public fn `requires_realtime_safety`."
   ],
   "package": "pocketstation",
   "path": "src/graph/partition.rs",
@@ -569,8 +614,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::partition responsibilities, including WHERE an operator runs.; Platform OS audio callback \u2014 the strictest domain.; Dedicated real-time processing thread.."
+    "classification": "DECLARED",
+    "text": "ExecutionPartition and SafetyContract \u2014 the two orthogonal axes of operator placement. These are separate types because they answer different questions: `ExecutionPartition` \u2014 WHERE does this operator run? `SafetyContract` \u2014 WHAT does it guarantee about its runtime behaviour? The compiler enforces: `SafetyContract::RealtimeSafe` is only valid on `AudioCallback` or `RealtimeCpu` partitions. Any edge that crosses partition boundaries gets a compiler-inserted `Bridge`; no cross-partition calls on the hot path."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -608,7 +653,9 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/graph/ports.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::graph::partition::ExecutionPartition: WHERE an operator runs.",

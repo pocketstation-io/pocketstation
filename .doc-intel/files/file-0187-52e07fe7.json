@@ -69,6 +69,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -145,6 +148,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -351,16 +357,179 @@
       "classification": "DIRECT",
       "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
       "lines": [
-        1,
-        162
+        9,
+        9
       ],
       "path": "src/runtime/lifecycle/async_host.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        10,
+        19
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "AsyncRuntimeHostError"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "Start"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "RuntimeStopped"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "ShutdownPanicked"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "timeout_ms"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "HostTimeout"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        26,
+        30
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "AsyncRuntimeHost"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "handle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "shutdown"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "thread"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        33,
+        63
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        65,
+        89
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "execute"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        91,
+        101
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "shutdown"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "a356357acc1ead5def9577aefc9fde531f9804c107ffb0e495dfd84047fc7fce",
+      "lines": [
+        105,
+        112
+      ],
+      "path": "src/runtime/lifecycle/async_host.rs",
+      "symbol": "drop"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -379,6 +548,9 @@
   "generated_from": "not_applicable",
   "git_object": "d4fd74d275226c6f6368cd48b24b615b3e0c9e66",
   "implemented_by": [
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -388,6 +560,9 @@
     "Drop for AsyncRuntimeHost"
   ],
   "imported_by": [
+    "CALLS:src/recording/endpoint.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/runtime/lifecycle/mod.rs",
     "IMPORTS:src/runtime/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/running.rs"
@@ -404,16 +579,16 @@
     "tokio::sync::oneshot"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "std::future::Future",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::sync::mpsc",
-    "std::thread::{self, JoinHandle}",
-    "std::time::Duration",
-    "super::*",
-    "tokio::runtime::{Builder, Handle}",
-    "tokio::sync::oneshot"
+    "Consumes configuration at src/runtime/lifecycle/async_host.rs:115.",
+    "Depends on `std::future::Future` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::mpsc` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `tokio::runtime::{Builder, Handle}` through a declared Rust import.",
+    "Depends on `tokio::sync::oneshot` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -435,22 +610,22 @@
   "module": "pocketstation::runtime::lifecycle::async_host",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::lifecycle::async_host` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-4b4827ead247761ef305"
   ],
   "outputs": [
-    "Err(AsyncRuntimeHostError::HostTimeout {",
-    "Err(error) => {",
-    "Err(mpsc::RecvTimeoutError::Disconnected) => Err(AsyncRuntimeHostError::RuntimeStopped),",
-    "Ok(Err(_)) | Err(mpsc::RecvTimeoutError::Timeout) => {",
-    "enum:AsyncRuntimeHostError",
-    "fn:execute",
-    "fn:new",
-    "fn:shutdown",
-    "let _ = handle_sender.send(Err(error.to_string()));",
-    "struct:AsyncRuntimeHost"
+    "Creates a typed failure at src/runtime/lifecycle/async_host.rs:41.",
+    "Creates a typed failure at src/runtime/lifecycle/async_host.rs:42.",
+    "Creates a typed failure at src/runtime/lifecycle/async_host.rs:82.",
+    "Creates a typed failure at src/runtime/lifecycle/async_host.rs:83.",
+    "Creates a typed failure at src/runtime/lifecycle/async_host.rs:87.",
+    "Declares public enum `AsyncRuntimeHostError`.",
+    "Declares public fn `execute`.",
+    "Declares public fn `new`.",
+    "Declares public fn `shutdown`.",
+    "Declares public struct `AsyncRuntimeHost`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/lifecycle/async_host.rs",
@@ -536,8 +711,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::lifecycle::async host responsibilities, including Classifies failures reported as async runtime host error.; Reported when the owning operation encounters start.; Reported when the owning operation encounters runtime stopped.."
+    "classification": "DECLARED",
+    "text": "Classifies failures surfaced by async runtime host operations. Classifies a failure at the start stage or component of `AsyncRuntimeHostError`. Classifies a failure at the runtime stopped stage or component of `AsyncRuntimeHostError`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -593,7 +768,9 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/graph/plan.rs"
+  ],
   "resource_ownership": [
     {
       "line": 104,
@@ -613,12 +790,12 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError: Classifies failures reported as async runtime host error.",
-    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::Start: Reported when the owning operation encounters start.",
-    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::RuntimeStopped: Reported when the owning operation encounters runtime stopped.",
-    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::ShutdownPanicked: Reported when the owning operation encounters shutdown panicked.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError: Classifies failures surfaced by async runtime host operations.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::Start: Classifies a failure at the start stage or component of `AsyncRuntimeHostError`.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::RuntimeStopped: Classifies a failure at the runtime stopped stage or component of `AsyncRuntimeHostError`.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::ShutdownPanicked: Reports that shutdown panicked while the operation was active.",
     "AsyncRuntimeHostError::HostTimeout::timeout_ms: Stores the timeout value for `HostTimeout`, in milliseconds.",
-    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::HostTimeout: Reported when the owning operation encounters host timeout.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::HostTimeout: Reports that host exceeded its deadline.",
     "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHost: Session-owned async executor for connector and derived-endpoint lifecycle.",
     "new: Creates a new `AsyncRuntimeHost`.",
     "execute: Executes its owned operation for `AsyncRuntimeHost`.",

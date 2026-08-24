@@ -34,18 +34,18 @@ impl EdgeId {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Names an operator output port used as the origin of a graph connection."]
 pub struct OutputPortRef {
-    #[doc = "Stores the node used by `OutputPortRef`."]
+    #[doc = "References the node participating in `OutputPortRef`."]
     pub node: NodeId,
-    #[doc = "Stores the port used by `OutputPortRef`."]
+    #[doc = "References the port participating in `OutputPortRef`."]
     pub port: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Names an operator or endpoint input port used as the target of a graph connection."]
 pub struct InputPortRef {
-    #[doc = "Stores the node used by `InputPortRef`."]
+    #[doc = "References the node participating in `InputPortRef`."]
     pub node: NodeId,
-    #[doc = "Stores the port used by `InputPortRef`."]
+    #[doc = "References the port participating in `InputPortRef`."]
     pub port: String,
 }
 
@@ -56,7 +56,7 @@ pub struct NodeSpec {
     pub id: NodeId,
     #[doc = "Identifies the type identifier recorded by `NodeSpec`."]
     pub type_id: NodeTypeId,
-    #[doc = "Stores the config used by `NodeSpec`."]
+    #[doc = "Stores the config as a `NodeConfig` value in `NodeSpec`."]
     pub config: NodeConfig,
 }
 
@@ -69,16 +69,16 @@ pub struct EdgeSpec {
     pub from: OutputPortRef,
     #[doc = "Identifies the destination represented by `EdgeSpec`."]
     pub to: InputPortRef,
-    #[doc = "Stores the requested used by `EdgeSpec`."]
+    #[doc = "Stores the requested component of `EdgeSpec`."]
     pub requested: Option<EdgeContract>, // None = compiler negotiates from port caps (Wave 4)
 }
 
 #[derive(Debug, Clone, Default)]
 #[doc = "Configures graph."]
 pub struct GraphSpec {
-    #[doc = "Stores the nodes used by `GraphSpec`."]
+    #[doc = "References the nodes participating in `GraphSpec`."]
     pub nodes: Vec<NodeSpec>,
-    #[doc = "Stores the edges used by `GraphSpec`."]
+    #[doc = "References the edges participating in `GraphSpec`."]
     pub edges: Vec<EdgeSpec>,
 }
 

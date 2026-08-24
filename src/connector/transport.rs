@@ -259,46 +259,46 @@ fn map_audio_record_read_error(
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector configuration record error."]
+#[doc = "Classifies failures surfaced by connector configuration record operations."]
 pub enum ConnectorConfigurationRecordError {
     #[error("connector configuration record is truncated")]
-    #[doc = "Reports truncated."]
+    #[doc = "Reports that the encoded input ended before the complete record was available."]
     Truncated,
     #[error("connector configuration record has trailing bytes")]
-    #[doc = "Reports trailing bytes."]
+    #[doc = "Reports that bytes remain after decoding the complete record."]
     TrailingBytes,
     #[error("connector configuration record magic is invalid")]
-    #[doc = "Reports invalid magic."]
+    #[doc = "Reports that the supplied magic is invalid."]
     InvalidMagic,
     #[error("connector configuration record major {0} is unsupported")]
-    #[doc = "Reports unsupported major."]
+    #[doc = "Reports that the requested major is unsupported."]
     UnsupportedMajor(u16),
     #[error("connector configuration record minor {0} is unsupported")]
-    #[doc = "Reports unsupported minor."]
+    #[doc = "Reports that the requested minor is unsupported."]
     UnsupportedMinor(u16),
     #[error("connector configuration record reserved field is non-zero")]
-    #[doc = "Reports reserved field set."]
+    #[doc = "Reports that a reserved compatibility field contains a nonzero value."]
     ReservedFieldSet,
     #[error("connector configuration record has too many fields")]
-    #[doc = "Reports too many fields."]
+    #[doc = "Reports that the number of fields exceeds the supported limit."]
     TooManyFields,
     #[error("connector configuration record field name is invalid")]
-    #[doc = "Reports invalid field name."]
+    #[doc = "Reports that the supplied field name is invalid."]
     InvalidFieldName,
     #[error("connector configuration record contains a duplicate field")]
-    #[doc = "Reports duplicate field."]
+    #[doc = "Reports that field duplicates an existing declaration or record."]
     DuplicateField,
     #[error("connector configuration record value is too large")]
-    #[doc = "Reports value too large."]
+    #[doc = "Reports that value exceeds the supported size limit."]
     ValueTooLarge,
     #[error("connector configuration record value is invalid")]
-    #[doc = "Reports invalid value."]
+    #[doc = "Reports that the supplied value is invalid."]
     InvalidValue,
     #[error("connector configuration record value kind {0} is unknown")]
-    #[doc = "Reports unknown value kind."]
+    #[doc = "Reports that the referenced value kind is not declared or registered."]
     UnknownValueKind(u8),
     #[error("connector configuration record length overflowed")]
-    #[doc = "Reports length overflow."]
+    #[doc = "Reports that length exceeds its numeric range."]
     LengthOverflow,
 }
 
@@ -313,13 +313,13 @@ pub struct ConnectorAudioMetadata {
     pub route_id: RouteId,
     #[doc = "Identifies the stream identifier recorded by `ConnectorAudioMetadata`."]
     pub stream_id: StreamId,
-    #[doc = "Stores the lineage used by `ConnectorAudioMetadata`."]
+    #[doc = "Preserves the source and stream lineage attached to `ConnectorAudioMetadata`."]
     pub lineage: FrameLineage,
     #[doc = "Stores the sample rate value for `ConnectorAudioMetadata`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels used by `ConnectorAudioMetadata`."]
+    #[doc = "Contains the channels owned or reported by `ConnectorAudioMetadata`."]
     pub channels: u8,
-    #[doc = "Stores the sample format used by `ConnectorAudioMetadata`."]
+    #[doc = "Stores the sample format as a `SampleFormat` value in `ConnectorAudioMetadata`."]
     pub sample_format: SampleFormat,
 }
 
@@ -606,10 +606,10 @@ fn read_u64(input: &[u8], offset: usize) -> Result<u64, ConnectorAudioRecordErro
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector audio record error."]
+#[doc = "Classifies failures surfaced by connector audio record operations."]
 pub enum ConnectorAudioRecordError {
     #[error("connector item is not PCM audio")]
-    #[doc = "Reports not audio."]
+    #[doc = "Reports that no t audio is available."]
     NotAudio,
     #[error("connector audio record is truncated")]
     #[doc = "Reports truncated."]
@@ -627,28 +627,28 @@ pub enum ConnectorAudioRecordError {
     #[doc = "Reports unsupported minor."]
     UnsupportedMinor(u16),
     #[error("connector audio record header size is invalid")]
-    #[doc = "Reports invalid header size."]
+    #[doc = "Reports that the supplied header size is invalid."]
     InvalidHeaderSize,
     #[error("connector audio record reserved field is non-zero")]
     #[doc = "Reports reserved field set."]
     ReservedFieldSet,
     #[error("connector audio record port name is invalid")]
-    #[doc = "Reports invalid port name."]
+    #[doc = "Reports that the supplied port name is invalid."]
     InvalidPortName,
     #[error("connector audio record sample specification is invalid")]
-    #[doc = "Reports invalid sample spec."]
+    #[doc = "Reports that the supplied sample spec is invalid."]
     InvalidSampleSpec,
     #[error("connector audio record sample format is unsupported")]
-    #[doc = "Reports unsupported sample format."]
+    #[doc = "Reports that the requested sample format is unsupported."]
     UnsupportedSampleFormat,
     #[error("connector audio record sample count is invalid")]
-    #[doc = "Reports invalid sample count."]
+    #[doc = "Reports that the supplied sample count is invalid."]
     InvalidSampleCount,
     #[error("connector audio record lineage is invalid")]
-    #[doc = "Reports invalid lineage."]
+    #[doc = "Reports that the supplied lineage is invalid."]
     InvalidLineage,
     #[error("connector audio record connector identity is invalid")]
-    #[doc = "Reports invalid connector identifier."]
+    #[doc = "Reports that the supplied connector identifier is invalid."]
     InvalidConnectorId,
     #[error("connector audio record length overflowed")]
     #[doc = "Reports length overflow."]

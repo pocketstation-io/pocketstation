@@ -1,6 +1,6 @@
 # Signals and streams
 
-<!-- claims: CLM-DOC-022-CAP-001,CLM-DOC-022-SOURCE-001 -->
+<!-- claims: CLM-DOC-022-SCOPE-001,CLM-DOC-022-TEXT-001,CLM-DOC-022-TEXT-002,CLM-DOC-022-TEXT-003,CLM-DOC-022-TEXT-004,CLM-DOC-022-TEXT-005,CLM-DOC-022-TEXT-006,CLM-DOC-022-SOURCE-001 -->
 
 ## What it is
 
@@ -43,11 +43,11 @@ The scope of **Signals and streams** ends at the native contracts and executable
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::graph::signal::spec::SignalSpec` | struct | Full signal contract for a single port. | `src/graph/signal/spec.rs:205` |
-| `pocketstation::graph::signal::spec::SignalSpecError` | enum | Classifies failures reported as signal spec error. | `src/graph/signal/spec.rs:351` |
-| `pocketstation::graph::signal::envelope::SignalEnvelopeError::InvalidSignalSpec` | variant | Reported when the owning operation encounters invalid signal spec. | `src/graph/signal/envelope.rs:139` |
-| `pocketstation::graph::signal::spec::SignalSpecError::EmptyCustomId` | variant | Reported when the owning operation encounters empty custom identifier. | `src/graph/signal/spec.rs:353` |
-| `pocketstation::graph::signal::spec::SignalSpecError::EmptyRole` | variant | Reported when the owning operation encounters empty role. | `src/graph/signal/spec.rs:355` |
-| `pocketstation::graph::signal::spec::SignalSpecError::EmptySchema` | variant | Reported when the owning operation encounters empty schema. | `src/graph/signal/spec.rs:357` |
+| `pocketstation::graph::signal::spec::SignalSpecError` | enum | Classifies failures surfaced by signal spec operations. | `src/graph/signal/spec.rs:351` |
+| `pocketstation::graph::signal::envelope::SignalEnvelopeError::InvalidSignalSpec` | variant | Reports that the supplied signal spec is invalid. | `src/graph/signal/envelope.rs:139` |
+| `pocketstation::graph::signal::spec::SignalSpecError::EmptyCustomId` | variant | Reports that custom identifier is empty. | `src/graph/signal/spec.rs:353` |
+| `pocketstation::graph::signal::spec::SignalSpecError::EmptyRole` | variant | Reports that role is empty. | `src/graph/signal/spec.rs:355` |
+| `pocketstation::graph::signal::spec::SignalSpecError::EmptySchema` | variant | Reports that schema is empty. | `src/graph/signal/spec.rs:357` |
 | `pocketstation::graph::signal::envelope::SignalEnvelope` | struct | Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata. | `src/graph/signal/envelope.rs:6` |
 | `pocketstation::graph::signal::spec::SchemaRef` | struct | Reference to an external schema document. | `src/graph/signal/spec.rs:87` |
 | `pocketstation::graph::signal::spec::SemanticRole` | struct | Semantic role annotation on a port. | `src/graph/signal/spec.rs:57` |
@@ -85,7 +85,53 @@ Executable evidence selected for **Signals and streams** is limited to each test
 
 The claims on **Signals and streams** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/graph/signal/envelope.rs:1-444` (`DIRECT`)
-- `src/session/declaration/typed_stream.rs:1-215` (`DIRECT`)
+- `src/graph/signal/envelope.rs:5-5` (`DIRECT`)
+- `src/graph/signal/envelope.rs:6-12` (`DIRECT`)
+- `src/graph/signal/envelope.rs:7-7` (`DIRECT`)
+- `src/graph/signal/envelope.rs:8-8` (`DIRECT`)
+- `src/graph/signal/envelope.rs:9-9` (`DIRECT`)
+- `src/graph/signal/envelope.rs:10-10` (`DIRECT`)
+- `src/graph/signal/envelope.rs:11-11` (`DIRECT`)
+- `src/graph/signal/envelope.rs:17-25` (`DIRECT`)
+- `src/graph/signal/envelope.rs:27-43` (`DIRECT`)
+- `src/graph/signal/envelope.rs:45-49` (`DIRECT`)
+- `src/graph/signal/envelope.rs:51-55` (`DIRECT`)
+- `src/graph/signal/envelope.rs:57-60` (`DIRECT`)
+- `src/graph/signal/envelope.rs:62-64` (`DIRECT`)
+- `src/graph/signal/envelope.rs:66-68` (`DIRECT`)
+- `src/graph/signal/envelope.rs:70-72` (`DIRECT`)
+- `src/graph/signal/envelope.rs:74-76` (`DIRECT`)
+- `src/graph/signal/envelope.rs:78-80` (`DIRECT`)
+- `src/graph/signal/envelope.rs:82-84` (`DIRECT`)
+- `src/graph/signal/envelope.rs:86-88` (`DIRECT`)
+- `src/graph/signal/envelope.rs:90-98` (`DIRECT`)
+- `src/graph/signal/envelope.rs:100-108` (`DIRECT`)
+- `src/graph/signal/envelope.rs:110-115` (`DIRECT`)
+- `src/graph/signal/envelope.rs:117-133` (`DIRECT`)
+- `src/graph/signal/envelope.rs:136-136` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:15-17` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:16-16` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:19-19` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:19-19` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:20-27` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:21-21` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:22-22` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:23-23` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:24-24` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:25-25` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:26-26` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:30-69` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:71-73` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:75-77` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:79-81` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:83-85` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:87-89` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:95-95` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:96-100` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:97-97` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:98-98` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:99-99` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:103-114` (`DIRECT`)
+- `src/session/declaration/typed_stream.rs:118-126` (`DIRECT`)
 
 For **Signals and streams**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

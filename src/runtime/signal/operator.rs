@@ -104,7 +104,7 @@ impl SessionOperatorInput {
 pub struct CompiledOperatorInputContract {
     #[doc = "Identifies the edge identifier recorded by `CompiledOperatorInputContract`."]
     pub edge_id: EdgeId,
-    #[doc = "Stores the operator node used by `CompiledOperatorInputContract`."]
+    #[doc = "References the operator node participating in `CompiledOperatorInputContract`."]
     pub operator_node: NodeId,
     #[doc = "Identifies the session identifier recorded by `CompiledOperatorInputContract`."]
     pub session_id: SessionId,
@@ -112,13 +112,13 @@ pub struct CompiledOperatorInputContract {
     pub stem_id: StemId,
     #[doc = "Identifies the source identifier recorded by `CompiledOperatorInputContract`."]
     pub source_id: Option<SourceId>,
-    #[doc = "Stores the input port used by `CompiledOperatorInputContract`."]
+    #[doc = "References the input port participating in `CompiledOperatorInputContract`."]
     pub input_port: String,
-    #[doc = "Stores the signal spec used by `CompiledOperatorInputContract`."]
+    #[doc = "Declares the signal class and format accepted by `CompiledOperatorInputContract`."]
     pub signal_spec: SignalSpec,
-    #[doc = "Stores the media used by `CompiledOperatorInputContract`."]
+    #[doc = "Records the media selected for `CompiledOperatorInputContract`."]
     pub media: MediaCaps,
-    #[doc = "Stores the edge contract used by `CompiledOperatorInputContract`."]
+    #[doc = "References the edge contract participating in `CompiledOperatorInputContract`."]
     pub edge_contract: EdgeContract,
     #[doc = "Sets the capacity signals available to `CompiledOperatorInputContract`."]
     pub capacity_signals: usize,
@@ -614,7 +614,7 @@ impl AsyncOperatorWorker {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
-    #[doc = "Spawns composed for `AsyncOperatorWorker`."]
+    #[doc = "Spawns `AsyncOperatorWorker` with the supplied typed input and fan-out outputs."]
     pub fn spawn_composed(
         factory: Arc<dyn AsyncOperatorFactory>,
         configuration: &NodeConfig,

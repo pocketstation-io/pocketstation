@@ -1,6 +1,6 @@
 # Permission ownership
 
-<!-- claims: CLM-DOC-047-CAP-001,CLM-DOC-047-SOURCE-001 -->
+<!-- claims: CLM-DOC-047-SCOPE-001,CLM-DOC-047-TEXT-001,CLM-DOC-047-TEXT-002,CLM-DOC-047-SOURCE-001 -->
 
 ## Scope
 
@@ -28,10 +28,10 @@ The scope of **Permission ownership** ends at the native contracts and executabl
 | `pocketstation::capture::authorization::PermissionObservation::Revoked` | variant | Represents the revoked alternative defined by `PermissionObservation`. | `src/capture/authorization.rs:158` |
 | `pocketstation::capture::events::SourceLifecycleEventKind::PermissionChanged` | variant | Identifies the permission changed state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:28` |
 | `pocketstation::capture::events::SourceLifecycleEventKind::PermissionRevoked` | variant | Identifies the permission revoked state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:29` |
-| `authorization::CaptureAuthorizationSnapshot::os_permission` | struct_field | Stores the os permission used by `CaptureAuthorizationSnapshot`. | `src/capture/authorization.rs:19` |
-| `authorization::CaptureAuthorizationSnapshot::permission_epoch` | struct_field | Stores the permission epoch used by `CaptureAuthorizationSnapshot`. | `src/capture/authorization.rs:24` |
-| `authorization::CaptureError::PermissionDenied::operation` | struct_field | Stores the operation used by `PermissionDenied`. | `src/capture/authorization.rs:301` |
-| `authorization::CapturePermissionTransition::current` | struct_field | Stores the current used by `CapturePermissionTransition`. | `src/capture/authorization.rs:171` |
+| `authorization::CaptureAuthorizationSnapshot::os_permission` | struct_field | Reports the operating-system permission state observed by `CaptureAuthorizationSnapshot`. | `src/capture/authorization.rs:19` |
+| `authorization::CaptureAuthorizationSnapshot::permission_epoch` | struct_field | Identifies the permission-observation generation attached to `CaptureAuthorizationSnapshot`. | `src/capture/authorization.rs:24` |
+| `authorization::CaptureError::PermissionDenied::operation` | struct_field | Names the operation that produced `PermissionDenied`. | `src/capture/authorization.rs:301` |
+| `authorization::CapturePermissionTransition::current` | struct_field | Stores the current as a `PermissionObservation` value in `CapturePermissionTransition`. | `src/capture/authorization.rs:171` |
 
 ## Permission and source opening
 
@@ -73,6 +73,6 @@ Executable evidence selected for **Permission ownership** is limited to each tes
 
 The claims on **Permission ownership** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/authorization.rs:1-318` (`DIRECT`)
+- `src/capture/authorization.rs:1-1` (`DECLARED`)
 
 For **Permission ownership**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

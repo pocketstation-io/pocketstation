@@ -6,12 +6,12 @@ use serde::Serialize;
 use super::identity::StableSourceId;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-#[doc = "Enumerates the supported input device selector cases."]
+#[doc = "Selects either the default input device or one exact device identity."]
 pub enum InputDeviceSelector {
     #[default]
-    #[doc = "Selects default behavior for `InputDeviceSelector`."]
+    #[doc = "Selects an input device by default."]
     Default,
-    #[doc = "Selects stable identifier behavior for `InputDeviceSelector`."]
+    #[doc = "Selects an input device by stable identifier."]
     StableId(String),
 }
 
@@ -19,25 +19,25 @@ pub enum InputDeviceSelector {
 #[doc = "Selects the capture mode used by PocketStation."]
 pub enum CaptureMode {
     #[default]
-    #[doc = "Selects system mix behavior for `CaptureMode`."]
+    #[doc = "Requests capture in system mix mode."]
     SystemMix,
-    #[doc = "Selects application behavior for `CaptureMode`."]
+    #[doc = "Requests capture in application mode."]
     Application(String),
-    #[doc = "Selects process behavior for `CaptureMode`."]
+    #[doc = "Requests capture in process mode."]
     Process(u32),
-    #[doc = "Selects exact application behavior for `CaptureMode`."]
+    #[doc = "Requests capture in exact application mode."]
     ExactApplication {
         #[doc = "Identifies the process identifier recorded by `ExactApplication`."]
         process_id: u32,
         #[doc = "Identifies the stable identifier recorded by `ExactApplication`."]
         stable_id: StableSourceId,
     },
-    #[doc = "Selects exact application stable behavior for `CaptureMode`."]
+    #[doc = "Requests capture in exact application stable mode."]
     ExactApplicationStable {
         #[doc = "Identifies the stable identifier recorded by `ExactApplicationStable`."]
         stable_id: StableSourceId,
     },
-    #[doc = "Selects input device behavior for `CaptureMode`."]
+    #[doc = "Requests capture in input device mode."]
     InputDevice(InputDeviceSelector),
 }
 
@@ -85,15 +85,15 @@ impl CaptureMode {
 #[serde(rename_all = "kebab-case")]
 #[doc = "Selects the selector persistence scope used by PocketStation."]
 pub enum SelectorPersistenceScope {
-    #[doc = "Selects process lifetime behavior for `SelectorPersistenceScope`."]
+    #[doc = "Limits selector persistence to the process lifetime scope."]
     ProcessLifetime,
-    #[doc = "Selects application identity behavior for `SelectorPersistenceScope`."]
+    #[doc = "Limits selector persistence to the application identity scope."]
     ApplicationIdentity,
-    #[doc = "Selects device identity behavior for `SelectorPersistenceScope`."]
+    #[doc = "Limits selector persistence to the device identity scope."]
     DeviceIdentity,
-    #[doc = "Selects session default device behavior for `SelectorPersistenceScope`."]
+    #[doc = "Limits selector persistence to the session default device scope."]
     SessionDefaultDevice,
-    #[doc = "Selects platform identity behavior for `SelectorPersistenceScope`."]
+    #[doc = "Limits selector persistence to the platform identity scope."]
     PlatformIdentity,
 }
 
@@ -101,12 +101,12 @@ pub enum SelectorPersistenceScope {
 #[serde(rename_all = "kebab-case")]
 #[doc = "Selects the process tree scope used by PocketStation."]
 pub enum ProcessTreeScope {
-    #[doc = "Selects selected process only behavior for `ProcessTreeScope`."]
+    #[doc = "Limits process capture to selected process only."]
     SelectedProcessOnly,
-    #[doc = "Selects selected process and descendants behavior for `ProcessTreeScope`."]
+    #[doc = "Limits process capture to selected process and descendants."]
     SelectedProcessAndDescendants,
-    #[doc = "Selects application identity behavior for `ProcessTreeScope`."]
+    #[doc = "Limits process capture to application identity."]
     ApplicationIdentity,
-    #[doc = "Selects not applicable behavior for `ProcessTreeScope`."]
+    #[doc = "Limits process capture to not applicable."]
     NotApplicable,
 }

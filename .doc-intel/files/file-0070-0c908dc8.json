@@ -4,6 +4,21 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -38,6 +53,21 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -378,16 +408,261 @@
       "classification": "DIRECT",
       "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
       "lines": [
-        1,
-        364
+        3,
+        3
       ],
       "path": "src/abi/session/abi.rs",
-      "symbol": null
+      "symbol": "PKS_SESSION_ABI_MAJOR"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        4,
+        4
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "PKS_SESSION_ABI_MINOR"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        8,
+        12
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "PksSessionAbiVersion"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "struct_size_bytes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "abi_major"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "abi_minor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        15,
+        21
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "current"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        26,
+        31
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "PksSessionHandle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "kind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "slot_index"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "generation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "scope_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        46,
+        46
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        46,
+        46
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        46,
+        46
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        47,
+        52
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "PksSessionHandleKind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        48,
+        48
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "Invalid"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": "Engine"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -413,6 +688,21 @@
   "generated_from": "not_applicable",
   "git_object": "941b6f70ac1ad64a9413adf2bace8d653ac6a63e",
   "implemented_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -432,6 +722,21 @@
     "PksSessionAppMicDeclaration"
   ],
   "imported_by": [
+    "CALLS:src/abi/executable_extension.rs",
+    "CALLS:src/abi/extension.rs",
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/capture/frame_stream.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/frame/audio.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/runtime/audio/router.rs",
+    "CALLS:src/runtime/audio/runner.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "CALLS:src/runtime/nodes.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/executable_extension.rs",
@@ -447,8 +752,9 @@
     "core::mem::size_of"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "core::mem::size_of"
+    "Consumes configuration at src/abi/session/abi.rs:154.",
+    "Consumes configuration at src/abi/session/abi.rs:34.",
+    "Depends on `core::mem::size_of` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -457,34 +763,34 @@
   "module": "pocketstation::abi::session::abi",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::session::abi` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "const:PKS_SESSION_ABI_MAJOR",
-    "const:PKS_SESSION_ABI_MINOR",
-    "enum:PksSessionEndpointObservationStage",
-    "enum:PksSessionEventKind",
-    "enum:PksSessionHandleKind",
-    "enum:PksSessionLifecycleState",
-    "enum:PksSessionSampleFormat",
-    "enum:PksSessionStatusCode",
-    "fn:current",
-    "fn:invalid",
-    "fn:new",
-    "fn:ok",
-    "struct:PksSessionAbiVersion",
-    "struct:PksSessionAppMicDeclaration",
-    "struct:PksSessionAudioBatch",
-    "struct:PksSessionAudioFrame",
-    "struct:PksSessionEngineConfig",
-    "struct:PksSessionEvent",
-    "struct:PksSessionHandle",
-    "struct:PksSessionMetricsSnapshot",
-    "struct:PksSessionRouteMetrics",
-    "struct:PksSessionSourceMetrics",
-    "struct:PksSessionStatus",
-    "struct:PksSessionUtf8"
+    "Declares public const `PKS_SESSION_ABI_MAJOR`.",
+    "Declares public const `PKS_SESSION_ABI_MINOR`.",
+    "Declares public enum `PksSessionEndpointObservationStage`.",
+    "Declares public enum `PksSessionEventKind`.",
+    "Declares public enum `PksSessionHandleKind`.",
+    "Declares public enum `PksSessionLifecycleState`.",
+    "Declares public enum `PksSessionSampleFormat`.",
+    "Declares public enum `PksSessionStatusCode`.",
+    "Declares public fn `current`.",
+    "Declares public fn `invalid`.",
+    "Declares public fn `new`.",
+    "Declares public fn `ok`.",
+    "Declares public struct `PksSessionAbiVersion`.",
+    "Declares public struct `PksSessionAppMicDeclaration`.",
+    "Declares public struct `PksSessionAudioBatch`.",
+    "Declares public struct `PksSessionAudioFrame`.",
+    "Declares public struct `PksSessionEngineConfig`.",
+    "Declares public struct `PksSessionEvent`.",
+    "Declares public struct `PksSessionHandle`.",
+    "Declares public struct `PksSessionMetricsSnapshot`.",
+    "Declares public struct `PksSessionRouteMetrics`.",
+    "Declares public struct `PksSessionSourceMetrics`.",
+    "Declares public struct `PksSessionStatus`.",
+    "Declares public struct `PksSessionUtf8`."
   ],
   "package": "pocketstation",
   "path": "src/abi/session/abi.rs",
@@ -657,8 +963,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::session::abi responsibilities, including Reports the structured session status.; Stores the code used by `PksSessionStatus`.; Stores the detail used by `PksSessionStatus`.."
+    "classification": "DECLARED",
+    "text": "Reports the structured session status. Stores the code component of `PksSessionStatus`. Stores the detail component of `PksSessionStatus`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -696,11 +1002,11 @@
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::abi::session::abi::PksSessionStatus: Reports the structured session status.",
-    "PksSessionStatus::code: Stores the code used by `PksSessionStatus`.",
-    "PksSessionStatus::detail: Stores the detail used by `PksSessionStatus`.",
+    "PksSessionStatus::code: Stores the code component of `PksSessionStatus`.",
+    "PksSessionStatus::detail: Stores the detail component of `PksSessionStatus`.",
     "ok: Creates a successful status value for `PksSessionStatus`.",
     "new: Creates a new `PksSessionStatus`.",
-    "pocketstation::abi::session::abi::PksSessionStatusCode: Enumerates the supported session status code cases.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode: Provides stable C ABI status categories returned by Session operations.",
     "pocketstation::abi::session::abi::PksSessionStatusCode::Ok: Indicates that the operation completed successfully.",
     "pocketstation::abi::session::abi::PksSessionStatusCode::NullArgument: Identifies the null argument state or stage represented by `PksSessionStatusCode`.",
     "pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMajor: Identifies the unsupported ABI major state or stage represented by `PksSessionStatusCode`.",

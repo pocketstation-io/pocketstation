@@ -54,7 +54,7 @@
       "content_hash": "6316f06c9461a633cb9ea5ecc266dbad9e0fe1e9c3c675a5f97acb73375f8a19",
       "lines": [
         1,
-        63
+        21
       ],
       "path": ".github/workflows/ci.yml",
       "symbol": null
@@ -81,9 +81,9 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings",
-    "run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu",
-    "run: cargo test --workspace --all-features --locked"
+    "Consumes configuration at .github/workflows/ci.yml:41.",
+    "Consumes configuration at .github/workflows/ci.yml:44.",
+    "Consumes configuration at .github/workflows/ci.yml:47."
   ],
   "invariants": [],
   "language": "YAML",
@@ -92,7 +92,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`.github/workflows/ci.yml` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

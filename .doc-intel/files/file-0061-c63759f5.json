@@ -28,8 +28,8 @@
       "classification": "DIRECT",
       "content_hash": "1dd77f4e47bc1710395c20599d1766ed56be7c0db54fc9a167e7711aae641218",
       "lines": [
-        1,
-        69
+        3,
+        23
       ],
       "path": "scripts/publish.sh",
       "symbol": null
@@ -79,7 +79,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/publish.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

@@ -55,9 +55,9 @@ pub enum PksSessionHandleKind {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[doc = "Reports the structured session status."]
 pub struct PksSessionStatus {
-    #[doc = "Stores the code used by `PksSessionStatus`."]
+    #[doc = "Stores the code component of `PksSessionStatus`."]
     pub code: u32,
-    #[doc = "Stores the detail used by `PksSessionStatus`."]
+    #[doc = "Stores the detail component of `PksSessionStatus`."]
     pub detail: u32,
 }
 
@@ -81,7 +81,7 @@ impl PksSessionStatus {
 
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[doc = "Enumerates the supported session status code cases."]
+#[doc = "Provides stable C ABI status categories returned by Session operations."]
 pub enum PksSessionStatusCode {
     #[doc = "Indicates that the operation completed successfully."]
     Ok = 0,

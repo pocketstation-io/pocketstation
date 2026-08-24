@@ -8,7 +8,7 @@
         "--all-features"
       ],
       "returncode": 0,
-      "stderr": "   Compiling proc-macro2 v1.0.106\n   Compiling thiserror v1.0.69\n   Compiling quote v1.0.45\n   Compiling syn v2.0.117\n   Compiling zerocopy-derive v0.8.48\n   Compiling serde_derive v1.0.228\n   Compiling tokio-macros v2.7.0\n   Compiling thiserror-impl v1.0.69\n   Compiling tokio v1.52.3\n   Compiling zerocopy v0.8.48\n   Compiling serde v1.0.228\n   Compiling tinytemplate v1.2.1\n   Compiling pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n   Compiling half v2.7.1\n   Compiling ppv-lite86 v0.2.21\n   Compiling rand_chacha v0.9.0\n   Compiling ciborium-ll v0.2.2\n   Compiling proptest v1.11.0\n   Compiling ciborium v0.2.2\n   Compiling criterion v0.5.1\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.37s\n     Running unittests examples/connector_authoring.rs (target/debug/examples/connector_authoring-9f2b540b144d88c4)\n     Running unittests examples/product_quickstart.rs (target/debug/examples/product_quickstart-abe6695ad085ac40)\n",
+      "stderr": "   Compiling pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.03s\n     Running unittests examples/connector_authoring.rs (target/debug/examples/connector_authoring-9f2b540b144d88c4)\n     Running unittests examples/product_quickstart.rs (target/debug/examples/product_quickstart-abe6695ad085ac40)\n",
       "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n"
     },
     {
@@ -19,7 +19,7 @@
         "examples/operator-consumer/Cargo.toml"
       ],
       "returncode": 0,
-      "stderr": "    Checking pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Checking whisper-transcribe-example v0.1.0 (/Users/raph/Development/pocketstation-io/pocketstation/examples/whisper-transcribe)\n    Checking operator-consumer-example v0.1.0 (/Users/raph/Development/pocketstation-io/pocketstation/examples/operator-consumer)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.04s\n",
+      "stderr": "    Checking pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Checking whisper-transcribe-example v0.1.0 (/Users/raph/Development/pocketstation-io/pocketstation/examples/whisper-transcribe)\n    Checking operator-consumer-example v0.1.0 (/Users/raph/Development/pocketstation-io/pocketstation/examples/operator-consumer)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.98s\n",
       "stdout": ""
     },
     {
@@ -30,12 +30,12 @@
         "examples/whisper-transcribe/Cargo.toml"
       ],
       "returncode": 0,
-      "stderr": "    Checking pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Checking whisper-transcribe-example v0.1.0 (/Users/raph/Development/pocketstation-io/pocketstation/examples/whisper-transcribe)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.11s\n",
+      "stderr": "    Checking pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Checking whisper-transcribe-example v0.1.0 (/Users/raph/Development/pocketstation-io/pocketstation/examples/whisper-transcribe)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.10s\n",
       "stdout": ""
     }
   ],
-  "created_at": "2026-08-23T18:14:12+00:00",
+  "created_at": "2026-08-24T14:35:19+00:00",
   "name": "examples",
   "passed": true,
-  "source_digest": "4f6e3318be72227f9a90b12b1d7acbab4fc548a530793bd40154ab5960fe56b9"
+  "source_digest": "307873cfa06d7650d44381aed991790e18a8d069cb2612b77bb62a7e2a134067"
 }

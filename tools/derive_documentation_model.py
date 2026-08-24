@@ -38,13 +38,11 @@ def evidence(*paths: str, classification: str = "DIRECT") -> list[dict[str, Any]
     for path in paths:
         record = FILES[path]
         dossier = json.loads((ROOT / record["dossier"]).read_text())
-        result.append({
-            "path": path,
-            "content_hash": record["sha256"],
-            "lines": [1, dossier["line_count"]],
-            "symbol": None,
-            "classification": classification,
-        })
+        for item in dossier["evidence"]:
+            result.append({
+                **item,
+                "classification": classification if classification != "DIRECT" else item["classification"],
+            })
     return result
 
 

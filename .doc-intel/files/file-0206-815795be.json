@@ -4,6 +4,11 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/connector/configuration.rs",
@@ -65,6 +70,11 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/connector/configuration.rs",
@@ -439,16 +449,251 @@
       "classification": "DIRECT",
       "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
       "lines": [
-        1,
-        200
+        8,
+        8
       ],
       "path": "src/session/declaration/endpoint.rs",
-      "symbol": null
+      "symbol": "CONNECTOR_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "BROWSER_NODE_TYPE_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "BROWSER_OPERATOR_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "BROWSER_RECEIVER_URI_CONFIGURATION_KEY"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        14,
+        16
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "EndpointConfiguration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "values"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        19,
+        22
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "EndpointConfigurationValue"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "value"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "sensitive"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        25,
+        29
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "drop"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        33,
+        35
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        37,
+        46
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "with"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        49,
+        58
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "with_sensitive"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        60,
+        62
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "get"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        64,
+        66
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "is_sensitive"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        68,
+        72
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "iter"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        74,
+        81
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "validate"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        85,
+        106
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        109,
+        109
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": "fmt"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/connector/configuration.rs",
@@ -470,6 +715,11 @@
   "generated_from": "not_applicable",
   "git_object": "a4429f87da3c558e72039568448c7216096d9f9a",
   "implemented_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/connector/configuration.rs",
@@ -485,6 +735,11 @@
     "EndpointDescriptor"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/connector/configuration.rs",
@@ -500,12 +755,12 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::graph::OperatorId",
-    "crate::graph::{EdgeContract, NodeTypeId}",
-    "crate::session::SessionError",
-    "std::collections::BTreeMap",
-    "super::*"
+    "Consumes configuration at src/session/declaration/endpoint.rs:172.",
+    "Depends on `crate::graph::OperatorId` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, NodeTypeId}` through a declared Rust import.",
+    "Depends on `crate::session::SessionError` through a declared Rust import.",
+    "Depends on `std::collections::BTreeMap` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -531,32 +786,34 @@
   "module": "pocketstation::session::declaration::endpoint",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration::endpoint` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-77a192cab21743b48c15"
   ],
   "outputs": [
-    "const:BROWSER_NODE_TYPE_ID",
-    "const:BROWSER_OPERATOR_ID",
-    "const:BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
-    "const:CONNECTOR_NODE_TYPE_ID",
-    "fn:configuration",
-    "fn:get",
-    "fn:input_edge",
-    "fn:is_sensitive",
-    "fn:iter",
-    "fn:new",
-    "fn:node_type_id",
-    "fn:operator_id",
-    "fn:validate",
-    "fn:with",
-    "fn:with_configuration",
-    "fn:with_input_edge",
-    "fn:with_sensitive",
-    "return Err(SessionError::InvalidEndpoint {",
-    "struct:EndpointConfiguration",
-    "struct:EndpointDescriptor"
+    "Creates a typed failure at src/session/declaration/endpoint.rs:159.",
+    "Creates a typed failure at src/session/declaration/endpoint.rs:164.",
+    "Creates a typed failure at src/session/declaration/endpoint.rs:76.",
+    "Declares public const `BROWSER_NODE_TYPE_ID`.",
+    "Declares public const `BROWSER_OPERATOR_ID`.",
+    "Declares public const `BROWSER_RECEIVER_URI_CONFIGURATION_KEY`.",
+    "Declares public const `CONNECTOR_NODE_TYPE_ID`.",
+    "Declares public fn `configuration`.",
+    "Declares public fn `get`.",
+    "Declares public fn `input_edge`.",
+    "Declares public fn `is_sensitive`.",
+    "Declares public fn `iter`.",
+    "Declares public fn `new`.",
+    "Declares public fn `node_type_id`.",
+    "Declares public fn `operator_id`.",
+    "Declares public fn `validate`.",
+    "Declares public fn `with_configuration`.",
+    "Declares public fn `with_input_edge`.",
+    "Declares public fn `with_sensitive`.",
+    "Declares public fn `with`.",
+    "Declares public struct `EndpointConfiguration`.",
+    "Declares public struct `EndpointDescriptor`."
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/endpoint.rs",
@@ -747,8 +1004,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration::endpoint responsibilities, including Defines the public connector node type identifier value.; Defines the public browser node type identifier value.; Defines the public browser operator identifier value.."
+    "classification": "DECLARED",
+    "text": "Defines connector node type identifier as `\"endpoint.connector.external\"` for the owning public contract. Defines browser node type identifier as `\"endpoint.browser.remote\"` for the owning public contract. Defines browser operator identifier as `\"io.pocketstation.browser.webrtc.v1\"` for the owning public contract."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -811,6 +1068,9 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/secret.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/operator.rs",
     "REFERENCES:src/graph/ports.rs",
@@ -823,18 +1083,18 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::session::declaration::endpoint::CONNECTOR_NODE_TYPE_ID: Defines the public connector node type identifier value.",
-    "pocketstation::session::declaration::endpoint::BROWSER_NODE_TYPE_ID: Defines the public browser node type identifier value.",
-    "pocketstation::session::declaration::endpoint::BROWSER_OPERATOR_ID: Defines the public browser operator identifier value.",
+    "pocketstation::session::declaration::endpoint::CONNECTOR_NODE_TYPE_ID: Defines connector node type identifier as `\"endpoint.connector.external\"` for the owning public contract.",
+    "pocketstation::session::declaration::endpoint::BROWSER_NODE_TYPE_ID: Defines browser node type identifier as `\"endpoint.browser.remote\"` for the owning public contract.",
+    "pocketstation::session::declaration::endpoint::BROWSER_OPERATOR_ID: Defines browser operator identifier as `\"io.pocketstation.browser.webrtc.v1\"` for the owning public contract.",
     "pocketstation::session::declaration::endpoint::EndpointConfiguration: Configures endpoint behavior at its owning API boundary.",
     "new: Creates a new `EndpointConfiguration`.",
     "with: Returns `EndpointConfiguration` with the supplied entry applied.",
     "with_sensitive: Adds a setup-time value whose normal debug representation is redacted.",
     "get: Returns the value held by `EndpointConfiguration`.",
-    "is_sensitive: Returns whether sensitive applies to `EndpointConfiguration`.",
+    "is_sensitive: Reports whether sensitive is true for `EndpointConfiguration`.",
     "iter: Iterates over the values held by `EndpointConfiguration`.",
     "fmt: Formats `EndpointConfiguration` with the requested formatter.",
-    "pocketstation::session::declaration::endpoint::EndpointDescriptor: Describes the endpoint descriptor contract.",
+    "pocketstation::session::declaration::endpoint::EndpointDescriptor: Declares an endpoint's node identity, media contract, configuration, and execution requirements.",
     "new: Creates a new `EndpointDescriptor`.",
     "with_configuration: Sets the configuration on `EndpointDescriptor` and returns the updated value.",
     "with_input_edge: Declares the bounded delivery policy for routes entering this endpoint.",

@@ -54,12 +54,12 @@ pub struct AsyncOperatorObservations {
     pub idle_poll_total: u64,
     #[doc = "Indicates whether ready applies to `AsyncOperatorObservations`."]
     pub ready: bool,
-    #[doc = "Stores the joined used by `AsyncOperatorObservations`."]
+    #[doc = "Reports whether joined is true for `AsyncOperatorObservations`."]
     pub joined: bool,
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to async operator observation."]
+#[doc = "Holds the ownership or bounded access represented by async operator observation handle."]
 pub struct AsyncOperatorObservationHandle {
     pub(super) state: Arc<AsyncOperatorObservationState>,
 }

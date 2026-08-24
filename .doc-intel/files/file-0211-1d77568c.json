@@ -4,7 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/session/declaration/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/session/declaration/mod.rs"
   ],
   "calls": [
@@ -51,7 +54,10 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/session/declaration/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/session/declaration/mod.rs"
   ],
   "constructs": [
@@ -355,17 +361,250 @@
       "classification": "DIRECT",
       "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
       "lines": [
-        1,
-        215
+        15,
+        17
       ],
       "path": "src/session/declaration/typed_stream.rs",
-      "symbol": null
+      "symbol": "StreamSignal"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "signal_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        20,
+        27
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "TypedOperator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "operator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "input_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "output_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "input_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "output_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "marker"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        30,
+        69
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        71,
+        73
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "operator_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        75,
+        77
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "input_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        79,
+        81
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "output_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        83,
+        85
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "input_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        87,
+        89
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "output_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        95,
+        95
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        96,
+        100
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "Stream"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        97,
+        97
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "handle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        98,
+        98
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "signal_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        99,
+        99
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "marker"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        103,
+        114
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "from_stem"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        118,
+        126
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": "from_source_output"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/session/declaration/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/session/declaration/mod.rs"
   ],
   "extends": [],
@@ -387,7 +626,10 @@
   "generated_from": "not_applicable",
   "git_object": "96546067ab5a7b98b63f59d0ed004fbc9cf08b66",
   "implemented_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/session/declaration/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/session/declaration/mod.rs"
   ],
   "implements": [
@@ -395,7 +637,10 @@
     "Stream<Signal>"
   ],
   "imported_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/session/declaration/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
     "IMPORTS:src/session/declaration/mod.rs"
   ],
   "imports": [
@@ -405,10 +650,10 @@
     "super::draft::InternalStreamHandle"
   ],
   "inputs": [
-    "crate::graph::{ AsyncOperatorManifest, OperatorId, PortDirection, PortSpec, SignalClass, SignalSpec, }",
-    "crate::session::{ EndpointHandle, Operator, RouteId, SessionError, SourceOutputHandle, StemHandle, }",
-    "std::marker::PhantomData",
-    "super::draft::InternalStreamHandle"
+    "Depends on `crate::graph::{ AsyncOperatorManifest, OperatorId, PortDirection, PortSpec, SignalClass, SignalSpec, }` through a declared Rust import.",
+    "Depends on `crate::session::{ EndpointHandle, Operator, RouteId, SessionError, SourceOutputHandle, StemHandle, }` through a declared Rust import.",
+    "Depends on `std::marker::PhantomData` through a declared Rust import.",
+    "Depends on `super::draft::InternalStreamHandle` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -426,33 +671,33 @@
   "module": "pocketstation::session::declaration::typed_stream",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration::typed_stream` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-0577caa4e8cabf1f0284"
   ],
   "outputs": [
-    "enum:TypedStreamError",
-    "fn:from_source_output",
-    "fn:from_stem",
-    "fn:input_port",
-    "fn:input_spec",
-    "fn:new",
-    "fn:operator_id",
-    "fn:output_port",
-    "fn:output_spec",
-    "fn:send",
-    "fn:signal_spec",
-    "fn:through",
-    "return Err(TypedStreamError::AmbiguousPort { direction });",
-    "return Err(TypedStreamError::InputSignalMismatch {",
-    "return Err(TypedStreamError::OperatorIdentityMismatch {",
-    "return Err(TypedStreamError::OutputSignalMismatch {",
-    "return Err(TypedStreamError::StemRequiresPcmAudio);",
-    "return Err(TypedStreamError::StreamInputMismatch);",
-    "struct:Stream",
-    "struct:TypedOperator",
-    "trait:StreamSignal"
+    "Creates a typed failure at src/session/declaration/typed_stream.rs:107.",
+    "Creates a typed failure at src/session/declaration/typed_stream.rs:137.",
+    "Creates a typed failure at src/session/declaration/typed_stream.rs:173.",
+    "Creates a typed failure at src/session/declaration/typed_stream.rs:40.",
+    "Creates a typed failure at src/session/declaration/typed_stream.rs:52.",
+    "Creates a typed failure at src/session/declaration/typed_stream.rs:57.",
+    "Declares public enum `TypedStreamError`.",
+    "Declares public fn `from_source_output`.",
+    "Declares public fn `from_stem`.",
+    "Declares public fn `input_port`.",
+    "Declares public fn `input_spec`.",
+    "Declares public fn `new`.",
+    "Declares public fn `operator_id`.",
+    "Declares public fn `output_port`.",
+    "Declares public fn `output_spec`.",
+    "Declares public fn `send`.",
+    "Declares public fn `signal_spec`.",
+    "Declares public fn `through`.",
+    "Declares public struct `Stream`.",
+    "Declares public struct `TypedOperator`.",
+    "Declares public trait `StreamSignal`."
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/typed_stream.rs",
@@ -578,8 +823,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration::typed stream responsibilities, including Compile-time marker supplied by an SDK or external package.; Returns the signal spec held by `StreamSignal`.; Binds an operator declaration to its typed input and output ports so graph connections preserve signal specifications.."
+    "classification": "DECLARED",
+    "text": "Compile-time marker supplied by an SDK or external package. Returns the signal spec held by `StreamSignal`. Binds an operator declaration to its typed input and output ports so graph connections preserve signal specifications."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -640,6 +885,9 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/graph/signal/operator.rs",
+    "IMPLEMENTS:src/session/error.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/operator.rs",
     "REFERENCES:src/graph/ports.rs",
@@ -665,26 +913,26 @@
     "signal_spec: Returns the signal spec held by `Stream`.",
     "through: Routes the current stream through a declared operator using `Stream`.",
     "send: Sends a value through `Stream`.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError: Classifies failures reported as typed stream error.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::InvalidSignal: Reported when the owning operation encounters invalid signal.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::OperatorIdentityMismatch: Reported when the owning operation encounters operator identity mismatch.",
-    "TypedStreamError::OperatorIdentityMismatch::declaration: Stores the declaration used by `OperatorIdentityMismatch`.",
-    "TypedStreamError::OperatorIdentityMismatch::manifest: Stores the manifest used by `OperatorIdentityMismatch`.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::UnknownPort: Reported when the owning operation encounters unknown port.",
-    "TypedStreamError::UnknownPort::direction: Stores the direction used by `UnknownPort`.",
-    "TypedStreamError::UnknownPort::port: Stores the port used by `UnknownPort`.",
-    "TypedStreamError::MissingPort::direction: Stores the direction used by `MissingPort`.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::MissingPort: Reported when the owning operation encounters missing port.",
-    "TypedStreamError::AmbiguousPort::direction: Stores the direction used by `AmbiguousPort`.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::AmbiguousPort: Reported when the owning operation encounters ambiguous port.",
-    "TypedStreamError::InputSignalMismatch::port: Stores the port used by `InputSignalMismatch`.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::InputSignalMismatch: Reported when the owning operation encounters input signal mismatch.",
-    "TypedStreamError::OutputSignalMismatch::port: Stores the port used by `OutputSignalMismatch`.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::OutputSignalMismatch: Reported when the owning operation encounters output signal mismatch.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::StemRequiresPcmAudio: Reported when the owning operation encounters stem requires PCM audio.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::StreamInputMismatch: Reported when the owning operation encounters stream input mismatch.",
-    "pocketstation::session::declaration::typed_stream::TypedStreamError::Session: Reported when the owning operation encounters session."
+    "pocketstation::session::declaration::typed_stream::TypedStreamError: Classifies failures surfaced by typed stream operations.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::InvalidSignal: Reports that the supplied signal is invalid.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::InvalidManifest: Reports that the supplied manifest is invalid.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::OperatorIdentityMismatch: Reports that operator identity does not match the expected contract.",
+    "TypedStreamError::OperatorIdentityMismatch::declaration: Stores the declaration text reported by `OperatorIdentityMismatch`.",
+    "TypedStreamError::OperatorIdentityMismatch::manifest: Stores the manifest text reported by `OperatorIdentityMismatch`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::UnknownPort: Reports that the referenced port is not declared or registered.",
+    "TypedStreamError::UnknownPort::direction: Records the direction selected for `UnknownPort`.",
+    "TypedStreamError::UnknownPort::port: References the port participating in `UnknownPort`.",
+    "TypedStreamError::MissingPort::direction: Records the direction selected for `MissingPort`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::MissingPort: Reports that the required port is missing.",
+    "TypedStreamError::AmbiguousPort::direction: Records the direction selected for `AmbiguousPort`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::AmbiguousPort: Reports that port resolves to more than one candidate.",
+    "TypedStreamError::InputSignalMismatch::port: References the port participating in `InputSignalMismatch`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::InputSignalMismatch: Reports that input signal does not match the expected contract.",
+    "TypedStreamError::OutputSignalMismatch::port: References the port participating in `OutputSignalMismatch`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::OutputSignalMismatch: Reports that output signal does not match the expected contract.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::StemRequiresPcmAudio: Classifies a failure at the stem requires PCM audio stage or component of `TypedStreamError`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::StreamInputMismatch: Reports that stream input does not match the expected contract.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::Session: Classifies a failure at the session stage or component of `TypedStreamError`."
   ],
   "retry_behavior": [],
   "serialization": [],

@@ -5,11 +5,11 @@ const NANOSECOND_TICKS_PER_SECOND: u64 = 1_000_000_000;
 /// The authority that defines timestamps carried by one clock-domain ID.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClockDomainKind {
-    #[doc = "Selects unspecified behavior for `ClockDomainKind`."]
+    #[doc = "Identifies timestamps as belonging to the unspecified clock domain."]
     Unspecified,
-    #[doc = "Selects process monotonic behavior for `ClockDomainKind`."]
+    #[doc = "Identifies timestamps as belonging to the process monotonic clock domain."]
     ProcessMonotonic,
-    #[doc = "Selects provider defined behavior for `ClockDomainKind`."]
+    #[doc = "Identifies timestamps as belonging to the provider defined clock domain."]
     ProviderDefined,
 }
 

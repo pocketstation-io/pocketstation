@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/session/extensions/recording.rs"
@@ -134,6 +135,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/session/extensions/recording.rs"
@@ -666,16 +668,247 @@
       "classification": "DIRECT",
       "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
       "lines": [
-        1,
-        757
+        23,
+        23
       ],
       "path": "src/recording/endpoint.rs",
-      "symbol": null
+      "symbol": "SESSION_RECORDER_IDLE_WAIT_MS"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "MULTISTEM_GROUP_CONFIGURATION_KEY"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "MULTISTEM_NAME_CONFIGURATION_KEY"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        28,
+        30
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "MultistemRecordingReceipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "state"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        33,
+        35
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "result"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        39,
+        41
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "MultistemRecordingReceiptState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        40,
+        40
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "result"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        49,
+        53
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "SessionMultistemEndpointCoordinator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        50,
+        50
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "output_root"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        51,
+        51
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "group_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        52,
+        52
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "receipt_state"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        56,
+        62
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        65,
+        67
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "output_root"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        70,
+        72
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "group_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        74,
+        78
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "receipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        82,
+        97
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "preparation_group"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        99,
+        227
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        230,
+        238
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "SessionPreparedStem"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        231,
+        231
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "endpoint_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        232,
+        232
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "label"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        233,
+        233
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": "stem_id"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/session/extensions/recording.rs"
@@ -696,6 +929,7 @@
   "generated_from": "not_applicable",
   "git_object": "1c9a295389bbc68293a98f678ac0830ae3e3b006",
   "implemented_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/session/extensions/recording.rs"
@@ -711,6 +945,7 @@
     "SessionRecorderTelemetry"
   ],
   "imported_by": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
     "CONTAINS:src/recording/mod.rs",
     "IMPORTS:src/recording/mod.rs",
     "REFERENCES:src/session/extensions/recording.rs"
@@ -730,20 +965,21 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
-    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
-    "crate::recording::{ MultistemRecording, PermissionDecision, PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig, RecordingObservations, RecordingOutcome, RecordingState, StemLabel, }",
-    "crate::runtime::PlanEdgeFrame",
-    "crate::timing::TimelineMapping",
-    "module:tests",
-    "std::collections::HashSet",
-    "std::path::{Path, PathBuf}",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "std::sync::{Arc, OnceLock}",
-    "std::thread::{self, JoinHandle}",
-    "std::time::Duration"
+    "Consumes configuration at src/recording/endpoint.rs:64.",
+    "Consumes configuration at src/recording/endpoint.rs:69.",
+    "Consumes configuration at src/recording/endpoint.rs:755.",
+    "Depends on `crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }` through a declared Rust import.",
+    "Depends on `crate::frame::{EndpointId, RouteId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::recording::{ MultistemRecording, PermissionDecision, PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig, RecordingObservations, RecordingOutcome, RecordingState, StemLabel, }` through a declared Rust import.",
+    "Depends on `crate::runtime::PlanEdgeFrame` through a declared Rust import.",
+    "Depends on `crate::timing::TimelineMapping` through a declared Rust import.",
+    "Depends on `std::collections::HashSet` through a declared Rust import.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, OnceLock}` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -761,23 +997,31 @@
   "module": "pocketstation::recording::endpoint",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::recording::endpoint` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-25297d2b3b32d08b7163"
   ],
   "outputs": [
-    "const:MULTISTEM_GROUP_CONFIGURATION_KEY",
-    "const:MULTISTEM_NAME_CONFIGURATION_KEY",
-    "fn:group_id",
-    "fn:new",
-    "fn:output_root",
-    "fn:receipt",
-    "fn:result",
-    "return Err(prepare_failure(",
-    "return Err(prepare_failure(format!(",
-    "struct:MultistemRecordingReceipt",
-    "struct:SessionMultistemEndpointCoordinator"
+    "Creates a typed failure at src/recording/endpoint.rs:117.",
+    "Creates a typed failure at src/recording/endpoint.rs:125.",
+    "Creates a typed failure at src/recording/endpoint.rs:138.",
+    "Creates a typed failure at src/recording/endpoint.rs:144.",
+    "Creates a typed failure at src/recording/endpoint.rs:152.",
+    "Creates a typed failure at src/recording/endpoint.rs:167.",
+    "Creates a typed failure at src/recording/endpoint.rs:181.",
+    "Creates a typed failure at src/recording/endpoint.rs:191.",
+    "Creates a typed failure at src/recording/endpoint.rs:196.",
+    "Creates a typed failure at src/recording/endpoint.rs:91.",
+    "Declares public const `MULTISTEM_GROUP_CONFIGURATION_KEY`.",
+    "Declares public const `MULTISTEM_NAME_CONFIGURATION_KEY`.",
+    "Declares public fn `group_id`.",
+    "Declares public fn `new`.",
+    "Declares public fn `output_root`.",
+    "Declares public fn `receipt`.",
+    "Declares public fn `result`.",
+    "Declares public struct `MultistemRecordingReceipt`.",
+    "Declares public struct `SessionMultistemEndpointCoordinator`."
   ],
   "package": "pocketstation",
   "path": "src/recording/endpoint.rs",
@@ -1065,8 +1309,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::recording::endpoint responsibilities, including Defines the public multistem group configuration key value.; Defines the public multistem name configuration key value.; Retains the identity and observation access returned for multistem recording.."
+    "classification": "DECLARED",
+    "text": "Defines multistem group configuration key as `\"recording_group_id\"` for the owning public contract. Defines multistem name configuration key as `\"stem_name\"` for the owning public contract. Retains the identity and observation access returned for multistem recording."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1098,6 +1342,13 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/recording/writer.rs",
+    "CALLS:src/runtime/lifecycle/async_host.rs",
+    "IMPLEMENTS:src/endpoint/contract.rs",
+    "IMPLEMENTS:src/endpoint/runtime.rs",
     "REFERENCES:src/endpoint/contract.rs",
     "REFERENCES:src/endpoint/identity.rs",
     "REFERENCES:src/endpoint/runtime.rs",
@@ -1206,8 +1457,8 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::recording::endpoint::MULTISTEM_GROUP_CONFIGURATION_KEY: Defines the public multistem group configuration key value.",
-    "pocketstation::recording::endpoint::MULTISTEM_NAME_CONFIGURATION_KEY: Defines the public multistem name configuration key value.",
+    "pocketstation::recording::endpoint::MULTISTEM_GROUP_CONFIGURATION_KEY: Defines multistem group configuration key as `\"recording_group_id\"` for the owning public contract.",
+    "pocketstation::recording::endpoint::MULTISTEM_NAME_CONFIGURATION_KEY: Defines multistem name configuration key as `\"stem_name\"` for the owning public contract.",
     "pocketstation::recording::endpoint::MultistemRecordingReceipt: Retains the identity and observation access returned for multistem recording.",
     "result: Returns the result represented by `MultistemRecordingReceipt`.",
     "pocketstation::recording::endpoint::SessionMultistemEndpointCoordinator: Canonical Session-owned multistem recorder declaration.",

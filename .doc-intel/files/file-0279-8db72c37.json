@@ -38,8 +38,8 @@
       "classification": "DIRECT",
       "content_hash": "694dd8c67ac01cb13b729c1ac8b92688a89123aebe36fe9b3ef88809fd793f6d",
       "lines": [
-        1,
-        93
+        2,
+        22
       ],
       "path": "tools/check-api-compatibility.sh",
       "symbol": null
@@ -66,7 +66,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "--default-features \\"
+    "Consumes configuration at tools/check-api-compatibility.sh:26."
   ],
   "invariants": [
     {
@@ -80,7 +80,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`tools/check-api-compatibility.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

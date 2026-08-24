@@ -44,14 +44,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "8a9b9241e1719a7be1d57dce2acc1540fbd5a9a268eb0a4f717e21db3eddcd1c",
       "lines": [
         1,
-        8
+        1
       ],
       "path": "src/graph/compile/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::compile"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -89,10 +89,10 @@
     "resolve::{CompileError, Compiler}"
   ],
   "inputs": [
-    "module:plan",
-    "module:resolve",
-    "plan::RuntimePlanner",
-    "resolve::{CompileError, Compiler}"
+    "Depends on `plan::RuntimePlanner` through a declared Rust import.",
+    "Depends on `plan` through a declared Rust import.",
+    "Depends on `resolve::{CompileError, Compiler}` through a declared Rust import.",
+    "Depends on `resolve` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -101,7 +101,7 @@
   "module": "pocketstation::graph::compile",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::compile` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -133,8 +133,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::compile responsibilities, including compile."
+    "classification": "DECLARED",
+    "text": "Pure graph resolution, validation, negotiation, and runtime planning."
   },
   "queues": [],
   "recovery_behavior": [],

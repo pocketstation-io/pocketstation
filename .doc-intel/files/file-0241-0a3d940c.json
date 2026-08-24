@@ -10,6 +10,7 @@
   "callbacks": [],
   "called_by": [
     "CONTAINS:src/session/prepare/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
     "REFERENCES:src/session/prepare/mod.rs"
@@ -25,6 +26,7 @@
   "configuration_read": [],
   "constructed_by": [
     "CONTAINS:src/session/prepare/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
     "REFERENCES:src/session/prepare/mod.rs"
@@ -87,20 +89,21 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "88920c10e4232e8529f582940748a360bdb16ab87d4bdf886f7943d81c4543fd",
       "lines": [
         1,
-        95
+        1
       ],
       "path": "src/session/prepare/error.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::prepare::error"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
     "CONTAINS:src/session/prepare/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
     "REFERENCES:src/session/prepare/mod.rs"
@@ -120,6 +123,7 @@
   "git_object": "cf1d6da539903aabc15cbb04dee49256e471f103",
   "implemented_by": [
     "CONTAINS:src/session/prepare/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
     "REFERENCES:src/session/prepare/mod.rs"
@@ -127,6 +131,7 @@
   "implements": [],
   "imported_by": [
     "CONTAINS:src/session/prepare/mod.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "IMPORTS:src/session/prepare/mod.rs",
     "REFERENCES:src/session/lifecycle/engine.rs",
     "REFERENCES:src/session/prepare/mod.rs"
@@ -138,10 +143,10 @@
     "crate::session::{SourceInstanceId, SourceTypeId}"
   ],
   "inputs": [
-    "crate::frame::{EndpointId, RouteId, StemId}",
-    "crate::graph::{EdgeId, NodeId}",
-    "crate::runtime::{ExecError, PlanRunnerError}",
-    "crate::session::{SourceInstanceId, SourceTypeId}"
+    "Depends on `crate::frame::{EndpointId, RouteId, StemId}` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeId, NodeId}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ExecError, PlanRunnerError}` through a declared Rust import.",
+    "Depends on `crate::session::{SourceInstanceId, SourceTypeId}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -150,11 +155,11 @@
   "module": "pocketstation::session::prepare::error",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::prepare::error` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:SessionPrepareError"
+    "Declares public enum `SessionPrepareError`."
   ],
   "package": "pocketstation",
   "path": "src/session/prepare/error.rs",
@@ -176,8 +181,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::prepare::error responsibilities, including Classifies failures reported as session prepare error.; Reported when the owning operation encounters runtime.; Reported when the owning operation encounters source channel.."
+    "classification": "DECLARED",
+    "text": "Typed failures produced while materializing a compiled Session."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -238,6 +243,8 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "IMPLEMENTS:src/runtime/audio/executor.rs",
+    "IMPLEMENTS:src/runtime/audio/runner.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/spec.rs",
     "REFERENCES:src/runtime/audio/executor.rs",
@@ -247,48 +254,48 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::session::prepare::error::SessionPrepareError: Classifies failures reported as session prepare error.",
-    "pocketstation::session::prepare::error::SessionPrepareError::Runtime: Reported when the owning operation encounters runtime.",
-    "pocketstation::session::prepare::error::SessionPrepareError::SourceChannel: Reported when the owning operation encounters source channel.",
+    "pocketstation::session::prepare::error::SessionPrepareError: Classifies failures produced during session resource preparation.",
+    "pocketstation::session::prepare::error::SessionPrepareError::Runtime: Classifies a failure at the runtime stage or component of `SessionPrepareError`.",
+    "pocketstation::session::prepare::error::SessionPrepareError::SourceChannel: Classifies a failure at the source channel stage or component of `SessionPrepareError`.",
     "SessionPrepareError::MissingSourceNode::stem_id: Identifies the stem identifier recorded by `MissingSourceNode`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingSourceNode: Reported when the owning operation encounters missing source node.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingSourceNode: Reports that the required source node is missing.",
     "SessionPrepareError::DuplicateSourceNode::stem_id: Identifies the stem identifier recorded by `DuplicateSourceNode`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateSourceNode: Reported when the owning operation encounters duplicate source node.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingExternalAudioIngress: Reported when the owning operation encounters missing external audio ingress.",
+    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateSourceNode: Reports that source node duplicates an existing declaration or record.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingExternalAudioIngress: Reports that the required external audio ingress is missing.",
     "SessionPrepareError::MissingExternalAudioIngress::source_instance_id: Identifies the source instance identifier recorded by `MissingExternalAudioIngress`.",
-    "SessionPrepareError::MissingExternalAudioIngress::output_port: Stores the output port used by `MissingExternalAudioIngress`.",
+    "SessionPrepareError::MissingExternalAudioIngress::output_port: References the output port participating in `MissingExternalAudioIngress`.",
     "SessionPrepareError::MissingExternalSourceDefinition::source_type_id: Identifies the source type identifier recorded by `MissingExternalSourceDefinition`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingExternalSourceDefinition: Reported when the owning operation encounters missing external source definition.",
-    "pocketstation::session::prepare::error::SessionPrepareError::InvalidExternalAudioMedia: Reported when the owning operation encounters invalid external audio media.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingExternalSourceDefinition: Reports that the required external source definition is missing.",
+    "pocketstation::session::prepare::error::SessionPrepareError::InvalidExternalAudioMedia: Reports that the supplied external audio media is invalid.",
     "SessionPrepareError::InvalidExternalAudioMedia::source_instance_id: Identifies the source instance identifier recorded by `InvalidExternalAudioMedia`.",
-    "SessionPrepareError::InvalidExternalAudioMedia::output_port: Stores the output port used by `InvalidExternalAudioMedia`.",
+    "SessionPrepareError::InvalidExternalAudioMedia::output_port: References the output port participating in `InvalidExternalAudioMedia`.",
     "SessionPrepareError::MissingGeneratedAudioIngress::stem_id: Identifies the stem identifier recorded by `MissingGeneratedAudioIngress`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingGeneratedAudioIngress: Reported when the owning operation encounters missing generated audio ingress.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingGeneratedAudioIngress: Reports that the required generated audio ingress is missing.",
     "SessionPrepareError::InvalidGeneratedAudioMedia::stem_id: Identifies the stem identifier recorded by `InvalidGeneratedAudioMedia`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::InvalidGeneratedAudioMedia: Reported when the owning operation encounters invalid generated audio media.",
+    "pocketstation::session::prepare::error::SessionPrepareError::InvalidGeneratedAudioMedia: Reports that the supplied generated audio media is invalid.",
     "SessionPrepareError::MissingGeneratedAudioBridge::stem_id: Identifies the stem identifier recorded by `MissingGeneratedAudioBridge`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingGeneratedAudioBridge: Reported when the owning operation encounters missing generated audio bridge.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingGeneratedAudioBridge: Reports that the required generated audio bridge is missing.",
     "SessionPrepareError::MissingExternalSourceRouteEdge::route_id: Identifies the route identifier recorded by `MissingExternalSourceRouteEdge`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingExternalSourceRouteEdge: Reported when the owning operation encounters missing external source route edge.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingExternalSourceRouteEdge: Reports that the required external source route edge is missing.",
     "SessionPrepareError::MissingWorkerTarget::edge_id: Identifies the edge identifier recorded by `MissingWorkerTarget`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerTarget: Reported when the owning operation encounters missing worker target.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerTarget: Reports that the required worker target is missing.",
     "SessionPrepareError::MissingWorkerEdge::edge_id: Identifies the edge identifier recorded by `MissingWorkerEdge`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerEdge: Reported when the owning operation encounters missing worker edge.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerEdge: Reports that the required worker edge is missing.",
     "SessionPrepareError::MissingWorkerEdgeContract::edge_id: Identifies the edge identifier recorded by `MissingWorkerEdgeContract`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerEdgeContract: Reported when the owning operation encounters missing worker edge contract.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerEdgeContract: Reports that the required worker edge contract is missing.",
     "SessionPrepareError::MissingWorkerCapacity::edge_id: Identifies the edge identifier recorded by `MissingWorkerCapacity`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerCapacity: Reported when the owning operation encounters missing worker capacity.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerCapacity: Reports that the required worker capacity is missing.",
     "SessionPrepareError::MissingWorkerSampleSpec::edge_id: Identifies the edge identifier recorded by `MissingWorkerSampleSpec`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerSampleSpec: Reported when the owning operation encounters missing worker sample spec.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingWorkerSampleSpec: Reports that the required worker sample spec is missing.",
     "SessionPrepareError::InvalidOperatorInputPort::edge_id: Identifies the edge identifier recorded by `InvalidOperatorInputPort`.",
-    "SessionPrepareError::InvalidOperatorInputPort::port_name: Stores the port name used by `InvalidOperatorInputPort`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::InvalidOperatorInputPort: Reported when the owning operation encounters invalid operator input port.",
+    "SessionPrepareError::InvalidOperatorInputPort::port_name: Stores the human-readable port used to identify `InvalidOperatorInputPort`.",
+    "pocketstation::session::prepare::error::SessionPrepareError::InvalidOperatorInputPort: Reports that the supplied operator input port is invalid.",
     "SessionPrepareError::UnknownWorkerRoute::edge_id: Identifies the edge identifier recorded by `UnknownWorkerRoute`.",
     "SessionPrepareError::UnknownWorkerRoute::route_id: Identifies the route identifier recorded by `UnknownWorkerRoute`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::UnknownWorkerRoute: Reported when the owning operation encounters unknown worker route.",
+    "pocketstation::session::prepare::error::SessionPrepareError::UnknownWorkerRoute: Reports that the referenced worker route is not declared or registered.",
     "SessionPrepareError::DuplicateWorkerRoute::route_id: Identifies the route identifier recorded by `DuplicateWorkerRoute`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateWorkerRoute: Reported when the owning operation encounters duplicate worker route.",
-    "pocketstation::session::prepare::error::SessionPrepareError::WorkerRouteMismatch: Reported when the owning operation encounters worker route mismatch.",
+    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateWorkerRoute: Reports that worker route duplicates an existing declaration or record.",
+    "pocketstation::session::prepare::error::SessionPrepareError::WorkerRouteMismatch: Reports that worker route does not match the expected contract.",
     "SessionPrepareError::WorkerRouteMismatch::edge_id: Identifies the edge identifier recorded by `WorkerRouteMismatch`.",
     "SessionPrepareError::WorkerRouteMismatch::route_id: Identifies the route identifier recorded by `WorkerRouteMismatch`.",
     "SessionPrepareError::WorkerRouteMismatch::expected_stem_id: Identifies the expected stem identifier recorded by `WorkerRouteMismatch`.",
@@ -296,31 +303,31 @@
     "SessionPrepareError::WorkerRouteMismatch::expected_endpoint_id: Identifies the expected endpoint identifier recorded by `WorkerRouteMismatch`.",
     "SessionPrepareError::WorkerRouteMismatch::actual_endpoint_id: Identifies the actual endpoint identifier recorded by `WorkerRouteMismatch`.",
     "SessionPrepareError::MissingTypedEdgePlan::edge_id: Identifies the edge identifier recorded by `MissingTypedEdgePlan`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingTypedEdgePlan: Reported when the owning operation encounters missing typed edge plan.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingTypedEdgePlan: Reports that the required typed edge plan is missing.",
     "SessionPrepareError::MissingAsyncOperatorFactory::node_id: Identifies the node identifier recorded by `MissingAsyncOperatorFactory`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingAsyncOperatorFactory: Reported when the owning operation encounters missing async operator factory.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingAsyncOperatorFactory: Reports that the required async operator factory is missing.",
     "SessionPrepareError::OperatorDeclarationMismatch::node_id: Identifies the node identifier recorded by `OperatorDeclarationMismatch`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::OperatorDeclarationMismatch: Reported when the owning operation encounters operator declaration mismatch.",
+    "pocketstation::session::prepare::error::SessionPrepareError::OperatorDeclarationMismatch: Reports that operator declaration does not match the expected contract.",
     "SessionPrepareError::MissingNodeBinding::node_id: Identifies the node identifier recorded by `MissingNodeBinding`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingNodeBinding: Reported when the owning operation encounters missing node binding.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingNodeBinding: Reports that the required node binding is missing.",
     "SessionPrepareError::IncompatibleNodeBinding::node_id: Identifies the node identifier recorded by `IncompatibleNodeBinding`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::IncompatibleNodeBinding: Reported when the owning operation encounters incompatible node binding.",
+    "pocketstation::session::prepare::error::SessionPrepareError::IncompatibleNodeBinding: Reports that node binding is incompatible with the required contract.",
     "SessionPrepareError::DuplicateOperatorInput::node_id: Identifies the node identifier recorded by `DuplicateOperatorInput`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateOperatorInput: Reported when the owning operation encounters duplicate operator input.",
+    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateOperatorInput: Reports that operator input duplicates an existing declaration or record.",
     "SessionPrepareError::MissingOperatorSignalInput::edge_id: Identifies the edge identifier recorded by `MissingOperatorSignalInput`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::MissingOperatorSignalInput: Reported when the owning operation encounters missing operator signal input.",
+    "pocketstation::session::prepare::error::SessionPrepareError::MissingOperatorSignalInput: Reports that the required operator signal input is missing.",
     "SessionPrepareError::DuplicateSignalRoute::route_id: Identifies the route identifier recorded by `DuplicateSignalRoute`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateSignalRoute: Reported when the owning operation encounters duplicate signal route.",
+    "pocketstation::session::prepare::error::SessionPrepareError::DuplicateSignalRoute: Reports that signal route duplicates an existing declaration or record.",
     "SessionPrepareError::SignalRouteMismatch::edge_id: Identifies the edge identifier recorded by `SignalRouteMismatch`.",
     "SessionPrepareError::SignalRouteMismatch::route_id: Identifies the route identifier recorded by `SignalRouteMismatch`.",
-    "pocketstation::session::prepare::error::SessionPrepareError::SignalRouteMismatch: Reported when the owning operation encounters signal route mismatch.",
-    "pocketstation::session::prepare::error::SessionPrepareError::WorkerTopologyMismatch: Reported when the owning operation encounters worker topology mismatch.",
+    "pocketstation::session::prepare::error::SessionPrepareError::SignalRouteMismatch: Reports that signal route does not match the expected contract.",
+    "pocketstation::session::prepare::error::SessionPrepareError::WorkerTopologyMismatch: Reports that worker topology does not match the expected contract.",
     "SessionPrepareError::WorkerTopologyMismatch::expected: Records the value expected by `WorkerTopologyMismatch`.",
     "SessionPrepareError::WorkerTopologyMismatch::actual: Records the value observed by `WorkerTopologyMismatch`.",
-    "SessionPrepareError::WorkerTopologyMismatch::expected_operator_inputs: Stores the expected operator inputs used by `WorkerTopologyMismatch`.",
-    "SessionPrepareError::WorkerTopologyMismatch::actual_operator_inputs: Stores the actual operator inputs used by `WorkerTopologyMismatch`.",
-    "SessionPrepareError::WorkerTopologyMismatch::expected_signal_endpoints: Stores the expected signal endpoints used by `WorkerTopologyMismatch`.",
-    "SessionPrepareError::WorkerTopologyMismatch::actual_signal_endpoints: Stores the actual signal endpoints used by `WorkerTopologyMismatch`."
+    "SessionPrepareError::WorkerTopologyMismatch::expected_operator_inputs: References the expected operator inputs participating in `WorkerTopologyMismatch`.",
+    "SessionPrepareError::WorkerTopologyMismatch::actual_operator_inputs: References the actual operator inputs participating in `WorkerTopologyMismatch`.",
+    "SessionPrepareError::WorkerTopologyMismatch::expected_signal_endpoints: References the expected signal endpoints participating in `WorkerTopologyMismatch`.",
+    "SessionPrepareError::WorkerTopologyMismatch::actual_signal_endpoints: References the actual signal endpoints participating in `WorkerTopologyMismatch`."
   ],
   "retry_behavior": [],
   "serialization": [],

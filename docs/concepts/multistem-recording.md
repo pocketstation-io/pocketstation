@@ -1,6 +1,6 @@
 # Multistem recording
 
-<!-- claims: CLM-DOC-019-CAP-001,CLM-DOC-019-SOURCE-001 -->
+<!-- claims: CLM-DOC-019-SCOPE-001,CLM-DOC-019-TEXT-001,CLM-DOC-019-TEXT-002,CLM-DOC-019-TEXT-003,CLM-DOC-019-TEXT-004,CLM-DOC-019-TEXT-005,CLM-DOC-019-TEXT-006,CLM-DOC-019-SOURCE-001 -->
 
 ## What it is
 
@@ -47,8 +47,8 @@ The scope of **Multistem recording** ends at the native contracts and executable
 | `pocketstation::recording::endpoint::MultistemRecordingReceipt` | struct | Retains the identity and observation access returned for multistem recording. | `src/recording/endpoint.rs:28` |
 | `pocketstation::recording::endpoint::SessionMultistemEndpointCoordinator` | struct | Canonical Session-owned multistem recorder declaration. | `src/recording/endpoint.rs:49` |
 | `pocketstation::recording::writer::MultistemRecording` | struct | Owns the per-stem recording workers and coordinates their terminal finalization outcome. | `src/recording/writer.rs:139` |
-| `pocketstation::recording::endpoint::MULTISTEM_GROUP_CONFIGURATION_KEY` | constant | Defines the public multistem group configuration key value. | `src/recording/endpoint.rs:24` |
-| `pocketstation::recording::endpoint::MULTISTEM_NAME_CONFIGURATION_KEY` | constant | Defines the public multistem name configuration key value. | `src/recording/endpoint.rs:25` |
+| `pocketstation::recording::endpoint::MULTISTEM_GROUP_CONFIGURATION_KEY` | constant | Defines multistem group configuration key as `"recording_group_id"` for the owning public contract. | `src/recording/endpoint.rs:24` |
+| `pocketstation::recording::endpoint::MULTISTEM_NAME_CONFIGURATION_KEY` | constant | Defines multistem name configuration key as `"stem_name"` for the owning public contract. | `src/recording/endpoint.rs:25` |
 | `pocketstation::recording::config::RecorderStemConfig` | struct | Configures recorder stem behavior at its owning API boundary. | `src/recording/config.rs:55` |
 | `pocketstation::recording::config::StemLabel` | struct | Stores the validated human-readable label used for one recording stem. | `src/recording/config.rs:20` |
 | `pocketstation::recording::writer::DiscontinuityRecord` | struct | Records one immutable discontinuity observation. | `src/recording/writer.rs:93` |
@@ -87,7 +87,53 @@ Executable evidence selected for **Multistem recording** is limited to each test
 
 The claims on **Multistem recording** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/recording/endpoint.rs:1-757` (`DIRECT`)
-- `src/recording/writer.rs:1-1262` (`DIRECT`)
+- `src/recording/endpoint.rs:23-23` (`DIRECT`)
+- `src/recording/endpoint.rs:24-24` (`DIRECT`)
+- `src/recording/endpoint.rs:25-25` (`DIRECT`)
+- `src/recording/endpoint.rs:27-27` (`DIRECT`)
+- `src/recording/endpoint.rs:28-30` (`DIRECT`)
+- `src/recording/endpoint.rs:29-29` (`DIRECT`)
+- `src/recording/endpoint.rs:33-35` (`DIRECT`)
+- `src/recording/endpoint.rs:38-38` (`DIRECT`)
+- `src/recording/endpoint.rs:39-41` (`DIRECT`)
+- `src/recording/endpoint.rs:40-40` (`DIRECT`)
+- `src/recording/endpoint.rs:49-53` (`DIRECT`)
+- `src/recording/endpoint.rs:50-50` (`DIRECT`)
+- `src/recording/endpoint.rs:51-51` (`DIRECT`)
+- `src/recording/endpoint.rs:52-52` (`DIRECT`)
+- `src/recording/endpoint.rs:56-62` (`DIRECT`)
+- `src/recording/endpoint.rs:65-67` (`DIRECT`)
+- `src/recording/endpoint.rs:70-72` (`DIRECT`)
+- `src/recording/endpoint.rs:74-78` (`DIRECT`)
+- `src/recording/endpoint.rs:82-97` (`DIRECT`)
+- `src/recording/endpoint.rs:99-227` (`DIRECT`)
+- `src/recording/endpoint.rs:230-238` (`DIRECT`)
+- `src/recording/endpoint.rs:231-231` (`DIRECT`)
+- `src/recording/endpoint.rs:232-232` (`DIRECT`)
+- `src/recording/endpoint.rs:233-233` (`DIRECT`)
+- `src/recording/writer.rs:17-17` (`DIRECT`)
+- `src/recording/writer.rs:18-18` (`DIRECT`)
+- `src/recording/writer.rs:19-19` (`DIRECT`)
+- `src/recording/writer.rs:20-20` (`DIRECT`)
+- `src/recording/writer.rs:21-21` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:24-82` (`DIRECT`)
+- `src/recording/writer.rs:26-26` (`DIRECT`)
+- `src/recording/writer.rs:26-26` (`DIRECT`)
+- `src/recording/writer.rs:28-28` (`DIRECT`)
+- `src/recording/writer.rs:28-28` (`DIRECT`)
+- `src/recording/writer.rs:30-30` (`DIRECT`)
+- `src/recording/writer.rs:30-30` (`DIRECT`)
+- `src/recording/writer.rs:32-36` (`DIRECT`)
+- `src/recording/writer.rs:33-33` (`DIRECT`)
+- `src/recording/writer.rs:34-34` (`DIRECT`)
+- `src/recording/writer.rs:35-35` (`DIRECT`)
+- `src/recording/writer.rs:38-38` (`DIRECT`)
+- `src/recording/writer.rs:38-38` (`DIRECT`)
 
 For **Multistem recording**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

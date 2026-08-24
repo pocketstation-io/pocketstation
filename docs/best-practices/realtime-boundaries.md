@@ -1,6 +1,6 @@
 # Keep realtime callbacks bounded
 
-<!-- claims: CLM-BEST-002-CAP-001,CLM-BEST-002-CAP-002,CLM-BEST-002-SOURCE-001 -->
+<!-- claims: CLM-BEST-002-SCOPE-001,CLM-BEST-002-TEXT-001,CLM-BEST-002-TEXT-002,CLM-BEST-002-TEXT-003,CLM-BEST-002-TEXT-004,CLM-BEST-002-TEXT-005,CLM-BEST-002-SOURCE-001 -->
 
 ## Problem
 
@@ -58,7 +58,7 @@ Executable evidence selected for **Keep realtime callbacks bounded** is limited 
 
 The claims on **Keep realtime callbacks bounded** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/audio/runner.rs:1-746` (`DIRECT`)
-- `scripts/lint/check-architecture-constraints.sh:1-81` (`DIRECT`)
+- `src/runtime/audio/runner.rs:1-4` (`DECLARED`)
+- `scripts/lint/check-architecture-constraints.sh:13-33` (`DIRECT`)
 
 For **Keep realtime callbacks bounded**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

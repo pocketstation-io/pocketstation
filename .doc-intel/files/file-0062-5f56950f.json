@@ -28,8 +28,8 @@
       "classification": "DIRECT",
       "content_hash": "dacb13d69d355b912a0642f614c009c7542d93f73aa849218ba85829669f9076",
       "lines": [
-        1,
-        27
+        3,
+        23
       ],
       "path": "scripts/sync-c-header.sh",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/sync-c-header.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

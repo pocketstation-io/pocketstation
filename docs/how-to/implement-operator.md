@@ -1,6 +1,6 @@
 # Implement an asynchronous operator
 
-<!-- claims: CLM-GUIDE-011-CAP-001,CLM-GUIDE-011-CAP-002,CLM-GUIDE-011-CAP-003,CLM-GUIDE-011-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-011-SCOPE-001,CLM-GUIDE-011-TEXT-001,CLM-GUIDE-011-TEXT-002,CLM-GUIDE-011-TEXT-003,CLM-GUIDE-011-TEXT-004,CLM-GUIDE-011-TEXT-005,CLM-GUIDE-011-TEXT-006,CLM-GUIDE-011-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,171 @@ A unique operator and node identity, named typed ports, and an execution partiti
 3. Return an async node that observes cancellation and declared policies.
 4. Register before Session compilation.
 5. Connect named ports and run the separate consumer example.
+
+## Concrete repository example
+
+This is the frozen, repository-owned example `example-6d2567a68ad98d330f8b` at `examples/operator-consumer/src/lib.rs`. It is validated by the examples checkpoint.
+
+```rust
+//! Compile boundary for an external provider and typed endpoint consumer.
+//!
+//! This package intentionally depends only on the public `pocketstation`
+//! façade and an example provider package.
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Arc;
+
+    use pocketstation::{
+        EndpointCancellationOutcome, EndpointDescriptor, EndpointDriverFactory,
+        EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure,
+        EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate,
+        ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId,
+        Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec,
+        PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source,
+        TextFormat,
+    };
+    use whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID};
+
+    const TEXT_ENDPOINT_OPERATOR_ID: &str = "example.endpoint.transcript.v1";
+    const TEXT_ENDPOINT_NODE_TYPE_ID: &str = "endpoint.transcript.example";
+
+    struct TextEndpointDefinition;
+
+    impl NodeDefinition for TextEndpointDefinition {
+        fn descriptor(&self) -> NodeDescriptor {
+            NodeDescriptor::new(
+                NodeTypeId::from(TEXT_ENDPOINT_NODE_TYPE_ID),
+                "Example transcript endpoint",
+                vec![PortSpec::new(
+                    "transcript",
+                    PortDirection::Input,
+                    SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
+                    MediaCaps::Text,
+                    Multiplicity::One,
+                    true,
+                )
+                .expect("text endpoint input")],
+                Vec::new(),
+                ExecutionPartition::External,
+                SafetyContract::ExternalService,
+                true,
+            )
+            .expect("text endpoint descriptor")
+        }
+
+        fn validate_config(
+            &self,
+            _configuration: &OperatorConfiguration,
+        ) -> Result<(), pocketstation::ConfigError> {
+            Ok(())
+        }
+    }
+
+    struct TextEndpointFactory;
+
+    impl EndpointDriverFactory for TextEndpointFactory {
+        fn prepare(
+            &self,
+            inputs: Vec<EndpointPortInput>,
+        ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
+            if inputs
+                .iter()
+                .any(|input| !matches!(input.receiver(), EndpointReceiver::Signal(_)))
+            {
+                return Err(EndpointFailure::new(
+                    EndpointFailureStage::Prepare,
+                    "text endpoint requires a signal receiver",
+                ));
+            }
+            Ok(Box::new(PreparedTextEndpoint { inputs }))
+        }
+    }
+
+    struct PreparedTextEndpoint {
+        inputs: Vec<EndpointPortInput>,
+    }
+
+    impl PreparedEndpointDriver for PreparedTextEndpoint {
+        fn start(
+            self: Box<Self>,
+            _start_gate: Arc<EndpointStartGate>,
+        ) -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {
+            Ok(Box::new(RunningTextEndpoint {
+                inputs: self.inputs,
+                observations: EndpointDriverObservations::default(),
+            }))
+        }
+
+        fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {
+            EndpointCancellationOutcome {
+                observations: EndpointDriverObservations::default(),
+                result: Ok(()),
+            }
+        }
+    }
+
+    struct RunningTextEndpoint {
+        inputs: Vec<EndpointPortInput>,
+        observations: EndpointDriverObservations,
+    }
+
+    impl RunningEndpointDriver for RunningTextEndpoint {
+        fn observations(&self) -> EndpointDriverObservations {
+            self.observations
+        }
+
+        fn request_stop(&mut self) -> Result<(), EndpointFailure> {
+            Ok(())
+        }
+
+        fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization {
+            let _input_count = self.inputs.len();
+            EndpointDriverFinalization {
+                observations: self.observations,
+                result: Ok(()),
+            }
+        }
+    }
+
+    #[test]
+    fn given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api() {
+        let session = Session::new();
+        session
+            .register_operator(Arc::new(WhisperOperatorFactory::new(
+                "/opt/whisper/whisper-cli",
+                "/opt/whisper/model.bin",
+                "en",
+            )))
+            .expect("operator registration");
+
+        let endpoint = session
+            .endpoint(EndpointDescriptor::new(
+                NodeTypeId::from(TEXT_ENDPOINT_NODE_TYPE_ID),
+                OperatorId::new(TEXT_ENDPOINT_OPERATOR_ID),
+            ))
+            .expect("endpoint declaration");
+        session
+            .register_endpoint(
+                OperatorId::new(TEXT_ENDPOINT_OPERATOR_ID),
+                Arc::new(TextEndpointDefinition),
+                Arc::new(TextEndpointFactory),
+            )
+            .expect("typed endpoint extension registration");
+
+        let microphone = session
+            .capture(Source::microphone_default())
+            .expect("microphone declaration");
+        let transcript = microphone
+            .through(Operator::new(
+                OperatorId::new(WHISPER_OPERATOR_ID),
+                OperatorConfiguration::new().with("language", "en"),
+            ))
+            .expect("operator declaration");
+        transcript.send(endpoint).expect("typed endpoint route");
+    }
+}
+```
 
 ## Important consequence
 
@@ -67,7 +232,7 @@ Executable evidence selected for **Implement an asynchronous operator** is limit
 |---|---|---|---|
 | `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
 | `pocketstation::graph::signal::operator::AsyncOperatorFactory` | trait | Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract. | `src/graph/signal/operator.rs:368` |
-| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Describes the async operator manifest contract. | `src/graph/signal/operator.rs:127` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Declares an asynchronous operator's ports, execution partition, failure policy, and cancellation policy. | `src/graph/signal/operator.rs:127` |
 | `pocketstation::graph::signal::operator::OperatorDeadlinePolicy` | struct | Configures operator deadline behavior at its owning API boundary. | `src/graph/signal/operator.rs:52` |
 | `pocketstation::graph::signal::operator::OperatorOutputRolePolicy` | struct | Configures operator output role behavior at its owning API boundary. | `src/graph/signal/operator.rs:69` |
 | `pocketstation::graph::signal::operator::OperatorPermissionPolicy` | struct | Configures operator permission behavior at its owning API boundary. | `src/graph/signal/operator.rs:46` |
@@ -89,6 +254,6 @@ Executable evidence selected for **Implement an asynchronous operator** is limit
 
 The claims on **Implement an asynchronous operator** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/operator-consumer/src/lib.rs:1-159` (`DIRECT`)
+- `examples/operator-consumer/src/lib.rs:1-4` (`DECLARED`)
 
 For **Implement an asynchronous operator**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

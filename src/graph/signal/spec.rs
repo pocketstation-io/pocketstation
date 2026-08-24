@@ -140,11 +140,11 @@ pub enum Codec {
 /// Text encoding hint for `SignalClass::Text`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TextFormat {
-    #[doc = "Selects utf8 behavior for `TextFormat`."]
+    #[doc = "Declares the text payload representation as utf8."]
     Utf8,
-    #[doc = "Selects json behavior for `TextFormat`."]
+    #[doc = "Declares the text payload representation as json."]
     Json,
-    #[doc = "Selects markdown behavior for `TextFormat`."]
+    #[doc = "Declares the text payload representation as markdown."]
     Markdown,
 }
 
@@ -164,13 +164,13 @@ pub enum EventFormat {
 /// Binary encoding hint for `SignalClass::Binary`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BinaryFormat {
-    #[doc = "Selects raw behavior for `BinaryFormat`."]
+    #[doc = "Declares the binary payload representation as raw."]
     Raw,
-    #[doc = "Selects protobuf behavior for `BinaryFormat`."]
+    #[doc = "Declares the binary payload representation as protobuf."]
     Protobuf,
-    #[doc = "Selects flatbuffers behavior for `BinaryFormat`."]
+    #[doc = "Declares the binary payload representation as flatbuffers."]
     Flatbuffers,
-    #[doc = "Selects cbor behavior for `BinaryFormat`."]
+    #[doc = "Declares the binary payload representation as cbor."]
     Cbor,
 }
 
@@ -382,16 +382,16 @@ impl SignalSpec {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as signal spec error."]
+#[doc = "Classifies failures surfaced by signal spec operations."]
 pub enum SignalSpecError {
     #[error("custom signal identifier cannot be empty")]
-    #[doc = "Reports empty custom identifier."]
+    #[doc = "Reports that custom identifier is empty."]
     EmptyCustomId,
     #[error("signal semantic role cannot be empty")]
-    #[doc = "Reports empty role."]
+    #[doc = "Reports that role is empty."]
     EmptyRole,
     #[error("signal schema reference cannot be empty")]
-    #[doc = "Reports empty schema."]
+    #[doc = "Reports that schema is empty."]
     EmptySchema,
 }
 

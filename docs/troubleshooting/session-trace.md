@@ -1,6 +1,6 @@
 # Session trace validation fails
 
-<!-- claims: CLM-TRBL-017-CAP-001,CLM-TRBL-017-CAP-002,CLM-TRBL-017-CAP-003,CLM-TRBL-017-SOURCE-001 -->
+<!-- claims: CLM-TRBL-017-SCOPE-001,CLM-TRBL-017-TEXT-001,CLM-TRBL-017-TEXT-002,CLM-TRBL-017-TEXT-003,CLM-TRBL-017-TEXT-004,CLM-TRBL-017-TEXT-005,CLM-TRBL-017-TEXT-006,CLM-TRBL-017-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,6 +77,29 @@ Validation is deterministic for the artifact, so retrying unchanged bytes cannot
 
 The claims on **Session trace validation fails** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/trace.rs:1-1179` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:16-16` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:17-17` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:19-19` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:26-26` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:27-52` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:28-30` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:29-29` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:31-33` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:32-32` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:34-38` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:35-35` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:36-36` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:37-37` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:39-41` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:40-40` (`DIRECT`)
+- `src/session/lifecycle/trace.rs:42-44` (`DIRECT`)
 
 For **Session trace validation fails**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

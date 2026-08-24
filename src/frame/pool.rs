@@ -8,18 +8,18 @@ use std::fmt;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 
-#[doc = "Defines the public pool max slots value."]
+#[doc = "Defines pool max slots as `64` for the owning public contract."]
 pub const POOL_MAX_SLOTS: usize = 64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as audio buffer write error."]
+#[doc = "Classifies failures produced during audio buffer writing."]
 pub enum AudioBufferWriteError {
     #[error(
         "audio buffer write of {requested_samples} samples exceeds capacity {capacity_samples}"
     )]
-    #[doc = "Reports capacity exceeded."]
+    #[doc = "Classifies a failure at the capacity exceeded stage or component of `AudioBufferWriteError`."]
     CapacityExceeded {
-        #[doc = "Stores the requested samples used by `CapacityExceeded`."]
+        #[doc = "Contains the requested samples owned or reported by `CapacityExceeded`."]
         requested_samples: usize,
         #[doc = "Sets the capacity samples available to `CapacityExceeded`."]
         capacity_samples: usize,
@@ -107,7 +107,7 @@ impl AudioBufferPool {
         }
     }
 
-    #[doc = "Returns whether in use applies to `AudioBufferPool`."]
+    #[doc = "Reports whether in use is true for `AudioBufferPool`."]
     pub fn is_in_use(&self, index: u32) -> bool {
         self.free_mask.load(Ordering::Acquire) & (1u64 << index) == 0
     }
@@ -209,7 +209,7 @@ impl AudioBufferPool {
     }
 }
 
-#[doc = "Owns bounded access to audio buffer."]
+#[doc = "Holds the ownership or bounded access represented by audio buffer handle."]
 pub struct AudioBufferHandle {
     pool: Arc<AudioBufferPool>,
     index: u32,
@@ -301,7 +301,7 @@ impl fmt::Debug for AudioBufferHandle {
     }
 }
 
-#[doc = "Owns bounded access to shared audio buffer."]
+#[doc = "Holds the ownership or bounded access represented by shared audio buffer handle."]
 pub struct SharedAudioBufferHandle {
     pool: Arc<AudioBufferPool>,
     index: u32,

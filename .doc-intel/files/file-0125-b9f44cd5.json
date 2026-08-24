@@ -4,7 +4,13 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/driver.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -31,7 +37,13 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/driver.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -216,11 +228,161 @@
       "classification": "DIRECT",
       "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
       "lines": [
-        1,
-        67
+        17,
+        30
       ],
       "path": "src/connector/worker/mod.rs",
-      "symbol": null
+      "symbol": "ConnectorFactory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        18,
+        24
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "preparation_group"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        26,
+        29
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        32,
+        39
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "ConnectorWorker"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "run"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        35,
+        38
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "cancel_preparation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        42,
+        44
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "ConnectorRunOutcome"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        43,
+        43
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "result"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        47,
+        49
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        51,
+        53
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "success"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        55,
+        57
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "failure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        59,
+        61
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "result"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "c87af9769794189c0925e30261189419e68867a3642fcd5b179ebe001d67fcc8",
+      "lines": [
+        63,
+        65
+      ],
+      "path": "src/connector/worker/mod.rs",
+      "symbol": "into_result"
     }
   ],
   "example_coverage_status": "linked",
@@ -228,7 +390,13 @@
     "example-015ad57d56d019a5d285"
   ],
   "extended_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/driver.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -249,7 +417,13 @@
   "generated_from": "not_applicable",
   "git_object": "f4937aae79b26fc53e4d6e8c976250b1d98743ba",
   "implemented_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/driver.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -260,7 +434,13 @@
     "ConnectorRunOutcome"
   ],
   "imported_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/connector/mod.rs",
+    "IMPLEMENTS:src/conformance.rs",
+    "IMPLEMENTS:src/connector/worker/driver.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/conformance.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -279,15 +459,15 @@
     "super::ConnectorError"
   ],
   "inputs": [
-    "coordination::ConnectorContext",
-    "crate::{EndpointPortInput, EndpointPreparationGroup}",
-    "driver::{ ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }",
-    "endpoint_adapter::{connector_driver_endpoint_factory, connector_endpoint_factory}",
-    "module:coordination",
-    "module:driver",
-    "module:endpoint_adapter",
-    "module:supervisor",
-    "super::ConnectorError"
+    "Depends on `coordination::ConnectorContext` through a declared Rust import.",
+    "Depends on `coordination` through a declared Rust import.",
+    "Depends on `crate::{EndpointPortInput, EndpointPreparationGroup}` through a declared Rust import.",
+    "Depends on `driver::{ ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }` through a declared Rust import.",
+    "Depends on `driver` through a declared Rust import.",
+    "Depends on `endpoint_adapter::{connector_driver_endpoint_factory, connector_endpoint_factory}` through a declared Rust import.",
+    "Depends on `endpoint_adapter` through a declared Rust import.",
+    "Depends on `super::ConnectorError` through a declared Rust import.",
+    "Depends on `supervisor` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -296,21 +476,21 @@
   "module": "pocketstation::connector::worker",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::worker` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-c957078837b218bf4f89"
   ],
   "outputs": [
-    "Self::new(Err(error))",
-    "fn:failure",
-    "fn:into_result",
-    "fn:new",
-    "fn:result",
-    "fn:success",
-    "struct:ConnectorRunOutcome",
-    "trait:ConnectorFactory",
-    "trait:ConnectorWorker"
+    "Creates a typed failure at src/connector/worker/mod.rs:56.",
+    "Declares public fn `failure`.",
+    "Declares public fn `into_result`.",
+    "Declares public fn `new`.",
+    "Declares public fn `result`.",
+    "Declares public fn `success`.",
+    "Declares public struct `ConnectorRunOutcome`.",
+    "Declares public trait `ConnectorFactory`.",
+    "Declares public trait `ConnectorWorker`."
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/mod.rs",
@@ -423,8 +603,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::worker responsibilities, including Implement this trait to provide connector behavior to PocketStation; its methods define the preparation and runtime contract.; Returns the preparation group associated with `ConnectorFactory`.; Prepares resources required by `ConnectorFactory`.."
+    "classification": "DECLARED",
+    "text": "Implement this trait to provide connector behavior to PocketStation; its methods define the preparation and runtime contract. Returns the preparation group associated with `ConnectorFactory`. Prepares resources required by `ConnectorFactory`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -469,6 +649,7 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/identity.rs",
     "CONTAINS:src/connector/worker/coordination.rs",
     "CONTAINS:src/connector/worker/driver.rs",
     "CONTAINS:src/connector/worker/endpoint_adapter.rs",
@@ -504,7 +685,7 @@
     "ConnectorFactory::prepare: Prepares resources required by `ConnectorFactory`.",
     "pocketstation::connector::worker::ConnectorWorker: Implement this trait to provide connector worker behavior to PocketStation; its methods define the preparation and runtime contract.",
     "ConnectorWorker::run: Runs `ConnectorWorker` until completion or cancellation.",
-    "ConnectorWorker::cancel_preparation: Cancels preparation for `ConnectorWorker`.",
+    "ConnectorWorker::cancel_preparation: Cancels resources created while preparing `ConnectorWorker`.",
     "pocketstation::connector::worker::ConnectorRunOutcome: Reports the structured connector run outcome.",
     "new: Creates a new `ConnectorRunOutcome`.",
     "success: Returns whether `ConnectorRunOutcome` completed successfully.",

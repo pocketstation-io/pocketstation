@@ -25,11 +25,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "cf0cd68bccbd365212f5e4d51cf3f8db3e536b5a8be80499eb679ead10f06ec1",
       "lines": [
         1,
-        68
+        9
       ],
       "path": "docs/getting-started/rust-quickstart.md",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/getting-started/rust-quickstart.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

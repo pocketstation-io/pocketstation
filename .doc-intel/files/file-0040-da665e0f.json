@@ -389,7 +389,7 @@
       "content_hash": "1490f9cadd8b42d3246c3fa15b0323bcce2a66b53e045ac5a667b634f2ba912f",
       "lines": [
         1,
-        211
+        21
       ],
       "path": "examples/whisper-transcribe/src/process_evidence.rs",
       "symbol": null
@@ -452,9 +452,9 @@
     "std::time::{SystemTime, UNIX_EPOCH}"
   ],
   "inputs": [
-    "serde::Serialize",
-    "std::path::{Path, PathBuf}",
-    "std::time::{SystemTime, UNIX_EPOCH}"
+    "Depends on `serde::Serialize` through a declared Rust import.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::time::{SystemTime, UNIX_EPOCH}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -468,32 +468,32 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/whisper-transcribe/src/process_evidence.rs` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [
     "pattern-13d69f7c5fd945648312"
   ],
   "outputs": [
-    "Err(error) => Err(error),",
-    "Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),",
-    "enum:ProcessEvidenceError",
-    "enum:ProcessOutcome",
-    "fn:begin",
-    "fn:complete",
-    "fn:input_wav_path",
-    "fn:mark_kill_requested",
-    "fn:mark_wait_observed",
-    "fn:new",
-    "fn:output_prefix",
-    "fn:set_argv",
-    "fn:set_pid",
-    "fn:stderr_path",
-    "fn:stdout_path",
-    "fn:transcript_path",
-    "return Err(ProcessEvidenceError::InvalidCaseId);",
-    "struct:ActiveProcessEvidence",
-    "struct:WhisperProcessEvidence",
-    "struct:WhisperProcessReceipt"
+    "Creates a typed failure at examples/whisper-transcribe/src/process_evidence.rs:192.",
+    "Creates a typed failure at examples/whisper-transcribe/src/process_evidence.rs:193.",
+    "Creates a typed failure at examples/whisper-transcribe/src/process_evidence.rs:27.",
+    "Declares public enum `ProcessEvidenceError`.",
+    "Declares public enum `ProcessOutcome`.",
+    "Declares public fn `begin`.",
+    "Declares public fn `complete`.",
+    "Declares public fn `input_wav_path`.",
+    "Declares public fn `mark_kill_requested`.",
+    "Declares public fn `mark_wait_observed`.",
+    "Declares public fn `new`.",
+    "Declares public fn `output_prefix`.",
+    "Declares public fn `set_argv`.",
+    "Declares public fn `set_pid`.",
+    "Declares public fn `stderr_path`.",
+    "Declares public fn `stdout_path`.",
+    "Declares public fn `transcript_path`.",
+    "Declares public struct `ActiveProcessEvidence`.",
+    "Declares public struct `WhisperProcessEvidence`.",
+    "Declares public struct `WhisperProcessReceipt`."
   ],
   "package": "pocketstation",
   "path": "examples/whisper-transcribe/src/process_evidence.rs",

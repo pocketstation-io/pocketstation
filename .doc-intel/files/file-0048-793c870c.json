@@ -41,8 +41,8 @@
       "classification": "DIRECT",
       "content_hash": "1c2cff440ad20f67680e9bf580a52125bb4d3d39362914f48e58be254ffceed4",
       "lines": [
-        1,
-        44
+        4,
+        24
       ],
       "path": "native/macos/asp/bridge.h",
       "symbol": null
@@ -88,7 +88,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/bridge.h` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [],
   "outputs": [

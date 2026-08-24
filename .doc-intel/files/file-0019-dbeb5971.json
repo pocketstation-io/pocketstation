@@ -56,7 +56,7 @@
       "content_hash": "64de146955673ace96648027bad4661268e00c33fea32991f0d276e72b0a8109",
       "lines": [
         1,
-        52
+        21
       ],
       "path": "benches/typed_edge.rs",
       "symbol": null
@@ -88,10 +88,10 @@
     "pocketstation::{SignalEnvelope, SignalPayload}"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
-    "pocketstation::internal::graph::{EdgeContract, EventFormat, SignalSpec}",
-    "pocketstation::internal::runtime::{TypedEdgeBranchSpec, TypedEdgeFanout}",
-    "pocketstation::{SignalEnvelope, SignalPayload}"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::{EdgeContract, EventFormat, SignalSpec}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::runtime::{TypedEdgeBranchSpec, TypedEdgeFanout}` through a declared Rust import.",
+    "Depends on `pocketstation::{SignalEnvelope, SignalPayload}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -100,7 +100,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/typed_edge.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -126,8 +126,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/typed edge boundary."
+    "classification": "DECLARED",
+    "text": "Measures typed edge by repeatedly exercising EdgeContract::bounded_async, SignalEnvelope::untracked, SignalPayload::Bytes, SignalSpec::event."
   },
   "queues": [],
   "recovery_behavior": [],

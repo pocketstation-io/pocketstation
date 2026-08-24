@@ -34,7 +34,7 @@
       "content_hash": "49b082316b7d1357a5ce1d7db0214a43c82a1bb13a8e3390425a106113df1c8f",
       "lines": [
         1,
-        9
+        8
       ],
       "path": "scripts/android-arm64-v8a/android.toolchain.cmake",
       "symbol": null
@@ -75,7 +75,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/android-arm64-v8a/android.toolchain.cmake` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

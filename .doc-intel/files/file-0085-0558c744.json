@@ -1707,14 +1707,14 @@
   ],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "4ddb80252702b032685b48492729bc9de623859b3115c96e6638cb80f86f672d",
       "lines": [
         1,
-        2151
+        18
       ],
       "path": "src/capture/platform/linux/pipewire.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::platform::linux::pipewire"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -1782,32 +1782,29 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "XDG_RUNTIME_DIR",
-    "alsa::Direction",
-    "alsa::pcm::{Access, Format, HwParams, PCM}",
-    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource, SourceKind, StableSourceId, }",
-    "crate::capture::{CaptureError, SourceKind, SourceState, StableSourceId}",
-    "crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId}",
-    "crate::frame::Platform",
-    "crate::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ, }",
-    "let runtime_dir = std::env::var(\"XDG_RUNTIME_DIR\")",
-    "pipewire as pw",
-    "pw::properties::properties",
-    "pw::spa",
-    "pw::spa::pod::Pod",
-    "rtrb::{Producer, RingBuffer}",
-    "spa::param::audio::AudioFormat",
-    "std::cell::RefCell",
-    "std::num::NonZeroU32",
-    "std::rc::Rc",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::mpsc",
-    "std::sync::mpsc as smpsc",
-    "std::sync::{Arc, Once}",
-    "std::thread",
-    "std::time::Duration",
-    "super::*"
+    "Consumes configuration at src/capture/platform/linux/pipewire.rs:1802.",
+    "Consumes configuration at src/capture/platform/linux/pipewire.rs:717.",
+    "Depends on `alsa::Direction` through a declared Rust import.",
+    "Depends on `alsa::pcm::{Access, Format, HwParams, PCM}` through a declared Rust import.",
+    "Depends on `crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource, SourceKind, StableSourceId, }` through a declared Rust import.",
+    "Depends on `crate::capture::{CaptureError, SourceKind, SourceState, StableSourceId}` through a declared Rust import.",
+    "Depends on `crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId}` through a declared Rust import.",
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `crate::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ, }` through a declared Rust import.",
+    "Depends on `pipewire as pw` through a declared Rust import.",
+    "Depends on `pw::properties::properties` through a declared Rust import.",
+    "Depends on `pw::spa::pod::Pod` through a declared Rust import.",
+    "Depends on `pw::spa` through a declared Rust import.",
+    "Depends on `rtrb::{Producer, RingBuffer}` through a declared Rust import.",
+    "Depends on `spa::param::audio::AudioFormat` through a declared Rust import.",
+    "Depends on `std::cell::RefCell` through a declared Rust import.",
+    "Depends on `std::num::NonZeroU32` through a declared Rust import.",
+    "Depends on `std::rc::Rc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::mpsc as smpsc` through a declared Rust import.",
+    "Depends on `std::sync::mpsc` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Once}` through a declared Rust import.",
+    "Reads process environment variable `XDG_RUNTIME_DIR`."
   ],
   "invariants": [
     {
@@ -1926,7 +1923,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::linux::pipewire` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-995cc5e22e1ecd8d8a0c",
@@ -1934,24 +1931,26 @@
     "pattern-faf4961ac29cdc3c9ff9"
   ],
   "outputs": [
-    "Err(error) => Err(error),",
-    "None => Err(LoopbackError::BackendInit(format!(",
-    "fn:capture",
-    "fn:capture_mode",
-    "fn:capture_mode_with_runtime_event_sender",
-    "fn:discover_sources_linux",
-    "fn:observation_handle",
-    "fn:observations",
-    "fn:source_id",
-    "fn:stop_and_join",
-    "return Err(\"PipeWire changed capture format after negotiation\");",
-    "return Err(\"PipeWire did not negotiate interleaved f32 audio\");",
-    "return Err(\"PipeWire negotiated an unexpected channel count\");",
-    "return Err(LoopbackError::BackendInit(format!(",
-    "return Err(LoopbackError::ModeUnsupported(mode));",
-    "return Err(source_unavailable(&stable_id.stable_key));",
-    "struct:DesktopCaptureSource",
-    "struct:SystemLoopbackSource"
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:153.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:159.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:216.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:296.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:306.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:309.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:525.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:541.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:551.",
+    "Creates a typed failure at src/capture/platform/linux/pipewire.rs:563.",
+    "Declares public fn `capture_mode_with_runtime_event_sender`.",
+    "Declares public fn `capture_mode`.",
+    "Declares public fn `capture`.",
+    "Declares public fn `discover_sources_linux`.",
+    "Declares public fn `observation_handle`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `stop_and_join`.",
+    "Declares public struct `DesktopCaptureSource`.",
+    "Declares public struct `SystemLoopbackSource`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/linux/pipewire.rs",
@@ -2506,8 +2505,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::linux::pipewire responsibilities, including the src/capture/platform/linux/pipewire boundary."
+    "classification": "DECLARED",
+    "text": "Linux system audio loopback via PipeWire (primary) with snd-aloop ALSA fallback. ## PipeWire path A dedicated OS thread named `\"pks-pipewire-capture\"` owns the PipeWire `MainLoop` for its entire lifetime. PipeWire objects are not `Send`/`Sync`, so all creation happens inside that thread. Audio data flows from the PipeWire RT process callback through a lock-free `rtrb::RingBuffer` to a dispatcher thread (`\"pks-pipewire-dispatch\"`), which invokes the user callback without holding any PipeWire lock. ## Hot-path rule (RT callback \u2014 strictly enforced) The PipeWire process callback does only lock-free work: - `AudioBufferPool::acquire()` \u2014 lock-free CAS bitset - byte copy from PipeWire buffer into pool slot (ptr::copy_nonoverlapping) - `rtrb::Producer::push()` \u2014 wait-free SPSC push, drops frame when ring is full"
   },
   "queues": [],
   "recovery_behavior": [

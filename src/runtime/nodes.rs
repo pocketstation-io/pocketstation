@@ -104,7 +104,7 @@ impl NodeFactory for SystemOutputSourceFactory {
         }
     }
 
-    #[doc = "Validates config for `SystemOutputSourceFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `SystemOutputSourceFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
@@ -216,7 +216,7 @@ impl NodeFactory for BridgeSinkFactory {
         }
     }
 
-    #[doc = "Validates config for `BridgeSinkFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `BridgeSinkFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
@@ -288,7 +288,7 @@ impl MixerTelemetry {
     }
 }
 
-#[doc = "Executes the graph-node behavior defined for mixer source."]
+#[doc = "Represents the executable graph node for mixer source."]
 pub struct MixerSourceNode {
     consumers: Vec<Consumer<AudioFrame>>,
     accumulators: Vec<Vec<f32>>,

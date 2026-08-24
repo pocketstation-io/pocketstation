@@ -1,6 +1,6 @@
 # Capture system audio
 
-<!-- claims: CLM-GUIDE-028-CAP-001,CLM-GUIDE-028-CAP-002,CLM-GUIDE-028-CAP-003,CLM-GUIDE-028-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-028-SCOPE-001,CLM-GUIDE-028-TEXT-001,CLM-GUIDE-028-TEXT-002,CLM-GUIDE-028-TEXT-003,CLM-GUIDE-028-TEXT-004,CLM-GUIDE-028-TEXT-005,CLM-GUIDE-028-TEXT-006,CLM-GUIDE-028-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,22 @@ A target backend that implements system loopback and host permission needed by t
 3. Attach a bounded consumer.
 4. Start and observe the typed open result.
 5. Keep implementation and qualification claims separate.
+
+## Concrete repository example
+
+The executable repository test `given_default_capture_mode_when_compared_then_is_system_mix` (`test-f45d875b7b23fede26a0`) shows the concrete API sequence and asserted outcome at `src/capture/tests.rs:207`.
+
+```rust
+}
+#[test]
+fn given_default_capture_mode_when_compared_then_is_system_mix() {
+    assert_eq!(CaptureMode::default(), CaptureMode::SystemMix);
+}
+```
+
+```bash
+cargo test --all-features given_default_capture_mode_when_compared_then_is_system_mix
+```
 
 ## Important consequence
 
@@ -66,8 +82,8 @@ Executable evidence selected for **Capture system audio** is limited to each tes
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::capture::platform::macos::loopback::SystemLoopbackSource` | struct | Manages a macOS loopback capture session. | `src/capture/platform/macos/loopback.rs:53` |
-| `pocketstation::capture::authorization::CaptureScope::SystemMix` | variant | Selects system mix behavior for `CaptureScope`. | `src/capture/authorization.rs:252` |
-| `pocketstation::capture::selection::CaptureMode::SystemMix` | variant | Selects system mix behavior for `CaptureMode`. | `src/capture/selection.rs:18` |
+| `pocketstation::capture::authorization::CaptureScope::SystemMix` | variant | Limits capture authorization to system mix. | `src/capture/authorization.rs:252` |
+| `pocketstation::capture::selection::CaptureMode::SystemMix` | variant | Requests capture in system mix mode. | `src/capture/selection.rs:18` |
 | `pocketstation::capture::query::SourceProvider` | trait | Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract. | `src/capture/query.rs:48` |
 | `pocketstation::capture::authorization::CaptureAuthorizationSnapshot` | struct | Point-in-time authorization evidence for opening one exact capture source. | `src/capture/authorization.rs:17` |
 | `pocketstation::capture::authorization::CapturePermissionLifecycle` | struct | Control-plane owner for one source's observed authorization epoch. | `src/capture/authorization.rs:183` |
@@ -89,7 +105,7 @@ Executable evidence selected for **Capture system audio** is limited to each tes
 
 The claims on **Capture system audio** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/query.rs:1-137` (`DIRECT`)
-- `src/capture/platform/mod.rs:1-7` (`DIRECT`)
+- `src/capture/query.rs:1-1` (`DECLARED`)
+- `src/capture/platform/mod.rs:2-6` (`DIRECT`)
 
 For **Capture system audio**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

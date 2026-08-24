@@ -1,6 +1,6 @@
 # Record independent stems
 
-<!-- claims: CLM-GUIDE-009-CAP-001,CLM-GUIDE-009-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-009-SCOPE-001,CLM-GUIDE-009-TEXT-001,CLM-GUIDE-009-TEXT-002,CLM-GUIDE-009-TEXT-003,CLM-GUIDE-009-TEXT-004,CLM-GUIDE-009-TEXT-005,CLM-GUIDE-009-TEXT-006,CLM-GUIDE-009-SOURCE-001 -->
 
 ## Scope
 
@@ -19,6 +19,73 @@ A writable recording root and stable labels for every source stem you intend to 
 3. Start and run the Session.
 4. Stop to trigger endpoint finalization.
 5. Inspect overall and per-stem recording outcomes.
+
+## Concrete repository example
+
+This is the frozen, repository-owned example `example-64188d831f3c13af50ff` at `examples/product_quickstart.rs`. It is validated by the examples checkpoint.
+
+```rust
+use std::collections::BTreeMap;
+use std::error::Error;
+use std::time::{Duration, Instant};
+
+use pocketstation as pks;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let session = pks::Session::builder()
+        .recording_root("pocketstation-recordings")
+        .build();
+    let app = session.capture(pks::Source::application(pks::ApplicationSelector::name(
+        "PocketStation Demo",
+    )))?;
+    let mic = session.capture(pks::Source::microphone_default())?;
+    let app_audio = session.polled_audio()?;
+    let mic_audio = session.polled_audio()?;
+
+    app.send(app_audio)?;
+    mic.send(mic_audio)?;
+    app.record("application")?;
+    mic.record("microphone")?;
+
+    let mut running = session.start()?;
+    let deadline = Instant::now() + Duration::from_secs(10);
+    let mut frames_by_stem = BTreeMap::<u64, usize>::new();
+    while Instant::now() < deadline
+        && frames_by_stem.values().filter(|count| **count >= 2).count() < 2
+    {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let frame = batch
+                    .frame(index)
+                    .ok_or("bounded audio batch returned an invalid frame index")?;
+                let count = frames_by_stem
+                    .entry(frame.lineage().stem_id().get())
+                    .or_default();
+                *count = count.saturating_add(1);
+            }
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    if frames_by_stem.values().filter(|count| **count >= 2).count() != 2 {
+        return Err("application and microphone media were not both observed".into());
+    }
+
+    let outcome = running.stop();
+    if !outcome.is_success() {
+        return Err("PocketStation Session did not finalize cleanly".into());
+    }
+    let recording = running
+        .recording_outcome()
+        .ok_or("PocketStation Session did not expose a recording outcome")?;
+    if recording.state != pks::SessionRecordingState::Complete
+        || recording.completed_stems != 2
+        || recording.failed_stems != 0
+    {
+        return Err("PocketStation multistem recording did not complete".into());
+    }
+    Ok(())
+}
+```
 
 ## Important consequence
 
@@ -63,9 +130,9 @@ Executable evidence selected for **Record independent stems** is limited to each
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `RecordingOutcome::completed_stems` | struct_field | Stores the completed stems used by `RecordingOutcome`. | `src/recording/writer.rs:115` |
-| `RecordingOutcome::failed_stems` | struct_field | Stores the failed stems used by `RecordingOutcome`. | `src/recording/writer.rs:116` |
-| `RecordingOutcome::stems` | struct_field | Stores the stems used by `RecordingOutcome`. | `src/recording/writer.rs:117` |
+| `RecordingOutcome::completed_stems` | struct_field | Contains the completed stems owned or reported by `RecordingOutcome`. | `src/recording/writer.rs:115` |
+| `RecordingOutcome::failed_stems` | struct_field | Contains the failed stems owned or reported by `RecordingOutcome`. | `src/recording/writer.rs:116` |
+| `RecordingOutcome::stems` | struct_field | Contains the stems owned or reported by `RecordingOutcome`. | `src/recording/writer.rs:117` |
 | `pocketstation::recording::config::RecorderStemConfig` | struct | Configures recorder stem behavior at its owning API boundary. | `src/recording/config.rs:55` |
 | `pocketstation::recording::config::StemLabel` | struct | Stores the validated human-readable label used for one recording stem. | `src/recording/config.rs:20` |
 | `pocketstation::recording::endpoint::MultistemRecordingReceipt` | struct | Retains the identity and observation access returned for multistem recording. | `src/recording/endpoint.rs:28` |
@@ -87,6 +154,6 @@ Executable evidence selected for **Record independent stems** is limited to each
 
 The claims on **Record independent stems** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/product_quickstart.rs:1-61` (`DIRECT`)
+- `examples/product_quickstart.rs:1-21` (`DIRECT`)
 
 For **Record independent stems**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

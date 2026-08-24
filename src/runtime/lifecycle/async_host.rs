@@ -7,19 +7,19 @@ use tokio::runtime::{Builder, Handle};
 use tokio::sync::oneshot;
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as async runtime host error."]
+#[doc = "Classifies failures surfaced by async runtime host operations."]
 pub enum AsyncRuntimeHostError {
     #[error("failed to start owned async runtime: {0}")]
-    #[doc = "Reported when the owning operation encounters start."]
+    #[doc = "Classifies a failure at the start stage or component of `AsyncRuntimeHostError`."]
     Start(String),
     #[error("owned async runtime stopped before returning a lifecycle result")]
-    #[doc = "Reported when the owning operation encounters runtime stopped."]
+    #[doc = "Classifies a failure at the runtime stopped stage or component of `AsyncRuntimeHostError`."]
     RuntimeStopped,
     #[error("owned async runtime thread panicked during shutdown")]
-    #[doc = "Reported when the owning operation encounters shutdown panicked."]
+    #[doc = "Reports that shutdown panicked while the operation was active."]
     ShutdownPanicked,
     #[error("owned async runtime did not return within {timeout_ms} ms")]
-    #[doc = "Reported when the owning operation encounters host timeout."]
+    #[doc = "Reports that host exceeded its deadline."]
     HostTimeout {
         #[doc = "Stores the timeout value for `HostTimeout`, in milliseconds."]
         timeout_ms: u64,

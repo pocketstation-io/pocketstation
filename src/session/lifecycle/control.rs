@@ -16,9 +16,9 @@ use crate::session::{
 
 #[doc = "Supplies the application and microphone capture backends used while preparing a Session."]
 pub struct CaptureBackendSet<'backend> {
-    #[doc = "Stores the application used by `CaptureBackendSet`."]
+    #[doc = "Stores the application component of `CaptureBackendSet`."]
     pub application: &'backend dyn CallbackCaptureBackend,
-    #[doc = "Stores the microphone used by `CaptureBackendSet`."]
+    #[doc = "Stores the microphone component of `CaptureBackendSet`."]
     pub microphone: &'backend dyn CallbackCaptureBackend,
 }
 
@@ -29,7 +29,7 @@ pub struct SessionStartOptions {
     pub capture_frame_capacity_frames: usize,
     #[doc = "Sets the capture runtime event capacity events available to `SessionStartOptions`."]
     pub capture_runtime_event_capacity_events: usize,
-    #[doc = "Stores the runtime work budget frames used by `SessionStartOptions`."]
+    #[doc = "Contains the runtime work budget frames owned or reported by `SessionStartOptions`."]
     pub runtime_work_budget_frames: usize,
     #[doc = "Stores the runtime idle poll value for `SessionStartOptions`, in milliseconds."]
     pub runtime_idle_poll_ms: u64,
@@ -124,26 +124,26 @@ impl SessionStartCancellation {
         self.requested.store(true, Ordering::Release);
     }
 
-    #[doc = "Returns whether requested applies to `SessionStartCancellation`."]
+    #[doc = "Reports whether requested is true for `SessionStartCancellation`."]
     pub fn is_requested(&self) -> bool {
         self.requested.load(Ordering::Acquire)
     }
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session start error."]
+#[doc = "Classifies failures produced during session lifecycle start."]
 pub enum SessionStartError {
     #[error("invalid Session start options: {reason}")]
-    #[doc = "Reported when the owning operation encounters invalid options."]
+    #[doc = "Reports that the supplied options is invalid."]
     InvalidOptions {
         #[doc = "Carries the reason reported by `InvalidOptions`."]
         reason: &'static str,
     },
     #[error("Session requires at least one built-in or registered source")]
-    #[doc = "Reported when the owning operation encounters unsupported source topology."]
+    #[doc = "Reports that the requested source topology is unsupported."]
     UnsupportedSourceTopology,
     #[error("external source preparation failed: {message}")]
-    #[doc = "Reports external source prepare."]
+    #[doc = "Classifies a failure at the external source prepare stage or component of `SessionStartError`."]
     ExternalSourcePrepare {
         #[doc = "Carries the diagnostic message reported by `ExternalSourcePrepare`."]
         message: String,
@@ -151,7 +151,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("external source audio ingress failed: {message}")]
-    #[doc = "Reports external audio bridge."]
+    #[doc = "Classifies a failure at the external audio bridge stage or component of `SessionStartError`."]
     ExternalAudioBridge {
         #[doc = "Carries the diagnostic message reported by `ExternalAudioBridge`."]
         message: String,
@@ -159,7 +159,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("generated audio reentry failed: {message}")]
-    #[doc = "Reports generated audio bridge."]
+    #[doc = "Classifies a failure at the generated audio bridge stage or component of `SessionStartError`."]
     GeneratedAudioBridge {
         #[doc = "Carries the diagnostic message reported by `GeneratedAudioBridge`."]
         message: String,
@@ -167,7 +167,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("external source start failed: {message}")]
-    #[doc = "Reports external source start."]
+    #[doc = "Classifies a failure at the external source start stage or component of `SessionStartError`."]
     ExternalSourceStart {
         #[doc = "Carries the diagnostic message reported by `ExternalSourceStart`."]
         message: String,
@@ -175,7 +175,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("async operator runtime host could not start: {message}")]
-    #[doc = "Reports operator runtime host."]
+    #[doc = "Classifies a failure at the operator runtime host stage or component of `SessionStartError`."]
     OperatorRuntimeHost {
         #[doc = "Carries the diagnostic message reported by `OperatorRuntimeHost`."]
         message: String,
@@ -183,7 +183,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("operator {operator_instance_id:?} preparation failed: {message}")]
-    #[doc = "Reports operator prepare."]
+    #[doc = "Classifies a failure at the operator prepare stage or component of `SessionStartError`."]
     OperatorPrepare {
         #[doc = "Identifies the operator instance identifier recorded by `OperatorPrepare`."]
         operator_instance_id: OperatorInstanceId,
@@ -193,13 +193,13 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("endpoint {endpoint_id:?} declaration is absent")]
-    #[doc = "Reports missing endpoint declaration."]
+    #[doc = "Reports that the required endpoint declaration is missing."]
     MissingEndpointDeclaration {
         #[doc = "Identifies the endpoint identifier recorded by `MissingEndpointDeclaration`."]
         endpoint_id: EndpointId,
     },
     #[error("endpoint preparation failed: {source}")]
-    #[doc = "Reports endpoint prepare."]
+    #[doc = "Classifies a failure at the endpoint prepare stage or component of `SessionStartError`."]
     EndpointPrepare {
         #[source]
         #[doc = "Carries the source selected for `EndpointPrepare`."]
@@ -208,7 +208,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("capture preparation failed for stem {stem_id:?}: {source}")]
-    #[doc = "Reports capture prepare."]
+    #[doc = "Classifies a failure at the capture prepare stage or component of `SessionStartError`."]
     CapturePrepare {
         #[doc = "Identifies the stem identifier recorded by `CapturePrepare`."]
         stem_id: StemId,
@@ -219,7 +219,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("capture open failed for stem {stem_id:?}: {source}")]
-    #[doc = "Reports capture open."]
+    #[doc = "Classifies a failure at the capture open stage or component of `SessionStartError`."]
     CaptureOpen {
         #[doc = "Identifies the stem identifier recorded by `CaptureOpen`."]
         stem_id: StemId,
@@ -230,7 +230,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("endpoint start failed: {source}")]
-    #[doc = "Reports endpoint start."]
+    #[doc = "Classifies a failure at the endpoint start stage or component of `SessionStartError`."]
     EndpointStart {
         #[source]
         #[doc = "Carries the source selected for `EndpointStart`."]
@@ -239,7 +239,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("runtime runner preparation failed: {source}")]
-    #[doc = "Reports runtime runner."]
+    #[doc = "Classifies a failure at the runtime runner stage or component of `SessionStartError`."]
     RuntimeRunner {
         #[source]
         #[doc = "Carries the source selected for `RuntimeRunner`."]
@@ -248,7 +248,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("runtime worker thread could not start: {message}")]
-    #[doc = "Reports runtime worker spawn."]
+    #[doc = "Classifies a failure at the runtime worker spawn stage or component of `SessionStartError`."]
     RuntimeWorkerSpawn {
         #[doc = "Carries the diagnostic message reported by `RuntimeWorkerSpawn`."]
         message: String,
@@ -256,7 +256,7 @@ pub enum SessionStartError {
         rollback_failures_total: u64,
     },
     #[error("runtime worker did not become ready: {message}")]
-    #[doc = "Reports runtime worker ready."]
+    #[doc = "Classifies a failure at the runtime worker ready stage or component of `SessionStartError`."]
     RuntimeWorkerReady {
         #[doc = "Carries the diagnostic message reported by `RuntimeWorkerReady`."]
         message: String,
@@ -424,7 +424,7 @@ pub struct SessionStopOutcome {
 }
 
 impl SessionStopOutcome {
-    #[doc = "Returns whether success applies to `SessionStopOutcome`."]
+    #[doc = "Reports whether success is true for `SessionStopOutcome`."]
     pub fn is_success(&self) -> bool {
         !self.runtime_worker_panicked
             && self.capture_finalization_failures_total == 0

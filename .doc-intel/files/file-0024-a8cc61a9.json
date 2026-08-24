@@ -35,11 +35,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "47c4364139f689e75df13ebce5d2fd1f9e654c8748fc94794475297fcc7cea57",
       "lines": [
         1,
-        18
+        9
       ],
       "path": "docs/compatibility/README.md",
       "symbol": null
@@ -75,7 +75,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "`internal-testing` feature is intentionally not a product compatibility"
+    "Consumes configuration at docs/compatibility/README.md:11."
   ],
   "invariants": [],
   "language": "Markdown",
@@ -84,7 +84,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/compatibility/README.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

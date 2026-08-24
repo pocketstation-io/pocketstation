@@ -1,6 +1,6 @@
 # Return generated PCM through a bridge
 
-<!-- claims: CLM-GUIDE-013-CAP-001,CLM-GUIDE-013-CAP-002,CLM-GUIDE-013-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-013-SCOPE-001,CLM-GUIDE-013-TEXT-001,CLM-GUIDE-013-TEXT-002,CLM-GUIDE-013-TEXT-003,CLM-GUIDE-013-TEXT-004,CLM-GUIDE-013-TEXT-005,CLM-GUIDE-013-TEXT-006,CLM-GUIDE-013-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,48 @@ An async operator output declared as generated audio and a target sample specifi
 3. Produce PCM matching the target sample specification.
 4. Write from the asynchronous lane.
 5. Observe accepted, saturated, closed, or cancelled outcomes.
+
+## Concrete repository example
+
+The executable repository test `given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly` (`test-b85e8c1c3aa436f769d2`) shows the concrete API sequence and asserted outcome at `src/runtime/bridge/audio.rs:497`.
+
+```rust
+    }
+
+    #[test]
+    fn given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly() {
+        let cancellation = PlanRunnerCancellation::new();
+        let (sender, _retained_input) =
+            plan_source_channel(crate::graph::NodeId(1), 1, cancellation).expect("source channel");
+        let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
+            capacity_signals: 2,
+            edge_contract: EdgeContract::bounded_async(),
+        }])
+        .expect("typed edge");
+        let bridge =
+            GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(2))
+                .expect("bridge");
+        let observations = bridge.observations();
+        let input_pool = AudioBufferPool::new(2, 960);
+        publish_audio(&mut fanout, 1, &input_pool);
+        publish_audio(&mut fanout, 2, &input_pool);
+        drop(fanout);
+
+        bridge.finish_and_join();
+        let observations = observations.snapshot();
+        assert_eq!(observations.received_total, 2);
+        assert_eq!(observations.normalized_total, 2);
+        assert_eq!(observations.enqueued_total, 1);
+        assert_eq!(observations.pool_exhausted_total, 0);
+        assert_eq!(observations.ingress_rejected_total, 1);
+        assert_eq!(observations.maximum_buffered_audio_bytes, 4 * 960 * 4);
+        assert!(observations.joined);
+    }
+```
+
+```bash
+cargo test --all-features given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly
+```
 
 ## Important consequence
 
@@ -66,11 +108,11 @@ Executable evidence selected for **Return generated PCM through a bridge** is li
 |---|---|---|---|
 | `pocketstation::runtime::bridge::audio::GeneratedAudioBridge` | struct | Transfers generated audio across the bounded runtime boundary it owns. | `src/runtime/bridge/audio.rs:123` |
 | `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeSpec` | struct | Configures generated audio bridge behavior at its owning API boundary. | `src/runtime/bridge/audio.rs:19` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures reported as generated audio bridge start error. | `src/runtime/bridge/audio.rs:46` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots` | variant | Reported when the owning operation encounters invalid pool slots. | `src/runtime/bridge/audio.rs:52` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec` | variant | Reported when the owning operation encounters invalid sample spec. | `src/runtime/bridge/audio.rs:48` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart` | variant | Reported when the owning operation encounters thread start. | `src/runtime/bridge/audio.rs:54` |
-| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ZeroFrameSamples` | variant | Reported when the owning operation encounters zero frame samples. | `src/runtime/bridge/audio.rs:50` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures produced during generated audio bridge lifecycle start. | `src/runtime/bridge/audio.rs:46` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots` | variant | Reports that the supplied pool slots is invalid. | `src/runtime/bridge/audio.rs:52` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec` | variant | Reports that the supplied sample spec is invalid. | `src/runtime/bridge/audio.rs:48` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart` | variant | Classifies a failure at the thread start stage or component of `GeneratedAudioBridgeStartError`. | `src/runtime/bridge/audio.rs:54` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ZeroFrameSamples` | variant | Reports that frame samples must be greater than zero. | `src/runtime/bridge/audio.rs:50` |
 | `GeneratedAudioBridgeSpec::clock_id` | struct_field | Identifies the clock identifier recorded by `GeneratedAudioBridgeSpec`. | `src/runtime/bridge/audio.rs:24` |
 
 ## Related documentation
@@ -88,6 +130,29 @@ Executable evidence selected for **Return generated PCM through a bridge** is li
 
 The claims on **Return generated PCM through a bridge** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/bridge/audio.rs:1-529` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:16-16` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:18-18` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:18-18` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:18-18` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:19-28` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:20-20` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:21-21` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:22-22` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:23-23` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:24-24` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:25-25` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:26-26` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:27-27` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:31-42` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:45-45` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:46-55` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:48-48` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:50-50` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:52-52` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:54-54` (`DIRECT`)
+- `src/runtime/bridge/audio.rs:57-57` (`DIRECT`)
 
 For **Return generated PCM through a bridge**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

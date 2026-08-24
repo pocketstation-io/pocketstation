@@ -30,8 +30,8 @@
       "classification": "DIRECT",
       "content_hash": "544b3276d84bc34b7430ae1e3cfb2109936a3bbb2fea7cc0ca35693086af8e49",
       "lines": [
-        1,
-        93
+        2,
+        22
       ],
       "path": "tools/check-abi-compatibility.sh",
       "symbol": null
@@ -100,7 +100,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`tools/check-abi-compatibility.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

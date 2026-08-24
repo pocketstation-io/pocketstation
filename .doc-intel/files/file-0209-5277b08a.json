@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/declaration/draft.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/session/compile/bindings.rs",
@@ -134,6 +135,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/declaration/draft.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/session/compile/bindings.rs",
@@ -1222,16 +1224,247 @@
       "classification": "DIRECT",
       "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
       "lines": [
-        1,
-        880
+        11,
+        11
       ],
       "path": "src/session/declaration/spec.rs",
-      "symbol": null
+      "symbol": "SESSION_SPEC_VERSION"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "SourceInstanceId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        17,
+        19
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        21,
+        23
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "value"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "OperatorInstanceId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        30,
+        32
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        34,
+        36
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "value"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        40,
+        43
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "SessionSpecVersion"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        41,
+        41
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "major"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "minor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "58779566116922d89fd75dbb3dd0ef0ea52bd86fead7a552296fd219d267dfd5",
+      "lines": [
+        46,
+        48
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": "new"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/declaration/draft.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/session/compile/bindings.rs",
@@ -1268,6 +1501,7 @@
   "generated_from": "not_applicable",
   "git_object": "c7692294520086bf636916dd30497c6d38e9a20a",
   "implemented_by": [
+    "CALLS:src/session/declaration/draft.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/session/compile/bindings.rs",
@@ -1302,6 +1536,7 @@
     "SessionSpec"
   ],
   "imported_by": [
+    "CALLS:src/session/declaration/draft.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/session/compile/bindings.rs",
@@ -1331,14 +1566,17 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::frame::{EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}",
-    "crate::graph::NodeTypeId",
-    "crate::session::{ EndpointConfiguration, OperatorConfiguration, OperatorId, SessionError, Source, SourceConfiguration, SourceTypeId, }",
-    "crate::session::{DeviceSelector, EndpointConfiguration}",
-    "std::collections::HashSet",
-    "super::*"
+    "Consumes configuration at src/session/declaration/spec.rs:273.",
+    "Consumes configuration at src/session/declaration/spec.rs:314.",
+    "Consumes configuration at src/session/declaration/spec.rs:50.",
+    "Consumes configuration at src/session/declaration/spec.rs:55.",
+    "Consumes configuration at src/session/declaration/spec.rs:791.",
+    "Depends on `crate::frame::{EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::NodeTypeId` through a declared Rust import.",
+    "Depends on `crate::session::{ EndpointConfiguration, OperatorConfiguration, OperatorId, SessionError, Source, SourceConfiguration, SourceTypeId, }` through a declared Rust import.",
+    "Depends on `crate::session::{DeviceSelector, EndpointConfiguration}` through a declared Rust import.",
+    "Depends on `std::collections::HashSet` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1376,41 +1614,46 @@
   "module": "pocketstation::session::declaration::spec",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration::spec` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-1c762ecc30a540fdd0f8"
   ],
   "outputs": [
-    "const:SESSION_SPEC_VERSION",
-    "fn:configuration",
-    "fn:id",
-    "fn:instance_id",
-    "fn:major",
-    "fn:minor",
-    "fn:new",
-    "fn:operator_instance_id",
-    "fn:output_port",
-    "fn:source",
-    "fn:source_id",
-    "fn:source_instance_id",
-    "fn:source_type_id",
-    "fn:stem_id",
-    "fn:stream_id",
-    "fn:value",
-    "return Err(SessionError::InvalidOperator {",
-    "return Err(SessionError::InvalidRoute {",
-    "return Err(SessionError::NoRoutes {",
-    "return Err(SessionError::NoSources);",
-    "return Err(SessionError::UnsupportedVersion {",
-    "struct:EndpointSpec",
-    "struct:GeneratedAudioIngressSpec",
-    "struct:OperatorInstanceId",
-    "struct:SessionSpecVersion",
-    "struct:SourceInstanceId",
-    "struct:SourceInstanceSpec",
-    "struct:SourceOutputSpec",
-    "struct:StemSpec"
+    "Creates a typed failure at src/session/declaration/spec.rs:355.",
+    "Creates a typed failure at src/session/declaration/spec.rs:364.",
+    "Creates a typed failure at src/session/declaration/spec.rs:373.",
+    "Creates a typed failure at src/session/declaration/spec.rs:384.",
+    "Creates a typed failure at src/session/declaration/spec.rs:393.",
+    "Creates a typed failure at src/session/declaration/spec.rs:399.",
+    "Creates a typed failure at src/session/declaration/spec.rs:412.",
+    "Creates a typed failure at src/session/declaration/spec.rs:421.",
+    "Creates a typed failure at src/session/declaration/spec.rs:429.",
+    "Creates a typed failure at src/session/declaration/spec.rs:438.",
+    "Declares public const `SESSION_SPEC_VERSION`.",
+    "Declares public fn `configuration`.",
+    "Declares public fn `id`.",
+    "Declares public fn `instance_id`.",
+    "Declares public fn `major`.",
+    "Declares public fn `minor`.",
+    "Declares public fn `new`.",
+    "Declares public fn `operator_instance_id`.",
+    "Declares public fn `output_port`.",
+    "Declares public fn `source_id`.",
+    "Declares public fn `source_instance_id`.",
+    "Declares public fn `source_type_id`.",
+    "Declares public fn `source`.",
+    "Declares public fn `stem_id`.",
+    "Declares public fn `stream_id`.",
+    "Declares public fn `value`.",
+    "Declares public struct `EndpointSpec`.",
+    "Declares public struct `GeneratedAudioIngressSpec`.",
+    "Declares public struct `OperatorInstanceId`.",
+    "Declares public struct `SessionSpecVersion`.",
+    "Declares public struct `SourceInstanceId`.",
+    "Declares public struct `SourceInstanceSpec`.",
+    "Declares public struct `SourceOutputSpec`.",
+    "Declares public struct `StemSpec`."
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/spec.rs",
@@ -1865,8 +2108,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration::spec responsibilities, including Defines the public session spec version value.; Uniquely identifies source instance within its PocketStation ownership scope.; Creates a new `SourceInstanceId`.."
+    "classification": "DECLARED",
+    "text": "Defines the stable session spec version used by the owning public contract. Uniquely identifies source instance within its PocketStation ownership scope. Creates a new `SourceInstanceId`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1927,6 +2170,7 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/signal/spec.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/operator.rs",
@@ -1938,7 +2182,7 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::session::declaration::spec::SESSION_SPEC_VERSION: Defines the public session spec version value.",
+    "pocketstation::session::declaration::spec::SESSION_SPEC_VERSION: Defines the stable session spec version used by the owning public contract.",
     "pocketstation::session::declaration::spec::SourceInstanceId: Uniquely identifies source instance within its PocketStation ownership scope.",
     "new: Creates a new `SourceInstanceId`.",
     "value: Returns the value held by `SourceInstanceId`.",
@@ -1974,19 +2218,19 @@
     "pocketstation::session::declaration::spec::StreamOrigin::Stem: Represents the stem alternative defined by `StreamOrigin`.",
     "pocketstation::session::declaration::spec::StreamOrigin::SourceOutput: Represents the source output alternative defined by `StreamOrigin`.",
     "StreamOrigin::SourceOutput::source_instance_id: Identifies the source instance identifier recorded by `SourceOutput`.",
-    "StreamOrigin::SourceOutput::output_port: Stores the output port used by `SourceOutput`.",
+    "StreamOrigin::SourceOutput::output_port: References the output port participating in `SourceOutput`.",
     "StreamOrigin::SourceOutput::stream_id: Identifies the stream identifier recorded by `SourceOutput`.",
     "StreamOrigin::SourceOutput::source_id: Identifies the source identifier recorded by `SourceOutput`.",
     "pocketstation::session::declaration::spec::StreamOrigin::OperatorOutput: Represents the operator output alternative defined by `StreamOrigin`.",
     "StreamOrigin::OperatorOutput::operator_instance_id: Identifies the operator instance identifier recorded by `OperatorOutput`.",
-    "StreamOrigin::OperatorOutput::output_port: Stores the output port used by `OperatorOutput`.",
+    "StreamOrigin::OperatorOutput::output_port: References the output port participating in `OperatorOutput`.",
     "pocketstation::session::declaration::spec::ConnectionTarget: Stable destination of a declared Session connection.",
     "pocketstation::session::declaration::spec::ConnectionTarget::OperatorInput: Represents the operator input alternative defined by `ConnectionTarget`.",
     "ConnectionTarget::OperatorInput::operator_instance_id: Identifies the operator instance identifier recorded by `OperatorInput`.",
-    "ConnectionTarget::OperatorInput::input_port: Stores the input port used by `OperatorInput`.",
+    "ConnectionTarget::OperatorInput::input_port: References the input port participating in `OperatorInput`.",
     "pocketstation::session::declaration::spec::ConnectionTarget::EndpointInput: Represents the endpoint input alternative defined by `ConnectionTarget`.",
     "ConnectionTarget::EndpointInput::endpoint_id: Identifies the endpoint identifier recorded by `EndpointInput`.",
-    "ConnectionTarget::EndpointInput::input_port: Stores the input port used by `EndpointInput`.",
+    "ConnectionTarget::EndpointInput::input_port: References the input port participating in `EndpointInput`.",
     "pocketstation::session::declaration::spec::ConnectionSpec: The single Session connection declaration used for every stream origin and",
     "instance_id: Returns the instance identifier held by `OperatorInstanceSpec`.",
     "operator_id: Returns the operator identifier held by `OperatorInstanceSpec`.",
@@ -1994,7 +2238,7 @@
     "id: Returns the id held by `ConnectionSpec`.",
     "origin: Returns the origin held by `ConnectionSpec`.",
     "target: Returns the target associated with `ConnectionSpec`.",
-    "pocketstation::session::declaration::spec::OperatorSpec: Names the operator spec type used by the public API.",
+    "pocketstation::session::declaration::spec::OperatorSpec: Exposes `OperatorInstanceSpec` as the public `OperatorSpec` alias at this API boundary.",
     "pocketstation::session::declaration::spec::SessionSpec: Configures session behavior at its owning API boundary.",
     "version: Returns the version associated with `SessionSpec`.",
     "session_id: Returns the session identifier held by `SessionSpec`.",

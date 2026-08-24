@@ -1,6 +1,6 @@
 # Native extension API
 
-<!-- claims: CLM-REF-010-CAP-001,CLM-REF-010-SOURCE-001 -->
+<!-- claims: CLM-REF-010-SCOPE-001,CLM-REF-010-TEXT-001,CLM-REF-010-TEXT-002,CLM-REF-010-SOURCE-001 -->
 
 ## Scope
 
@@ -21,9 +21,9 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-61cc214c9f17f5efc20a | `pocketstation::native_extension::EXTENSION_LIBRARY_ENTRYPOINT_V1` | constant | Exact exported symbol required from a native Extension ABI v1 dynamic library. The suffix follows the ABI major; compatible minor revisions use the same entrypoint. | `src/native_extension/mod.rs:24` |
 | sym-ce4c2a4d569001a1911b | `pocketstation::abi::extension::PksExtensionKind` | enum | Selects the extension kind used by PocketStation. | `src/abi/extension.rs:32` |
 | sym-9296aa9eb2ebd632f22e | `pocketstation::abi::extension::PksExtensionPortDirection` | enum | Selects the extension port direction used by PocketStation. | `src/abi/extension.rs:40` |
-| sym-81e037fbd73e62639416 | `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | Enumerates the supported session status code cases. | `src/abi/session/abi.rs:79` |
+| sym-81e037fbd73e62639416 | `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | Provides stable C ABI status categories returned by Session operations. | `src/abi/session/abi.rs:79` |
 | sym-3b00d82a04d35afbba20 | `pocketstation::native_extension::NativeExtensionKind` | enum | Selects the native extension kind used by PocketStation. | `src/native_extension/mod.rs:27` |
-| sym-c144f166f28ea7fc2604 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode` | enum | Enumerates the supported native extension library error code cases. | `src/native_extension/mod.rs:78` |
+| sym-c144f166f28ea7fc2604 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode` | enum | Provides stable categories for native-extension load and validation failures. | `src/native_extension/mod.rs:78` |
 | sym-504709804e2abc76d105 | `as_str` | function | Returns the stable string representation of `NativeExtensionLibraryErrorCode`. | `src/native_extension/mod.rs:97` |
 | sym-337292e97a842fdf2668 | `canonical_path` | function | Returns the canonical path associated with `NativeExtensionLibrary`. | `src/native_extension/mod.rs:68` |
 | sym-e74cb3e63e1024a31011 | `code` | function | Returns the stable error or status code represented by `NativeExtensionLibraryError`. | `src/native_extension/mod.rs:131` |
@@ -38,11 +38,11 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-ca9371c7d79ce617e7c9 | `revision` | function | Returns the revision held by `NativeExtensionRegistration`. | `src/native_extension/mod.rs:50` |
 | sym-b9ca441db554330302d9 | `pocketstation::abi::executable_extension::PksExtensionCallbacks` | struct | Defines the optional function table through which a native extension prepares, runs, stops, and releases instances. | `src/abi/executable_extension.rs:91` |
 | sym-ab00ae321687f73286ca | `pocketstation::abi::executable_extension::PksExtensionLibrary` | struct | Owns a loaded native-extension library and the registrations imported from its validated descriptor. | `src/abi/executable_extension.rs:123` |
-| sym-f632b21433ce6ab18231 | `pocketstation::abi::executable_extension::PksExtensionPipelineDeclaration` | struct | Describes the extension pipeline declaration contract. | `src/abi/executable_extension.rs:168` |
+| sym-f632b21433ce6ab18231 | `pocketstation::abi::executable_extension::PksExtensionPipelineDeclaration` | struct | Declares one extension pipeline instance and the native registrations it uses. | `src/abi/executable_extension.rs:168` |
 | sym-a6d4a635612b1aaf4d15 | `pocketstation::abi::executable_extension::PksExtensionSignalBuffer` | struct | Provides bounded extension-owned storage for a signal returned through the native ABI. | `src/abi/executable_extension.rs:153` |
 | sym-f18199c6541f4add2eeb | `pocketstation::abi::executable_extension::PksExtensionSignalView` | struct | Borrows one signal payload and metadata for delivery into a native-extension callback. | `src/abi/executable_extension.rs:138` |
 | sym-7c08b84faec371e236f1 | `pocketstation::abi::extension::PksExtensionAbiVersion` | struct | Carries the major and minor native-extension ABI versions checked during loading. | `src/abi/extension.rs:14` |
-| sym-271409255d3a0750ce7b | `pocketstation::abi::extension::PksExtensionDescriptor` | struct | Describes the extension descriptor contract. | `src/abi/extension.rs:47` |
+| sym-271409255d3a0750ce7b | `pocketstation::abi::extension::PksExtensionDescriptor` | struct | Declares a native extension's ABI version, library callbacks, and registration entrypoint. | `src/abi/extension.rs:47` |
 | sym-7b822cc6a15684bd7f84 | `pocketstation::abi::extension::PksExtensionPort` | struct | Describes one native-extension port across the C ABI, including direction and signal metadata. | `src/abi/extension.rs:60` |
 | sym-0ed9edb0f5260fbc6220 | `pocketstation::abi::session::abi::PksSessionStatus` | struct | Reports the structured session status. | `src/abi/session/abi.rs:56` |
 | sym-0d106bb641ad4be881c4 | `pocketstation::abi::session::abi::PksSessionUtf8` | struct | Borrows a UTF-8 byte range across the C Session ABI as a pointer and length. | `src/abi/session/abi.rs:101` |
@@ -71,10 +71,10 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-de7af8723bb618302962 | `PksExtensionDescriptor::abi_major` | struct_field | Stores the major ABI version expected by `PksExtensionDescriptor`. | `src/abi/extension.rs:49` |
 | sym-fb4fceba7f10043d503e | `PksExtensionDescriptor::abi_minor` | struct_field | Stores the minor ABI version expected by `PksExtensionDescriptor`. | `src/abi/extension.rs:50` |
 | sym-b09b163379b1e632ca91 | `PksExtensionDescriptor::extension_id` | struct_field | Identifies the extension identifier recorded by `PksExtensionDescriptor`. | `src/abi/extension.rs:55` |
-| sym-cd76df9447a5702c0696 | `PksExtensionDescriptor::generation` | struct_field | Stores the generation used by `PksExtensionDescriptor`. | `src/abi/extension.rs:53` |
-| sym-848be399c38fd5e3f56e | `PksExtensionDescriptor::kind` | struct_field | Stores the kind used by `PksExtensionDescriptor`. | `src/abi/extension.rs:51` |
+| sym-cd76df9447a5702c0696 | `PksExtensionDescriptor::generation` | struct_field | Identifies the generation of the resource represented by `PksExtensionDescriptor`. | `src/abi/extension.rs:53` |
+| sym-848be399c38fd5e3f56e | `PksExtensionDescriptor::kind` | struct_field | Records the kind selected for `PksExtensionDescriptor`. | `src/abi/extension.rs:51` |
 | sym-6b86e7d040a2d2300864 | `PksExtensionDescriptor::port_count` | struct_field | Stores the number of port represented by `PksExtensionDescriptor`. | `src/abi/extension.rs:54` |
-| sym-6c10774fd0745685cb27 | `PksExtensionDescriptor::revision` | struct_field | Stores the revision used by `PksExtensionDescriptor`. | `src/abi/extension.rs:52` |
+| sym-6c10774fd0745685cb27 | `PksExtensionDescriptor::revision` | struct_field | Stores the revision component of `PksExtensionDescriptor`. | `src/abi/extension.rs:52` |
 | sym-cd0a07994945fa3a75b1 | `PksExtensionDescriptor::struct_size_bytes` | struct_field | Stores the byte size of the `PksExtensionDescriptor` ABI structure. | `src/abi/extension.rs:48` |
 | sym-bed4ba74d429e253186a | `PksExtensionLibrary::abi_major` | struct_field | Stores the major ABI version expected by `PksExtensionLibrary`. | `src/abi/executable_extension.rs:125` |
 | sym-c684b876503061de1dd2 | `PksExtensionLibrary::abi_minor` | struct_field | Stores the minor ABI version expected by `PksExtensionLibrary`. | `src/abi/executable_extension.rs:126` |
@@ -86,20 +86,20 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-492ec59461a98588d709 | `PksExtensionPipelineDeclaration::abi_major` | struct_field | Stores the major ABI version expected by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:170` |
 | sym-7b594b2883fcfe1fd9b2 | `PksExtensionPipelineDeclaration::abi_minor` | struct_field | Stores the minor ABI version expected by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:171` |
 | sym-290fa7d306be450d3937 | `PksExtensionPipelineDeclaration::endpoint_id` | struct_field | Identifies the endpoint identifier recorded by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:177` |
-| sym-68738b1952cdefe542fd | `PksExtensionPipelineDeclaration::endpoint_input_port` | struct_field | Stores the endpoint input port used by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:178` |
+| sym-68738b1952cdefe542fd | `PksExtensionPipelineDeclaration::endpoint_input_port` | struct_field | References the endpoint input port participating in `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:178` |
 | sym-ecddf8d73c8e9d6284de | `PksExtensionPipelineDeclaration::operator_id` | struct_field | Identifies the operator identifier recorded by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:174` |
-| sym-4c8bec614b543c654393 | `PksExtensionPipelineDeclaration::operator_input_port` | struct_field | Stores the operator input port used by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:175` |
-| sym-46c0b0de16ff6914228d | `PksExtensionPipelineDeclaration::operator_output_port` | struct_field | Stores the operator output port used by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:176` |
+| sym-4c8bec614b543c654393 | `PksExtensionPipelineDeclaration::operator_input_port` | struct_field | References the operator input port participating in `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:175` |
+| sym-46c0b0de16ff6914228d | `PksExtensionPipelineDeclaration::operator_output_port` | struct_field | References the operator output port participating in `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:176` |
 | sym-dfc95dd8fbd85a2da7c2 | `PksExtensionPipelineDeclaration::source_id` | struct_field | Identifies the source identifier recorded by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:172` |
-| sym-3def34d3b3e284749986 | `PksExtensionPipelineDeclaration::source_output_port` | struct_field | Stores the source output port used by `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:173` |
+| sym-3def34d3b3e284749986 | `PksExtensionPipelineDeclaration::source_output_port` | struct_field | References the source output port participating in `PksExtensionPipelineDeclaration`. | `src/abi/executable_extension.rs:173` |
 | sym-abf6494dea7fa11f40a2 | `PksExtensionPipelineDeclaration::struct_size_bytes` | struct_field | Stores the byte size of the `PksExtensionPipelineDeclaration` ABI structure. | `src/abi/executable_extension.rs:169` |
 | sym-92b6de43d2bd3d825994 | `PksExtensionPort::abi_major` | struct_field | Stores the major ABI version expected by `PksExtensionPort`. | `src/abi/extension.rs:62` |
 | sym-2f878cc54cb97dd7c8c0 | `PksExtensionPort::abi_minor` | struct_field | Stores the minor ABI version expected by `PksExtensionPort`. | `src/abi/extension.rs:63` |
-| sym-c3e7ffa3de4c0ec33dd5 | `PksExtensionPort::direction` | struct_field | Stores the direction used by `PksExtensionPort`. | `src/abi/extension.rs:64` |
-| sym-b138dd2d12d72a0caf00 | `PksExtensionPort::name` | struct_field | Stores the name used by `PksExtensionPort`. | `src/abi/extension.rs:66` |
+| sym-c3e7ffa3de4c0ec33dd5 | `PksExtensionPort::direction` | struct_field | Records the direction selected for `PksExtensionPort`. | `src/abi/extension.rs:64` |
+| sym-b138dd2d12d72a0caf00 | `PksExtensionPort::name` | struct_field | Stores the human-readable name used to identify `PksExtensionPort`. | `src/abi/extension.rs:66` |
 | sym-818c1e80bf72e7a8b6e6 | `PksExtensionPort::required` | struct_field | Indicates whether required applies to `PksExtensionPort`. | `src/abi/extension.rs:65` |
-| sym-85feaf1eeb9223172262 | `PksExtensionPort::schema` | struct_field | Stores the schema used by `PksExtensionPort`. | `src/abi/extension.rs:69` |
-| sym-d45470b7ba721a6b7ae6 | `PksExtensionPort::semantic_role` | struct_field | Stores the semantic role used by `PksExtensionPort`. | `src/abi/extension.rs:68` |
+| sym-85feaf1eeb9223172262 | `PksExtensionPort::schema` | struct_field | Records the schema selected for `PksExtensionPort`. | `src/abi/extension.rs:69` |
+| sym-d45470b7ba721a6b7ae6 | `PksExtensionPort::semantic_role` | struct_field | Names the semantic role assigned to the extension port in `PksExtensionPort`. | `src/abi/extension.rs:68` |
 | sym-5bcff79544e6a681652d | `PksExtensionPort::signal_id` | struct_field | Identifies the signal identifier recorded by `PksExtensionPort`. | `src/abi/extension.rs:67` |
 | sym-5ee9368f2d7b3929c0fd | `PksExtensionPort::struct_size_bytes` | struct_field | Stores the byte size of the `PksExtensionPort` ABI structure. | `src/abi/extension.rs:61` |
 | sym-536f459749f3b16614fe | `PksExtensionSignalBuffer::abi_major` | struct_field | Stores the major ABI version expected by `PksExtensionSignalBuffer`. | `src/abi/executable_extension.rs:155` |
@@ -119,11 +119,11 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-3213ff660528d242f617 | `PksExtensionSignalView::flags` | struct_field | Carries the bit flags defined by `PksExtensionSignalView`. | `src/abi/executable_extension.rs:144` |
 | sym-13edc82c1dcd24f80eb5 | `PksExtensionSignalView::len_bytes` | struct_field | Stores the len size for `PksExtensionSignalView`, in bytes. | `src/abi/executable_extension.rs:143` |
 | sym-d71866163388ce8559ba | `PksExtensionSignalView::observed_timestamp_ns` | struct_field | Stores the observed timestamp value for `PksExtensionSignalView`, in nanoseconds. | `src/abi/executable_extension.rs:145` |
-| sym-5ff4b121979a55de8c16 | `PksExtensionSignalView::sequence_number` | struct_field | Stores the sequence number used by `PksExtensionSignalView`. | `src/abi/executable_extension.rs:148` |
+| sym-5ff4b121979a55de8c16 | `PksExtensionSignalView::sequence_number` | struct_field | Orders `PksExtensionSignalView` within its protocol or stream sequence. | `src/abi/executable_extension.rs:148` |
 | sym-4b76013d0b87cdfde384 | `PksExtensionSignalView::source_timestamp_ns` | struct_field | Stores the source timestamp value for `PksExtensionSignalView`, in nanoseconds. | `src/abi/executable_extension.rs:146` |
 | sym-70ccfc11e50c3418fa7a | `PksExtensionSignalView::struct_size_bytes` | struct_field | Stores the byte size of the `PksExtensionSignalView` ABI structure. | `src/abi/executable_extension.rs:139` |
-| sym-81dcdf507990a523fe0e | `PksSessionStatus::code` | struct_field | Stores the code used by `PksSessionStatus`. | `src/abi/session/abi.rs:57` |
-| sym-3314c210b3949d1bcd1d | `PksSessionStatus::detail` | struct_field | Stores the detail used by `PksSessionStatus`. | `src/abi/session/abi.rs:58` |
+| sym-81dcdf507990a523fe0e | `PksSessionStatus::code` | struct_field | Stores the code component of `PksSessionStatus`. | `src/abi/session/abi.rs:57` |
+| sym-3314c210b3949d1bcd1d | `PksSessionStatus::detail` | struct_field | Stores the detail component of `PksSessionStatus`. | `src/abi/session/abi.rs:58` |
 | sym-4598b1658958f9bd6a71 | `PksSessionUtf8::data` | struct_field | Carries the data owned or referenced by `PksSessionUtf8`. | `src/abi/session/abi.rs:102` |
 | sym-062d1ef0071e13f96677 | `PksSessionUtf8::len_bytes` | struct_field | Stores the len size for `PksSessionUtf8`, in bytes. | `src/abi/session/abi.rs:103` |
 | sym-aeeaa5604243332b5394 | `pocketstation::abi::executable_extension::PksExtensionAcquireRegistrationCallback` | type_alias | Defines the optional C callback used to acquire an extension registration; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:110` |
@@ -131,17 +131,17 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-32efbef473a9a5697a1c | `pocketstation::abi::executable_extension::PksExtensionDestroyCallback` | type_alias | Defines the optional C callback used to destroy extension-owned context; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:87` |
 | sym-03cc3c3d4a79421ab83c | `pocketstation::abi::executable_extension::PksExtensionEndpointConsumeCallback` | type_alias | Defines the optional C callback used to consume an endpoint input; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:77` |
 | sym-09f27cd611795c65bbc8 | `pocketstation::abi::executable_extension::PksExtensionFinishCallback` | type_alias | Defines the optional C callback used to finish extension work; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:85` |
-| sym-497f48c6c93d03e14de7 | `pocketstation::abi::executable_extension::PksExtensionLibraryEntrypoint` | type_alias | Names the extension library entrypoint type used by the public API. | `src/abi/executable_extension.rs:133` |
+| sym-497f48c6c93d03e14de7 | `pocketstation::abi::executable_extension::PksExtensionLibraryEntrypoint` | type_alias | Exposes `PksSessionStatus` as the public `PksExtensionLibraryEntrypoint` alias at this API boundary. | `src/abi/executable_extension.rs:133` |
 | sym-e3262cbc0403e5714c35 | `pocketstation::abi::executable_extension::PksExtensionOperatorProcessCallback` | type_alias | Defines the optional C callback used to process an operator input; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:70` |
 | sym-98dd08100b2055a1b49b | `pocketstation::abi::executable_extension::PksExtensionPrepareCallback` | type_alias | Defines the optional C callback used to prepare an extension instance; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:48` |
 | sym-cf706ae4f39c2bc1b613 | `pocketstation::abi::executable_extension::PksExtensionSourceNextCallback` | type_alias | Defines the optional C callback used to produce the next source signal; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:63` |
 | sym-8ed828f9fa01d64e22e6 | `pocketstation::abi::executable_extension::PksExtensionStopCallback` | type_alias | Defines the optional C callback used to request an extension instance to stop; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:83` |
 | sym-802847170fd9ec2831b4 | `pocketstation::abi::executable_extension::PksExtensionValidateConfigurationCallback` | type_alias | Defines the optional C callback used to validate extension configuration; pointer validity and ownership follow the extension ABI contract. | `src/abi/executable_extension.rs:50` |
-| sym-56c936241baf53dc318b | `pocketstation::abi::extension::PksExtensionKind::Endpoint` | variant | Selects endpoint behavior for `PksExtensionKind`. | `src/abi/extension.rs:35` |
-| sym-5397638d011436a1d64f | `pocketstation::abi::extension::PksExtensionKind::Operator` | variant | Selects operator behavior for `PksExtensionKind`. | `src/abi/extension.rs:34` |
-| sym-6cdad11f0f57d9b7536c | `pocketstation::abi::extension::PksExtensionKind::Source` | variant | Selects source behavior for `PksExtensionKind`. | `src/abi/extension.rs:33` |
-| sym-de4a9df3781e78ea305d | `pocketstation::abi::extension::PksExtensionPortDirection::Input` | variant | Selects input behavior for `PksExtensionPortDirection`. | `src/abi/extension.rs:41` |
-| sym-682b021885ebe1d80fb1 | `pocketstation::abi::extension::PksExtensionPortDirection::Output` | variant | Selects output behavior for `PksExtensionPortDirection`. | `src/abi/extension.rs:42` |
+| sym-56c936241baf53dc318b | `pocketstation::abi::extension::PksExtensionKind::Endpoint` | variant | Registers the native extension as a endpoint implementation. | `src/abi/extension.rs:35` |
+| sym-5397638d011436a1d64f | `pocketstation::abi::extension::PksExtensionKind::Operator` | variant | Registers the native extension as a operator implementation. | `src/abi/extension.rs:34` |
+| sym-6cdad11f0f57d9b7536c | `pocketstation::abi::extension::PksExtensionKind::Source` | variant | Registers the native extension as a source implementation. | `src/abi/extension.rs:33` |
+| sym-de4a9df3781e78ea305d | `pocketstation::abi::extension::PksExtensionPortDirection::Input` | variant | Declares a native-extension port as input. | `src/abi/extension.rs:41` |
+| sym-682b021885ebe1d80fb1 | `pocketstation::abi::extension::PksExtensionPortDirection::Output` | variant | Declares a native-extension port as output. | `src/abi/extension.rs:42` |
 | sym-88a5c91a8b7995b883c6 | `pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure` | variant | Identifies the backend failure state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:93` |
 | sym-4c8096adcbaca6dc4a3b | `pocketstation::abi::session::abi::PksSessionStatusCode::Cancelled` | variant | Indicates that the operation was cancelled. | `src/abi/session/abi.rs:94` |
 | sym-90f9d5d0c6c0d83ae11e | `pocketstation::abi::session::abi::PksSessionStatusCode::ForeignHandle` | variant | Identifies the foreign handle state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:90` |
@@ -159,24 +159,24 @@ For **Native extension API**, the generated [docs.rs API](https://docs.rs/pocket
 | sym-c02a61702684195fdbc7 | `pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMajor` | variant | Identifies the unsupported ABI major state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:82` |
 | sym-71be19497787c8ce4b62 | `pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMinor` | variant | Identifies the unsupported ABI minor state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:96` |
 | sym-3427ce389f485bbdf541 | `pocketstation::abi::session::abi::PksSessionStatusCode::WouldBlock` | variant | Identifies the would block state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:92` |
-| sym-9ac15cf1a9fcb5fd0049 | `pocketstation::native_extension::NativeExtensionKind::Endpoint` | variant | Selects endpoint behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:30` |
-| sym-cda90339325d8912240c | `pocketstation::native_extension::NativeExtensionKind::Operator` | variant | Selects operator behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:29` |
-| sym-97a72cc297fac195637f | `pocketstation::native_extension::NativeExtensionKind::Source` | variant | Selects source behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:28` |
-| sym-d04a12f5276e75e7fa39 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::DuplicateRegistration` | variant | Reported when the owning operation encounters duplicate registration. | `src/native_extension/mod.rs:92` |
-| sym-0cb39a2ef4b2ec75b861 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointFailed` | variant | Reported when the owning operation encounters entrypoint failed. | `src/native_extension/mod.rs:85` |
-| sym-f0fbbf4e893a1816faed | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointMissing` | variant | Reported when the owning operation encounters entrypoint missing. | `src/native_extension/mod.rs:83` |
-| sym-00f358f7b87a5ae34033 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointPanicked` | variant | Reported when the owning operation encounters entrypoint panicked. | `src/native_extension/mod.rs:84` |
-| sym-76d5dc8173f5517c54fd | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::InvalidLibraryDescriptor` | variant | Reported when the owning operation encounters invalid library descriptor. | `src/native_extension/mod.rs:88` |
-| sym-c6031a1c816a569c5631 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::InvalidRegistration` | variant | Reported when the owning operation encounters invalid registration. | `src/native_extension/mod.rs:91` |
-| sym-a2c4921680a7f521aae7 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::LibraryLoadFailed` | variant | Reported when the owning operation encounters library load failed. | `src/native_extension/mod.rs:82` |
-| sym-6fff5ddf0723aca51c02 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::PathCanonicalizationFailed` | variant | Reported when the owning operation encounters path canonicalization failed. | `src/native_extension/mod.rs:80` |
-| sym-d5e9531372dc38b02581 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::PathNotAbsolute` | variant | Reported when the owning operation encounters path not absolute. | `src/native_extension/mod.rs:79` |
-| sym-167af7ba4cf1f211d713 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::PathNotFile` | variant | Reported when the owning operation encounters path not file. | `src/native_extension/mod.rs:81` |
-| sym-14602df76b6f8f5edabf | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::RegistrationAcquisitionFailed` | variant | Reported when the owning operation encounters registration acquisition failed. | `src/native_extension/mod.rs:90` |
-| sym-9ac83079cf775bb2358b | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::RegistrationAcquisitionPanicked` | variant | Reported when the owning operation encounters registration acquisition panicked. | `src/native_extension/mod.rs:89` |
-| sym-1c1a4d173444716528f0 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::RegistrationStateUnavailable` | variant | Reported when the owning operation encounters registration state unavailable. | `src/native_extension/mod.rs:93` |
-| sym-1c4a9e98244853258d35 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::UnsupportedAbiMajor` | variant | Reported when the owning operation encounters unsupported ABI major. | `src/native_extension/mod.rs:86` |
-| sym-b3acb550909cebd73afb | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::UnsupportedAbiMinor` | variant | Reported when the owning operation encounters unsupported ABI minor. | `src/native_extension/mod.rs:87` |
+| sym-9ac15cf1a9fcb5fd0049 | `pocketstation::native_extension::NativeExtensionKind::Endpoint` | variant | Classifies the loaded native extension as endpoint. | `src/native_extension/mod.rs:30` |
+| sym-cda90339325d8912240c | `pocketstation::native_extension::NativeExtensionKind::Operator` | variant | Classifies the loaded native extension as operator. | `src/native_extension/mod.rs:29` |
+| sym-97a72cc297fac195637f | `pocketstation::native_extension::NativeExtensionKind::Source` | variant | Classifies the loaded native extension as source. | `src/native_extension/mod.rs:28` |
+| sym-d04a12f5276e75e7fa39 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::DuplicateRegistration` | variant | Reports that registration duplicates an existing declaration or record. | `src/native_extension/mod.rs:92` |
+| sym-0cb39a2ef4b2ec75b861 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointFailed` | variant | Reports that entrypoint failed. | `src/native_extension/mod.rs:85` |
+| sym-f0fbbf4e893a1816faed | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointMissing` | variant | Classifies a failure at the entrypoint missing stage or component of `NativeExtensionLibraryErrorCode`. | `src/native_extension/mod.rs:83` |
+| sym-00f358f7b87a5ae34033 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointPanicked` | variant | Reports that entrypoint panicked while the operation was active. | `src/native_extension/mod.rs:84` |
+| sym-76d5dc8173f5517c54fd | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::InvalidLibraryDescriptor` | variant | Reports that the supplied library descriptor is invalid. | `src/native_extension/mod.rs:88` |
+| sym-c6031a1c816a569c5631 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::InvalidRegistration` | variant | Reports that the supplied registration is invalid. | `src/native_extension/mod.rs:91` |
+| sym-a2c4921680a7f521aae7 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::LibraryLoadFailed` | variant | Reports that library load failed. | `src/native_extension/mod.rs:82` |
+| sym-6fff5ddf0723aca51c02 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::PathCanonicalizationFailed` | variant | Reports that path canonicalization failed. | `src/native_extension/mod.rs:80` |
+| sym-d5e9531372dc38b02581 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::PathNotAbsolute` | variant | Classifies a failure at the path not absolute stage or component of `NativeExtensionLibraryErrorCode`. | `src/native_extension/mod.rs:79` |
+| sym-167af7ba4cf1f211d713 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::PathNotFile` | variant | Classifies a failure at the path not file stage or component of `NativeExtensionLibraryErrorCode`. | `src/native_extension/mod.rs:81` |
+| sym-14602df76b6f8f5edabf | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::RegistrationAcquisitionFailed` | variant | Reports that registration acquisition failed. | `src/native_extension/mod.rs:90` |
+| sym-9ac83079cf775bb2358b | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::RegistrationAcquisitionPanicked` | variant | Reports that registration acquisition panicked while the operation was active. | `src/native_extension/mod.rs:89` |
+| sym-1c1a4d173444716528f0 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::RegistrationStateUnavailable` | variant | Reports that registration state is unavailable. | `src/native_extension/mod.rs:93` |
+| sym-1c4a9e98244853258d35 | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::UnsupportedAbiMajor` | variant | Reports that the requested ABI major is unsupported. | `src/native_extension/mod.rs:86` |
+| sym-b3acb550909cebd73afb | `pocketstation::native_extension::NativeExtensionLibraryErrorCode::UnsupportedAbiMinor` | variant | Reports that the requested ABI minor is unsupported. | `src/native_extension/mod.rs:87` |
 
 ## Interpretation
 
@@ -197,6 +197,29 @@ The **Native extension API** inventory records compiler-visible or extracted evi
 
 The claims on **Native extension API** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/native_extension/mod.rs:1-171` (`DIRECT`)
+- `src/native_extension/mod.rs:24-24` (`DIRECT`)
+- `src/native_extension/mod.rs:26-26` (`DIRECT`)
+- `src/native_extension/mod.rs:26-26` (`DIRECT`)
+- `src/native_extension/mod.rs:26-26` (`DIRECT`)
+- `src/native_extension/mod.rs:27-31` (`DIRECT`)
+- `src/native_extension/mod.rs:28-28` (`DIRECT`)
+- `src/native_extension/mod.rs:29-29` (`DIRECT`)
+- `src/native_extension/mod.rs:30-30` (`DIRECT`)
+- `src/native_extension/mod.rs:33-33` (`DIRECT`)
+- `src/native_extension/mod.rs:33-33` (`DIRECT`)
+- `src/native_extension/mod.rs:33-33` (`DIRECT`)
+- `src/native_extension/mod.rs:34-39` (`DIRECT`)
+- `src/native_extension/mod.rs:35-35` (`DIRECT`)
+- `src/native_extension/mod.rs:36-36` (`DIRECT`)
+- `src/native_extension/mod.rs:37-37` (`DIRECT`)
+- `src/native_extension/mod.rs:38-38` (`DIRECT`)
+- `src/native_extension/mod.rs:42-44` (`DIRECT`)
+- `src/native_extension/mod.rs:46-48` (`DIRECT`)
+- `src/native_extension/mod.rs:50-52` (`DIRECT`)
+- `src/native_extension/mod.rs:54-56` (`DIRECT`)
+- `src/native_extension/mod.rs:61-61` (`DIRECT`)
+- `src/native_extension/mod.rs:61-61` (`DIRECT`)
+- `src/native_extension/mod.rs:61-61` (`DIRECT`)
+- `src/native_extension/mod.rs:62-65` (`DIRECT`)
 
 For **Native extension API**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

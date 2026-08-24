@@ -17,10 +17,10 @@ use crate::runtime::audio::EdgeObservations;
 use crate::runtime::audio::{DispatchSummary, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter};
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
-#[doc = "Classifies failures reported as exec error."]
+#[doc = "Classifies failures surfaced by exec operations."]
 pub enum ExecError {
     #[error("realtime plan execution failed: {0}")]
-    #[doc = "Reports node."]
+    #[doc = "Reports that no de is available."]
     Node(String),
 }
 
@@ -39,13 +39,13 @@ struct RealtimeNodeSlot {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports the counters and terminal facts collected for plan execution."]
 pub struct PlanExecutionSummary {
-    #[doc = "Stores the nodes executed used by `PlanExecutionSummary`."]
+    #[doc = "References the nodes executed participating in `PlanExecutionSummary`."]
     pub nodes_executed: u64,
-    #[doc = "Stores the edges attempted used by `PlanExecutionSummary`."]
+    #[doc = "References the edges attempted participating in `PlanExecutionSummary`."]
     pub edges_attempted: u64,
-    #[doc = "Stores the edges enqueued used by `PlanExecutionSummary`."]
+    #[doc = "References the edges enqueued participating in `PlanExecutionSummary`."]
     pub edges_enqueued: u64,
-    #[doc = "Stores the edges dropped used by `PlanExecutionSummary`."]
+    #[doc = "References the edges dropped participating in `PlanExecutionSummary`."]
     pub edges_dropped: u64,
 }
 
@@ -156,7 +156,7 @@ impl RealtimePlanExecutor {
         ))
     }
 
-    #[doc = "Executes from for `RealtimePlanExecutor`."]
+    #[doc = "Executes one lineaged frame from the named source node through `RealtimePlanExecutor`."]
     pub fn execute_from(
         &mut self,
         source_node_id: NodeId,

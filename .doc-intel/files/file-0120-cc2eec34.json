@@ -220,11 +220,241 @@
       "classification": "DIRECT",
       "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
       "lines": [
-        1,
-        79
+        2,
+        2
       ],
       "path": "src/connector/status.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        2,
+        2
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        2,
+        2
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        4,
+        7
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "ConnectorDeliveryReadiness"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "NotReady"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "Ready"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        10,
+        12
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "accepts_delivery"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        17,
+        20
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "ConnectorHealth"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "Healthy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "Degraded"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        24,
+        27
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "ConnectorRecovery"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "Idle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "Reconnecting"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        30,
+        39
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "ConnectorServiceStatus"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": "delivery_readiness"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -265,7 +495,7 @@
     "super::ConnectorErrorCode"
   ],
   "inputs": [
-    "super::ConnectorErrorCode"
+    "Depends on `super::ConnectorErrorCode` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -274,23 +504,23 @@
   "module": "pocketstation::connector::status",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::status` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:ConnectorDeliveryReadiness",
-    "enum:ConnectorHealth",
-    "enum:ConnectorRecovery",
-    "fn:accepts_delivery",
-    "fn:delivery_readiness",
-    "fn:health",
-    "fn:health_reason_code",
-    "fn:last_transition_elapsed_ns",
-    "fn:readiness_reason_code",
-    "fn:recovery",
-    "fn:recovery_reason_code",
-    "fn:revision",
-    "struct:ConnectorServiceStatus"
+    "Declares public enum `ConnectorDeliveryReadiness`.",
+    "Declares public enum `ConnectorHealth`.",
+    "Declares public enum `ConnectorRecovery`.",
+    "Declares public fn `accepts_delivery`.",
+    "Declares public fn `delivery_readiness`.",
+    "Declares public fn `health_reason_code`.",
+    "Declares public fn `health`.",
+    "Declares public fn `last_transition_elapsed_ns`.",
+    "Declares public fn `readiness_reason_code`.",
+    "Declares public fn `recovery_reason_code`.",
+    "Declares public fn `recovery`.",
+    "Declares public fn `revision`.",
+    "Declares public struct `ConnectorServiceStatus`."
   ],
   "package": "pocketstation",
   "path": "src/connector/status.rs",
@@ -390,8 +620,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::status responsibilities, including Enumerates the supported connector delivery readiness cases.; Identifies the not ready state or stage represented by `ConnectorDeliveryReadiness`.; Identifies the ready state or stage represented by `ConnectorDeliveryReadiness`.."
+    "classification": "DECLARED",
+    "text": "Reports whether connector delivery is ready, degraded, or unavailable. Identifies the not ready state or stage represented by `ConnectorDeliveryReadiness`. Identifies the ready state or stage represented by `ConnectorDeliveryReadiness`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -438,14 +668,14 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::connector::status::ConnectorDeliveryReadiness: Enumerates the supported connector delivery readiness cases.",
+    "pocketstation::connector::status::ConnectorDeliveryReadiness: Reports whether connector delivery is ready, degraded, or unavailable.",
     "pocketstation::connector::status::ConnectorDeliveryReadiness::NotReady: Identifies the not ready state or stage represented by `ConnectorDeliveryReadiness`.",
     "pocketstation::connector::status::ConnectorDeliveryReadiness::Ready: Identifies the ready state or stage represented by `ConnectorDeliveryReadiness`.",
-    "accepts_delivery: Returns whether accepts delivery applies to `ConnectorDeliveryReadiness`.",
-    "pocketstation::connector::status::ConnectorHealth: Enumerates the supported connector health cases.",
+    "accepts_delivery: Reports whether accepts delivery is true for `ConnectorDeliveryReadiness`.",
+    "pocketstation::connector::status::ConnectorHealth: Reports the current operational health of a connector worker.",
     "pocketstation::connector::status::ConnectorHealth::Healthy: Represents the healthy alternative defined by `ConnectorHealth`.",
     "pocketstation::connector::status::ConnectorHealth::Degraded: Represents the degraded alternative defined by `ConnectorHealth`.",
-    "pocketstation::connector::status::ConnectorRecovery: Enumerates the supported connector recovery cases.",
+    "pocketstation::connector::status::ConnectorRecovery: Declares the recovery state exposed after a connector failure.",
     "pocketstation::connector::status::ConnectorRecovery::Idle: Represents the idle alternative defined by `ConnectorRecovery`.",
     "pocketstation::connector::status::ConnectorRecovery::Reconnecting: Represents the reconnecting alternative defined by `ConnectorRecovery`.",
     "pocketstation::connector::status::ConnectorServiceStatus: Reports the structured connector service status.",
@@ -457,7 +687,7 @@
     "recovery_reason_code: Returns the recovery reason code held by `ConnectorServiceStatus`.",
     "revision: Returns the revision held by `ConnectorServiceStatus`.",
     "last_transition_elapsed_ns: Returns the last transition elapsed nanoseconds held by `ConnectorServiceStatus`.",
-    "accepts_delivery: Returns whether accepts delivery applies to `ConnectorServiceStatus`."
+    "accepts_delivery: Reports whether accepts delivery is true for `ConnectorServiceStatus`."
   ],
   "retry_behavior": [],
   "serialization": [],

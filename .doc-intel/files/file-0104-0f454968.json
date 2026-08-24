@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/capture/identity.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -36,6 +37,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/capture/identity.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -145,19 +147,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "e50b844974fd40dc0fc2d08427bb27dd0fa132cc873c525794262704748433c1",
       "lines": [
         1,
-        89
+        1
       ],
       "path": "src/capture/selection.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::selection"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/identity.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -186,6 +189,7 @@
   "generated_from": "not_applicable",
   "git_object": "1af38111b25b58a24be1d405e710ccb75526eeac",
   "implemented_by": [
+    "CALLS:src/capture/identity.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -204,6 +208,7 @@
     "CaptureMode"
   ],
   "imported_by": [
+    "CALLS:src/capture/identity.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -224,9 +229,9 @@
     "super::identity::StableSourceId"
   ],
   "inputs": [
-    "crate::frame::Platform",
-    "serde::Serialize",
-    "super::identity::StableSourceId"
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `serde::Serialize` through a declared Rust import.",
+    "Depends on `super::identity::StableSourceId` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -240,16 +245,16 @@
   "module": "pocketstation::capture::selection",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::selection` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:CaptureMode",
-    "enum:InputDeviceSelector",
-    "enum:ProcessTreeScope",
-    "enum:SelectorPersistenceScope",
-    "fn:process_tree_scope",
-    "fn:selector_persistence_scope"
+    "Declares public enum `CaptureMode`.",
+    "Declares public enum `InputDeviceSelector`.",
+    "Declares public enum `ProcessTreeScope`.",
+    "Declares public enum `SelectorPersistenceScope`.",
+    "Declares public fn `process_tree_scope`.",
+    "Declares public fn `selector_persistence_scope`."
   ],
   "package": "pocketstation",
   "path": "src/capture/selection.rs",
@@ -301,8 +306,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::selection responsibilities, including Capture selection semantics; control-plane only.; Enumerates the supported input device selector cases.; Selects default behavior for `InputDeviceSelector`.."
+    "classification": "DECLARED",
+    "text": "Capture selection semantics; control-plane only."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -357,38 +362,39 @@
     "docs/best-practices/source-identity.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/identity.rs",
     "REFERENCES:src/capture/identity.rs",
     "REFERENCES:src/frame/platform.rs"
   ],
   "resource_ownership": [],
   "responsibilities": [
     "selection: Capture selection semantics; control-plane only.",
-    "pocketstation::capture::selection::InputDeviceSelector: Enumerates the supported input device selector cases.",
-    "pocketstation::capture::selection::InputDeviceSelector::Default: Selects default behavior for `InputDeviceSelector`.",
-    "pocketstation::capture::selection::InputDeviceSelector::StableId: Selects stable identifier behavior for `InputDeviceSelector`.",
+    "pocketstation::capture::selection::InputDeviceSelector: Selects either the default input device or one exact device identity.",
+    "pocketstation::capture::selection::InputDeviceSelector::Default: Selects an input device by default.",
+    "pocketstation::capture::selection::InputDeviceSelector::StableId: Selects an input device by stable identifier.",
     "pocketstation::capture::selection::CaptureMode: Selects the capture mode used by PocketStation.",
-    "pocketstation::capture::selection::CaptureMode::SystemMix: Selects system mix behavior for `CaptureMode`.",
-    "pocketstation::capture::selection::CaptureMode::Application: Selects application behavior for `CaptureMode`.",
-    "pocketstation::capture::selection::CaptureMode::Process: Selects process behavior for `CaptureMode`.",
-    "pocketstation::capture::selection::CaptureMode::ExactApplication: Selects exact application behavior for `CaptureMode`.",
+    "pocketstation::capture::selection::CaptureMode::SystemMix: Requests capture in system mix mode.",
+    "pocketstation::capture::selection::CaptureMode::Application: Requests capture in application mode.",
+    "pocketstation::capture::selection::CaptureMode::Process: Requests capture in process mode.",
+    "pocketstation::capture::selection::CaptureMode::ExactApplication: Requests capture in exact application mode.",
     "selection::CaptureMode::ExactApplication::process_id: Identifies the process identifier recorded by `ExactApplication`.",
     "selection::CaptureMode::ExactApplication::stable_id: Identifies the stable identifier recorded by `ExactApplication`.",
-    "pocketstation::capture::selection::CaptureMode::ExactApplicationStable: Selects exact application stable behavior for `CaptureMode`.",
+    "pocketstation::capture::selection::CaptureMode::ExactApplicationStable: Requests capture in exact application stable mode.",
     "selection::CaptureMode::ExactApplicationStable::stable_id: Identifies the stable identifier recorded by `ExactApplicationStable`.",
-    "pocketstation::capture::selection::CaptureMode::InputDevice: Selects input device behavior for `CaptureMode`.",
+    "pocketstation::capture::selection::CaptureMode::InputDevice: Requests capture in input device mode.",
     "selector_persistence_scope: Describes how long the selector may be reused without rediscovery.",
     "process_tree_scope: Reports the process boundary requested from the native backend.",
     "pocketstation::capture::selection::SelectorPersistenceScope: Selects the selector persistence scope used by PocketStation.",
-    "pocketstation::capture::selection::SelectorPersistenceScope::ProcessLifetime: Selects process lifetime behavior for `SelectorPersistenceScope`.",
-    "pocketstation::capture::selection::SelectorPersistenceScope::ApplicationIdentity: Selects application identity behavior for `SelectorPersistenceScope`.",
-    "pocketstation::capture::selection::SelectorPersistenceScope::DeviceIdentity: Selects device identity behavior for `SelectorPersistenceScope`.",
-    "pocketstation::capture::selection::SelectorPersistenceScope::SessionDefaultDevice: Selects session default device behavior for `SelectorPersistenceScope`.",
-    "pocketstation::capture::selection::SelectorPersistenceScope::PlatformIdentity: Selects platform identity behavior for `SelectorPersistenceScope`.",
+    "pocketstation::capture::selection::SelectorPersistenceScope::ProcessLifetime: Limits selector persistence to the process lifetime scope.",
+    "pocketstation::capture::selection::SelectorPersistenceScope::ApplicationIdentity: Limits selector persistence to the application identity scope.",
+    "pocketstation::capture::selection::SelectorPersistenceScope::DeviceIdentity: Limits selector persistence to the device identity scope.",
+    "pocketstation::capture::selection::SelectorPersistenceScope::SessionDefaultDevice: Limits selector persistence to the session default device scope.",
+    "pocketstation::capture::selection::SelectorPersistenceScope::PlatformIdentity: Limits selector persistence to the platform identity scope.",
     "pocketstation::capture::selection::ProcessTreeScope: Selects the process tree scope used by PocketStation.",
-    "pocketstation::capture::selection::ProcessTreeScope::SelectedProcessOnly: Selects selected process only behavior for `ProcessTreeScope`.",
-    "pocketstation::capture::selection::ProcessTreeScope::SelectedProcessAndDescendants: Selects selected process and descendants behavior for `ProcessTreeScope`.",
-    "pocketstation::capture::selection::ProcessTreeScope::ApplicationIdentity: Selects application identity behavior for `ProcessTreeScope`.",
-    "pocketstation::capture::selection::ProcessTreeScope::NotApplicable: Selects not applicable behavior for `ProcessTreeScope`."
+    "pocketstation::capture::selection::ProcessTreeScope::SelectedProcessOnly: Limits process capture to selected process only.",
+    "pocketstation::capture::selection::ProcessTreeScope::SelectedProcessAndDescendants: Limits process capture to selected process and descendants.",
+    "pocketstation::capture::selection::ProcessTreeScope::ApplicationIdentity: Limits process capture to application identity.",
+    "pocketstation::capture::selection::ProcessTreeScope::NotApplicable: Limits process capture to not applicable."
   ],
   "retry_behavior": [],
   "serialization": [

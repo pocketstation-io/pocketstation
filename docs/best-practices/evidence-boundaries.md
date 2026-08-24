@@ -1,6 +1,6 @@
 # Keep qualification claims scoped
 
-<!-- claims: CLM-BEST-007-CAP-001,CLM-BEST-007-CAP-002,CLM-BEST-007-CAP-003,CLM-BEST-007-CAP-004,CLM-BEST-007-CAP-005,CLM-BEST-007-SOURCE-001 -->
+<!-- claims: CLM-BEST-007-SCOPE-001,CLM-BEST-007-TEXT-001,CLM-BEST-007-TEXT-002,CLM-BEST-007-TEXT-003,CLM-BEST-007-TEXT-004,CLM-BEST-007-TEXT-005,CLM-BEST-007-TEXT-006,CLM-BEST-007-SOURCE-001 -->
 
 ## Problem
 
@@ -55,7 +55,7 @@ Executable evidence selected for **Keep qualification claims scoped** is limited
 
 The claims on **Keep qualification claims scoped** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `.github/workflows/ci.yml:1-63` (`DIRECT`)
-- `src/capture/platform/mod.rs:1-7` (`DIRECT`)
+- `.github/workflows/ci.yml:1-21` (`DIRECT`)
+- `src/capture/platform/mod.rs:2-6` (`DIRECT`)
 
 For **Keep qualification claims scoped**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

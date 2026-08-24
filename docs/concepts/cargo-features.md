@@ -1,6 +1,6 @@
 # Cargo features and build surfaces
 
-<!-- claims: CLM-DOC-056-CAP-001,CLM-DOC-056-SOURCE-001 -->
+<!-- claims: CLM-DOC-056-SCOPE-001,CLM-DOC-056-TEXT-001,CLM-DOC-056-TEXT-002,CLM-DOC-056-TEXT-003,CLM-DOC-056-TEXT-004,CLM-DOC-056-TEXT-005,CLM-DOC-056-TEXT-006,CLM-DOC-056-SOURCE-001 -->
 
 ## What it is
 
@@ -71,7 +71,7 @@ Executable evidence selected for **Cargo features and build surfaces** is limite
 
 The claims on **Cargo features and build surfaces** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
-- `build.rs:1-118` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
+- `build.rs:1-21` (`DIRECT`)
 
 For **Cargo features and build surfaces**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

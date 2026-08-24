@@ -1,6 +1,6 @@
 # Prepare resources before start
 
-<!-- claims: CLM-GUIDE-030-CAP-001,CLM-GUIDE-030-CAP-002,CLM-GUIDE-030-CAP-003,CLM-GUIDE-030-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-030-SCOPE-001,CLM-GUIDE-030-TEXT-001,CLM-GUIDE-030-TEXT-002,CLM-GUIDE-030-TEXT-003,CLM-GUIDE-030-TEXT-004,CLM-GUIDE-030-TEXT-005,CLM-GUIDE-030-TEXT-006,CLM-GUIDE-030-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,23 @@ A frozen Session declaration that has already passed structural compilation.
 3. Handle source and endpoint preparation errors.
 4. Start with the intended cancellation option.
 5. Preserve rollback failures alongside a primary start failure.
+
+## Concrete repository example
+
+The executable repository test `given_session_without_source_when_validated_then_topology_is_rejected` (`test-3ad011ae6ea2c1d8804b`) shows the concrete API sequence and asserted outcome at `src/session/lifecycle/control.rs:218`.
+
+```rust
+    }
+
+    #[test]
+    fn given_session_without_source_when_validated_then_topology_is_rejected() {
+        assert!(!source_topology_has_input(0, 0, 0));
+    }
+```
+
+```bash
+cargo test --all-features given_session_without_source_when_validated_then_topology_is_rejected
+```
 
 ## Important consequence
 
@@ -67,11 +84,11 @@ Executable evidence selected for **Prepare resources before start** is limited t
 |---|---|---|---|
 | `pocketstation::session::lifecycle::running::start_prepared_session` | function | Starts prepared session for `running`. | `src/session/lifecycle/running.rs:627` |
 | `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | function | Starts prepared session cancellable for `running`. | `src/session/lifecycle/running.rs:643` |
-| `pocketstation::session::lifecycle::control::SessionStartError::CapturePrepare` | variant | Reported when the owning operation encounters capture prepare. | `src/session/lifecycle/control.rs:166` |
-| `pocketstation::session::lifecycle::control::SessionStartError::EndpointPrepare` | variant | Reported when the owning operation encounters endpoint prepare. | `src/session/lifecycle/control.rs:160` |
-| `pocketstation::session::lifecycle::control::SessionStartError::ExternalSourcePrepare` | variant | Reported when the owning operation encounters external source prepare. | `src/session/lifecycle/control.rs:127` |
-| `pocketstation::session::lifecycle::control::SessionStartError::OperatorPrepare` | variant | Reported when the owning operation encounters operator prepare. | `src/session/lifecycle/control.rs:152` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | variant | Reported when the owning operation encounters prepare. | `src/session/lifecycle/engine.rs:321` |
+| `pocketstation::session::lifecycle::control::SessionStartError::CapturePrepare` | variant | Classifies a failure at the capture prepare stage or component of `SessionStartError`. | `src/session/lifecycle/control.rs:166` |
+| `pocketstation::session::lifecycle::control::SessionStartError::EndpointPrepare` | variant | Classifies a failure at the endpoint prepare stage or component of `SessionStartError`. | `src/session/lifecycle/control.rs:160` |
+| `pocketstation::session::lifecycle::control::SessionStartError::ExternalSourcePrepare` | variant | Classifies a failure at the external source prepare stage or component of `SessionStartError`. | `src/session/lifecycle/control.rs:127` |
+| `pocketstation::session::lifecycle::control::SessionStartError::OperatorPrepare` | variant | Classifies a failure at the operator prepare stage or component of `SessionStartError`. | `src/session/lifecycle/control.rs:152` |
+| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | variant | Classifies a failure at the prepare stage or component of `SessionEngineStartError`. | `src/session/lifecycle/engine.rs:321` |
 | `SessionStartError::CapturePrepare::rollback_failures_total` | struct_field | Counts the total number of rollback failures observed by `CapturePrepare`. | `src/session/lifecycle/control.rs:170` |
 
 ## Related documentation
@@ -89,7 +106,20 @@ Executable evidence selected for **Prepare resources before start** is limited t
 
 The claims on **Prepare resources before start** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/prepare/mod.rs:1-1331` (`DIRECT`)
-- `src/session/lifecycle/control.rs:1-391` (`DIRECT`)
+- `src/session/prepare/mod.rs:33-92` (`DIRECT`)
+- `src/session/prepare/mod.rs:94-175` (`DIRECT`)
+- `src/session/prepare/mod.rs:178-446` (`DIRECT`)
+- `src/session/prepare/mod.rs:448-466` (`DIRECT`)
+- `src/session/prepare/mod.rs:468-503` (`DIRECT`)
+- `src/session/prepare/mod.rs:505-511` (`DIRECT`)
+- `src/session/prepare/mod.rs:506-506` (`DIRECT`)
+- `src/session/prepare/mod.rs:507-507` (`DIRECT`)
+- `src/session/prepare/mod.rs:508-508` (`DIRECT`)
+- `src/session/prepare/mod.rs:509-509` (`DIRECT`)
+- `src/session/prepare/mod.rs:510-510` (`DIRECT`)
+- `src/session/prepare/mod.rs:513-1300` (`DIRECT`)
+- `src/session/prepare/mod.rs:1302-1318` (`DIRECT`)
+- `src/session/prepare/mod.rs:1320-1327` (`DIRECT`)
+- `src/session/lifecycle/control.rs:1-4` (`DECLARED`)
 
 For **Prepare resources before start**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

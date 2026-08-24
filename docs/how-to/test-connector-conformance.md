@@ -1,6 +1,6 @@
 # Test connector conformance
 
-<!-- claims: CLM-GUIDE-017-CAP-001,CLM-GUIDE-017-CAP-002,CLM-GUIDE-017-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-017-SCOPE-001,CLM-GUIDE-017-TEXT-001,CLM-GUIDE-017-TEXT-002,CLM-GUIDE-017-TEXT-003,CLM-GUIDE-017-TEXT-004,CLM-GUIDE-017-TEXT-005,CLM-GUIDE-017-TEXT-006,CLM-GUIDE-017-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,16 @@ The repository-owned connector vector corpus and permission to materialize its v
 3. Run connector contract and grouping tests.
 4. Run portable semantics with the materialized canonical vector.
 5. Keep portable conformance and provider qualification as separate evidence.
+
+## Concrete repository example
+
+Run the test connector conformance commands from the PocketStation checkout. Each command is part of this task's documented validation surface.
+
+```bash
+mkdir -p ../protocol/conformance/connector/v1
+cp scripts/fixtures/connector-v1-vectors.json ../protocol/conformance/connector/v1/vectors.json
+cargo test --all-features connector
+```
 
 ## Important consequence
 
@@ -68,7 +78,7 @@ Executable evidence selected for **Test connector conformance** is limited to ea
 | `pocketstation::connector::worker::driver::ConnectorDriverFactory` | trait | Prepares provider state while Core retains receiver and lifecycle authority. | `src/connector/worker/driver.rs:123` |
 | `pocketstation::connector::error::ConnectorError` | struct | Reports a connector error. | `src/connector/error.rs:80` |
 | `pocketstation::connector::error::ConnectorErrorCode` | struct | Carries the stable external error code exported for a connector failure. | `src/connector/error.rs:10` |
-| `pocketstation::connector::observations::ConnectorObservationHandle` | struct | Owns bounded access to connector observation. | `src/connector/observations.rs:15` |
+| `pocketstation::connector::observations::ConnectorObservationHandle` | struct | Holds the ownership or bounded access represented by connector observation handle. | `src/connector/observations.rs:15` |
 | `pocketstation::connector::observations::ConnectorObservations` | struct | Reports the connector observations collected at an observation boundary. | `src/connector/observations.rs:158` |
 | `pocketstation::connector::observations::ConnectorRuntimeObservations` | struct | Reports the connector runtime observations collected at an observation boundary. | `src/connector/observations.rs:168` |
 | `pocketstation::connector::readiness::ConnectorReadinessPolicy` | struct | Configures connector readiness behavior at its owning API boundary. | `src/connector/readiness.rs:7` |
@@ -88,6 +98,6 @@ Executable evidence selected for **Test connector conformance** is limited to ea
 
 The claims on **Test connector conformance** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `tests/connector_portable_semantics.rs:1-210` (`DIRECT`)
+- `tests/connector_portable_semantics.rs:167-209` (`TESTED`)
 
 For **Test connector conformance**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

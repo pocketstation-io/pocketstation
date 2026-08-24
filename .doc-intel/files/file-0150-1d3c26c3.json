@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/compile/resolve.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -37,6 +38,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/compile/resolve.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -172,19 +174,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "cd0cd4da825d36345eadb44cca7796cececee85cd43ce2c60d20d2078c50db8a",
       "lines": [
         1,
-        55
+        3
       ],
       "path": "src/graph/ir.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::ir"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/compile/resolve.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -210,6 +213,7 @@
   "generated_from": "not_applicable",
   "git_object": "51511d642f05ad6748d846957fe0d3d171dac834",
   "implemented_by": [
+    "CALLS:src/graph/compile/resolve.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -224,6 +228,7 @@
     "GraphIr"
   ],
   "imported_by": [
+    "CALLS:src/graph/compile/resolve.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -239,10 +244,10 @@
     "crate::graph::spec::{EdgeSpec, NodeId, NodeSpec}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::graph::node::NodeDescriptor",
-    "crate::graph::ports::{EdgeContract, MediaCaps}",
-    "crate::graph::spec::{EdgeSpec, NodeId, NodeSpec}"
+    "Consumes configuration at src/graph/ir.rs:39.",
+    "Depends on `crate::graph::node::NodeDescriptor` through a declared Rust import.",
+    "Depends on `crate::graph::ports::{EdgeContract, MediaCaps}` through a declared Rust import.",
+    "Depends on `crate::graph::spec::{EdgeSpec, NodeId, NodeSpec}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -251,19 +256,19 @@
   "module": "pocketstation::graph::ir",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::ir` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:edge_count",
-    "fn:id",
-    "fn:node",
-    "fn:node_count",
-    "fn:topo_order",
-    "fn:type_str",
-    "struct:GraphIr",
-    "struct:ResolvedEdge",
-    "struct:ResolvedNode"
+    "Declares public fn `edge_count`.",
+    "Declares public fn `id`.",
+    "Declares public fn `node_count`.",
+    "Declares public fn `node`.",
+    "Declares public fn `topo_order`.",
+    "Declares public fn `type_str`.",
+    "Declares public struct `GraphIr`.",
+    "Declares public struct `ResolvedEdge`.",
+    "Declares public struct `ResolvedNode`."
   ],
   "package": "pocketstation",
   "path": "src/graph/ir.rs",
@@ -333,8 +338,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::ir responsibilities, including Executes the graph-node behavior defined for resolved.; Stores the spec used by `ResolvedNode`.; Stores the descriptor used by `ResolvedNode`.."
+    "classification": "DECLARED",
+    "text": "Typed intermediate representation the compiler produces from a `GraphSpec`. Resolution attaches each node's descriptor; the verification passes fill the negotiated media, edge contracts, and topological order in place."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -379,19 +384,19 @@
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::graph::ir::ResolvedNode: Executes the graph-node behavior defined for resolved.",
-    "ResolvedNode::spec: Stores the spec used by `ResolvedNode`.",
-    "ResolvedNode::descriptor: Stores the descriptor used by `ResolvedNode`.",
+    "pocketstation::graph::ir::ResolvedNode: Represents the executable graph node for resolved.",
+    "ResolvedNode::spec: Stores the spec as a `NodeSpec` value in `ResolvedNode`.",
+    "ResolvedNode::descriptor: Stores the descriptor as a `NodeDescriptor` value in `ResolvedNode`.",
     "id: Returns the id held by `ResolvedNode`.",
     "type_str: Returns the type str associated with `ResolvedNode`.",
     "pocketstation::graph::ir::ResolvedEdge: Binds one compiled graph edge to its resolved source, destination, and contract.",
-    "ResolvedEdge::spec: Stores the spec used by `ResolvedEdge`.",
-    "ResolvedEdge::media: Stores the media used by `ResolvedEdge`.",
-    "ResolvedEdge::contract: Stores the contract used by `ResolvedEdge`.",
-    "pocketstation::graph::ir::GraphIr: Stores the resolved nodes, edges, and topological order used by runtime planning.",
-    "GraphIr::nodes: Stores the nodes used by `GraphIr`.",
-    "GraphIr::edges: Stores the edges used by `GraphIr`.",
-    "GraphIr::topo_order: Stores the topo order used by `GraphIr`.",
+    "ResolvedEdge::spec: Stores the spec as a `EdgeSpec` value in `ResolvedEdge`.",
+    "ResolvedEdge::media: Records the media selected for `ResolvedEdge`.",
+    "ResolvedEdge::contract: Stores the contract component of `ResolvedEdge`.",
+    "pocketstation::graph::ir::GraphIr: Contains the resolved nodes, edges, and topological order consumed by runtime planning.",
+    "GraphIr::nodes: References the nodes participating in `GraphIr`.",
+    "GraphIr::edges: References the edges participating in `GraphIr`.",
+    "GraphIr::topo_order: Lists graph nodes in the validated topological execution order for `GraphIr`.",
     "node_count: Returns the node count held by `GraphIr`.",
     "edge_count: Returns the edge count held by `GraphIr`.",
     "node: Returns the node held by `GraphIr`.",

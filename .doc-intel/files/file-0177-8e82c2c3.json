@@ -146,11 +146,241 @@
       "classification": "DIRECT",
       "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
       "lines": [
-        1,
-        175
+        8,
+        8
       ],
       "path": "src/recording/error_code.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        8,
+        8
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        9,
+        29
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "RecordingErrorCode"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        10,
+        10
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "OutputExists"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "InvalidStemLabel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "DuplicateStemLabel"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "SessionMismatch"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "PermissionDenied"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "InvalidSampleSpec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "SourceMismatch"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "LineageMismatch"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "FrameSpecMismatch"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "UnalignedSamples"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "TimestampOutOfRange"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "GapTooLarge"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "TooManyGaps"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "WorkerPanicked"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "IoFailed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "WavFailed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "JsonFailed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "NotFinalized"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "Incomplete"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        32,
+        54
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": "as_str"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -192,11 +422,11 @@
     "super::{recording_outcome_error_code, RecordingErrorCode}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::recording::{RecorderError, RecordingOutcome, RecordingState}",
-    "crate::recording::{RecordingOutcome, RecordingState}",
-    "super::{recording_outcome_error_code, RecordingErrorCode}"
+    "Consumes configuration at src/recording/error_code.rs:58.",
+    "Consumes configuration at src/recording/error_code.rs:92.",
+    "Depends on `crate::recording::{RecorderError, RecordingOutcome, RecordingState}` through a declared Rust import.",
+    "Depends on `crate::recording::{RecordingOutcome, RecordingState}` through a declared Rust import.",
+    "Depends on `super::{recording_outcome_error_code, RecordingErrorCode}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -210,14 +440,14 @@
   "module": "pocketstation::recording::error_code",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::recording::error_code` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:RecordingErrorCode",
-    "fn:as_str",
-    "fn:code",
-    "fn:recording_outcome_error_code"
+    "Declares public enum `RecordingErrorCode`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `code`.",
+    "Declares public fn `recording_outcome_error_code`."
   ],
   "package": "pocketstation",
   "path": "src/recording/error_code.rs",
@@ -276,8 +506,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::recording::error code responsibilities, including Stable language-neutral code for a recording failure.; Reported when the owning operation encounters output exists.; Reported when the owning operation encounters invalid stem label.."
+    "classification": "DECLARED",
+    "text": "Stable language-neutral code for a recording failure. Reports that output already exists and would be overwritten. Reports that the supplied stem label is invalid."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -309,30 +539,31 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/recording/writer.rs",
     "REFERENCES:src/recording/writer.rs"
   ],
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::recording::error_code::RecordingErrorCode: Stable language-neutral code for a recording failure.",
-    "pocketstation::recording::error_code::RecordingErrorCode::OutputExists: Reported when the owning operation encounters output exists.",
-    "pocketstation::recording::error_code::RecordingErrorCode::InvalidStemLabel: Reported when the owning operation encounters invalid stem label.",
-    "pocketstation::recording::error_code::RecordingErrorCode::DuplicateStemLabel: Reported when the owning operation encounters duplicate stem label.",
-    "pocketstation::recording::error_code::RecordingErrorCode::SessionMismatch: Reported when the owning operation encounters session mismatch.",
+    "pocketstation::recording::error_code::RecordingErrorCode::OutputExists: Reports that output already exists and would be overwritten.",
+    "pocketstation::recording::error_code::RecordingErrorCode::InvalidStemLabel: Reports that the supplied stem label is invalid.",
+    "pocketstation::recording::error_code::RecordingErrorCode::DuplicateStemLabel: Reports that stem label duplicates an existing declaration or record.",
+    "pocketstation::recording::error_code::RecordingErrorCode::SessionMismatch: Reports that session does not match the expected contract.",
     "pocketstation::recording::error_code::RecordingErrorCode::PermissionDenied: Reports that the required permission was denied.",
-    "pocketstation::recording::error_code::RecordingErrorCode::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
-    "pocketstation::recording::error_code::RecordingErrorCode::SourceMismatch: Reported when the owning operation encounters source mismatch.",
-    "pocketstation::recording::error_code::RecordingErrorCode::LineageMismatch: Reported when the owning operation encounters lineage mismatch.",
-    "pocketstation::recording::error_code::RecordingErrorCode::FrameSpecMismatch: Reported when the owning operation encounters frame spec mismatch.",
-    "pocketstation::recording::error_code::RecordingErrorCode::UnalignedSamples: Reported when the owning operation encounters unaligned samples.",
-    "pocketstation::recording::error_code::RecordingErrorCode::TimestampOutOfRange: Reported when the owning operation encounters timestamp out of range.",
-    "pocketstation::recording::error_code::RecordingErrorCode::GapTooLarge: Reported when the owning operation encounters gap too large.",
-    "pocketstation::recording::error_code::RecordingErrorCode::TooManyGaps: Reported when the owning operation encounters too many gaps.",
-    "pocketstation::recording::error_code::RecordingErrorCode::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
-    "pocketstation::recording::error_code::RecordingErrorCode::IoFailed: Reported when the owning operation encounters I/O failed.",
-    "pocketstation::recording::error_code::RecordingErrorCode::WavFailed: Reported when the owning operation encounters wav failed.",
-    "pocketstation::recording::error_code::RecordingErrorCode::JsonFailed: Reported when the owning operation encounters json failed.",
-    "pocketstation::recording::error_code::RecordingErrorCode::NotFinalized: Reported when the owning operation encounters not finalized.",
-    "pocketstation::recording::error_code::RecordingErrorCode::Incomplete: Reported when the owning operation encounters incomplete.",
+    "pocketstation::recording::error_code::RecordingErrorCode::InvalidSampleSpec: Reports that the supplied sample spec is invalid.",
+    "pocketstation::recording::error_code::RecordingErrorCode::SourceMismatch: Reports that source does not match the expected contract.",
+    "pocketstation::recording::error_code::RecordingErrorCode::LineageMismatch: Reports that lineage does not match the expected contract.",
+    "pocketstation::recording::error_code::RecordingErrorCode::FrameSpecMismatch: Reports that frame spec does not match the expected contract.",
+    "pocketstation::recording::error_code::RecordingErrorCode::UnalignedSamples: Reports that samples does not align to complete frames or channels.",
+    "pocketstation::recording::error_code::RecordingErrorCode::TimestampOutOfRange: Reports that timestamp falls outside the supported range.",
+    "pocketstation::recording::error_code::RecordingErrorCode::GapTooLarge: Reports that gap exceeds the supported size limit.",
+    "pocketstation::recording::error_code::RecordingErrorCode::TooManyGaps: Reports that the number of gaps exceeds the supported limit.",
+    "pocketstation::recording::error_code::RecordingErrorCode::WorkerPanicked: Reports that worker panicked while the operation was active.",
+    "pocketstation::recording::error_code::RecordingErrorCode::IoFailed: Reports that I/O failed.",
+    "pocketstation::recording::error_code::RecordingErrorCode::WavFailed: Reports that wav failed.",
+    "pocketstation::recording::error_code::RecordingErrorCode::JsonFailed: Reports that json failed.",
+    "pocketstation::recording::error_code::RecordingErrorCode::NotFinalized: Reports that no t finalized is available.",
+    "pocketstation::recording::error_code::RecordingErrorCode::Incomplete: Reports that the operation ended without producing a complete terminal result.",
     "as_str: Returns the stable string representation of `RecordingErrorCode`.",
     "code: Returns the stable error or status code represented by `RecorderError`.",
     "pocketstation::recording::error_code::recording_outcome_error_code: Returns the recording outcome error code held by `error_code`."

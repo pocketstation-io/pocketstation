@@ -35,22 +35,22 @@ impl DeviceId {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported application selector cases."]
+#[doc = "Selects an application by bundle identity, process identity, stable identity, or name."]
 pub enum ApplicationSelector {
-    #[doc = "Selects bundle identifier behavior for `ApplicationSelector`."]
+    #[doc = "Selects applications by bundle identifier."]
     BundleId(String),
-    #[doc = "Selects process identifier behavior for `ApplicationSelector`."]
+    #[doc = "Selects applications by process identifier."]
     ProcessId(ProcessId),
-    #[doc = "Selects process instance behavior for `ApplicationSelector`."]
+    #[doc = "Selects applications by process instance."]
     ProcessInstance {
         #[doc = "Identifies the process identifier recorded by `ProcessInstance`."]
         process_id: ProcessId,
         #[doc = "Identifies the stable identifier recorded by `ProcessInstance`."]
         stable_id: StableSourceId,
     },
-    #[doc = "Selects stable identifier behavior for `ApplicationSelector`."]
+    #[doc = "Selects applications by stable identifier."]
     StableId(StableSourceId),
-    #[doc = "Selects name behavior for `ApplicationSelector`."]
+    #[doc = "Selects applications by name."]
     Name(String),
 }
 
@@ -123,11 +123,11 @@ impl ApplicationSelector {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported device selector cases."]
+#[doc = "Selects either the host default device or one stable device identity."]
 pub enum DeviceSelector {
-    #[doc = "Selects default behavior for `DeviceSelector`."]
+    #[doc = "Selects an audio device by default."]
     Default,
-    #[doc = "Selects id behavior for `DeviceSelector`."]
+    #[doc = "Selects an audio device by id."]
     Id(DeviceId),
 }
 
@@ -155,7 +155,7 @@ impl DeviceSelector {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported source cases."]
+#[doc = "Declares the application, microphone, or system source selected by a Session."]
 pub enum Source {
     #[doc = "Represents the application case of `Source`."]
     Application(ApplicationSelector),

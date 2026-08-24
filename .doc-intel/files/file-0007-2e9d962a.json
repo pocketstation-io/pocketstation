@@ -158,7 +158,7 @@
       "content_hash": "e31531b418a28b5f32ee562ce68fa1705eab48de11f153177982488da692c17e",
       "lines": [
         1,
-        180
+        21
       ],
       "path": "Cargo.toml",
       "symbol": null
@@ -185,16 +185,16 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "[features]",
-    "[target.'cfg(target_os = \"linux\")'.dependencies]",
-    "[target.'cfg(target_os = \"macos\")'.dependencies]",
-    "[target.'cfg(target_os = \"windows\")'.dependencies]",
-    "assert_no_alloc = { version = \"1.1\", default-features = false }",
-    "no-default-features = true",
-    "required-features = [\"internal-testing\"]",
-    "serde = { version = \"1\", features = [\"derive\"] }",
-    "tokio = { version = \"1\", features = [\"macros\", \"rt\", \"sync\", \"time\"] }",
-    "windows = { version = \"0.58\", optional = true, features = ["
+    "Consumes configuration at Cargo.toml:118.",
+    "Consumes configuration at Cargo.toml:43.",
+    "Consumes configuration at Cargo.toml:48.",
+    "Consumes configuration at Cargo.toml:68.",
+    "Consumes configuration at Cargo.toml:71.",
+    "Consumes configuration at Cargo.toml:76.",
+    "Consumes configuration at Cargo.toml:82.",
+    "Consumes configuration at Cargo.toml:85.",
+    "Consumes configuration at Cargo.toml:90.",
+    "Consumes configuration at Cargo.toml:92."
   ],
   "invariants": [],
   "language": "TOML",
@@ -216,7 +216,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`Cargo.toml` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

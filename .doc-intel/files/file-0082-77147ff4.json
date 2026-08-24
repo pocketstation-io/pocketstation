@@ -166,14 +166,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "94c368cc4746f1526e77f427d8fdf13f7b5072f993adef35fb532a9b38905f22",
       "lines": [
         1,
-        65
+        10
       ],
       "path": "src/capture/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -238,37 +238,35 @@
     "timeline::{ initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureSampleTimeline, }"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
-    "#[cfg(feature = \"internal-testing\")]",
-    "#[cfg(test)]",
-    "authorization::*",
-    "capture_owner::join_capture_worker",
-    "capture_owner::{ prepare_capture, CaptureOpenMetadata, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID, }",
-    "capture_owner::{ prepare_capture_with_start_gate, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureLineageSeed, CaptureObservationReceipt, CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome, PreparedCaptureBackend, }",
-    "events::*",
-    "frame_stream::{ capture_delivery_start_gate, CaptureDeliveryStartGate, CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, }",
-    "frame_stream::{ captured_frame_stream, captured_frame_stream_with_start_gate, CaptureDeliveryStartGateController, }",
-    "identity::*",
-    "lifecycle_registry::*",
-    "module:authorization",
-    "module:capture_owner",
-    "module:events",
-    "module:frame_stream",
-    "module:identity",
-    "module:lifecycle_registry",
-    "module:observations",
-    "module:platform",
-    "module:query",
-    "module:selection",
-    "module:tests",
-    "module:timeline",
-    "observations::CaptureObservationCounters",
-    "observations::{CaptureObservationHandle, CaptureObservations}",
-    "query::*",
-    "selection::*",
-    "timeline::CaptureSampleTimelineError",
-    "timeline::{ initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureSampleTimeline, }"
+    "Consumes configuration at src/capture/mod.rs:17.",
+    "Consumes configuration at src/capture/mod.rs:26.",
+    "Consumes configuration at src/capture/mod.rs:28.",
+    "Consumes configuration at src/capture/mod.rs:43.",
+    "Consumes configuration at src/capture/mod.rs:49.",
+    "Consumes configuration at src/capture/mod.rs:51.",
+    "Consumes configuration at src/capture/mod.rs:56.",
+    "Consumes configuration at src/capture/mod.rs:58.",
+    "Consumes configuration at src/capture/mod.rs:63.",
+    "Depends on `authorization::*` through a declared Rust import.",
+    "Depends on `authorization` through a declared Rust import.",
+    "Depends on `capture_owner::join_capture_worker` through a declared Rust import.",
+    "Depends on `capture_owner::{ prepare_capture, CaptureOpenMetadata, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID, }` through a declared Rust import.",
+    "Depends on `capture_owner::{ prepare_capture_with_start_gate, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureLineageSeed, CaptureObservationReceipt, CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome, PreparedCaptureBackend, }` through a declared Rust import.",
+    "Depends on `capture_owner` through a declared Rust import.",
+    "Depends on `events::*` through a declared Rust import.",
+    "Depends on `events` through a declared Rust import.",
+    "Depends on `frame_stream::{ capture_delivery_start_gate, CaptureDeliveryStartGate, CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, }` through a declared Rust import.",
+    "Depends on `frame_stream::{ captured_frame_stream, captured_frame_stream_with_start_gate, CaptureDeliveryStartGateController, }` through a declared Rust import.",
+    "Depends on `frame_stream` through a declared Rust import.",
+    "Depends on `identity::*` through a declared Rust import.",
+    "Depends on `identity` through a declared Rust import.",
+    "Depends on `lifecycle_registry::*` through a declared Rust import.",
+    "Depends on `lifecycle_registry` through a declared Rust import.",
+    "Depends on `observations` through a declared Rust import.",
+    "Depends on `platform` through a declared Rust import.",
+    "Depends on `query` through a declared Rust import.",
+    "Depends on `selection` through a declared Rust import.",
+    "Depends on `tests` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -282,13 +280,13 @@
   "module": "pocketstation::capture",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-de7e660a3450a9c847de"
   ],
   "outputs": [
-    "mod:platform"
+    "Declares public mod `platform`."
   ],
   "package": "pocketstation",
   "path": "src/capture/mod.rs",
@@ -377,8 +375,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture responsibilities, including capture."
+    "classification": "DECLARED",
+    "text": "Desktop capture contracts and bounded callback delivery. Platform code owns OS integration, `frame_stream` owns the bounded SPSC crossing, and `capture_owner` owns non-realtime lifecycle. Public capture declarations are data contracts only. Every native callback follows the same permanent contract: acquire from a fixed-capacity pool, write through non-panicking fixed-slot APIs, publish with a nonblocking bounded send, and account for rejection. Callback code must not allocate, lock, block, await, log, or unwind."
   },
   "queues": [],
   "recovery_behavior": [],

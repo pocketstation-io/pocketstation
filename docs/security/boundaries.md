@@ -1,6 +1,6 @@
 # Security boundaries
 
-<!-- claims: CLM-SEC-001-CAP-001,CLM-SEC-001-CAP-002,CLM-SEC-001-CAP-003,CLM-SEC-001-CAP-004,CLM-SEC-001-SOURCE-001 -->
+<!-- claims: CLM-SEC-001-SCOPE-001,CLM-SEC-001-TEXT-001,CLM-SEC-001-TEXT-002,CLM-SEC-001-TEXT-003,CLM-SEC-001-TEXT-004,CLM-SEC-001-SOURCE-001 -->
 
 ## Scope
 
@@ -42,7 +42,13 @@ Use header-defined handle and callback ownership. Keep libraries alive while cal
 
 The claims on **Security boundaries** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/secret.rs:1-13` (`DIRECT`)
-- `src/native_extension/library.rs:1-272` (`DIRECT`)
+- `src/secret.rs:3-12` (`DIRECT`)
+- `src/native_extension/library.rs:19-19` (`DIRECT`)
+- `src/native_extension/library.rs:21-24` (`DIRECT`)
+- `src/native_extension/library.rs:22-22` (`DIRECT`)
+- `src/native_extension/library.rs:23-23` (`DIRECT`)
+- `src/native_extension/library.rs:33-230` (`DIRECT`)
+- `src/native_extension/library.rs:232-263` (`DIRECT`)
+- `src/native_extension/library.rs:265-271` (`DIRECT`)
 
 For **Security boundaries**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

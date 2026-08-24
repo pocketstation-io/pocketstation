@@ -4,6 +4,18 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/lifecycle_registry.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs"
@@ -55,6 +67,18 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/lifecycle_registry.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs"
@@ -266,16 +290,218 @@
       "classification": "DIRECT",
       "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
       "lines": [
-        1,
-        173
+        4,
+        4
       ],
       "path": "src/abi/session/handle.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        5,
+        8
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "HandleSlot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "generation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "value"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        11,
+        16
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        20,
+        24
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "HandleTable"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "kind"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "scope_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "slots"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        27,
+        35
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        37,
+        51
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "insert"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        53,
+        59
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "get"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        61,
+        67
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "get_mut"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        69,
+        74
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "remove"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        76,
+        81
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "active_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        83,
+        89
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "for_each_mut"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        91,
+        101
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "slot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        103,
+        113
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "slot_mut"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "95b5743437b998b7636c7eb8c079600b5837caa45e81a3f7c91cca0619325437",
+      "lines": [
+        115,
+        126
+      ],
+      "path": "src/abi/session/handle.rs",
+      "symbol": "validate_owner"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/lifecycle_registry.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs"
@@ -294,6 +520,18 @@
   "generated_from": "not_applicable",
   "git_object": "84a1551efca4b0b203d645af49ca2e35b5dfca11",
   "implemented_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/lifecycle_registry.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs"
@@ -303,6 +541,18 @@
     "HandleTable<T>"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/lifecycle_registry.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/runtime/audio/executor.rs",
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/audio_input/source.rs",
+    "CALLS:src/session/extensions/source.rs",
+    "CALLS:src/session/lifecycle/endpoint_setup.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/abi/session/mod.rs",
     "IMPORTS:src/abi/session/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs"
@@ -314,11 +564,11 @@
     "super::HandleTable"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::abi::session::abi::PksSessionHandleKind",
-    "crate::abi::session::abi::{PksSessionHandle, PksSessionHandleKind}",
-    "crate::abi::session::error::AbiError",
-    "super::HandleTable"
+    "Consumes configuration at src/abi/session/handle.rs:129.",
+    "Depends on `crate::abi::session::abi::PksSessionHandleKind` through a declared Rust import.",
+    "Depends on `crate::abi::session::abi::{PksSessionHandle, PksSessionHandleKind}` through a declared Rust import.",
+    "Depends on `crate::abi::session::error::AbiError` through a declared Rust import.",
+    "Depends on `super::HandleTable` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -327,25 +577,28 @@
   "module": "pocketstation::abi::session::handle",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::session::handle` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-e2e9ed0c8aff2d4c1c1c"
   ],
   "outputs": [
-    "Err(AbiError::NoCapacity)",
-    "None => Err(AbiError::StaleHandle),",
-    "fn:active_count",
-    "fn:for_each_mut",
-    "fn:get",
-    "fn:get_mut",
-    "fn:insert",
-    "fn:new",
-    "fn:remove",
-    "return Err(AbiError::ForeignHandle);",
-    "return Err(AbiError::InvalidHandle);",
-    "return Err(AbiError::StaleHandle);",
-    "struct:HandleTable"
+    "Creates a typed failure at src/abi/session/handle.rs:110.",
+    "Creates a typed failure at src/abi/session/handle.rs:117.",
+    "Creates a typed failure at src/abi/session/handle.rs:120.",
+    "Creates a typed failure at src/abi/session/handle.rs:123.",
+    "Creates a typed failure at src/abi/session/handle.rs:50.",
+    "Creates a typed failure at src/abi/session/handle.rs:57.",
+    "Creates a typed failure at src/abi/session/handle.rs:65.",
+    "Creates a typed failure at src/abi/session/handle.rs:98.",
+    "Declares public fn `active_count`.",
+    "Declares public fn `for_each_mut`.",
+    "Declares public fn `get_mut`.",
+    "Declares public fn `get`.",
+    "Declares public fn `insert`.",
+    "Declares public fn `new`.",
+    "Declares public fn `remove`.",
+    "Declares public struct `HandleTable`."
   ],
   "package": "pocketstation",
   "path": "src/abi/session/handle.rs",
@@ -465,7 +718,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::session::handle responsibilities, including handle; fmt; handle slot."
+    "text": "Owns the internal handle module, fmt function, handle slot struct, generation struct field used by `pocketstation::abi::session::handle`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -500,6 +753,8 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs",
+    "CALLS:src/frame/pool.rs",
     "REFERENCES:src/abi/session/abi.rs",
     "REFERENCES:src/abi/session/error.rs"
   ],

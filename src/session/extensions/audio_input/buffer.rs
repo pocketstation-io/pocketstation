@@ -82,9 +82,9 @@ pub(super) struct AudioInputState {
 pub struct AudioInputObservations {
     #[doc = "Sets the capacity frames available to `AudioInputObservations`."]
     pub capacity_frames: u64,
-    #[doc = "Stores the buffer slots used by `AudioInputObservations`."]
+    #[doc = "Contains the buffer slots owned or reported by `AudioInputObservations`."]
     pub buffer_slots: u64,
-    #[doc = "Stores the available buffers used by `AudioInputObservations`."]
+    #[doc = "Contains the available buffers owned or reported by `AudioInputObservations`."]
     pub available_buffers: u64,
     #[doc = "Counts the total number of accepted observed by `AudioInputObservations`."]
     pub accepted_total: u64,
@@ -92,9 +92,9 @@ pub struct AudioInputObservations {
     pub full_total: u64,
     #[doc = "Counts the total number of invalid observed by `AudioInputObservations`."]
     pub invalid_total: u64,
-    #[doc = "Stores the cancelled used by `AudioInputObservations`."]
+    #[doc = "Reports whether cancelled is true for `AudioInputObservations`."]
     pub cancelled: bool,
-    #[doc = "Stores the closed used by `AudioInputObservations`."]
+    #[doc = "Reports whether closed is true for `AudioInputObservations`."]
     pub closed: bool,
 }
 
@@ -294,7 +294,7 @@ impl fmt::Debug for AudioInputWriter {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as audio input buffer acquire error."]
+#[doc = "Classifies failures surfaced by audio input buffer acquire operations."]
 pub enum AudioInputBufferAcquireError {
     #[error("audio input is full")]
     #[doc = "Reports that bounded capacity is full."]
@@ -308,27 +308,27 @@ pub enum AudioInputBufferAcquireError {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as audio input buffer error."]
+#[doc = "Classifies failures surfaced by audio input buffer operations."]
 pub enum AudioInputBufferError {
     #[error("audio buffer belongs to another audio input")]
-    #[doc = "Reports wrong source."]
+    #[doc = "Reports that source does not match the required identity or contract."]
     WrongSource,
     #[error("audio buffer contains no samples")]
     #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("interleaved sample count is not divisible by the channel count")]
-    #[doc = "Reports misaligned channels."]
+    #[doc = "Reports that channels does not satisfy the required alignment."]
     MisalignedChannels,
     #[error("audio buffer contains {actual_samples} samples; expected exactly {expected_samples}")]
-    #[doc = "Reports wrong frame length."]
+    #[doc = "Reports that frame length does not match the required identity or contract."]
     WrongFrameLength {
-        #[doc = "Stores the expected samples used by `WrongFrameLength`."]
+        #[doc = "Contains the expected samples owned or reported by `WrongFrameLength`."]
         expected_samples: usize,
-        #[doc = "Stores the actual samples used by `WrongFrameLength`."]
+        #[doc = "Contains the actual samples owned or reported by `WrongFrameLength`."]
         actual_samples: usize,
     },
     #[error("audio buffer capacity rejected the samples: {0}")]
-    #[doc = "Reports capacity."]
+    #[doc = "Classifies a failure at the capacity stage or component of `AudioInputBufferError`."]
     Capacity(AudioBufferWriteError),
 }
 
@@ -341,11 +341,11 @@ pub enum AudioInputWriteErrorKind {
     Closed,
     #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
-    #[doc = "Reports invalid buffer."]
+    #[doc = "Classifies an external-audio write failure as invalid buffer."]
     InvalidBuffer(AudioInputBufferError),
 }
 
-#[doc = "Reports a audio input write error."]
+#[doc = "Classifies failures produced during audio input writing."]
 pub struct AudioInputWriteError {
     kind: AudioInputWriteErrorKind,
     rejected: Option<AudioInputBuffer>,

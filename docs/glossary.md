@@ -1,6 +1,6 @@
 # Glossary
 
-<!-- claims: CLM-DOC-055-CAP-001,CLM-DOC-055-CAP-002,CLM-DOC-055-CAP-003,CLM-DOC-055-CAP-004,CLM-DOC-055-CAP-005,CLM-DOC-055-CAP-006,CLM-DOC-055-CAP-007,CLM-DOC-055-CAP-008,CLM-DOC-055-CAP-009,CLM-DOC-055-CAP-010,CLM-DOC-055-CAP-011,CLM-DOC-055-CAP-012,CLM-DOC-055-CAP-013,CLM-DOC-055-CAP-014,CLM-DOC-055-CAP-015,CLM-DOC-055-CAP-016,CLM-DOC-055-CAP-017,CLM-DOC-055-CAP-018,CLM-DOC-055-CAP-019,CLM-DOC-055-CAP-020,CLM-DOC-055-CAP-021,CLM-DOC-055-CAP-022,CLM-DOC-055-CAP-023,CLM-DOC-055-CAP-024,CLM-DOC-055-CAP-025,CLM-DOC-055-CAP-026,CLM-DOC-055-CAP-027,CLM-DOC-055-CAP-028,CLM-DOC-055-CAP-029,CLM-DOC-055-CAP-030,CLM-DOC-055-CAP-031,CLM-DOC-055-CAP-032,CLM-DOC-055-CAP-033,CLM-DOC-055-SOURCE-001 -->
+<!-- claims: CLM-DOC-055-SCOPE-001,CLM-DOC-055-TEXT-001,CLM-DOC-055-SOURCE-001 -->
 
 Use these terms consistently. Code spelling anchors a term to a compiler symbol; it does not imply that every related type uses that name.
 
@@ -50,6 +50,29 @@ Aliases are permitted only where listed. A forbidden alias usually collapses a d
 
 The claims on **Glossary** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/lib.rs:1-1161` (`DIRECT`)
+- `src/lib.rs:55-71` (`DIRECT`)
+- `src/lib.rs:236-250` (`DIRECT`)
+- `src/lib.rs:237-237` (`DIRECT`)
+- `src/lib.rs:238-238` (`DIRECT`)
+- `src/lib.rs:239-239` (`DIRECT`)
+- `src/lib.rs:240-240` (`DIRECT`)
+- `src/lib.rs:241-241` (`DIRECT`)
+- `src/lib.rs:242-242` (`DIRECT`)
+- `src/lib.rs:243-243` (`DIRECT`)
+- `src/lib.rs:244-244` (`DIRECT`)
+- `src/lib.rs:245-245` (`DIRECT`)
+- `src/lib.rs:246-246` (`DIRECT`)
+- `src/lib.rs:247-247` (`DIRECT`)
+- `src/lib.rs:248-248` (`DIRECT`)
+- `src/lib.rs:249-249` (`DIRECT`)
+- `src/lib.rs:252-255` (`DIRECT`)
+- `src/lib.rs:253-253` (`DIRECT`)
+- `src/lib.rs:254-254` (`DIRECT`)
+- `src/lib.rs:257-261` (`DIRECT`)
+- `src/lib.rs:258-258` (`DIRECT`)
+- `src/lib.rs:259-259` (`DIRECT`)
+- `src/lib.rs:260-260` (`DIRECT`)
+- `src/lib.rs:263-267` (`DIRECT`)
+- `src/lib.rs:264-264` (`DIRECT`)
 
 For **Glossary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -50,8 +50,8 @@
       "classification": "DIRECT",
       "content_hash": "116b877756b6139d79b083fdb75a4832ab1a41548efff6cde98fb1580e805f91",
       "lines": [
-        1,
-        132
+        2,
+        22
       ],
       "path": "scripts/check_protocol.sh",
       "symbol": null
@@ -78,10 +78,10 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "cargo clippy --all-targets --all-features -- -D warnings",
-    "cargo test --quiet --features internal-testing --test capture_hot_path_alloc",
-    "cargo test --quiet --features internal-testing --test codec_hot_path_alloc",
-    "cargo test --quiet --features internal-testing --test runtime_plan_router_alloc"
+    "Consumes configuration at scripts/check_protocol.sh:129.",
+    "Consumes configuration at scripts/check_protocol.sh:69.",
+    "Consumes configuration at scripts/check_protocol.sh:70.",
+    "Consumes configuration at scripts/check_protocol.sh:71."
   ],
   "invariants": [],
   "language": "Shell",
@@ -90,7 +90,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/check_protocol.sh` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

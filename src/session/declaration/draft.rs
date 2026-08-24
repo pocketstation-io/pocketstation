@@ -591,7 +591,7 @@ impl fmt::Debug for Session {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-#[doc = "Owns bounded access to endpoint."]
+#[doc = "Holds the ownership or bounded access represented by endpoint handle."]
 pub struct EndpointHandle {
     session_id: SessionId,
     endpoint_id: EndpointId,
@@ -703,14 +703,14 @@ impl InternalStreamHandle {
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to stem."]
+#[doc = "Holds the ownership or bounded access represented by stem handle."]
 pub struct StemHandle {
     pub(super) stream: InternalStreamHandle,
     stem_id: StemId,
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to operator instance."]
+#[doc = "Holds the ownership or bounded access represented by operator instance handle."]
 pub struct OperatorInstanceHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
@@ -718,7 +718,7 @@ pub struct OperatorInstanceHandle {
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to operator input."]
+#[doc = "Holds the ownership or bounded access represented by operator input handle."]
 pub struct OperatorInputHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
@@ -857,7 +857,7 @@ impl StemHandle {
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to derived stream."]
+#[doc = "Holds the ownership or bounded access represented by derived stream handle."]
 pub struct DerivedStreamHandle {
     pub(super) stream: InternalStreamHandle,
     operator_instance_id: OperatorInstanceId,
@@ -865,7 +865,7 @@ pub struct DerivedStreamHandle {
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to source instance."]
+#[doc = "Holds the ownership or bounded access represented by source instance handle."]
 pub struct SourceInstanceHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
@@ -947,7 +947,7 @@ impl fmt::Debug for SourceInstanceHandle {
 }
 
 #[derive(Clone)]
-#[doc = "Owns bounded access to source output."]
+#[doc = "Holds the ownership or bounded access represented by source output handle."]
 pub struct SourceOutputHandle {
     pub(super) stream: InternalStreamHandle,
     source_instance_id: SourceInstanceId,
@@ -992,7 +992,7 @@ impl SourceOutputHandle {
         self.stream.connect(input)
     }
 
-    #[doc = "Sends to for `SourceOutputHandle`."]
+    #[doc = "Connects the current stream to one explicit endpoint input through `SourceOutputHandle`."]
     pub fn send_to(
         &self,
         endpoint: EndpointHandle,

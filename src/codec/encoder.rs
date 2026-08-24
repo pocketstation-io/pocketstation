@@ -139,22 +139,22 @@ impl OpusConfig {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as opus encode error."]
+#[doc = "Classifies failures produced during opus encoding."]
 pub enum OpusEncodeError {
     #[error(
         "Opus frame has {sample_count} interleaved samples; expected {expected_sample_count} for {channels} channels"
     )]
-    #[doc = "Reports invalid frame sample count."]
+    #[doc = "Reports that the supplied frame sample count is invalid."]
     InvalidFrameSampleCount {
         #[doc = "Stores the number of sample represented by `InvalidFrameSampleCount`."]
         sample_count: usize,
-        #[doc = "Stores the channels used by `InvalidFrameSampleCount`."]
+        #[doc = "Contains the channels owned or reported by `InvalidFrameSampleCount`."]
         channels: usize,
         #[doc = "Stores the number of expected sample represented by `InvalidFrameSampleCount`."]
         expected_sample_count: usize,
     },
     #[error("Opus encode failed: {0}")]
-    #[doc = "Reports opus."]
+    #[doc = "Classifies a failure at the opus stage or component of `OpusEncodeError`."]
     Opus(#[from] opus::Error),
 }
 

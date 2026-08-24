@@ -132,11 +132,71 @@
       "classification": "DIRECT",
       "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
       "lines": [
-        1,
-        38
+        9,
+        9
       ],
       "path": "src/endpoint/polled_audio.rs",
-      "symbol": null
+      "symbol": "POLLED_AUDIO_OPERATOR_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
+      "lines": [
+        16,
+        19
+      ],
+      "path": "src/endpoint/polled_audio.rs",
+      "symbol": "PolledAudioEndpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/endpoint/polled_audio.rs",
+      "symbol": "factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/endpoint/polled_audio.rs",
+      "symbol": "receipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
+      "lines": [
+        22,
+        28
+      ],
+      "path": "src/endpoint/polled_audio.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
+      "lines": [
+        30,
+        32
+      ],
+      "path": "src/endpoint/polled_audio.rs",
+      "symbol": "receipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff61bb2eb761bf3cf49ec886f9ef3bbb38ff190c7711c99202c747d2932636c4",
+      "lines": [
+        34,
+        36
+      ],
+      "path": "src/endpoint/polled_audio.rs",
+      "symbol": "factory"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -179,10 +239,10 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "crate::endpoint::EndpointDriverFactory",
-    "crate::endpoint::polled_audio_driver::PolledAudioEndpointFactory",
-    "crate::endpoint::polled_audio_driver::{ PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, }",
-    "std::sync::Arc"
+    "Depends on `crate::endpoint::EndpointDriverFactory` through a declared Rust import.",
+    "Depends on `crate::endpoint::polled_audio_driver::PolledAudioEndpointFactory` through a declared Rust import.",
+    "Depends on `crate::endpoint::polled_audio_driver::{ PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -191,17 +251,17 @@
   "module": "pocketstation::endpoint::polled_audio",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::polled_audio` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-aaeabfe10d80f1cfb840"
   ],
   "outputs": [
-    "const:POLLED_AUDIO_OPERATOR_ID",
-    "fn:factory",
-    "fn:new",
-    "fn:receipt",
-    "struct:PolledAudioEndpoint"
+    "Declares public const `POLLED_AUDIO_OPERATOR_ID`.",
+    "Declares public fn `factory`.",
+    "Declares public fn `new`.",
+    "Declares public fn `receipt`.",
+    "Declares public struct `PolledAudioEndpoint`."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/polled_audio.rs",
@@ -247,8 +307,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::polled audio responsibilities, including Declares application-polled audio and retains its bounded receipt.; Creates a new `PolledAudioEndpoint`.; Returns the receipt associated with `PolledAudioEndpoint`.."
+    "classification": "DECLARED",
+    "text": "Declares application-polled audio and retains its bounded receipt. Creates a new `PolledAudioEndpoint`. Returns the receipt associated with `PolledAudioEndpoint`."
   },
   "queues": [],
   "recovery_behavior": [],

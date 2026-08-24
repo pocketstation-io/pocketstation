@@ -117,14 +117,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "84d90b4e9ad4a8e3a880d4425b58336318aeb359e131fbf9a08f93670933de2e",
       "lines": [
         1,
-        59
+        1
       ],
       "path": "src/session/lifecycle/telemetry.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::lifecycle::telemetry"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -170,12 +170,12 @@
     "super::observations::{ SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSourceMetrics, }"
   ],
   "inputs": [
-    "crate::capture::CaptureObservationReceipt",
-    "crate::endpoint::EndpointDriverObservations",
-    "crate::frame::{EndpointId, RouteId, StemId}",
-    "crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservationHandle, EdgeObservations, PlanEdgeObservationHandle, PlanSourceObservationHandle, }",
-    "crate::session::declaration::OperatorInstanceId",
-    "super::observations::{ SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSourceMetrics, }"
+    "Depends on `crate::capture::CaptureObservationReceipt` through a declared Rust import.",
+    "Depends on `crate::endpoint::EndpointDriverObservations` through a declared Rust import.",
+    "Depends on `crate::frame::{EndpointId, RouteId, StemId}` through a declared Rust import.",
+    "Depends on `crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservationHandle, EdgeObservations, PlanEdgeObservationHandle, PlanSourceObservationHandle, }` through a declared Rust import.",
+    "Depends on `crate::session::declaration::OperatorInstanceId` through a declared Rust import.",
+    "Depends on `super::observations::{ SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSourceMetrics, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -184,16 +184,16 @@
   "module": "pocketstation::session::lifecycle::telemetry",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::telemetry` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "struct:DerivedRouteObservationBinding",
-    "struct:FinalEndpointObservation",
-    "struct:FinalOperatorObservation",
-    "struct:RouteObservationBinding",
-    "struct:SourceObservationBinding",
-    "type:IndexedSessionMetrics"
+    "Declares public struct `DerivedRouteObservationBinding`.",
+    "Declares public struct `FinalEndpointObservation`.",
+    "Declares public struct `FinalOperatorObservation`.",
+    "Declares public struct `RouteObservationBinding`.",
+    "Declares public struct `SourceObservationBinding`.",
+    "Declares public type `IndexedSessionMetrics`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/telemetry.rs",
@@ -245,8 +245,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::telemetry responsibilities, including telemetry; source observation binding; stem id."
+    "classification": "DECLARED",
+    "text": "Runtime observation bindings and finalized Session-level snapshots."
   },
   "queues": [],
   "recovery_behavior": [],

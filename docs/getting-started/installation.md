@@ -1,6 +1,6 @@
 # Install PocketStation
 
-<!-- claims: CLM-DOC-002-CAP-001,CLM-DOC-002-SOURCE-001 -->
+<!-- claims: CLM-DOC-002-SCOPE-001,CLM-DOC-002-TEXT-001,CLM-DOC-002-TEXT-002,CLM-DOC-002-TEXT-003,CLM-DOC-002-SOURCE-001 -->
 
 ## Prerequisites
 
@@ -62,6 +62,6 @@ Executable evidence selected for **Install PocketStation** is limited to each te
 
 The claims on **Install PocketStation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
 
 For **Install PocketStation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

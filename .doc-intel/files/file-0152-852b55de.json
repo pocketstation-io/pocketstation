@@ -130,14 +130,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "3755e230f69d24e53410220205b04dab1abac9f7cad329e16cfca1f1da112769",
       "lines": [
-        1,
-        101
+        87,
+        100
       ],
-      "path": "src/graph/named_ports.rs",
-      "symbol": null
+      "path": "src/graph/named_ports.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "3755e230f69d24e53410220205b04dab1abac9f7cad329e16cfca1f1da112769",
+      "lines": [
+        67,
+        87
+      ],
+      "path": "src/graph/named_ports.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -173,11 +181,11 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,",
-    "crate::graph::compile::{CompileError, Compiler}",
-    "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "std::sync::Arc"
+    "Consumes configuration at src/graph/named_ports.rs:17.",
+    "Consumes configuration at src/graph/named_ports.rs:5.",
+    "Depends on `crate::graph::compile::{CompileError, Compiler}` through a declared Rust import.",
+    "Depends on `crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -204,13 +212,13 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::named_ports` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-2eceeaaee3e6da04704d"
   ],
   "outputs": [
-    "assert!(matches!(result, Err(CompileError::UnknownPort { port, .. }) if port == \"missing\"));"
+    "Creates a typed failure at src/graph/named_ports.rs:99."
   ],
   "package": "pocketstation",
   "path": "src/graph/named_ports.rs",
@@ -275,7 +283,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::named ports responsibilities, including the src/graph/named ports boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::graph::named_ports`."
   },
   "queues": [],
   "recovery_behavior": [],

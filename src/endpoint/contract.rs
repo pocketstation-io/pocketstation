@@ -130,7 +130,7 @@ impl EndpointAudioReceiver {
         })
     }
 
-    #[doc = "Returns whether abandoned applies to `EndpointAudioReceiver`."]
+    #[doc = "Reports whether abandoned is true for `EndpointAudioReceiver`."]
     pub fn is_abandoned(&self) -> bool {
         self.receiver.is_abandoned()
     }
@@ -184,19 +184,19 @@ impl EndpointSignalReceiver {
         self.try_recv()
     }
 
-    #[doc = "Returns whether abandoned applies to `EndpointSignalReceiver`."]
+    #[doc = "Reports whether abandoned is true for `EndpointSignalReceiver`."]
     pub fn is_abandoned(&self) -> bool {
         self.receiver.is_abandoned()
     }
 }
 
-#[doc = "Enumerates the supported endpoint receiver cases."]
+#[doc = "Owns the bounded receiver for the media class accepted by an endpoint."]
 pub enum EndpointReceiver {
     #[doc = "Represents the audio case of `EndpointReceiver`."]
     Audio {
-        #[doc = "Stores the receiver used by `Audio`."]
+        #[doc = "Owns the receiver endpoint through which `Audio` exchanges values."]
         receiver: EndpointAudioReceiver,
-        #[doc = "Stores the sample spec used by `Audio`."]
+        #[doc = "Declares the sample rate, channel layout, and format used by `Audio`."]
         sample_spec: SampleSpec,
     },
     #[doc = "Represents the signal case of `EndpointReceiver`."]

@@ -1,6 +1,6 @@
 # Session mental model
 
-<!-- claims: CLM-DOC-006-CAP-001,CLM-DOC-006-SOURCE-001 -->
+<!-- claims: CLM-DOC-006-SCOPE-001,CLM-DOC-006-TEXT-001,CLM-DOC-006-TEXT-002,CLM-DOC-006-TEXT-003,CLM-DOC-006-TEXT-004,CLM-DOC-006-TEXT-005,CLM-DOC-006-TEXT-006,CLM-DOC-006-SOURCE-001 -->
 
 ## What it is
 
@@ -43,15 +43,15 @@ The scope of **Session mental model** ends at the native contracts and executabl
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::session::declaration::draft::DerivedStreamHandle` | struct | Owns bounded access to derived stream. | `src/session/declaration/draft.rs:827` |
-| `pocketstation::session::declaration::draft::EndpointHandle` | struct | Owns bounded access to endpoint. | `src/session/declaration/draft.rs:580` |
+| `pocketstation::session::declaration::draft::DerivedStreamHandle` | struct | Holds the ownership or bounded access represented by derived stream handle. | `src/session/declaration/draft.rs:827` |
+| `pocketstation::session::declaration::draft::EndpointHandle` | struct | Holds the ownership or bounded access represented by endpoint handle. | `src/session/declaration/draft.rs:580` |
 | `pocketstation::session::declaration::draft::Operator` | struct | Declares one operator instance, including its stable operator identity and validated node configuration. | `src/session/declaration/draft.rs:282` |
-| `pocketstation::session::declaration::draft::OperatorInputHandle` | struct | Owns bounded access to operator input. | `src/session/declaration/draft.rs:701` |
-| `pocketstation::session::declaration::draft::OperatorInstanceHandle` | struct | Owns bounded access to operator instance. | `src/session/declaration/draft.rs:694` |
+| `pocketstation::session::declaration::draft::OperatorInputHandle` | struct | Holds the ownership or bounded access represented by operator input handle. | `src/session/declaration/draft.rs:701` |
+| `pocketstation::session::declaration::draft::OperatorInstanceHandle` | struct | Holds the ownership or bounded access represented by operator instance handle. | `src/session/declaration/draft.rs:694` |
 | `pocketstation::session::declaration::draft::Session` | struct | Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it. | `src/session/declaration/draft.rs:316` |
-| `pocketstation::session::declaration::draft::SourceInstanceHandle` | struct | Owns bounded access to source instance. | `src/session/declaration/draft.rs:834` |
-| `pocketstation::session::declaration::draft::SourceOutputHandle` | struct | Owns bounded access to source output. | `src/session/declaration/draft.rs:910` |
-| `pocketstation::session::declaration::draft::StemHandle` | struct | Owns bounded access to stem. | `src/session/declaration/draft.rs:688` |
+| `pocketstation::session::declaration::draft::SourceInstanceHandle` | struct | Holds the ownership or bounded access represented by source instance handle. | `src/session/declaration/draft.rs:834` |
+| `pocketstation::session::declaration::draft::SourceOutputHandle` | struct | Holds the ownership or bounded access represented by source output handle. | `src/session/declaration/draft.rs:910` |
+| `pocketstation::session::declaration::draft::StemHandle` | struct | Holds the ownership or bounded access represented by stem handle. | `src/session/declaration/draft.rs:688` |
 | `pocketstation::session::declaration::spec::ConnectionSpec` | struct | The single Session connection declaration used for every stream origin and every operator/endpoint destination. | `src/session/declaration/spec.rs:238` |
 
 ## Executable evidence
@@ -86,6 +86,29 @@ Executable evidence selected for **Session mental model** is limited to each tes
 
 The claims on **Session mental model** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/declaration/draft.rs:1-1405` (`DIRECT`)
+- `src/session/declaration/draft.rs:19-19` (`DIRECT`)
+- `src/session/declaration/draft.rs:21-21` (`DIRECT`)
+- `src/session/declaration/draft.rs:22-25` (`DIRECT`)
+- `src/session/declaration/draft.rs:23-23` (`DIRECT`)
+- `src/session/declaration/draft.rs:24-24` (`DIRECT`)
+- `src/session/declaration/draft.rs:27-27` (`DIRECT`)
+- `src/session/declaration/draft.rs:28-33` (`DIRECT`)
+- `src/session/declaration/draft.rs:29-29` (`DIRECT`)
+- `src/session/declaration/draft.rs:30-30` (`DIRECT`)
+- `src/session/declaration/draft.rs:31-31` (`DIRECT`)
+- `src/session/declaration/draft.rs:32-32` (`DIRECT`)
+- `src/session/declaration/draft.rs:35-35` (`DIRECT`)
+- `src/session/declaration/draft.rs:36-40` (`DIRECT`)
+- `src/session/declaration/draft.rs:37-37` (`DIRECT`)
+- `src/session/declaration/draft.rs:38-38` (`DIRECT`)
+- `src/session/declaration/draft.rs:39-39` (`DIRECT`)
+- `src/session/declaration/draft.rs:42-42` (`DIRECT`)
+- `src/session/declaration/draft.rs:43-47` (`DIRECT`)
+- `src/session/declaration/draft.rs:44-44` (`DIRECT`)
+- `src/session/declaration/draft.rs:45-45` (`DIRECT`)
+- `src/session/declaration/draft.rs:46-46` (`DIRECT`)
+- `src/session/declaration/draft.rs:49-49` (`DIRECT`)
+- `src/session/declaration/draft.rs:50-53` (`DIRECT`)
+- `src/session/declaration/draft.rs:51-51` (`DIRECT`)
 
 For **Session mental model**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

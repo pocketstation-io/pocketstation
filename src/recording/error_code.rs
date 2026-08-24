@@ -7,43 +7,43 @@ use crate::recording::{RecorderError, RecordingOutcome, RecordingState};
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RecordingErrorCode {
-    #[doc = "Reports output exists."]
+    #[doc = "Reports that output already exists and would be overwritten."]
     OutputExists,
-    #[doc = "Reports invalid stem label."]
+    #[doc = "Reports that the supplied stem label is invalid."]
     InvalidStemLabel,
-    #[doc = "Reports duplicate stem label."]
+    #[doc = "Reports that stem label duplicates an existing declaration or record."]
     DuplicateStemLabel,
-    #[doc = "Reports session mismatch."]
+    #[doc = "Reports that session does not match the expected contract."]
     SessionMismatch,
     #[doc = "Reports that the required permission was denied."]
     PermissionDenied,
-    #[doc = "Reports invalid sample spec."]
+    #[doc = "Reports that the supplied sample spec is invalid."]
     InvalidSampleSpec,
-    #[doc = "Reports source mismatch."]
+    #[doc = "Reports that source does not match the expected contract."]
     SourceMismatch,
-    #[doc = "Reports lineage mismatch."]
+    #[doc = "Reports that lineage does not match the expected contract."]
     LineageMismatch,
-    #[doc = "Reports frame spec mismatch."]
+    #[doc = "Reports that frame spec does not match the expected contract."]
     FrameSpecMismatch,
-    #[doc = "Reports unaligned samples."]
+    #[doc = "Reports that samples does not align to complete frames or channels."]
     UnalignedSamples,
-    #[doc = "Reports timestamp out of range."]
+    #[doc = "Reports that timestamp falls outside the supported range."]
     TimestampOutOfRange,
-    #[doc = "Reports gap too large."]
+    #[doc = "Reports that gap exceeds the supported size limit."]
     GapTooLarge,
-    #[doc = "Reports too many gaps."]
+    #[doc = "Reports that the number of gaps exceeds the supported limit."]
     TooManyGaps,
-    #[doc = "Reports worker panicked."]
+    #[doc = "Reports that worker panicked while the operation was active."]
     WorkerPanicked,
-    #[doc = "Reports I/O failed."]
+    #[doc = "Reports that I/O failed."]
     IoFailed,
-    #[doc = "Reports wav failed."]
+    #[doc = "Reports that wav failed."]
     WavFailed,
-    #[doc = "Reports json failed."]
+    #[doc = "Reports that json failed."]
     JsonFailed,
-    #[doc = "Reports not finalized."]
+    #[doc = "Reports that no t finalized is available."]
     NotFinalized,
-    #[doc = "Reports incomplete."]
+    #[doc = "Reports that the operation ended without producing a complete terminal result."]
     Incomplete,
 }
 

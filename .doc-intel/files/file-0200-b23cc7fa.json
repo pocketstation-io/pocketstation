@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/session/compile/compiled.rs",
@@ -34,6 +36,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/session/compile/compiled.rs",
@@ -139,19 +143,21 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "5f6e31ab729f497548f0b211ed20ed305b0a3adbdc9d5dd5ffdc13b0732f06f0",
       "lines": [
         1,
-        71
+        5
       ],
       "path": "src/session/compile/bindings.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::compile::bindings"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/session/compile/compiled.rs",
@@ -173,6 +179,8 @@
   "generated_from": "not_applicable",
   "git_object": "3489544c67193ca779033ff564345eb6c6c23aa4",
   "implemented_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/session/compile/compiled.rs",
@@ -184,6 +192,8 @@
     "CompiledSessionBindings"
   ],
   "imported_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/session/compile/mod.rs",
     "IMPORTS:src/session/compile/mod.rs",
     "REFERENCES:src/session/compile/compiled.rs",
@@ -198,11 +208,11 @@
     "std::collections::HashMap"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::frame::ConnectorId",
-    "crate::graph::NodeId",
-    "crate::session::{ EndpointId, OperatorInstanceId, RouteId, SourceInstanceId, StemId, StreamOrigin, }",
-    "std::collections::HashMap"
+    "Consumes configuration at src/session/compile/bindings.rs:61.",
+    "Depends on `crate::frame::ConnectorId` through a declared Rust import.",
+    "Depends on `crate::graph::NodeId` through a declared Rust import.",
+    "Depends on `crate::session::{ EndpointId, OperatorInstanceId, RouteId, SourceInstanceId, StemId, StreamOrigin, }` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -216,16 +226,16 @@
   "module": "pocketstation::session::compile::bindings",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::compile::bindings` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:CompiledNodeBinding",
-    "fn:insert_node",
-    "fn:new",
-    "fn:node",
-    "fn:node_mut",
-    "struct:CompiledSessionBindings"
+    "Declares public enum `CompiledNodeBinding`.",
+    "Declares public fn `insert_node`.",
+    "Declares public fn `new`.",
+    "Declares public fn `node_mut`.",
+    "Declares public fn `node`.",
+    "Declares public struct `CompiledSessionBindings`."
   ],
   "package": "pocketstation",
   "path": "src/session/compile/bindings.rs",
@@ -277,8 +287,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::compile::bindings responsibilities, including bindings; fmt; compiled session bindings."
+    "classification": "DECLARED",
+    "text": "Typed authority connecting compiled graph nodes to Session declarations. Extension-owned `NodeConfig` never carries these identities. Runtime preparation consumes this table directly, so IDs are not serialized to strings and parsed back later."
   },
   "queues": [],
   "recovery_behavior": [],

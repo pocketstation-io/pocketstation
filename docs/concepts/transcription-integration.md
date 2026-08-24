@@ -1,6 +1,6 @@
 # Transcription integration boundary
 
-<!-- claims: CLM-DOC-037-CAP-001,CLM-DOC-037-SOURCE-001 -->
+<!-- claims: CLM-DOC-037-SCOPE-001,CLM-DOC-037-TEXT-001,CLM-DOC-037-TEXT-002,CLM-DOC-037-TEXT-003,CLM-DOC-037-TEXT-004,CLM-DOC-037-TEXT-005,CLM-DOC-037-TEXT-006,CLM-DOC-037-SOURCE-001 -->
 
 ## What it is
 
@@ -72,6 +72,17 @@ Executable evidence selected for **Transcription integration boundary** is limit
 
 The claims on **Transcription integration boundary** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/whisper-transcribe/src/lib.rs:1-1440` (`DIRECT`)
+- `examples/whisper-transcribe/src/lib.rs:1129-1180` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1419-1438` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1400-1419` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1180-1220` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1379-1400` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1263-1311` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1338-1379` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1311-1338` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1073-1098` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1220-1263` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1055-1073` (`TESTED`)
+- `examples/whisper-transcribe/src/lib.rs:1108-1129` (`TESTED`)
 
 For **Transcription integration boundary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

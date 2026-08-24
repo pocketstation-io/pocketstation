@@ -499,14 +499,67 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
       "lines": [
-        1,
-        491
+        385,
+        411
       ],
-      "path": "src/session/extensions/tests/composition.rs",
-      "symbol": null
+      "path": "src/session/extensions/tests/composition.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        355,
+        385
+      ],
+      "path": "src/session/extensions/tests/composition.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        333,
+        355
+      ],
+      "path": "src/session/extensions/tests/composition.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        458,
+        490
+      ],
+      "path": "src/session/extensions/tests/composition.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        300,
+        333
+      ],
+      "path": "src/session/extensions/tests/composition.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        437,
+        458
+      ],
+      "path": "src/session/extensions/tests/composition.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        411,
+        437
+      ],
+      "path": "src/session/extensions/tests/composition.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -542,16 +595,16 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition,",
-    "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),",
-    "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
-    "crate::frame::{SampleFormat, SampleSpec}",
-    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
-    "crate::session::{ DeviceSelector, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompileError, SessionEngine, SessionEngineBuilder, SessionStartOptions, Source, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceRegistrationError, SourceTypeId, }",
-    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
-    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
-    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
-    "std::sync::Arc"
+    "Consumes configuration at src/session/extensions/tests/composition.rs:10.",
+    "Consumes configuration at src/session/extensions/tests/composition.rs:113.",
+    "Consumes configuration at src/session/extensions/tests/composition.rs:61.",
+    "Consumes configuration at src/session/extensions/tests/composition.rs:64.",
+    "Consumes configuration at src/session/extensions/tests/composition.rs:85.",
+    "Depends on `crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::frame::{SampleFormat, SampleSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat, }` through a declared Rust import.",
+    "Depends on `crate::session::{ DeviceSelector, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompileError, SessionEngine, SessionEngineBuilder, SessionStartOptions, Source, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceRegistrationError, SourceTypeId, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -589,15 +642,15 @@
   "module": "pocketstation::session::extensions::tests::composition",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::tests::composition` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-c928f7f83606dfe42c56"
   ],
   "outputs": [
-    "Err(EndpointFailure::new(",
-    "Err(NodeError::Prepare(",
-    "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),"
+    "Creates a typed failure at src/session/extensions/tests/composition.rs:118.",
+    "Creates a typed failure at src/session/extensions/tests/composition.rs:64.",
+    "Creates a typed failure at src/session/extensions/tests/composition.rs:97."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/tests/composition.rs",
@@ -878,7 +931,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::tests::composition responsibilities, including the src/session/extensions/tests/composition boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::session::extensions::tests::composition`."
   },
   "queues": [],
   "recovery_behavior": [],

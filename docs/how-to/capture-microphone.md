@@ -1,6 +1,6 @@
 # Capture the default microphone
 
-<!-- claims: CLM-GUIDE-002-CAP-001,CLM-GUIDE-002-CAP-002,CLM-GUIDE-002-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-002-SCOPE-001,CLM-GUIDE-002-TEXT-001,CLM-GUIDE-002-TEXT-002,CLM-GUIDE-002-TEXT-003,CLM-GUIDE-002-TEXT-004,CLM-GUIDE-002-TEXT-005,CLM-GUIDE-002-TEXT-006,CLM-GUIDE-002-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,73 @@ An available input device and a host application capable of owning the platform 
 3. Declare the default or identified microphone Source.
 4. Attach a consumer before start.
 5. Treat preparation or source opening as the authoritative result.
+
+## Concrete repository example
+
+This is the frozen, repository-owned example `example-64188d831f3c13af50ff` at `examples/product_quickstart.rs`. It is validated by the examples checkpoint.
+
+```rust
+use std::collections::BTreeMap;
+use std::error::Error;
+use std::time::{Duration, Instant};
+
+use pocketstation as pks;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let session = pks::Session::builder()
+        .recording_root("pocketstation-recordings")
+        .build();
+    let app = session.capture(pks::Source::application(pks::ApplicationSelector::name(
+        "PocketStation Demo",
+    )))?;
+    let mic = session.capture(pks::Source::microphone_default())?;
+    let app_audio = session.polled_audio()?;
+    let mic_audio = session.polled_audio()?;
+
+    app.send(app_audio)?;
+    mic.send(mic_audio)?;
+    app.record("application")?;
+    mic.record("microphone")?;
+
+    let mut running = session.start()?;
+    let deadline = Instant::now() + Duration::from_secs(10);
+    let mut frames_by_stem = BTreeMap::<u64, usize>::new();
+    while Instant::now() < deadline
+        && frames_by_stem.values().filter(|count| **count >= 2).count() < 2
+    {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let frame = batch
+                    .frame(index)
+                    .ok_or("bounded audio batch returned an invalid frame index")?;
+                let count = frames_by_stem
+                    .entry(frame.lineage().stem_id().get())
+                    .or_default();
+                *count = count.saturating_add(1);
+            }
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    if frames_by_stem.values().filter(|count| **count >= 2).count() != 2 {
+        return Err("application and microphone media were not both observed".into());
+    }
+
+    let outcome = running.stop();
+    if !outcome.is_success() {
+        return Err("PocketStation Session did not finalize cleanly".into());
+    }
+    let recording = running
+        .recording_outcome()
+        .ok_or("PocketStation Session did not expose a recording outcome")?;
+    if recording.state != pks::SessionRecordingState::Complete
+        || recording.completed_stems != 2
+        || recording.failed_stems != 0
+    {
+        return Err("PocketStation multistem recording did not complete".into());
+    }
+    Ok(())
+}
+```
 
 ## Important consequence
 
@@ -71,7 +138,7 @@ Executable evidence selected for **Capture the default microphone** is limited t
 | `pocketstation::capture::authorization::PermissionEpoch` | struct | Identifies the permission-observation generation attached to captured lineage. | `src/capture/authorization.rs:267` |
 | `pocketstation::capture::events::CaptureRuntimeFailure` | struct | Reports a capture runtime failure. | `src/capture/events.rs:47` |
 | `pocketstation::capture::events::SourceGeneration` | struct | Identifies one appearance generation of a capture source across loss and reappearance. | `src/capture/events.rs:12` |
-| `pocketstation::capture::events::SourceRuntimeEventObservationHandle` | struct | Owns bounded access to source runtime event observation. | `src/capture/events.rs:200` |
+| `pocketstation::capture::events::SourceRuntimeEventObservationHandle` | struct | Holds the ownership or bounded access represented by source runtime event observation handle. | `src/capture/events.rs:200` |
 
 ## Related documentation
 
@@ -88,6 +155,6 @@ Executable evidence selected for **Capture the default microphone** is limited t
 
 The claims on **Capture the default microphone** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/product_quickstart.rs:1-61` (`DIRECT`)
+- `examples/product_quickstart.rs:1-21` (`DIRECT`)
 
 For **Capture the default microphone**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

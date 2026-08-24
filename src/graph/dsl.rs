@@ -7,7 +7,7 @@ use crate::graph::spec::{
     EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef,
 };
 
-#[doc = "Owns bounded access to node."]
+#[doc = "Holds the ownership or bounded access represented by node handle."]
 pub struct NodeHandle {
     id: NodeId,
 }
@@ -47,7 +47,7 @@ impl Pipeline {
         Self::default()
     }
 
-    #[doc = "Adds node for `Pipeline`."]
+    #[doc = "Adds one node declaration to the graph owned by `Pipeline`."]
     pub fn add_node(&mut self, type_id: impl Into<NodeTypeId>, config: NodeConfig) -> NodeHandle {
         let id = NodeId(self.next_node);
         self.next_node += 1;

@@ -101,7 +101,7 @@ impl NodeConfig {
         self.values.get(key).map(|entry| entry.value.as_str())
     }
 
-    #[doc = "Returns whether sensitive applies to `NodeConfig`."]
+    #[doc = "Reports whether sensitive is true for `NodeConfig`."]
     pub fn is_sensitive(&self, key: &str) -> bool {
         self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
@@ -151,15 +151,15 @@ impl fmt::Debug for NodeConfig {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as config error."]
+#[doc = "Classifies failures surfaced by config operations."]
 pub enum ConfigError {
     #[error("missing required config key: {0}")]
-    #[doc = "Reports missing."]
+    #[doc = "Reports that a required value is missing."]
     Missing(String),
     #[error("invalid config '{key}': {reason}")]
-    #[doc = "Reports invalid."]
+    #[doc = "Reports that validation rejected the supplied value."]
     Invalid {
-        #[doc = "Stores the key used by `Invalid`."]
+        #[doc = "Stores the key text reported by `Invalid`."]
         key: String,
         #[doc = "Carries the reason reported by `Invalid`."]
         reason: String,
@@ -167,16 +167,16 @@ pub enum ConfigError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as node error."]
+#[doc = "Classifies failures surfaced by node operations."]
 pub enum NodeError {
     #[error("node prepare failed: {0}")]
-    #[doc = "Reports prepare."]
+    #[doc = "Classifies a failure at the prepare stage or component of `NodeError`."]
     Prepare(String),
     #[error("node process failed: {0}")]
-    #[doc = "Reports process."]
+    #[doc = "Classifies a failure at the process stage or component of `NodeError`."]
     Process(String),
     #[error("node process exceeded its {timeout_ms} ms deadline")]
-    #[doc = "Reports process timeout."]
+    #[doc = "Reports that process exceeded its deadline."]
     ProcessTimeout {
         #[doc = "Stores the timeout value for `ProcessTimeout`, in milliseconds."]
         timeout_ms: u32,
@@ -184,18 +184,18 @@ pub enum NodeError {
     #[error(
         "external boundary node type '{node_type_id}' must execute through its endpoint driver"
     )]
-    #[doc = "Reports external boundary execution."]
+    #[doc = "Classifies a failure at the external boundary execution stage or component of `NodeError`."]
     ExternalBoundaryExecution {
         #[doc = "Identifies the node type identifier recorded by `ExternalBoundaryExecution`."]
         node_type_id: NodeTypeId,
     },
     #[error(transparent)]
-    #[doc = "Reports config."]
+    #[doc = "Classifies a failure at the config stage or component of `NodeError`."]
     Config(#[from] ConfigError),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Describes the node descriptor contract."]
+#[doc = "Declares a graph node's stable type identity, ports, execution partition, and safety contract."]
 pub struct NodeDescriptor {
     pub(crate) type_id: NodeTypeId,
     pub(crate) display_name: &'static str,
@@ -284,36 +284,36 @@ impl NodeDescriptor {
         self.safety
     }
 
-    #[doc = "Returns whether stateful applies to `NodeDescriptor`."]
+    #[doc = "Reports whether stateful is true for `NodeDescriptor`."]
     pub const fn is_stateful(&self) -> bool {
         self.stateful
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as node descriptor error."]
+#[doc = "Classifies failures surfaced by node descriptor operations."]
 pub enum NodeDescriptorError {
     #[error("node type id cannot be empty")]
-    #[doc = "Reports empty type identifier."]
+    #[doc = "Reports that type identifier is empty."]
     EmptyTypeId,
     #[error("node display name cannot be empty")]
-    #[doc = "Reports empty display name."]
+    #[doc = "Reports that display name is empty."]
     EmptyDisplayName,
     #[error("node safety contract does not match its execution partition")]
-    #[doc = "Reports invalid safety contract."]
+    #[doc = "Reports that the supplied safety contract is invalid."]
     InvalidSafetyContract,
     #[error("node port is stored under the wrong direction")]
-    #[doc = "Reports port direction mismatch."]
+    #[doc = "Reports that port direction does not match the expected contract."]
     PortDirectionMismatch,
     #[error("node has a duplicate named port in one direction")]
-    #[doc = "Reports duplicate port."]
+    #[doc = "Reports that port duplicates an existing declaration or record."]
     DuplicatePort,
 }
 
 #[derive(Debug, Clone)]
 #[doc = "Carries the inputs and runtime context required to prepare."]
 pub struct PrepareContext {
-    #[doc = "Stores the sample spec used by `PrepareContext`."]
+    #[doc = "Declares the sample rate, channel layout, and format used by `PrepareContext`."]
     pub sample_spec: SampleSpec,
 }
 

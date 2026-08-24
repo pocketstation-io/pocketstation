@@ -58,20 +58,20 @@ pub struct CaptureOpenMetadata {
     pub stem_id: StemId,
     #[doc = "Identifies the clock identifier recorded by `CaptureOpenMetadata`."]
     pub clock_id: ClockDomainId,
-    #[doc = "Stores the source generation used by `CaptureOpenMetadata`."]
+    #[doc = "References the source generation participating in `CaptureOpenMetadata`."]
     pub source_generation: SourceGeneration,
-    #[doc = "Stores the discontinuity epoch used by `CaptureOpenMetadata`."]
+    #[doc = "Identifies the discontinuity generation attached to `CaptureOpenMetadata`."]
     pub discontinuity_epoch: u64,
-    #[doc = "Stores the permission epoch used by `CaptureOpenMetadata`."]
+    #[doc = "Identifies the permission-observation generation attached to `CaptureOpenMetadata`."]
     pub permission_epoch: PermissionEpoch,
 }
 
 /// Setup-time request for one bounded callback-oriented capture owner.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CapturePrepareRequest {
-    #[doc = "Stores the mode used by `CapturePrepareRequest`."]
+    #[doc = "Stores the mode as a `CaptureMode` value in `CapturePrepareRequest`."]
     pub mode: CaptureMode,
-    #[doc = "Stores the lineage seed used by `CapturePrepareRequest`."]
+    #[doc = "Supplies the initial lineage identity used when `CapturePrepareRequest` opens capture."]
     pub lineage_seed: CaptureLineageSeed,
     #[doc = "Sets the frame capacity frames available to `CapturePrepareRequest`."]
     pub frame_capacity_frames: usize,
@@ -85,9 +85,9 @@ pub struct CapturePrepareRequest {
 /// source failures through `runtime_event_sender`. Both sends are bounded and
 /// non-blocking. A backend must not retain another unbounded delivery path.
 pub struct CaptureDelivery {
-    #[doc = "Stores the frame sender used by `CaptureDelivery`."]
+    #[doc = "Sends captured frames from `CaptureDelivery` into the Session runtime."]
     pub frame_sender: CapturedFrameSender,
-    #[doc = "Stores the runtime event sender used by `CaptureDelivery`."]
+    #[doc = "Sends capture lifecycle and failure events from `CaptureDelivery` to the Session runtime."]
     pub runtime_event_sender: SourceRuntimeEventSender,
 }
 
@@ -180,11 +180,11 @@ impl PreparedCapture {
 /// Aggregate observations from one active capture ownership boundary.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CaptureOwnerObservations {
-    #[doc = "Stores the backend used by `CaptureOwnerObservations`."]
+    #[doc = "Stores the backend as a `CaptureObservations` value in `CaptureOwnerObservations`."]
     pub backend: CaptureObservations,
-    #[doc = "Stores the frame stream used by `CaptureOwnerObservations`."]
+    #[doc = "Stores the frame stream as a `CapturedFrameStreamStats` value in `CaptureOwnerObservations`."]
     pub frame_stream: CapturedFrameStreamStats,
-    #[doc = "Stores the runtime events used by `CaptureOwnerObservations`."]
+    #[doc = "Contains the runtime events owned or reported by `CaptureOwnerObservations`."]
     pub runtime_events: SourceRuntimeEventObservations,
 }
 

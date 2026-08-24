@@ -246,14 +246,13 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "dbd93e059adc4a2f48a8b3daabdffddea8f9f61e0f86273359ba1af174d64abf",
       "lines": [
-        1,
-        210
+        167,
+        209
       ],
-      "path": "tests/connector_portable_semantics.rs",
-      "symbol": null
+      "path": "tests/connector_portable_semantics.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -280,8 +279,8 @@
     "std::collections::BTreeSet"
   ],
   "inputs": [
-    "serde_json::Value",
-    "std::collections::BTreeSet"
+    "Depends on `serde_json::Value` through a declared Rust import.",
+    "Depends on `std::collections::BTreeSet` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -303,22 +302,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/connector_portable_semantics.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-c53de7be9374efb9cc13"
   ],
   "outputs": [
-    "return Err(\"connector.configuration.default_missing\");",
-    "return Err(\"connector.configuration.duplicate_field\");",
-    "return Err(\"connector.configuration.invalid_field\");",
-    "return Err(\"connector.configuration.invalid_revision\");",
-    "return Err(\"connector.configuration.secret_default_forbidden\");",
-    "return Err(\"connector.configuration.too_many_fields\");",
-    "return Err(\"connector.manifest.duplicate_component\");",
-    "return Err(\"connector.manifest.invalid_identity\");",
-    "return Err(\"connector.manifest.invalid_revision\");",
-    "return Err(\"connector.manifest.too_many_components\");"
+    "Creates a typed failure at tests/connector_portable_semantics.rs:30.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:39.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:46.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:56.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:65.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:68.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:73.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:76.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:88.",
+    "Creates a typed failure at tests/connector_portable_semantics.rs:97."
   ],
   "package": "pocketstation",
   "path": "tests/connector_portable_semantics.rs",

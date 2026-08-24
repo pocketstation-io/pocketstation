@@ -1,6 +1,6 @@
 # Memory ownership and buffer pools
 
-<!-- claims: CLM-DOC-052-CAP-001,CLM-DOC-052-CAP-002,CLM-DOC-052-SOURCE-001 -->
+<!-- claims: CLM-DOC-052-SCOPE-001,CLM-DOC-052-TEXT-001,CLM-DOC-052-TEXT-002,CLM-DOC-052-TEXT-003,CLM-DOC-052-TEXT-004,CLM-DOC-052-SOURCE-001 -->
 
 ## Scope
 
@@ -18,16 +18,16 @@ The scope of **Memory ownership and buffer pools** ends at the native contracts 
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::frame::pool::AudioBufferHandle` | struct | Owns bounded access to audio buffer. | `src/frame/pool.rs:198` |
+| `pocketstation::frame::pool::AudioBufferHandle` | struct | Holds the ownership or bounded access represented by audio buffer handle. | `src/frame/pool.rs:198` |
 | `pocketstation::frame::pool::AudioBufferPool` | struct | Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame. | `src/frame/pool.rs:24` |
-| `pocketstation::frame::pool::SharedAudioBufferHandle` | struct | Owns bounded access to shared audio buffer. | `src/frame/pool.rs:281` |
-| `pocketstation::frame::pool::AudioBufferWriteError` | enum | Classifies failures reported as audio buffer write error. | `src/frame/pool.rs:14` |
-| `pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded` | variant | Reported when the owning operation encounters capacity exceeded. | `src/frame/pool.rs:18` |
-| `pocketstation::runtime::audio::router::PlanRouterError::MissingMemoryPlan` | variant | Reported when the owning operation encounters missing memory plan. | `src/runtime/audio/router.rs:19` |
+| `pocketstation::frame::pool::SharedAudioBufferHandle` | struct | Holds the ownership or bounded access represented by shared audio buffer handle. | `src/frame/pool.rs:281` |
+| `pocketstation::frame::pool::AudioBufferWriteError` | enum | Classifies failures produced during audio buffer writing. | `src/frame/pool.rs:14` |
+| `pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded` | variant | Classifies a failure at the capacity exceeded stage or component of `AudioBufferWriteError`. | `src/frame/pool.rs:18` |
+| `pocketstation::runtime::audio::router::PlanRouterError::MissingMemoryPlan` | variant | Reports that the required memory plan is missing. | `src/runtime/audio/router.rs:19` |
 | `PlanRouterError::MissingMemoryPlan::edge_id` | struct_field | Identifies the edge identifier recorded by `MissingMemoryPlan`. | `src/runtime/audio/router.rs:19` |
 | `pool::AudioBufferWriteError::CapacityExceeded::capacity_samples` | struct_field | Sets the capacity samples available to `CapacityExceeded`. | `src/frame/pool.rs:20` |
-| `pool::AudioBufferWriteError::CapacityExceeded::requested_samples` | struct_field | Stores the requested samples used by `CapacityExceeded`. | `src/frame/pool.rs:19` |
-| `audio` | module | Types and operations for audio. | `src/frame/audio.rs:1` |
+| `pool::AudioBufferWriteError::CapacityExceeded::requested_samples` | struct_field | Contains the requested samples owned or reported by `CapacityExceeded`. | `src/frame/pool.rs:19` |
+| `audio` | module | Realtime audio routing, execution, plan-runner, and runtime observation types. | `src/frame/audio.rs:1` |
 | `lineage` | module | Compact source-aware lineage carried on realtime audio frames. | `src/frame/lineage.rs:1` |
 | `pool` | module | Fixed-capacity realtime audio storage and ownership handles. | `src/frame/pool.rs:1` |
 | `pocketstation::frame::audio::AudioFrame` | struct | Carries one audio payload together with its declared metadata. | `src/frame/audio.rs:39` |
@@ -112,7 +112,30 @@ Executable evidence selected for **Memory ownership and buffer pools** is limite
 
 The claims on **Memory ownership and buffer pools** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/frame/audio.rs:1-636` (`DIRECT`)
-- `src/frame/pool.rs:1-336` (`DIRECT`)
+- `src/frame/audio.rs:6-6` (`DIRECT`)
+- `src/frame/audio.rs:10-10` (`DIRECT`)
+- `src/frame/audio.rs:12-12` (`DIRECT`)
+- `src/frame/audio.rs:12-12` (`DIRECT`)
+- `src/frame/audio.rs:12-12` (`DIRECT`)
+- `src/frame/audio.rs:13-15` (`DIRECT`)
+- `src/frame/audio.rs:14-14` (`DIRECT`)
+- `src/frame/audio.rs:17-17` (`DIRECT`)
+- `src/frame/audio.rs:17-17` (`DIRECT`)
+- `src/frame/audio.rs:17-17` (`DIRECT`)
+- `src/frame/audio.rs:18-22` (`DIRECT`)
+- `src/frame/audio.rs:19-19` (`DIRECT`)
+- `src/frame/audio.rs:20-20` (`DIRECT`)
+- `src/frame/audio.rs:21-21` (`DIRECT`)
+- `src/frame/audio.rs:25-31` (`DIRECT`)
+- `src/frame/audio.rs:33-35` (`DIRECT`)
+- `src/frame/audio.rs:38-38` (`DIRECT`)
+- `src/frame/audio.rs:39-48` (`DIRECT`)
+- `src/frame/audio.rs:40-40` (`DIRECT`)
+- `src/frame/audio.rs:41-41` (`DIRECT`)
+- `src/frame/audio.rs:42-42` (`DIRECT`)
+- `src/frame/audio.rs:43-43` (`DIRECT`)
+- `src/frame/audio.rs:44-44` (`DIRECT`)
+- `src/frame/audio.rs:45-45` (`DIRECT`)
+- `src/frame/pool.rs:1-4` (`DECLARED`)
 
 For **Memory ownership and buffer pools**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

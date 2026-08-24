@@ -37,11 +37,11 @@ impl PksExtensionAbiVersion {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[doc = "Selects the extension kind used by PocketStation."]
 pub enum PksExtensionKind {
-    #[doc = "Selects source behavior for `PksExtensionKind`."]
+    #[doc = "Registers the native extension as a source implementation."]
     Source = 1,
-    #[doc = "Selects operator behavior for `PksExtensionKind`."]
+    #[doc = "Registers the native extension as a operator implementation."]
     Operator = 2,
-    #[doc = "Selects endpoint behavior for `PksExtensionKind`."]
+    #[doc = "Registers the native extension as a endpoint implementation."]
     Endpoint = 3,
 }
 
@@ -49,15 +49,15 @@ pub enum PksExtensionKind {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[doc = "Selects the extension port direction used by PocketStation."]
 pub enum PksExtensionPortDirection {
-    #[doc = "Selects input behavior for `PksExtensionPortDirection`."]
+    #[doc = "Declares a native-extension port as input."]
     Input = 1,
-    #[doc = "Selects output behavior for `PksExtensionPortDirection`."]
+    #[doc = "Declares a native-extension port as output."]
     Output = 2,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
-#[doc = "Describes the extension descriptor contract."]
+#[doc = "Declares a native extension's ABI version, library callbacks, and registration entrypoint."]
 pub struct PksExtensionDescriptor {
     #[doc = "Stores the byte size of the `PksExtensionDescriptor` ABI structure."]
     pub struct_size_bytes: u32,
@@ -65,11 +65,11 @@ pub struct PksExtensionDescriptor {
     pub abi_major: u16,
     #[doc = "Stores the minor ABI version expected by `PksExtensionDescriptor`."]
     pub abi_minor: u16,
-    #[doc = "Stores the kind used by `PksExtensionDescriptor`."]
+    #[doc = "Records the kind selected for `PksExtensionDescriptor`."]
     pub kind: u32,
-    #[doc = "Stores the revision used by `PksExtensionDescriptor`."]
+    #[doc = "Stores the revision component of `PksExtensionDescriptor`."]
     pub revision: u32,
-    #[doc = "Stores the generation used by `PksExtensionDescriptor`."]
+    #[doc = "Identifies the generation of the resource represented by `PksExtensionDescriptor`."]
     pub generation: u32,
     #[doc = "Stores the number of port represented by `PksExtensionDescriptor`."]
     pub port_count: u32,
@@ -87,17 +87,17 @@ pub struct PksExtensionPort {
     pub abi_major: u16,
     #[doc = "Stores the minor ABI version expected by `PksExtensionPort`."]
     pub abi_minor: u16,
-    #[doc = "Stores the direction used by `PksExtensionPort`."]
+    #[doc = "Records the direction selected for `PksExtensionPort`."]
     pub direction: u32,
     #[doc = "Indicates whether required applies to `PksExtensionPort`."]
     pub required: u32,
-    #[doc = "Stores the name used by `PksExtensionPort`."]
+    #[doc = "Stores the human-readable name used to identify `PksExtensionPort`."]
     pub name: PksSessionUtf8,
     #[doc = "Identifies the signal identifier recorded by `PksExtensionPort`."]
     pub signal_id: PksSessionUtf8,
-    #[doc = "Stores the semantic role used by `PksExtensionPort`."]
+    #[doc = "Names the semantic role assigned to the extension port in `PksExtensionPort`."]
     pub semantic_role: PksSessionUtf8,
-    #[doc = "Stores the schema used by `PksExtensionPort`."]
+    #[doc = "Records the schema selected for `PksExtensionPort`."]
     pub schema: PksSessionUtf8,
 }
 

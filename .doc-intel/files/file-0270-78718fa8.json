@@ -64,14 +64,13 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "10b6122be6028d572241223a9301c87bdfcf9c666d92d51fd8dca0698c3431ff",
       "lines": [
-        1,
-        69
+        4,
+        68
       ],
-      "path": "tests/macos_native_ring_contract.rs",
-      "symbol": null
+      "path": "tests/macos_native_ring_contract.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -103,11 +102,11 @@
     "std::process::Command"
   ],
   "inputs": [
-    "#![cfg(target_os = \"macos\")]",
-    "CARGO_MANIFEST_DIR",
-    "std::env::temp_dir().join(format!(\"pks-native-ring-contract-{}\", std::process::id()));",
-    "std::path::PathBuf",
-    "std::process::Command"
+    "Consumes configuration at tests/macos_native_ring_contract.rs:1.",
+    "Consumes configuration at tests/macos_native_ring_contract.rs:11.",
+    "Depends on `std::path::PathBuf` through a declared Rust import.",
+    "Depends on `std::process::Command` through a declared Rust import.",
+    "Reads process environment variable `CARGO_MANIFEST_DIR`."
   ],
   "invariants": [
     {
@@ -157,7 +156,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/macos_native_ring_contract.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

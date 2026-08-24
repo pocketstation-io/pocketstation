@@ -1,6 +1,6 @@
 # Feature flags
 
-<!-- claims: CLM-REF-014-CAP-001,CLM-REF-014-CAP-002,CLM-REF-014-SOURCE-001 -->
+<!-- claims: CLM-REF-014-SCOPE-001,CLM-REF-014-TEXT-001,CLM-REF-014-TEXT-002,CLM-REF-014-TEXT-003,CLM-REF-014-SOURCE-001 -->
 
 ## Scope
 
@@ -37,6 +37,6 @@ The **Feature flags** inventory records compiler-visible or extracted evidence a
 
 The claims on **Feature flags** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
 
 For **Feature flags**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -173,8 +173,8 @@
       "classification": "DIRECT",
       "content_hash": "620e5fbf62eb9c80d4da86f12fe6b0f46e4082ae13ccb5fc682aebf2071eab92",
       "lines": [
-        1,
-        978
+        49,
+        69
       ],
       "path": "native/macos/asp/Plugin.cpp",
       "symbol": null
@@ -215,7 +215,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish physical-device qualification merely by implementing a target backend."
+    "The `native/macos/asp/Plugin.cpp` native implementation does not establish physical-device qualification."
   ],
   "observed_patterns": [
     "pattern-afe7f6a61d58d81ae5df"

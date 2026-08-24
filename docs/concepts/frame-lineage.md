@@ -1,6 +1,6 @@
 # Frame identity and lineage
 
-<!-- claims: CLM-DOC-012-CAP-001,CLM-DOC-012-SOURCE-001 -->
+<!-- claims: CLM-DOC-012-SCOPE-001,CLM-DOC-012-TEXT-001,CLM-DOC-012-TEXT-002,CLM-DOC-012-TEXT-003,CLM-DOC-012-TEXT-004,CLM-DOC-012-TEXT-005,CLM-DOC-012-TEXT-006,CLM-DOC-012-SOURCE-001 -->
 
 ## What it is
 
@@ -87,6 +87,6 @@ Executable evidence selected for **Frame identity and lineage** is limited to ea
 
 The claims on **Frame identity and lineage** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/frame/lineage.rs:1-101` (`DIRECT`)
+- `src/frame/lineage.rs:1-1` (`DECLARED`)
 
 For **Frame identity and lineage**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

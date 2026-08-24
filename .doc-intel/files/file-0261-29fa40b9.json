@@ -61,14 +61,13 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "13a7b294ee2a36b1a1e84e24d3d1acd3da58c1533a98646f511a0cad2c3300d5",
       "lines": [
-        1,
-        33
+        4,
+        32
       ],
-      "path": "tests/codec_opus_roundtrip.rs",
-      "symbol": null
+      "path": "tests/codec_opus_roundtrip.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -95,8 +94,8 @@
     "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }"
   ],
   "inputs": [
-    "pocketstation::codec::{OpusDecoder, OpusEncoder, OPUS_MAX_PACKET_BYTES}",
-    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }"
+    "Depends on `pocketstation::codec::{OpusDecoder, OpusEncoder, OPUS_MAX_PACKET_BYTES}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -105,7 +104,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/codec_opus_roundtrip.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-fca1858abc40b4d3324a"

@@ -151,14 +151,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "057853746fb185c8462f34ba3985188f81ff767e15c05315aab71a6b7b425026",
       "lines": [
         1,
-        96
+        1
       ],
       "path": "src/runtime/signal/observations.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::signal::observations"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -214,10 +214,11 @@
     "tokio::sync::Notify"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "tokio::sync::Notify"
+    "Consumes configuration at src/runtime/signal/observations.rs:71.",
+    "Consumes configuration at src/runtime/signal/observations.rs:85.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `tokio::sync::Notify` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -226,16 +227,16 @@
   "module": "pocketstation::runtime::signal::observations",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::signal::observations` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:snapshot",
-    "fn:wait_ready",
-    "fn:wait_terminal",
-    "struct:AsyncOperatorObservationHandle",
-    "struct:AsyncOperatorObservationState",
-    "struct:AsyncOperatorObservations"
+    "Declares public fn `snapshot`.",
+    "Declares public fn `wait_ready`.",
+    "Declares public fn `wait_terminal`.",
+    "Declares public struct `AsyncOperatorObservationHandle`.",
+    "Declares public struct `AsyncOperatorObservationState`.",
+    "Declares public struct `AsyncOperatorObservations`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/observations.rs",
@@ -287,8 +288,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::signal::observations responsibilities, including Reports the async operator observations collected at an observation boundary.; Counts the total number of input attempted observed by `AsyncOperatorObservations`.; Counts the total number of input dropped observed by `AsyncOperatorObservations`.."
+    "classification": "DECLARED",
+    "text": "Async operator lifecycle and throughput observations."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -370,8 +371,8 @@
     "AsyncOperatorObservations::graceful_finish_total: Counts the total number of graceful finish observed by `AsyncOperatorObservations`.",
     "AsyncOperatorObservations::idle_poll_total: Counts the total number of idle poll observed by `AsyncOperatorObservations`.",
     "AsyncOperatorObservations::ready: Indicates whether ready applies to `AsyncOperatorObservations`.",
-    "AsyncOperatorObservations::joined: Stores the joined used by `AsyncOperatorObservations`.",
-    "pocketstation::runtime::signal::observations::AsyncOperatorObservationHandle: Owns bounded access to async operator observation.",
+    "AsyncOperatorObservations::joined: Reports whether joined is true for `AsyncOperatorObservations`.",
+    "pocketstation::runtime::signal::observations::AsyncOperatorObservationHandle: Holds the ownership or bounded access represented by async operator observation handle.",
     "snapshot: Returns a point-in-time snapshot of `AsyncOperatorObservationHandle`.",
     "wait_ready: Waits for ready for `AsyncOperatorObservationHandle`.",
     "wait_terminal: Waits for terminal for `AsyncOperatorObservationHandle`."

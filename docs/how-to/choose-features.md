@@ -1,6 +1,6 @@
 # Choose crate features
 
-<!-- claims: CLM-GUIDE-027-CAP-001,CLM-GUIDE-027-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-027-SCOPE-001,CLM-GUIDE-027-TEXT-001,CLM-GUIDE-027-TEXT-002,CLM-GUIDE-027-TEXT-003,CLM-GUIDE-027-TEXT-004,CLM-GUIDE-027-TEXT-005,CLM-GUIDE-027-TEXT-006,CLM-GUIDE-027-SOURCE-001 -->
 
 ## Scope
 
@@ -19,6 +19,15 @@ The consumer role: native capture application, contracts-only library, conforman
 3. Enable conformance-fixtures only for fixture APIs.
 4. Reserve internal-testing for repository checks.
 5. Rebuild after feature changes.
+
+## Concrete repository example
+
+Run the choose crate features commands from the PocketStation checkout. Each command is part of this task's documented validation surface.
+
+```bash
+cargo check --all-features
+cargo check --no-default-features
+```
 
 ## Important consequence
 
@@ -66,6 +75,6 @@ No intentionally public Rust declaration is owned directly by **Choose crate fea
 
 The claims on **Choose crate features** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
 
 For **Choose crate features**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

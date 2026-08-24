@@ -84,8 +84,8 @@
       "classification": "DIRECT",
       "content_hash": "8598942414a86ef5a6a6a8afcecd561d703c170d0787b4bb17abef4139a16d44",
       "lines": [
-        1,
-        615
+        7,
+        27
       ],
       "path": "include/pocketstation.h",
       "symbol": null
@@ -147,7 +147,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not implement the Rust runtime behind the ABI or extend ownership beyond the declared C contract."
+    "`include/pocketstation.h` does not implement the Rust runtime or extend ownership beyond its C declarations."
   ],
   "observed_patterns": [],
   "outputs": [

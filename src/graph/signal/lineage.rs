@@ -94,10 +94,10 @@ impl SignalLineage {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as signal lineage error."]
+#[doc = "Classifies failures surfaced by signal lineage operations."]
 pub enum SignalLineageError {
     #[error("signal lineage source generation must be non-zero")]
-    #[doc = "Reports zero source generation."]
+    #[doc = "Reports that source generation must be greater than zero."]
     ZeroSourceGeneration,
 }
 
@@ -176,15 +176,15 @@ impl SignalDerivation {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as signal derivation error."]
+#[doc = "Classifies failures surfaced by signal derivation operations."]
 pub enum SignalDerivationError {
     #[error("derived signal upstream timing is invalid")]
-    #[doc = "Reports invalid timestamp range."]
+    #[doc = "Reports that the supplied timestamp range is invalid."]
     InvalidTimestampRange,
     #[error("derived signal operator id is empty")]
-    #[doc = "Reports empty operator identifier."]
+    #[doc = "Reports that operator identifier is empty."]
     EmptyOperatorId,
     #[error("derived signal operator revision and generation must be non-zero")]
-    #[doc = "Reports zero operator version."]
+    #[doc = "Reports that operator version must be greater than zero."]
     ZeroOperatorVersion,
 }

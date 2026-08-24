@@ -236,11 +236,151 @@
       "classification": "DIRECT",
       "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
       "lines": [
-        1,
-        162
+        18,
+        18
       ],
       "path": "src/abi/session/conformance_fixture.rs",
-      "symbol": null
+      "symbol": "DeterministicCaptureBackend"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "DeterministicPreparedCapture"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        22,
+        25
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "DeterministicActiveCapture"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "stop_requested"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "worker"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        28,
+        30
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        34,
+        74
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "open"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        78,
+        80
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "source_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        82,
+        84
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "observation_handle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        86,
+        88
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        90,
+        100
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "stop_and_join"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        104,
+        109
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "drop"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        112,
+        131
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "conformance_host"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        140,
+        156
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "pks_session_conformance_engine_create"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "0098c9101e1f32db63d88ea679c0f394e9f4ff58a9d85236ddb30a530bf61c98",
+      "lines": [
+        159,
+        161
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": "pks_session_conformance_panic"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -304,14 +444,14 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "crate::abi::session::{ abi_call, engine_options, guard_pointer_alignment, read_versioned_record, runtime_state, write_record, AbiError, PksSessionEngineConfig, PksSessionHandle, PksSessionStatus, }",
-    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
-    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
-    "crate::graph::PrepareContext",
-    "crate::session::{NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuilder}",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::time::Duration"
+    "Depends on `crate::abi::session::{ abi_call, engine_options, guard_pointer_alignment, read_versioned_record, runtime_state, write_record, AbiError, PksSessionEngineConfig, PksSessionHandle, PksSessionStatus, }` through a declared Rust import.",
+    "Depends on `crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::PrepareContext` through a declared Rust import.",
+    "Depends on `crate::session::{NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuilder}` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, Ordering}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -320,15 +460,15 @@
   "module": "pocketstation::abi::session::conformance_fixture",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::abi::session::conformance_fixture` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-89c11b4a94980624b4e5",
     "pattern-c94cceb556c86ba83b5b"
   ],
   "outputs": [
-    "fn:pks_session_conformance_engine_create",
-    "fn:pks_session_conformance_panic"
+    "Declares public fn `pks_session_conformance_engine_create`.",
+    "Declares public fn `pks_session_conformance_panic`."
   ],
   "package": "pocketstation",
   "path": "src/abi/session/conformance_fixture.rs",
@@ -430,7 +570,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::abi::session::conformance fixture responsibilities, including conformance fixture; deterministic capture backend; deterministic prepared capture."
+    "text": "Owns the internal conformance fixture module, deterministic capture backend struct, deterministic prepared capture struct, deterministic active capture struct used by `pocketstation::abi::session::conformance_fixture`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -465,6 +605,14 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/abi/session/abi.rs",
+    "CALLS:src/abi/session/mod.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/capture/authorization.rs",
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/session/lifecycle/host.rs",
+    "IMPLEMENTS:src/capture/capture_owner.rs",
     "REFERENCES:src/abi/session/abi.rs",
     "REFERENCES:src/abi/session/error.rs",
     "REFERENCES:src/capture/authorization.rs",

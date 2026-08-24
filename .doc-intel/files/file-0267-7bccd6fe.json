@@ -72,14 +72,13 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "4884f1321345798d5aa2fb5be77bad3a7a77bb1f649606c39e1b8532d8417cd9",
       "lines": [
-        1,
-        41
+        16,
+        38
       ],
-      "path": "tests/external_source.rs",
-      "symbol": null
+      "path": "tests/external_source.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -107,9 +106,9 @@
     "super::super::*"
   ],
   "inputs": [
-    "pocketstation::{ Session, SessionSourceError, SourceConfiguration, SourceFactory, SourceInstanceHandle, SourceInstanceId, SourceOutputHandle, SourceTypeId, }",
-    "std::sync::Arc",
-    "super::super::*"
+    "Depends on `pocketstation::{ Session, SessionSourceError, SourceConfiguration, SourceFactory, SourceInstanceHandle, SourceInstanceId, SourceOutputHandle, SourceTypeId, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::super::*` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -118,7 +117,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/external_source.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [
     "pattern-d4911f9fbea1eeff163d"

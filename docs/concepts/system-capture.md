@@ -1,6 +1,6 @@
 # System capture
 
-<!-- claims: CLM-DOC-010-CAP-001,CLM-DOC-010-SOURCE-001 -->
+<!-- claims: CLM-DOC-010-SCOPE-001,CLM-DOC-010-TEXT-001,CLM-DOC-010-TEXT-002,CLM-DOC-010-TEXT-003,CLM-DOC-010-TEXT-004,CLM-DOC-010-TEXT-005,CLM-DOC-010-TEXT-006,CLM-DOC-010-SOURCE-001 -->
 
 ## What it is
 
@@ -45,11 +45,11 @@ The scope of **System capture** ends at the native contracts and executable cond
 | `pocketstation::capture::platform::macos::loopback::SystemLoopbackSource` | struct | Manages a macOS loopback capture session. | `src/capture/platform/macos/loopback.rs:53` |
 | `pocketstation::capture::query::SourceProvider` | trait | Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract. | `src/capture/query.rs:48` |
 | `pocketstation::capture::query::LocalSourceProvider` | struct | Discovers and resolves capture sources through the target platform backend. | `src/capture/query.rs:52` |
-| `pocketstation::capture::query::SourceQuery` | enum | Enumerates the supported source query cases. | `src/capture/query.rs:13` |
+| `pocketstation::capture::query::SourceQuery` | enum | Describes the source kind and optional application or device selector used for discovery. | `src/capture/query.rs:13` |
 | `capture_mode` | function | Returns the capture mode held by `SystemLoopbackSource`. | `src/capture/platform/macos/loopback.rs:57` |
 | `pocketstation::capture::query::application_capture_available` | function | Reports whether this host exposes the native application-capture facility. | `src/capture/query.rs:64` |
 | `pocketstation::capture::query::discover_sources` | function | Discovers capture sources available from the local provider. | `src/capture/query.rs:85` |
-| `pocketstation::capture::query::resolve_query` | function | Resolves query for `query`. | `src/capture/query.rs:40` |
+| `pocketstation::capture::query::resolve_query` | function | Filters discovered capture sources using the supplied source query. | `src/capture/query.rs:40` |
 | `pocketstation::capture::query::SourceQuery::Any` | variant | Represents the any alternative defined by `SourceQuery`. | `src/capture/query.rs:14` |
 | `pocketstation::capture::query::SourceQuery::App` | variant | Represents the app alternative defined by `SourceQuery`. | `src/capture/query.rs:15` |
 
@@ -85,6 +85,6 @@ Executable evidence selected for **System capture** is limited to each test's re
 
 The claims on **System capture** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/query.rs:1-137` (`DIRECT`)
+- `src/capture/query.rs:1-1` (`DECLARED`)
 
 For **System capture**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

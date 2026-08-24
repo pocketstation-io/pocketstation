@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -20,6 +21,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -79,19 +81,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "68aff73d8c1620e8f7c94412fd3f006548b3591a6051c3a5bb4e5f2f815f10e1",
       "lines": [
         1,
-        19
+        1
       ],
       "path": "src/session/lifecycle/rollback.rs",
-      "symbol": null
+      "symbol": "pocketstation::session::lifecycle::rollback"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -111,6 +114,7 @@
   "generated_from": "not_applicable",
   "git_object": "44888c6b0e56b868fb7b5a8dbcc267b9ffc5ac64",
   "implemented_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -120,6 +124,7 @@
     "StartupRollback"
   ],
   "imported_by": [
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
@@ -129,7 +134,7 @@
     "crate::session::SessionRollbackFailure"
   ],
   "inputs": [
-    "crate::session::SessionRollbackFailure"
+    "Depends on `crate::session::SessionRollbackFailure` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -138,13 +143,13 @@
   "module": "pocketstation::session::lifecycle::rollback",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::rollback` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:append",
-    "fn:failures_total",
-    "struct:StartupRollback"
+    "Declares public fn `append`.",
+    "Declares public fn `failures_total`.",
+    "Declares public struct `StartupRollback`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/rollback.rs",
@@ -178,8 +183,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::rollback responsibilities, including rollback; default; startup rollback."
+    "classification": "DECLARED",
+    "text": "Reverse-order startup rollback accounting."
   },
   "queues": [],
   "recovery_behavior": [

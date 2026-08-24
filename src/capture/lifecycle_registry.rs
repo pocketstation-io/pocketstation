@@ -5,22 +5,22 @@ use std::collections::{HashMap, HashSet};
 use super::{CaptureSource, SourceGeneration, SourceState, StableSourceId};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Enumerates the supported source generation transition cases."]
+#[doc = "Records whether a capture source disappeared, reappeared, or changed generation."]
 pub enum SourceGenerationTransition {
     #[doc = "Selects the disappeared case of `SourceGenerationTransition`."]
     Disappeared {
         #[doc = "Identifies the stable identifier recorded by `Disappeared`."]
         stable_id: StableSourceId,
-        #[doc = "Stores the generation used by `Disappeared`."]
+        #[doc = "Identifies the generation of the resource represented by `Disappeared`."]
         generation: SourceGeneration,
     },
     #[doc = "Selects the reappeared case of `SourceGenerationTransition`."]
     Reappeared {
         #[doc = "Identifies the stable identifier recorded by `Reappeared`."]
         stable_id: StableSourceId,
-        #[doc = "Stores the previous generation used by `Reappeared`."]
+        #[doc = "Identifies the generation that preceded the transition recorded by `Reappeared`."]
         previous_generation: SourceGeneration,
-        #[doc = "Stores the generation used by `Reappeared`."]
+        #[doc = "Identifies the generation of the resource represented by `Reappeared`."]
         generation: SourceGeneration,
     },
 }

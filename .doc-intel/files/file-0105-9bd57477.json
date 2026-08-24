@@ -403,14 +403,112 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
       "lines": [
-        1,
-        533
+        511,
+        515
       ],
-      "path": "src/capture/tests.rs",
-      "symbol": null
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        105,
+        114
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        79,
+        105
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        392,
+        421
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        147,
+        174
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        3,
+        12
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        311,
+        323
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        249,
+        261
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        234,
+        249
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        369,
+        392
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        52,
+        79
+      ],
+      "path": "src/capture/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "2ff3e938ba3f1ba7a0bfa8cd5c42054786b97ca76da0888aa1cc124fe11a0965",
+      "lines": [
+        219,
+        234
+      ],
+      "path": "src/capture/tests.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -444,9 +542,9 @@
     "super::*"
   ],
   "inputs": [
-    "crate::frame::Platform",
-    "std::num::NonZeroU32",
-    "super::*"
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `std::num::NonZeroU32` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -492,11 +590,11 @@
   "module": "pocketstation::capture::tests",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::tests` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "Err(CaptureSampleTimelineError::SourcePositionMovedBackward {"
+    "Creates a typed failure at src/capture/tests.rs:318."
   ],
   "package": "pocketstation",
   "path": "src/capture/tests.rs",
@@ -744,7 +842,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::tests responsibilities, including the src/capture/tests boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::tests`."
   },
   "queues": [],
   "recovery_behavior": [],

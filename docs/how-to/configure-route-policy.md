@@ -1,6 +1,6 @@
 # Choose route capacity and loss policy
 
-<!-- claims: CLM-GUIDE-008-CAP-001,CLM-GUIDE-008-CAP-002,CLM-GUIDE-008-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-008-SCOPE-001,CLM-GUIDE-008-TEXT-001,CLM-GUIDE-008-TEXT-002,CLM-GUIDE-008-TEXT-003,CLM-GUIDE-008-TEXT-004,CLM-GUIDE-008-TEXT-005,CLM-GUIDE-008-TEXT-006,CLM-GUIDE-008-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,24 @@ The producer and consumer execution partitions, acceptable loss behavior, and ob
 3. Select backpressure, loss, copy, delivery, and observation policies.
 4. Compile and handle rejected contracts.
 5. Measure queue depth, saturation, and drops before changing capacity.
+
+## Concrete repository example
+
+The executable repository test `given_any_and_audio_when_negotiated_then_yields_audio` (`test-035239ef3f7bf3e07aee`) shows the concrete API sequence and asserted outcome at `src/graph/ports.rs:496`.
+
+```rust
+    }
+
+    #[test]
+    fn given_any_and_audio_when_negotiated_then_yields_audio() {
+        let audio = MediaCaps::Audio(stereo_caps());
+        assert_eq!(MediaCaps::Any.negotiate(&audio), Some(audio));
+    }
+```
+
+```bash
+cargo test --all-features given_any_and_audio_when_negotiated_then_yields_audio
+```
 
 ## Important consequence
 
@@ -65,10 +83,10 @@ Executable evidence selected for **Choose route capacity and loss policy** is li
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::graph::ports::LossPolicy` | enum | Selects the loss policy used by PocketStation. | `src/graph/ports.rs:287` |
-| `pocketstation::graph::ports::LossPolicy::ConcealForAudio` | variant | Selects conceal for audio behavior for `LossPolicy`. | `src/graph/ports.rs:288` |
-| `pocketstation::graph::ports::LossPolicy::DropAllowed` | variant | Selects drop allowed behavior for `LossPolicy`. | `src/graph/ports.rs:290` |
-| `pocketstation::graph::ports::LossPolicy::MustDeliverOrFail` | variant | Selects must deliver or fail behavior for `LossPolicy`. | `src/graph/ports.rs:289` |
-| `pocketstation::runtime::audio::router::PlanRouterError::ZeroCapacity` | variant | Reported when the owning operation encounters zero capacity. | `src/runtime/audio/router.rs:21` |
+| `pocketstation::graph::ports::LossPolicy::ConcealForAudio` | variant | Handles delivery loss using the conceal for audio policy. | `src/graph/ports.rs:288` |
+| `pocketstation::graph::ports::LossPolicy::DropAllowed` | variant | Handles delivery loss using the drop allowed policy. | `src/graph/ports.rs:290` |
+| `pocketstation::graph::ports::LossPolicy::MustDeliverOrFail` | variant | Handles delivery loss using the must deliver or fail policy. | `src/graph/ports.rs:289` |
+| `pocketstation::runtime::audio::router::PlanRouterError::ZeroCapacity` | variant | Reports that capacity must be greater than zero. | `src/runtime/audio/router.rs:21` |
 | `PlanRouterError::ZeroCapacity::edge_id` | struct_field | Identifies the edge identifier recorded by `ZeroCapacity`. | `src/runtime/audio/router.rs:21` |
 | `pocketstation::runtime::audio::router::DispatchSummary` | struct | Reports the counters and terminal facts collected for dispatch. | `src/runtime/audio/router.rs:696` |
 | `pocketstation::runtime::audio::router::EdgeObservations` | struct | Reports the edge observations collected at an observation boundary. | `src/runtime/audio/router.rs:142` |
@@ -88,6 +106,6 @@ Executable evidence selected for **Choose route capacity and loss policy** is li
 
 The claims on **Choose route capacity and loss policy** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/graph/ports.rs:1-618` (`DIRECT`)
+- `src/graph/ports.rs:1-3` (`DECLARED`)
 
 For **Choose route capacity and loss policy**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

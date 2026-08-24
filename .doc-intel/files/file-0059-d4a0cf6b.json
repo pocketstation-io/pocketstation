@@ -62,7 +62,7 @@
       "content_hash": "18d7218047bd77b599c0639b69c4fead31149beccbc13156fd387512bc818b91",
       "lines": [
         1,
-        164
+        21
       ],
       "path": "scripts/fixtures/connector-v1-vectors.json",
       "symbol": null
@@ -103,7 +103,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`scripts/fixtures/connector-v1-vectors.json` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

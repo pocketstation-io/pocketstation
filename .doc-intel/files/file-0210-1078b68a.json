@@ -148,14 +148,40 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "5e66ab00b03407135b0532c41c10b7bdfc0a86440e5b70106973f84dddc553e0",
       "lines": [
-        1,
-        173
+        154,
+        172
       ],
-      "path": "src/session/declaration/tests/operator_connections.rs",
-      "symbol": null
+      "path": "src/session/declaration/tests/operator_connections.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5e66ab00b03407135b0532c41c10b7bdfc0a86440e5b70106973f84dddc553e0",
+      "lines": [
+        110,
+        154
+      ],
+      "path": "src/session/declaration/tests/operator_connections.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5e66ab00b03407135b0532c41c10b7bdfc0a86440e5b70106973f84dddc553e0",
+      "lines": [
+        19,
+        81
+      ],
+      "path": "src/session/declaration/tests/operator_connections.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5e66ab00b03407135b0532c41c10b7bdfc0a86440e5b70106973f84dddc553e0",
+      "lines": [
+        81,
+        110
+      ],
+      "path": "src/session/declaration/tests/operator_connections.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -182,8 +208,8 @@
     "crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }"
   ],
   "inputs": [
-    "crate::graph::NodeTypeId",
-    "crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }"
+    "Depends on `crate::graph::NodeTypeId` through a declared Rust import.",
+    "Depends on `crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -226,11 +252,11 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration::tests::operator_connections` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "assert!(matches!(result, Err(SessionError::InvalidOperator { .. })));"
+    "Creates a typed failure at src/session/declaration/tests/operator_connections.rs:171."
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/tests/operator_connections.rs",
@@ -283,7 +309,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration::tests::operator connections responsibilities, including the src/session/declaration/tests/operator connections boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::session::declaration::tests::operator_connections`."
   },
   "queues": [],
   "recovery_behavior": [],

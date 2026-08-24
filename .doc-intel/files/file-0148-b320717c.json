@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
@@ -59,6 +61,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
@@ -248,19 +252,21 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "9b88d1dc8f76ea395cd58c5854323b33a25b06c6b5afd5c134e0b5628d54fc62",
       "lines": [
         1,
-        143
+        2
       ],
       "path": "src/graph/dsl.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::dsl"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
@@ -282,6 +288,8 @@
   "generated_from": "not_applicable",
   "git_object": "8211c494b26ea7c18719e103bef4be3df18cad42",
   "implemented_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
@@ -292,6 +300,8 @@
     "Pipeline"
   ],
   "imported_by": [
+    "CALLS:src/session/compile/mod.rs",
+    "CALLS:src/session/extensions/builtins.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/session/compile/mod.rs",
@@ -304,12 +314,12 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::graph::node::{NodeConfig, NodeTypeId}",
-    "crate::graph::ports::EdgeContract",
-    "crate::graph::spec::{ EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef, }",
-    "super::*"
+    "Consumes configuration at src/graph/dsl.rs:85.",
+    "Consumes configuration at src/graph/dsl.rs:95.",
+    "Depends on `crate::graph::node::{NodeConfig, NodeTypeId}` through a declared Rust import.",
+    "Depends on `crate::graph::ports::EdgeContract` through a declared Rust import.",
+    "Depends on `crate::graph::spec::{ EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef, }` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -340,21 +350,21 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::dsl` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:add_node",
-    "fn:connect",
-    "fn:connect_with",
-    "fn:id",
-    "fn:in_",
-    "fn:into_spec",
-    "fn:new",
-    "fn:out",
-    "fn:spec",
-    "struct:NodeHandle",
-    "struct:Pipeline"
+    "Declares public fn `add_node`.",
+    "Declares public fn `connect_with`.",
+    "Declares public fn `connect`.",
+    "Declares public fn `id`.",
+    "Declares public fn `in_`.",
+    "Declares public fn `into_spec`.",
+    "Declares public fn `new`.",
+    "Declares public fn `out`.",
+    "Declares public fn `spec`.",
+    "Declares public struct `NodeHandle`.",
+    "Declares public struct `Pipeline`."
   ],
   "package": "pocketstation",
   "path": "src/graph/dsl.rs",
@@ -467,8 +477,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::dsl responsibilities, including Owns bounded access to node.; Returns the id held by `NodeHandle`.; Selects a named output port from `NodeHandle`.."
+    "classification": "DECLARED",
+    "text": "Ergonomic builder frontend. It only assembles a GraphSpec \u2014 it never executes. Compilation (Wave 4) and execution (Wave 6) consume the spec downstream."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -507,19 +517,21 @@
     "docs/best-practices/route-sizing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/spec.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/ports.rs",
     "REFERENCES:src/graph/spec.rs"
   ],
   "resource_ownership": [],
   "responsibilities": [
-    "pocketstation::graph::dsl::NodeHandle: Owns bounded access to node.",
+    "pocketstation::graph::dsl::NodeHandle: Holds the ownership or bounded access represented by node handle.",
     "id: Returns the id held by `NodeHandle`.",
     "out: Selects a named output port from `NodeHandle`.",
     "in_: Selects a named input port from `NodeHandle`.",
     "pocketstation::graph::dsl::Pipeline: Builds typed operator connections on a Session while preserving port and signal contracts.",
     "new: Creates a new `Pipeline`.",
-    "add_node: Adds node for `Pipeline`.",
+    "add_node: Adds one node declaration to the graph owned by `Pipeline`.",
     "connect: Connects the requested ports through `Pipeline`.",
     "connect_with: Connects pipeline ports using the supplied edge contract on `Pipeline`.",
     "spec: Returns the spec associated with `Pipeline`.",

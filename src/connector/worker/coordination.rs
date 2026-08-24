@@ -26,7 +26,7 @@ pub(super) struct ReadinessProbeState {
 }
 
 impl ConnectorContext {
-    #[doc = "Returns whether stop requested applies to `ConnectorContext`."]
+    #[doc = "Reports whether stop requested is true for `ConnectorContext`."]
     pub fn is_stop_requested(&self) -> bool {
         self.stop.is_requested()
     }
@@ -36,7 +36,7 @@ impl ConnectorContext {
         self.stop.mode()
     }
 
-    #[doc = "Returns whether abort requested applies to `ConnectorContext`."]
+    #[doc = "Reports whether abort requested is true for `ConnectorContext`."]
     pub fn is_abort_requested(&self) -> bool {
         self.shutdown_mode() == Some(EndpointShutdownMode::Abort)
     }
@@ -139,17 +139,17 @@ impl ConnectorContext {
         self.state.endpoint().record_dropped(amount);
     }
 
-    #[doc = "Records discontinuity for `ConnectorContext`."]
+    #[doc = "Increments the discontinuity observation recorded by `ConnectorContext`."]
     pub fn record_discontinuity(&self, amount: u64) {
         self.state.endpoint().record_discontinuity(amount);
     }
 
-    #[doc = "Records retry for `ConnectorContext`."]
+    #[doc = "Increments the retry-attempt observation recorded by `ConnectorContext`."]
     pub fn record_retry(&self) {
         self.state.connector().record_retry();
     }
 
-    #[doc = "Records failure for `ConnectorContext`."]
+    #[doc = "Records a connector failure and its retry classification in `ConnectorContext`."]
     pub fn record_failure(&self, error: ConnectorError) -> Result<(), ConnectorObservationError> {
         self.state.endpoint().record_failure(1);
         self.state.connector().record_failure(error)

@@ -1,6 +1,6 @@
 # Timing API
 
-<!-- claims: CLM-REF-005-CAP-001,CLM-REF-005-SOURCE-001 -->
+<!-- claims: CLM-REF-005-SCOPE-001,CLM-REF-005-TEXT-001,CLM-REF-005-TEXT-002,CLM-REF-005-SOURCE-001 -->
 
 ## Scope
 
@@ -47,13 +47,13 @@ For **Timing API**, the generated [docs.rs API](https://docs.rs/pocketstation/la
 | sym-d78fbc7a6425539ac041 | `pocketstation::timing::domain::ClockDomainDescriptor` | struct | Finite description of a clock identity carried by frame and signal lineage. | `src/timing/domain.rs:23` |
 | sym-8cb95ccfe2d318c37c6b | `pocketstation::timing::timeline_mapping::TimelineMapping` | struct | Correlates the prepared identities and runtime resources for timeline. | `src/timing/timeline_mapping.rs:2` |
 | sym-a04ca7a73c6d365d0091 | `ClockDriftSnapshot::accumulated_error_ns` | struct_field | Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds. | `src/timing/clock_drift.rs:6` |
-| sym-3302deaa63c3bb51ac21 | `ClockDriftSnapshot::drift_ppm` | struct_field | Stores the drift ppm used by `ClockDriftSnapshot`. | `src/timing/clock_drift.rs:5` |
+| sym-3302deaa63c3bb51ac21 | `ClockDriftSnapshot::drift_ppm` | struct_field | Reports the estimated clock drift for `ClockDriftSnapshot`, in parts per million. | `src/timing/clock_drift.rs:5` |
 | sym-50189778197fe2717210 | `ClockDriftSnapshot::observed_samples_count` | struct_field | Stores the number of observed samples represented by `ClockDriftSnapshot`. | `src/timing/clock_drift.rs:7` |
 | sym-03e0e3607e9d368df095 | `TimelineMapping::session_origin_ns` | struct_field | Stores the session origin value for `TimelineMapping`, in nanoseconds. | `src/timing/timeline_mapping.rs:4` |
 | sym-addb257b22be852d57aa | `TimelineMapping::source_origin_ns` | struct_field | Stores the source origin value for `TimelineMapping`, in nanoseconds. | `src/timing/timeline_mapping.rs:3` |
-| sym-99b3c55887e45a315fed | `pocketstation::timing::domain::ClockDomainKind::ProcessMonotonic` | variant | Selects process monotonic behavior for `ClockDomainKind`. | `src/timing/domain.rs:9` |
-| sym-90786f825231e7b95285 | `pocketstation::timing::domain::ClockDomainKind::ProviderDefined` | variant | Selects provider defined behavior for `ClockDomainKind`. | `src/timing/domain.rs:10` |
-| sym-d9dd4700e264a084f4c8 | `pocketstation::timing::domain::ClockDomainKind::Unspecified` | variant | Selects unspecified behavior for `ClockDomainKind`. | `src/timing/domain.rs:8` |
+| sym-99b3c55887e45a315fed | `pocketstation::timing::domain::ClockDomainKind::ProcessMonotonic` | variant | Identifies timestamps as belonging to the process monotonic clock domain. | `src/timing/domain.rs:9` |
+| sym-90786f825231e7b95285 | `pocketstation::timing::domain::ClockDomainKind::ProviderDefined` | variant | Identifies timestamps as belonging to the provider defined clock domain. | `src/timing/domain.rs:10` |
+| sym-d9dd4700e264a084f4c8 | `pocketstation::timing::domain::ClockDomainKind::Unspecified` | variant | Identifies timestamps as belonging to the unspecified clock domain. | `src/timing/domain.rs:8` |
 | sym-ea93bf173163a9225a06 | `pocketstation::timing::domain::ClockDomainOrigin::ProcessStart` | variant | Represents the process start alternative defined by `ClockDomainOrigin`. | `src/timing/domain.rs:17` |
 | sym-4d8df7f26a599285aa84 | `pocketstation::timing::domain::ClockDomainOrigin::ProviderDefined` | variant | Represents the provider defined alternative defined by `ClockDomainOrigin`. | `src/timing/domain.rs:18` |
 | sym-f9596f17e9b3277c3bec | `pocketstation::timing::domain::ClockDomainOrigin::Unspecified` | variant | Represents the unspecified alternative defined by `ClockDomainOrigin`. | `src/timing/domain.rs:16` |
@@ -76,6 +76,6 @@ The **Timing API** inventory records compiler-visible or extracted evidence at t
 
 The claims on **Timing API** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/timing/mod.rs:1-53` (`DIRECT`)
+- `src/timing/mod.rs:1-3` (`DECLARED`)
 
 For **Timing API**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

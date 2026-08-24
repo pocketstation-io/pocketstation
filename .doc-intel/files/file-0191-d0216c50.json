@@ -86,14 +86,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "310b298d5c03247f57bb71b896227c36fc079b2c279df76eee61476793549cc9",
       "lines": [
         1,
-        20
+        5
       ],
       "path": "src/runtime/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -139,18 +139,18 @@
     "signal::*"
   ],
   "inputs": [
-    "#[cfg(feature = \"internal-testing\")]",
-    "#[cfg(test)]",
-    "audio::*",
-    "bridge::*",
-    "lifecycle::*",
-    "lifecycle::CONTROL_SIGNAL_ID",
-    "module:audio",
-    "module:bridge",
-    "module:lifecycle",
-    "module:nodes",
-    "module:signal",
-    "signal::*"
+    "Consumes configuration at src/runtime/mod.rs:10.",
+    "Consumes configuration at src/runtime/mod.rs:16.",
+    "Depends on `audio::*` through a declared Rust import.",
+    "Depends on `audio` through a declared Rust import.",
+    "Depends on `bridge::*` through a declared Rust import.",
+    "Depends on `bridge` through a declared Rust import.",
+    "Depends on `lifecycle::*` through a declared Rust import.",
+    "Depends on `lifecycle::CONTROL_SIGNAL_ID` through a declared Rust import.",
+    "Depends on `lifecycle` through a declared Rust import.",
+    "Depends on `nodes` through a declared Rust import.",
+    "Depends on `signal::*` through a declared Rust import.",
+    "Depends on `signal` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -164,11 +164,11 @@
   "module": "pocketstation::runtime",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "mod:nodes"
+    "Declares public mod `nodes`."
   ],
   "package": "pocketstation",
   "path": "src/runtime/mod.rs",
@@ -215,8 +215,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime responsibilities, including runtime."
+    "classification": "DECLARED",
+    "text": "Runtime implementation for compiled Session plans. The realtime audio lane and asynchronous signal lane remain separate. Every partition crossing is explicit and bounded; lifecycle code never executes inside an audio callback."
   },
   "queues": [],
   "recovery_behavior": [],

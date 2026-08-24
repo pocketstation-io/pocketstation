@@ -222,14 +222,67 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
       "lines": [
-        1,
-        341
+        293,
+        327
       ],
-      "path": "src/endpoint/polled_audio_driver/tests.rs",
-      "symbol": null
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
+      "lines": [
+        327,
+        340
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
+      "lines": [
+        204,
+        293
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
+      "lines": [
+        150,
+        164
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
+      "lines": [
+        164,
+        204
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
+      "lines": [
+        90,
+        150
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "bbd2ef96daa78fabcd4a3bcf82676a116fb0ef89cdf2521f96869782ebb13781",
+      "lines": [
+        54,
+        90
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -256,8 +309,8 @@
     "super::*"
   ],
   "inputs": [
-    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, SessionId, SourceId, StemId, StreamId, }",
-    "super::*"
+    "Depends on `crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -299,16 +352,16 @@
   "module": "pocketstation::endpoint::polled_audio_driver::tests",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::polled_audio_driver::tests` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-9297c685ea059bf119d1",
     "pattern-a3b3fcad4d50a67e95c6"
   ],
   "outputs": [
-    "Err(PolledAudioPollError::Empty) => thread::yield_now(),",
-    "Err(PolledAudioPollError::LeaseCapacityExhausted)",
-    "Err(error) => panic!(\"unexpected concurrent poll result: {error}\"),"
+    "Creates a typed failure at src/endpoint/polled_audio_driver/tests.rs:133.",
+    "Creates a typed failure at src/endpoint/polled_audio_driver/tests.rs:273.",
+    "Creates a typed failure at src/endpoint/polled_audio_driver/tests.rs:274."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/polled_audio_driver/tests.rs",
@@ -406,7 +459,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::polled audio driver::tests responsibilities, including the src/endpoint/polled audio driver/tests boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::endpoint::polled_audio_driver::tests`."
   },
   "queues": [],
   "recovery_behavior": [],

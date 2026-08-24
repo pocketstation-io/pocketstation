@@ -9,6 +9,7 @@
     }
   ],
   "called_by": [
+    "CALLS:src/lib.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -28,6 +29,7 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/lib.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -112,16 +114,77 @@
       "classification": "DIRECT",
       "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
       "lines": [
-        1,
-        59
+        3,
+        3
       ],
       "path": "src/capture/platform/macos/authorization.rs",
-      "symbol": null
+      "symbol": "NOT_DETERMINED"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
+      "lines": [
+        4,
+        4
+      ],
+      "path": "src/capture/platform/macos/authorization.rs",
+      "symbol": "RESTRICTED"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/capture/platform/macos/authorization.rs",
+      "symbol": "DENIED"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/capture/platform/macos/authorization.rs",
+      "symbol": "AUTHORIZED"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
+      "lines": [
+        9,
+        9
+      ],
+      "path": "src/capture/platform/macos/authorization.rs",
+      "symbol": "pks_microphone_authorization_status"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
+      "lines": [
+        14,
+        18
+      ],
+      "path": "src/capture/platform/macos/authorization.rs",
+      "symbol": "microphone_permission_observation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
+      "lines": [
+        20,
+        28
+      ],
+      "path": "src/capture/platform/macos/authorization.rs",
+      "symbol": "permission_observation"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/lib.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -148,11 +211,13 @@
   "generated_from": "not_applicable",
   "git_object": "0855a212ff422a72868c3c1d2666b176f6b85fb9",
   "implemented_by": [
+    "CALLS:src/lib.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
   "implements": [],
   "imported_by": [
+    "CALLS:src/lib.rs",
     "CONTAINS:src/capture/platform/macos/mod.rs",
     "IMPORTS:src/capture/platform/macos/mod.rs"
   ],
@@ -161,9 +226,9 @@
     "super::{permission_observation, AUTHORIZED, DENIED, NOT_DETERMINED, RESTRICTED}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::capture::PermissionObservation",
-    "super::{permission_observation, AUTHORIZED, DENIED, NOT_DETERMINED, RESTRICTED}"
+    "Consumes configuration at src/capture/platform/macos/authorization.rs:30.",
+    "Depends on `crate::capture::PermissionObservation` through a declared Rust import.",
+    "Depends on `super::{permission_observation, AUTHORIZED, DENIED, NOT_DETERMINED, RESTRICTED}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -177,11 +242,11 @@
   "module": "pocketstation::capture::platform::macos::authorization",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::macos::authorization` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:microphone_permission_observation"
+    "Declares public fn `microphone_permission_observation`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/macos/authorization.rs",
@@ -253,7 +318,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::macos::authorization responsibilities, including authorization; not determined; restricted."
+    "text": "Owns the internal authorization module, not determined constant, restricted constant, denied constant used by `pocketstation::capture::platform::macos::authorization`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -308,6 +373,7 @@
     "docs/best-practices/source-identity.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/lib.rs",
     "REFERENCES:src/capture/authorization.rs"
   ],
   "resource_ownership": [],

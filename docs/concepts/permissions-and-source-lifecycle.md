@@ -1,6 +1,6 @@
 # Permissions and source lifecycle
 
-<!-- claims: CLM-DOC-011-CAP-001,CLM-DOC-011-SOURCE-001 -->
+<!-- claims: CLM-DOC-011-SCOPE-001,CLM-DOC-011-TEXT-001,CLM-DOC-011-TEXT-002,CLM-DOC-011-TEXT-003,CLM-DOC-011-TEXT-004,CLM-DOC-011-TEXT-005,CLM-DOC-011-TEXT-006,CLM-DOC-011-SOURCE-001 -->
 
 ## What it is
 
@@ -45,7 +45,7 @@ The scope of **Permissions and source lifecycle** ends at the native contracts a
 |---|---|---|---|
 | `pocketstation::capture::lifecycle_registry::SourceLifecycleRegistry` | struct | Assigns source generations across complete discovery snapshots. | `src/capture/lifecycle_registry.rs:31` |
 | `pocketstation::capture::events::SourceLifecycleEventKind` | enum | Selects the source lifecycle event kind used by PocketStation. | `src/capture/events.rs:25` |
-| `pocketstation::capture::lifecycle_registry::SourceGenerationTransition` | enum | Enumerates the supported source generation transition cases. | `src/capture/lifecycle_registry.rs:8` |
+| `pocketstation::capture::lifecycle_registry::SourceGenerationTransition` | enum | Records whether a capture source disappeared, reappeared, or changed generation. | `src/capture/lifecycle_registry.rs:8` |
 | `pocketstation::capture::events::SourceLifecycleEventKind::PermissionChanged` | variant | Identifies the permission changed state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:28` |
 | `pocketstation::capture::events::SourceLifecycleEventKind::PermissionRevoked` | variant | Identifies the permission revoked state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:29` |
 | `pocketstation::capture::events::SourceLifecycleEventKind::ReplacementObserved` | variant | Identifies the replacement observed state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:27` |
@@ -86,7 +86,7 @@ Executable evidence selected for **Permissions and source lifecycle** is limited
 
 The claims on **Permissions and source lifecycle** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/authorization.rs:1-318` (`DIRECT`)
-- `src/capture/events.rs:1-344` (`DIRECT`)
+- `src/capture/authorization.rs:1-1` (`DECLARED`)
+- `src/capture/events.rs:1-1` (`DECLARED`)
 
 For **Permissions and source lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

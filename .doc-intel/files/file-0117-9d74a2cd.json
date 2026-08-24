@@ -4,6 +4,11 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -62,6 +67,11 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -390,16 +400,251 @@
       "classification": "DIRECT",
       "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
       "lines": [
-        1,
-        261
+        14,
+        14
       ],
       "path": "src/connector/observations.rs",
-      "symbol": null
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        15,
+        17
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "ConnectorObservationHandle"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "inner"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        19,
+        27
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "ConnectorObservationState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "created_at"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "status"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "status_transitions_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "retry_attempts_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "reconnects_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "failures_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        26,
+        26
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "last_error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        30,
+        51
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        53,
+        74
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "snapshot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        76,
+        89
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "set_delivery_readiness"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        91,
+        104
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "set_health"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        106,
+        123
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "set_recovery"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        125,
+        127
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "record_retry"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        129,
+        140
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "record_failure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        142,
+        147
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "lock_status"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        149,
+        154
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "finish_transition"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        157,
+        157
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        157,
+        157
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        157,
+        157
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        158,
+        165
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": "ConnectorObservations"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -421,6 +666,11 @@
   "generated_from": "not_applicable",
   "git_object": "103c0800df1bf8041ed60660f444ffdfb18af0ef",
   "implemented_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -433,6 +683,11 @@
     "ConnectorObservationStore"
   ],
   "imported_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/connector/worker/endpoint_adapter.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs",
     "REFERENCES:src/connector/mod.rs",
@@ -450,13 +705,13 @@
     "super::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }"
   ],
   "inputs": [
-    "crate::endpoint::EndpointDriverObservationHandle",
-    "crate::{EndpointDriverObservations, EndpointId}",
-    "std::collections::HashMap",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::{Arc, Mutex}",
-    "std::time::Instant",
-    "super::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }"
+    "Depends on `crate::endpoint::EndpointDriverObservationHandle` through a declared Rust import.",
+    "Depends on `crate::{EndpointDriverObservations, EndpointId}` through a declared Rust import.",
+    "Depends on `std::collections::HashMap` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex}` through a declared Rust import.",
+    "Depends on `std::time::Instant` through a declared Rust import.",
+    "Depends on `super::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -494,27 +749,27 @@
   "module": "pocketstation::connector::observations",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::observations` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-9bc48215e862e104e868"
   ],
   "outputs": [
-    "enum:ConnectorObservationError",
-    "fn:install",
-    "fn:new",
-    "fn:observation",
-    "fn:record_failure",
-    "fn:record_retry",
-    "fn:set_delivery_readiness",
-    "fn:set_health",
-    "fn:set_recovery",
-    "fn:snapshot",
-    "fn:snapshots",
-    "struct:ConnectorObservationHandle",
-    "struct:ConnectorObservationStore",
-    "struct:ConnectorObservations",
-    "struct:ConnectorRuntimeObservations"
+    "Declares public enum `ConnectorObservationError`.",
+    "Declares public fn `install`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observation`.",
+    "Declares public fn `record_failure`.",
+    "Declares public fn `record_retry`.",
+    "Declares public fn `set_delivery_readiness`.",
+    "Declares public fn `set_health`.",
+    "Declares public fn `set_recovery`.",
+    "Declares public fn `snapshot`.",
+    "Declares public fn `snapshots`.",
+    "Declares public struct `ConnectorObservationHandle`.",
+    "Declares public struct `ConnectorObservationStore`.",
+    "Declares public struct `ConnectorObservations`.",
+    "Declares public struct `ConnectorRuntimeObservations`."
   ],
   "package": "pocketstation",
   "path": "src/connector/observations.rs",
@@ -657,8 +912,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::observations responsibilities, including Owns bounded access to connector observation.; Returns a point-in-time snapshot of `ConnectorObservationHandle`.; Reports the connector observations collected at an observation boundary.."
+    "classification": "DECLARED",
+    "text": "Holds the ownership or bounded access represented by connector observation handle. Returns a point-in-time snapshot of `ConnectorObservationHandle`. Reports the connector observations collected at an observation boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -701,6 +956,10 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/worker/coordination.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_protocol.rs",
     "REFERENCES:src/connector/error.rs",
     "REFERENCES:src/connector/status.rs",
     "REFERENCES:src/endpoint/runtime.rs",
@@ -749,10 +1008,10 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::connector::observations::ConnectorObservationHandle: Owns bounded access to connector observation.",
+    "pocketstation::connector::observations::ConnectorObservationHandle: Holds the ownership or bounded access represented by connector observation handle.",
     "snapshot: Returns a point-in-time snapshot of `ConnectorObservationHandle`.",
     "pocketstation::connector::observations::ConnectorObservations: Reports the connector observations collected at an observation boundary.",
-    "ConnectorObservations::service_status: Stores the service status used by `ConnectorObservations`.",
+    "ConnectorObservations::service_status: Contains the service status owned or reported by `ConnectorObservations`.",
     "ConnectorObservations::status_transitions_total: Counts the total number of status transitions observed by `ConnectorObservations`.",
     "ConnectorObservations::retry_attempts_total: Counts the total number of retry attempts observed by `ConnectorObservations`.",
     "ConnectorObservations::reconnects_total: Counts the total number of reconnects observed by `ConnectorObservations`.",
@@ -760,10 +1019,10 @@
     "ConnectorObservations::last_error: Carries the last error reported by `ConnectorObservations`.",
     "pocketstation::connector::observations::ConnectorRuntimeObservations: Reports the connector runtime observations collected at an observation boundary.",
     "ConnectorRuntimeObservations::endpoint_ids: Identifies the endpoint identifiers recorded by `ConnectorRuntimeObservations`.",
-    "ConnectorRuntimeObservations::connector: Stores the connector used by `ConnectorRuntimeObservations`.",
-    "ConnectorRuntimeObservations::endpoint: Stores the endpoint used by `ConnectorRuntimeObservations`.",
-    "pocketstation::connector::observations::ConnectorObservationError: Classifies failures reported as connector observation error.",
-    "pocketstation::connector::observations::ConnectorObservationError::StateUnavailable: Reported when the owning operation encounters state unavailable."
+    "ConnectorRuntimeObservations::connector: Stores the connector as a `ConnectorObservations` value in `ConnectorRuntimeObservations`.",
+    "ConnectorRuntimeObservations::endpoint: References the endpoint participating in `ConnectorRuntimeObservations`.",
+    "pocketstation::connector::observations::ConnectorObservationError: Classifies failures surfaced by connector observation operations.",
+    "pocketstation::connector::observations::ConnectorObservationError::StateUnavailable: Reports that state is unavailable."
   ],
   "retry_behavior": [],
   "serialization": [],

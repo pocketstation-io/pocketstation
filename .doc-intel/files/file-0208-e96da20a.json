@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -66,6 +68,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -440,11 +444,241 @@
       "classification": "DIRECT",
       "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
       "lines": [
-        1,
-        215
+        5,
+        5
       ],
       "path": "src/session/declaration/selector.rs",
-      "symbol": null
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "ProcessId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        9,
+        11
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        13,
+        15
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "get"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "hash"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        19,
+        19
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "DeviceId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        22,
+        24
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        26,
+        28
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "as_str"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        32,
+        41
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "ApplicationSelector"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "BundleId"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "0"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": "ProcessId"
     }
   ],
   "example_coverage_status": "linked",
@@ -454,6 +688,8 @@
     "example-937ee5ed9d4dfb93965f"
   ],
   "extended_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -475,6 +711,8 @@
   "generated_from": "not_applicable",
   "git_object": "4d3c831bbf529460e9d01588c55427fa64ae7f52",
   "implemented_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -490,6 +728,8 @@
     "Source"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/lib.rs",
@@ -504,11 +744,11 @@
     "super::{ApplicationSelector, ProcessId}"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::capture::{SourceKind, StableSourceId}",
-    "crate::frame::Platform",
-    "crate::session::SessionError",
-    "super::{ApplicationSelector, ProcessId}"
+    "Consumes configuration at src/session/declaration/selector.rs:160.",
+    "Depends on `crate::capture::{SourceKind, StableSourceId}` through a declared Rust import.",
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `crate::session::SessionError` through a declared Rust import.",
+    "Depends on `super::{ApplicationSelector, ProcessId}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -558,34 +798,41 @@
   "module": "pocketstation::session::declaration::selector",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration::selector` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-f2b7195a0b2376eb7f7a"
   ],
   "outputs": [
-    "Err(SessionError::InvalidSelector {",
-    "Err(SessionError::InvalidSelector { .. })",
-    "Self::Name(name) if name.trim().is_empty() => Err(SessionError::InvalidSelector {",
-    "enum:ApplicationSelector",
-    "enum:DeviceSelector",
-    "enum:Source",
-    "fn:application",
-    "fn:as_str",
-    "fn:bundle_id",
-    "fn:default",
-    "fn:get",
-    "fn:id",
-    "fn:microphone",
-    "fn:microphone_default",
-    "fn:name",
-    "fn:new",
-    "fn:process_id",
-    "fn:process_instance",
-    "fn:stable_id",
-    "fn:validate",
-    "struct:DeviceId",
-    "struct:ProcessId"
+    "Creates a typed failure at src/session/declaration/selector.rs:124.",
+    "Creates a typed failure at src/session/declaration/selector.rs:181.",
+    "Creates a typed failure at src/session/declaration/selector.rs:198.",
+    "Creates a typed failure at src/session/declaration/selector.rs:211.",
+    "Creates a typed failure at src/session/declaration/selector.rs:70.",
+    "Creates a typed failure at src/session/declaration/selector.rs:75.",
+    "Creates a typed failure at src/session/declaration/selector.rs:80.",
+    "Creates a typed failure at src/session/declaration/selector.rs:87.",
+    "Creates a typed failure at src/session/declaration/selector.rs:94.",
+    "Creates a typed failure at src/session/declaration/selector.rs:98.",
+    "Declares public enum `ApplicationSelector`.",
+    "Declares public enum `DeviceSelector`.",
+    "Declares public enum `Source`.",
+    "Declares public fn `application`.",
+    "Declares public fn `as_str`.",
+    "Declares public fn `bundle_id`.",
+    "Declares public fn `default`.",
+    "Declares public fn `get`.",
+    "Declares public fn `id`.",
+    "Declares public fn `microphone_default`.",
+    "Declares public fn `microphone`.",
+    "Declares public fn `name`.",
+    "Declares public fn `new`.",
+    "Declares public fn `process_id`.",
+    "Declares public fn `process_instance`.",
+    "Declares public fn `stable_id`.",
+    "Declares public fn `validate`.",
+    "Declares public struct `DeviceId`.",
+    "Declares public struct `ProcessId`."
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/selector.rs",
@@ -758,8 +1005,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration::selector responsibilities, including Uniquely identifies process within its PocketStation ownership scope.; Creates a new `ProcessId`.; Returns the value held by `ProcessId`.."
+    "classification": "DECLARED",
+    "text": "Uniquely identifies process within its PocketStation ownership scope. Creates a new `ProcessId`. Returns the value held by `ProcessId`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -820,6 +1067,8 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/capture/identity.rs",
     "REFERENCES:src/session/error.rs"
   ],
@@ -831,25 +1080,25 @@
     "pocketstation::session::declaration::selector::DeviceId: Uniquely identifies device within its PocketStation ownership scope.",
     "new: Creates a new `DeviceId`.",
     "as_str: Returns the stable string representation of `DeviceId`.",
-    "pocketstation::session::declaration::selector::ApplicationSelector: Enumerates the supported application selector cases.",
-    "pocketstation::session::declaration::selector::ApplicationSelector::BundleId: Selects bundle identifier behavior for `ApplicationSelector`.",
-    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessId: Selects process identifier behavior for `ApplicationSelector`.",
-    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessInstance: Selects process instance behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector: Selects an application by bundle identity, process identity, stable identity, or name.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::BundleId: Selects applications by bundle identifier.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessId: Selects applications by process identifier.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessInstance: Selects applications by process instance.",
     "ApplicationSelector::ProcessInstance::process_id: Identifies the process identifier recorded by `ProcessInstance`.",
     "ApplicationSelector::ProcessInstance::stable_id: Identifies the stable identifier recorded by `ProcessInstance`.",
-    "pocketstation::session::declaration::selector::ApplicationSelector::StableId: Selects stable identifier behavior for `ApplicationSelector`.",
-    "pocketstation::session::declaration::selector::ApplicationSelector::Name: Selects name behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::StableId: Selects applications by stable identifier.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::Name: Selects applications by name.",
     "bundle_id: Returns the bundle identifier held by `ApplicationSelector`.",
     "process_id: Returns the process identifier held by `ApplicationSelector`.",
     "process_instance: Creates `ApplicationSelector` for one exact process instance.",
     "stable_id: Returns the stable identifier held by `ApplicationSelector`.",
     "name: Returns the name associated with `ApplicationSelector`.",
-    "pocketstation::session::declaration::selector::DeviceSelector: Enumerates the supported device selector cases.",
-    "pocketstation::session::declaration::selector::DeviceSelector::Default: Selects default behavior for `DeviceSelector`.",
-    "pocketstation::session::declaration::selector::DeviceSelector::Id: Selects id behavior for `DeviceSelector`.",
+    "pocketstation::session::declaration::selector::DeviceSelector: Selects either the host default device or one stable device identity.",
+    "pocketstation::session::declaration::selector::DeviceSelector::Default: Selects an audio device by default.",
+    "pocketstation::session::declaration::selector::DeviceSelector::Id: Selects an audio device by id.",
     "default: Returns the default `DeviceSelector` value.",
     "id: Returns the id held by `DeviceSelector`.",
-    "pocketstation::session::declaration::selector::Source: Enumerates the supported source cases.",
+    "pocketstation::session::declaration::selector::Source: Declares the application, microphone, or system source selected by a Session.",
     "pocketstation::session::declaration::selector::Source::Application: Represents the application alternative defined by `Source`.",
     "pocketstation::session::declaration::selector::Source::Microphone: Represents the microphone alternative defined by `Source`.",
     "application: Returns the application held by `Source`.",

@@ -13,6 +13,7 @@
     }
   ],
   "called_by": [
+    "CALLS:src/native_extension/library.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -42,6 +43,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/native_extension/library.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -146,16 +148,17 @@
       "classification": "DIRECT",
       "content_hash": "fd579f761c4bc72a7d46b55bd1dcd5496c556e2705e242548df160190e5383e1",
       "lines": [
-        1,
-        105
+        29,
+        103
       ],
       "path": "src/session/extensions/native_library.rs",
-      "symbol": null
+      "symbol": "load_native_extension_library"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/native_extension/library.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -190,6 +193,7 @@
   "generated_from": "not_applicable",
   "git_object": "139e1bb02c7bf2e3dabe4580051b58614b6db804",
   "implemented_by": [
+    "CALLS:src/native_extension/library.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -197,6 +201,7 @@
     "Session"
   ],
   "imported_by": [
+    "CALLS:src/native_extension/library.rs",
     "CONTAINS:src/session/extensions/mod.rs",
     "IMPORTS:src/session/extensions/mod.rs"
   ],
@@ -208,11 +213,11 @@
     "std::path::Path"
   ],
   "inputs": [
-    "crate::abi::executable_extension::ExecutableExtensionRegistration",
-    "crate::native_extension::{NativeExtensionLibrary, NativeExtensionLibraryError}",
-    "crate::{EndpointExtensionRegistration, OperatorId, Session}",
-    "std::collections::BTreeSet",
-    "std::path::Path"
+    "Depends on `crate::abi::executable_extension::ExecutableExtensionRegistration` through a declared Rust import.",
+    "Depends on `crate::native_extension::{NativeExtensionLibrary, NativeExtensionLibraryError}` through a declared Rust import.",
+    "Depends on `crate::{EndpointExtensionRegistration, OperatorId, Session}` through a declared Rust import.",
+    "Depends on `std::collections::BTreeSet` through a declared Rust import.",
+    "Depends on `std::path::Path` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -242,14 +247,14 @@
   "module": "pocketstation::session::extensions::native_library",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::native_library` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-cdb2a10629f02f80ae12"
   ],
   "outputs": [
-    "fn:load_native_extension_library",
-    "return Err(NativeExtensionLibraryError::duplicate_registration("
+    "Creates a typed failure at src/session/extensions/native_library.rs:76.",
+    "Declares public fn `load_native_extension_library`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/native_library.rs",
@@ -272,8 +277,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::native library responsibilities, including Loads one trusted native dynamic library from an exact absolute path and."
+    "classification": "DECLARED",
+    "text": "Loads one trusted native dynamic library from an exact absolute path and."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -334,6 +339,8 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/native_extension/library.rs",
+    "CALLS:src/native_extension/mod.rs",
     "REFERENCES:src/native_extension/mod.rs"
   ],
   "resource_ownership": [],

@@ -1,6 +1,6 @@
 # A native-capture build fails
 
-<!-- claims: CLM-TRBL-015-CAP-001,CLM-TRBL-015-CAP-002,CLM-TRBL-015-CAP-003,CLM-TRBL-015-CAP-004,CLM-TRBL-015-SOURCE-001 -->
+<!-- claims: CLM-TRBL-015-SCOPE-001,CLM-TRBL-015-TEXT-001,CLM-TRBL-015-TEXT-002,CLM-TRBL-015-TEXT-003,CLM-TRBL-015-TEXT-004,CLM-TRBL-015-TEXT-005,CLM-TRBL-015-TEXT-006,CLM-TRBL-015-SOURCE-001 -->
 
 ## Symptom
 
@@ -77,7 +77,7 @@ Rebuilding after environment correction is safe; it does not prove physical capt
 
 The claims on **A native-capture build fails** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `Cargo.toml:1-180` (`DIRECT`)
-- `build.rs:1-118` (`DIRECT`)
+- `Cargo.toml:1-21` (`DIRECT`)
+- `build.rs:1-21` (`DIRECT`)
 
 For **A native-capture build fails**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

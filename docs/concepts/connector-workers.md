@@ -1,6 +1,6 @@
 # Connector worker lifecycle
 
-<!-- claims: CLM-DOC-026-CAP-001,CLM-DOC-026-SOURCE-001 -->
+<!-- claims: CLM-DOC-026-SCOPE-001,CLM-DOC-026-TEXT-001,CLM-DOC-026-TEXT-002,CLM-DOC-026-TEXT-003,CLM-DOC-026-TEXT-004,CLM-DOC-026-TEXT-005,CLM-DOC-026-TEXT-006,CLM-DOC-026-SOURCE-001 -->
 
 ## What it is
 
@@ -86,6 +86,20 @@ Executable evidence selected for **Connector worker lifecycle** is limited to ea
 
 The claims on **Connector worker lifecycle** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/connector/worker/supervisor.rs:1-150` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:13-13` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:15-15` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:16-20` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:17-17` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:18-18` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:19-19` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:23-32` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:34-36` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:38-40` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:42-66` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:68-73` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:75-82` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:85-95` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:97-141` (`DIRECT`)
+- `src/connector/worker/supervisor.rs:143-149` (`DIRECT`)
 
 For **Connector worker lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

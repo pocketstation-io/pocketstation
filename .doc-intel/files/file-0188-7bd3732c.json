@@ -63,14 +63,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "ef2a31e5d3cc0185eeedf993a077b9c3539b93110fc1407e77b501e091e9bf3f",
       "lines": [
         1,
-        19
+        1
       ],
       "path": "src/runtime/lifecycle/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::lifecycle"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -114,16 +114,16 @@
     "sidecar_protocol::{ SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits, }"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "async_host::AsyncRuntimeHost",
-    "async_host::AsyncRuntimeHostError",
-    "module:async_host",
-    "module:sidecar_host",
-    "module:sidecar_protocol",
-    "sidecar_host::CONTROL_SIGNAL_ID",
-    "sidecar_host::{ SidecarDeadlines, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarProcessSpec, SidecarState, }",
-    "sidecar_protocol::{ SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits, }"
+    "Consumes configuration at src/runtime/lifecycle/mod.rs:10.",
+    "Consumes configuration at src/runtime/lifecycle/mod.rs:8.",
+    "Depends on `async_host::AsyncRuntimeHostError` through a declared Rust import.",
+    "Depends on `async_host::AsyncRuntimeHost` through a declared Rust import.",
+    "Depends on `async_host` through a declared Rust import.",
+    "Depends on `sidecar_host::CONTROL_SIGNAL_ID` through a declared Rust import.",
+    "Depends on `sidecar_host::{ SidecarDeadlines, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarProcessSpec, SidecarState, }` through a declared Rust import.",
+    "Depends on `sidecar_host` through a declared Rust import.",
+    "Depends on `sidecar_protocol::{ SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits, }` through a declared Rust import.",
+    "Depends on `sidecar_protocol` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -132,7 +132,7 @@
   "module": "pocketstation::runtime::lifecycle",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::lifecycle` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -170,8 +170,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::lifecycle responsibilities, including Non-realtime runtime ownership and process-protocol lifecycle.."
+    "classification": "DECLARED",
+    "text": "Non-realtime runtime ownership and process-protocol lifecycle."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -1,6 +1,6 @@
 # Stop a Session and inspect failures
 
-<!-- claims: CLM-GUIDE-022-CAP-001,CLM-GUIDE-022-CAP-002,CLM-GUIDE-022-CAP-003,CLM-GUIDE-022-CAP-004,CLM-GUIDE-022-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-022-SCOPE-001,CLM-GUIDE-022-TEXT-001,CLM-GUIDE-022-TEXT-002,CLM-GUIDE-022-TEXT-003,CLM-GUIDE-022-TEXT-004,CLM-GUIDE-022-TEXT-005,CLM-GUIDE-022-TEXT-006,CLM-GUIDE-022-SOURCE-001 -->
 
 ## Scope
 
@@ -22,6 +22,39 @@ The `RunningSession` owner and any observation, recording, or trace handles whos
 3. Read component failures in SessionStopOutcome.
 4. Read recording and trace finalization separately.
 5. Preserve diagnostics before releasing ownership.
+
+## Concrete repository example
+
+The executable repository test `given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved` (`test-284127121760cbb5874f`) shows the concrete API sequence and asserted outcome at `src/session/lifecycle/running.rs:2602`.
+
+```rust
+    use crate::session::{ApplicationSelector, ProcessId, Source};
+
+    #[test]
+    fn given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved() {
+        let stable_id = StableSourceId::new(
+            Platform::Windows,
+            SourceKind::Application,
+            "wasapi:pid:42:creation-100ns:133801234567890000",
+        );
+        let source = Source::application(ApplicationSelector::process_instance(
+            ProcessId::new(42),
+            stable_id.clone(),
+        ));
+
+        assert_eq!(
+            capture_mode(&source),
+            CaptureMode::ExactApplication {
+                process_id: 42,
+                stable_id,
+            }
+        );
+    }
+```
+
+```bash
+cargo test --all-features given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved
+```
 
 ## Important consequence
 
@@ -73,7 +106,7 @@ Executable evidence selected for **Stop a Session and inspect failures** is limi
 | `pocketstation::session::error_code::SessionStopCode::AlreadyStopped` | variant | Indicates that the operation had already stopped. | `src/session/error_code.rs:152` |
 | `pocketstation::session::error_code::SessionStopCode::StopFailed` | variant | Represents the stop failed alternative defined by `SessionStopCode`. | `src/session/error_code.rs:153` |
 | `pocketstation::session::error_code::SessionStopCode::Stopped` | variant | Indicates that the operation stopped normally. | `src/session/error_code.rs:151` |
-| `pocketstation::session::error_code::SessionStopFailureCode::CaptureFinalizationFailed` | variant | Reported when the owning operation encounters capture finalization failed. | `src/session/error_code.rs:173` |
+| `pocketstation::session::error_code::SessionStopFailureCode::CaptureFinalizationFailed` | variant | Reports that capture finalization failed. | `src/session/error_code.rs:173` |
 
 ## Related documentation
 
@@ -90,6 +123,29 @@ Executable evidence selected for **Stop a Session and inspect failures** is limi
 
 The claims on **Stop a Session and inspect failures** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/running.rs:1-2625` (`DIRECT`)
+- `src/session/lifecycle/running.rs:59-63` (`DIRECT`)
+- `src/session/lifecycle/running.rs:60-60` (`DIRECT`)
+- `src/session/lifecycle/running.rs:61-61` (`DIRECT`)
+- `src/session/lifecycle/running.rs:62-62` (`DIRECT`)
+- `src/session/lifecycle/running.rs:65-68` (`DIRECT`)
+- `src/session/lifecycle/running.rs:66-66` (`DIRECT`)
+- `src/session/lifecycle/running.rs:67-67` (`DIRECT`)
+- `src/session/lifecycle/running.rs:70-76` (`DIRECT`)
+- `src/session/lifecycle/running.rs:71-71` (`DIRECT`)
+- `src/session/lifecycle/running.rs:72-72` (`DIRECT`)
+- `src/session/lifecycle/running.rs:73-73` (`DIRECT`)
+- `src/session/lifecycle/running.rs:74-74` (`DIRECT`)
+- `src/session/lifecycle/running.rs:75-75` (`DIRECT`)
+- `src/session/lifecycle/running.rs:78-78` (`DIRECT`)
+- `src/session/lifecycle/running.rs:79-87` (`DIRECT`)
+- `src/session/lifecycle/running.rs:80-80` (`DIRECT`)
+- `src/session/lifecycle/running.rs:81-81` (`DIRECT`)
+- `src/session/lifecycle/running.rs:82-82` (`DIRECT`)
+- `src/session/lifecycle/running.rs:83-83` (`DIRECT`)
+- `src/session/lifecycle/running.rs:84-84` (`DIRECT`)
+- `src/session/lifecycle/running.rs:85-85` (`DIRECT`)
+- `src/session/lifecycle/running.rs:86-86` (`DIRECT`)
+- `src/session/lifecycle/running.rs:89-92` (`DIRECT`)
+- `src/session/lifecycle/running.rs:90-90` (`DIRECT`)
 
 For **Stop a Session and inspect failures**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

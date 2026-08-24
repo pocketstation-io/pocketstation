@@ -1,6 +1,6 @@
 # ABI and conformance model
 
-<!-- claims: CLM-DOC-054-CAP-001,CLM-DOC-054-CAP-002,CLM-DOC-054-SOURCE-001 -->
+<!-- claims: CLM-DOC-054-SCOPE-001,CLM-DOC-054-TEXT-001,CLM-DOC-054-TEXT-002,CLM-DOC-054-TEXT-003,CLM-DOC-054-TEXT-004,CLM-DOC-054-SOURCE-001 -->
 
 ## Scope
 
@@ -20,7 +20,7 @@ The scope of **ABI and conformance model** ends at the native contracts and exec
 |---|---|---|---|
 | `pocketstation::abi::session::abi::PksSessionStatus` | struct | Reports the structured session status. | `src/abi/session/abi.rs:56` |
 | `pocketstation::abi::session::abi::PksSessionUtf8` | struct | Borrows a UTF-8 byte range across the C Session ABI as a pointer and length. | `src/abi/session/abi.rs:101` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | Enumerates the supported session status code cases. | `src/abi/session/abi.rs:79` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | Provides stable C ABI status categories returned by Session operations. | `src/abi/session/abi.rs:79` |
 | `new` | function | Creates a new `PksSessionStatus`. | `src/abi/session/abi.rs:69` |
 | `ok` | function | Creates a successful status value for `PksSessionStatus`. | `src/abi/session/abi.rs:62` |
 | `pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure` | variant | Identifies the backend failure state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:93` |
@@ -40,8 +40,8 @@ The scope of **ABI and conformance model** ends at the native contracts and exec
 | `pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMajor` | variant | Identifies the unsupported ABI major state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:82` |
 | `pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMinor` | variant | Identifies the unsupported ABI minor state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:96` |
 | `pocketstation::abi::session::abi::PksSessionStatusCode::WouldBlock` | variant | Identifies the would block state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:92` |
-| `PksSessionStatus::code` | struct_field | Stores the code used by `PksSessionStatus`. | `src/abi/session/abi.rs:57` |
-| `PksSessionStatus::detail` | struct_field | Stores the detail used by `PksSessionStatus`. | `src/abi/session/abi.rs:58` |
+| `PksSessionStatus::code` | struct_field | Stores the code component of `PksSessionStatus`. | `src/abi/session/abi.rs:57` |
+| `PksSessionStatus::detail` | struct_field | Stores the detail component of `PksSessionStatus`. | `src/abi/session/abi.rs:58` |
 
 ## Observed implementation patterns
 
@@ -96,7 +96,7 @@ Executable evidence selected for **ABI and conformance model** is limited to eac
 
 The claims on **ABI and conformance model** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/abi/mod.rs:1-5` (`DIRECT`)
-- `src/conformance.rs:1-1251` (`DIRECT`)
+- `src/abi/mod.rs:1-4` (`DIRECT`)
+- `src/conformance.rs:1-4` (`DECLARED`)
 
 For **ABI and conformance model**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

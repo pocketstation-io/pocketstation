@@ -210,10 +210,240 @@
       "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
       "lines": [
         1,
-        175
+        1
       ],
       "path": "src/timing/clock_drift.rs",
-      "symbol": null
+      "symbol": "DRIFT_WINDOW_SAMPLES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        3,
+        3
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        4,
+        8
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "ClockDriftSnapshot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        5,
+        5
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "drift_ppm"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        6,
+        6
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "accumulated_error_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        7,
+        7
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "observed_samples_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        10,
+        19
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "ClockDriftEstimator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        11,
+        11
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "write_index"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "observed_samples_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "base_source_timestamp_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "base_runtime_timestamp_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "drift_ppm"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "accumulated_error_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "window_full"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        22,
+        33
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        35,
+        57
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "observe"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        59,
+        61
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "drift_ppm"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        62,
+        64
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "accumulated_error_ns"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        66,
+        72
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "snapshot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "728dc1b5941348855866b4b01390a366ad4fb295e960a27d994373175a147d85",
+      "lines": [
+        74,
+        111
+      ],
+      "path": "src/timing/clock_drift.rs",
+      "symbol": "estimate"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -251,8 +481,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/timing/clock_drift.rs:120.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -278,17 +508,17 @@
   "module": "pocketstation::timing::clock_drift",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::timing::clock_drift` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:accumulated_error_ns",
-    "fn:drift_ppm",
-    "fn:new",
-    "fn:observe",
-    "fn:snapshot",
-    "struct:ClockDriftEstimator",
-    "struct:ClockDriftSnapshot"
+    "Declares public fn `accumulated_error_ns`.",
+    "Declares public fn `drift_ppm`.",
+    "Declares public fn `new`.",
+    "Declares public fn `observe`.",
+    "Declares public fn `snapshot`.",
+    "Declares public struct `ClockDriftEstimator`.",
+    "Declares public struct `ClockDriftSnapshot`."
   ],
   "package": "pocketstation",
   "path": "src/timing/clock_drift.rs",
@@ -401,8 +631,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::timing::clock drift responsibilities, including Reports the clock drift snapshot collected at an observation boundary.; Stores the drift ppm used by `ClockDriftSnapshot`.; Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds.."
+    "classification": "DECLARED",
+    "text": "Reports the clock drift snapshot collected at an observation boundary. Reports the estimated clock drift for `ClockDriftSnapshot`, in parts per million. Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -429,7 +659,7 @@
   "resource_ownership": [],
   "responsibilities": [
     "pocketstation::timing::clock_drift::ClockDriftSnapshot: Reports the clock drift snapshot collected at an observation boundary.",
-    "ClockDriftSnapshot::drift_ppm: Stores the drift ppm used by `ClockDriftSnapshot`.",
+    "ClockDriftSnapshot::drift_ppm: Reports the estimated clock drift for `ClockDriftSnapshot`, in parts per million.",
     "ClockDriftSnapshot::accumulated_error_ns: Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds.",
     "ClockDriftSnapshot::observed_samples_count: Stores the number of observed samples represented by `ClockDriftSnapshot`.",
     "pocketstation::timing::clock_drift::ClockDriftEstimator: Estimates source-clock drift from accumulated source and Session timing observations.",

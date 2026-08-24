@@ -1,6 +1,6 @@
 # Capture a desktop application
 
-<!-- claims: CLM-GUIDE-001-CAP-001,CLM-GUIDE-001-CAP-002,CLM-GUIDE-001-CAP-003,CLM-GUIDE-001-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-001-SCOPE-001,CLM-GUIDE-001-TEXT-001,CLM-GUIDE-001-TEXT-002,CLM-GUIDE-001-TEXT-003,CLM-GUIDE-001-TEXT-004,CLM-GUIDE-001-TEXT-005,CLM-GUIDE-001-TEXT-006,CLM-GUIDE-001-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,73 @@ A target with application capture support, host-owned capture permission, and an
 3. Declare the application Source and attach a consumer route.
 4. Start the Session and retain RunningSession.
 5. Observe frames or typed capture failures, then stop and inspect the outcome.
+
+## Concrete repository example
+
+This is the frozen, repository-owned example `example-64188d831f3c13af50ff` at `examples/product_quickstart.rs`. It is validated by the examples checkpoint.
+
+```rust
+use std::collections::BTreeMap;
+use std::error::Error;
+use std::time::{Duration, Instant};
+
+use pocketstation as pks;
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let session = pks::Session::builder()
+        .recording_root("pocketstation-recordings")
+        .build();
+    let app = session.capture(pks::Source::application(pks::ApplicationSelector::name(
+        "PocketStation Demo",
+    )))?;
+    let mic = session.capture(pks::Source::microphone_default())?;
+    let app_audio = session.polled_audio()?;
+    let mic_audio = session.polled_audio()?;
+
+    app.send(app_audio)?;
+    mic.send(mic_audio)?;
+    app.record("application")?;
+    mic.record("microphone")?;
+
+    let mut running = session.start()?;
+    let deadline = Instant::now() + Duration::from_secs(10);
+    let mut frames_by_stem = BTreeMap::<u64, usize>::new();
+    while Instant::now() < deadline
+        && frames_by_stem.values().filter(|count| **count >= 2).count() < 2
+    {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let frame = batch
+                    .frame(index)
+                    .ok_or("bounded audio batch returned an invalid frame index")?;
+                let count = frames_by_stem
+                    .entry(frame.lineage().stem_id().get())
+                    .or_default();
+                *count = count.saturating_add(1);
+            }
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    if frames_by_stem.values().filter(|count| **count >= 2).count() != 2 {
+        return Err("application and microphone media were not both observed".into());
+    }
+
+    let outcome = running.stop();
+    if !outcome.is_success() {
+        return Err("PocketStation Session did not finalize cleanly".into());
+    }
+    let recording = running
+        .recording_outcome()
+        .ok_or("PocketStation Session did not expose a recording outcome")?;
+    if recording.state != pks::SessionRecordingState::Complete
+        || recording.completed_stems != 2
+        || recording.failed_stems != 0
+    {
+        return Err("PocketStation multistem recording did not complete".into());
+    }
+    Ok(())
+}
+```
 
 ## Important consequence
 
@@ -68,11 +135,11 @@ Executable evidence selected for **Capture a desktop application** is limited to
 | `pocketstation::capture::platform::macos::session_backend::DesktopCaptureBackend` | struct | macOS adapter from the platform-neutral Session capture contract to the existing CoreAudio/input RAII owner. | `src/capture/platform/macos/session_backend.rs:11` |
 | `pocketstation::capture::authorization::ApplicationPolicyObservation` | enum | Classifies the observable application policy observation. | `src/capture/authorization.rs:231` |
 | `pocketstation::capture::query::application_capture_available` | function | Reports whether this host exposes the native application-capture facility. | `src/capture/query.rs:64` |
-| `pocketstation::capture::authorization::ApplicationPolicyObservation::Allowed` | variant | Selects allowed behavior for `ApplicationPolicyObservation`. | `src/capture/authorization.rs:232` |
-| `pocketstation::capture::authorization::ApplicationPolicyObservation::Denied` | variant | Selects denied behavior for `ApplicationPolicyObservation`. | `src/capture/authorization.rs:233` |
-| `pocketstation::capture::authorization::ApplicationPolicyObservation::NotApplicable` | variant | Selects not applicable behavior for `ApplicationPolicyObservation`. | `src/capture/authorization.rs:235` |
-| `pocketstation::capture::authorization::ApplicationPolicyObservation::NotObservable` | variant | Selects not observable behavior for `ApplicationPolicyObservation`. | `src/capture/authorization.rs:234` |
-| `pocketstation::capture::authorization::CaptureScope::ExactApplication` | variant | Selects exact application behavior for `CaptureScope`. | `src/capture/authorization.rs:249` |
+| `pocketstation::capture::authorization::ApplicationPolicyObservation::Allowed` | variant | Reports the observed application policy as allowed. | `src/capture/authorization.rs:232` |
+| `pocketstation::capture::authorization::ApplicationPolicyObservation::Denied` | variant | Reports the observed application policy as denied. | `src/capture/authorization.rs:233` |
+| `pocketstation::capture::authorization::ApplicationPolicyObservation::NotApplicable` | variant | Reports the observed application policy as not applicable. | `src/capture/authorization.rs:235` |
+| `pocketstation::capture::authorization::ApplicationPolicyObservation::NotObservable` | variant | Reports the observed application policy as not observable. | `src/capture/authorization.rs:234` |
+| `pocketstation::capture::authorization::CaptureScope::ExactApplication` | variant | Limits capture authorization to exact application. | `src/capture/authorization.rs:249` |
 
 ## Related documentation
 
@@ -89,6 +156,6 @@ Executable evidence selected for **Capture a desktop application** is limited to
 
 The claims on **Capture a desktop application** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/product_quickstart.rs:1-61` (`DIRECT`)
+- `examples/product_quickstart.rs:1-21` (`DIRECT`)
 
 For **Capture a desktop application**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

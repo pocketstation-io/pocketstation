@@ -155,7 +155,7 @@
       "content_hash": "52f4eadfeb3ae6e42a861a410e277150be8c45c61b5094cea6781b610a5932df",
       "lines": [
         1,
-        201
+        21
       ],
       "path": "benches/runtime_plan.rs",
       "symbol": null
@@ -203,17 +203,17 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
-    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
-    "pocketstation::internal::graph::NodeId",
-    "pocketstation::internal::graph::compiler::Compiler",
-    "pocketstation::internal::graph::dsl::Pipeline",
-    "pocketstation::internal::graph::node::{NodeConfig, PrepareContext}",
-    "pocketstation::internal::graph::planner::RuntimePlanner",
-    "pocketstation::internal::graph::register_builtins",
-    "pocketstation::internal::graph::registry::NodeRegistry",
-    "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeReceiver, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanExecutor, RealtimePlanRunner, }",
-    "std::sync::Arc"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::NodeId` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::compiler::Compiler` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::dsl::Pipeline` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::node::{NodeConfig, PrepareContext}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::planner::RuntimePlanner` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::register_builtins` through a declared Rust import.",
+    "Depends on `pocketstation::internal::graph::registry::NodeRegistry` through a declared Rust import.",
+    "Depends on `pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeReceiver, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanExecutor, RealtimePlanRunner, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -248,7 +248,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/runtime_plan.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-0bed8aaed06c69250bca",
@@ -307,8 +307,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/runtime plan boundary."
+    "classification": "DECLARED",
+    "text": "Measures runtime plan by repeatedly exercising AudioBufferPool::new, AudioFrame::try_new, ClockDomainId::new, Compiler::new."
   },
   "queues": [],
   "recovery_behavior": [],

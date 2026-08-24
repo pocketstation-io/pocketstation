@@ -28,11 +28,11 @@ pub struct GeneratedAudioBridgeSpec {
     pub source_id: SourceId,
     #[doc = "Identifies the clock identifier recorded by `GeneratedAudioBridgeSpec`."]
     pub clock_id: ClockDomainId,
-    #[doc = "Stores the sample spec used by `GeneratedAudioBridgeSpec`."]
+    #[doc = "Declares the sample rate, channel layout, and format used by `GeneratedAudioBridgeSpec`."]
     pub sample_spec: SampleSpec,
-    #[doc = "Stores the samples per frame used by `GeneratedAudioBridgeSpec`."]
+    #[doc = "Stores the number of samples in each channel of a frame handled by `GeneratedAudioBridgeSpec`."]
     pub samples_per_frame: usize,
-    #[doc = "Stores the pool slots used by `GeneratedAudioBridgeSpec`."]
+    #[doc = "Contains the pool slots owned or reported by `GeneratedAudioBridgeSpec`."]
     pub pool_slots: usize,
 }
 
@@ -53,19 +53,19 @@ impl GeneratedAudioBridgeSpec {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as generated audio bridge start error."]
+#[doc = "Classifies failures produced during generated audio bridge lifecycle start."]
 pub enum GeneratedAudioBridgeStartError {
     #[error("generated-audio bridge sample rate and channel count must be non-zero")]
-    #[doc = "Reported when the owning operation encounters invalid sample spec."]
+    #[doc = "Reports that the supplied sample spec is invalid."]
     InvalidSampleSpec,
     #[error("generated-audio bridge samples per frame must be non-zero")]
-    #[doc = "Reported when the owning operation encounters zero frame samples."]
+    #[doc = "Reports that frame samples must be greater than zero."]
     ZeroFrameSamples,
     #[error("generated-audio bridge pool slots must be between 1 and 64")]
-    #[doc = "Reported when the owning operation encounters invalid pool slots."]
+    #[doc = "Reports that the supplied pool slots is invalid."]
     InvalidPoolSlots,
     #[error("generated-audio bridge worker thread could not start")]
-    #[doc = "Reported when the owning operation encounters thread start."]
+    #[doc = "Classifies a failure at the thread start stage or component of `GeneratedAudioBridgeStartError`."]
     ThreadStart,
 }
 

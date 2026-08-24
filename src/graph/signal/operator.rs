@@ -51,9 +51,9 @@ pub trait AsyncNode: Send {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Configures operator permission."]
 pub struct OperatorPermissionPolicy {
-    #[doc = "Stores the network allowed used by `OperatorPermissionPolicy`."]
+    #[doc = "Reports whether network is allowed for `OperatorPermissionPolicy`."]
     pub network_allowed: bool,
-    #[doc = "Stores the filesystem allowed used by `OperatorPermissionPolicy`."]
+    #[doc = "Reports whether filesystem is allowed for `OperatorPermissionPolicy`."]
     pub filesystem_allowed: bool,
 }
 
@@ -67,25 +67,25 @@ pub struct OperatorDeadlinePolicy {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the operator cancellation policy used by PocketStation."]
 pub enum OperatorCancellationPolicy {
-    #[doc = "Selects discard queued behavior for `OperatorCancellationPolicy`."]
+    #[doc = "Cancels an operator using the discard queued policy."]
     DiscardQueued,
-    #[doc = "Selects drain queued behavior for `OperatorCancellationPolicy`."]
+    #[doc = "Cancels an operator using the drain queued policy."]
     DrainQueued,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the operator failure policy used by PocketStation."]
 pub enum OperatorFailurePolicy {
-    #[doc = "Reports continue."]
+    #[doc = "Handles an operator failure using the continue policy."]
     Continue,
-    #[doc = "Reports stop worker."]
+    #[doc = "Handles an operator failure using the stop worker policy."]
     StopWorker,
 }
 
 #[derive(Debug, Clone, Default)]
 #[doc = "Configures operator output role."]
 pub struct OperatorOutputRolePolicy {
-    #[doc = "Stores the allowed used by `OperatorOutputRolePolicy`."]
+    #[doc = "Stores the allowed component of `OperatorOutputRolePolicy`."]
     pub allowed: Vec<SemanticRole>,
     #[doc = "Indicates whether terminal applies to `OperatorOutputRolePolicy`."]
     pub terminal: Vec<SemanticRole>,
@@ -104,7 +104,7 @@ impl OperatorOutputRolePolicy {
         })
     }
 
-    #[doc = "Returns whether terminal applies to `OperatorOutputRolePolicy`."]
+    #[doc = "Reports whether terminal is true for `OperatorOutputRolePolicy`."]
     pub fn is_terminal(&self, signal: &SignalSpec) -> bool {
         signal.role.as_ref().is_some_and(|role| {
             self.terminal
@@ -146,7 +146,7 @@ fn has_duplicate_roles(roles: &[SemanticRole]) -> bool {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Describes the async operator manifest contract."]
+#[doc = "Declares an asynchronous operator's ports, execution partition, failure policy, and cancellation policy."]
 pub struct AsyncOperatorManifest {
     pub(crate) operator_id: OperatorId,
     pub(crate) revision: u32,
@@ -357,73 +357,73 @@ impl AsyncOperatorManifest {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as async operator manifest error."]
+#[doc = "Classifies failures surfaced by async operator manifest operations."]
 pub enum AsyncOperatorManifestError {
     #[error("operator id is empty")]
-    #[doc = "Reports empty operator identifier."]
+    #[doc = "Reports that operator identifier is empty."]
     EmptyOperatorId,
     #[error("operator revision must be non-zero")]
-    #[doc = "Reports zero revision."]
+    #[doc = "Reports that revision must be greater than zero."]
     ZeroRevision,
     #[error("operator generation must be non-zero")]
-    #[doc = "Reports zero generation."]
+    #[doc = "Reports that generation must be greater than zero."]
     ZeroGeneration,
     #[error("operator queue capacity must be non-zero")]
-    #[doc = "Reports zero queue capacity."]
+    #[doc = "Reports that queue capacity must be greater than zero."]
     ZeroQueueCapacity,
     #[error("operator process timeout must be non-zero")]
-    #[doc = "Reports zero process timeout."]
+    #[doc = "Reports that process timeout must be greater than zero."]
     ZeroProcessTimeout,
     #[error("async operator cannot execute in a realtime partition")]
-    #[doc = "Reports realtime partition."]
+    #[doc = "Classifies a failure at the realtime partition stage or component of `AsyncOperatorManifestError`."]
     RealtimePartition,
     #[error("operator safety contract does not match its execution partition")]
-    #[doc = "Reports invalid safety contract."]
+    #[doc = "Reports that the supplied safety contract is invalid."]
     InvalidSafetyContract,
     #[error("operator safety contract requires network permission")]
-    #[doc = "Reports network permission mismatch."]
+    #[doc = "Reports that network permission does not match the expected contract."]
     NetworkPermissionMismatch,
     #[error("operator manifest has no typed input port")]
-    #[doc = "Reports missing input port."]
+    #[doc = "Reports that the required input port is missing."]
     MissingInputPort,
     #[error("operator manifest has no typed output port")]
-    #[doc = "Reports missing output port."]
+    #[doc = "Reports that the required output port is missing."]
     MissingOutputPort,
     #[error("async operator bridge currently requires DropNewest backpressure")]
-    #[doc = "Reports unsupported backpressure."]
+    #[doc = "Reports that the requested backpressure is unsupported."]
     UnsupportedBackpressure,
     #[error("async operator bridge requires CopyToBranchPool input ownership")]
-    #[doc = "Reports unsupported input copy policy."]
+    #[doc = "Reports that the requested input copy policy is unsupported."]
     UnsupportedInputCopyPolicy,
     #[error("async operator output currently requires BoundedQueue backpressure")]
-    #[doc = "Reports unsupported output backpressure."]
+    #[doc = "Reports that the requested output backpressure is unsupported."]
     UnsupportedOutputBackpressure,
     #[error("operator input edge media does not match its typed input port")]
-    #[doc = "Reports input edge media mismatch."]
+    #[doc = "Reports that input edge media does not match the expected contract."]
     InputEdgeMediaMismatch,
     #[error("operator output edge media does not match its typed output port")]
-    #[doc = "Reports output edge media mismatch."]
+    #[doc = "Reports that output edge media does not match the expected contract."]
     OutputEdgeMediaMismatch,
     #[error("operator input SignalSpec is invalid")]
-    #[doc = "Reports invalid input signal."]
+    #[doc = "Reports that the supplied input signal is invalid."]
     InvalidInputSignal,
     #[error("operator output SignalSpec is invalid")]
-    #[doc = "Reports invalid output signal."]
+    #[doc = "Reports that the supplied output signal is invalid."]
     InvalidOutputSignal,
     #[error("operator input SignalSpec does not have a compatible payload representation")]
-    #[doc = "Reports input signal media mismatch."]
+    #[doc = "Reports that input signal media does not match the expected contract."]
     InputSignalMediaMismatch,
     #[error("operator output SignalSpec does not have a compatible payload representation")]
-    #[doc = "Reports output signal media mismatch."]
+    #[doc = "Reports that output signal media does not match the expected contract."]
     OutputSignalMediaMismatch,
     #[error("operator output role declarations cannot be empty strings")]
-    #[doc = "Reports empty output role."]
+    #[doc = "Reports that output role is empty."]
     EmptyOutputRole,
     #[error("operator output role declarations cannot contain duplicates")]
-    #[doc = "Reports duplicate output role."]
+    #[doc = "Reports that output role duplicates an existing declaration or record."]
     DuplicateOutputRole,
     #[error("every terminal output role must also be an allowed output role")]
-    #[doc = "Reports terminal output role not allowed."]
+    #[doc = "Classifies a failure at the terminal output role not allowed stage or component of `AsyncOperatorManifestError`."]
     TerminalOutputRoleNotAllowed,
 }
 
@@ -431,9 +431,9 @@ pub enum AsyncOperatorManifestError {
 pub trait AsyncOperatorFactory: Send + Sync {
     #[doc = "Returns the manifest held by `AsyncOperatorFactory`."]
     fn manifest(&self) -> &AsyncOperatorManifest;
-    #[doc = "Validates config for `AsyncOperatorFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `AsyncOperatorFactory`."]
     fn validate_config(&self, configuration: &NodeConfig) -> Result<(), crate::graph::ConfigError>;
-    #[doc = "Resolves manifest for `AsyncOperatorFactory`."]
+    #[doc = "Resolves and validates the operator manifest exposed by `AsyncOperatorFactory`."]
     fn resolve_manifest(
         &self,
         configuration: &NodeConfig,

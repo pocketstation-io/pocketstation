@@ -265,14 +265,31 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "5f3d68a527caa7749272546f4cecf39e3126785dec50fc32038a3a267ea5607b",
       "lines": [
-        1,
-        344
+        187,
+        262
       ],
-      "path": "src/recording/endpoint/tests.rs",
-      "symbol": null
+      "path": "src/recording/endpoint/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5f3d68a527caa7749272546f4cecf39e3126785dec50fc32038a3a267ea5607b",
+      "lines": [
+        287,
+        343
+      ],
+      "path": "src/recording/endpoint/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5f3d68a527caa7749272546f4cecf39e3126785dec50fc32038a3a267ea5607b",
+      "lines": [
+        262,
+        287
+      ],
+      "path": "src/recording/endpoint/tests.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -339,22 +356,22 @@
     "tempfile::TempDir"
   ],
   "inputs": [
-    "crate::endpoint::{ endpoint_start_gate, EndpointDriverRegistry, EndpointPrepareContext, EndpointRouteContext, OperatorId, SessionTimelineOrigin, }",
-    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, RouteId, SampleFormat, SampleSpec, SourceId, StemId, StreamId, }",
-    "crate::graph::compile::Compiler",
-    "crate::graph::compile::RuntimePlanner",
-    "crate::graph::dsl::Pipeline",
-    "crate::graph::node::{NodeConfig, PrepareContext}",
-    "crate::graph::register_builtins",
-    "crate::graph::registry::NodeRegistry",
-    "crate::graph::spec::{EdgeId, NodeId}",
-    "crate::graph::{EdgeContract, MediaCaps, NodeTypeId, SignalSpec}",
-    "crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter}",
-    "std::fs::File",
-    "std::thread",
-    "std::time::{Duration, Instant}",
-    "super::*",
-    "tempfile::TempDir"
+    "Depends on `crate::endpoint::{ endpoint_start_gate, EndpointDriverRegistry, EndpointPrepareContext, EndpointRouteContext, OperatorId, SessionTimelineOrigin, }` through a declared Rust import.",
+    "Depends on `crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, RouteId, SampleFormat, SampleSpec, SourceId, StemId, StreamId, }` through a declared Rust import.",
+    "Depends on `crate::graph::compile::Compiler` through a declared Rust import.",
+    "Depends on `crate::graph::compile::RuntimePlanner` through a declared Rust import.",
+    "Depends on `crate::graph::dsl::Pipeline` through a declared Rust import.",
+    "Depends on `crate::graph::node::{NodeConfig, PrepareContext}` through a declared Rust import.",
+    "Depends on `crate::graph::register_builtins` through a declared Rust import.",
+    "Depends on `crate::graph::registry::NodeRegistry` through a declared Rust import.",
+    "Depends on `crate::graph::spec::{EdgeId, NodeId}` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, MediaCaps, NodeTypeId, SignalSpec}` through a declared Rust import.",
+    "Depends on `crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter}` through a declared Rust import.",
+    "Depends on `std::fs::File` through a declared Rust import.",
+    "Depends on `std::thread` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `tempfile::TempDir` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -401,14 +418,14 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::recording::endpoint::tests` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-3f7ec65b3a0b92c01e6c",
     "pattern-6d5a88478cbd7fa1d968"
   ],
   "outputs": [
-    "Err(error) => error,"
+    "Creates a typed failure at src/recording/endpoint/tests.rs:282."
   ],
   "package": "pocketstation",
   "path": "src/recording/endpoint/tests.rs",
@@ -515,7 +532,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::recording::endpoint::tests responsibilities, including the src/recording/endpoint/tests boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::recording::endpoint::tests`."
   },
   "queues": [],
   "recovery_behavior": [],

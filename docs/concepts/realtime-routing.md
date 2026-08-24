@@ -1,6 +1,6 @@
 # Realtime routing
 
-<!-- claims: CLM-DOC-017-CAP-001,CLM-DOC-017-SOURCE-001 -->
+<!-- claims: CLM-DOC-017-SCOPE-001,CLM-DOC-017-TEXT-001,CLM-DOC-017-TEXT-002,CLM-DOC-017-TEXT-003,CLM-DOC-017-TEXT-004,CLM-DOC-017-TEXT-005,CLM-DOC-017-TEXT-006,CLM-DOC-017-SOURCE-001 -->
 
 ## What it is
 
@@ -44,7 +44,7 @@ The scope of **Realtime routing** ends at the native contracts and executable co
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::runtime::audio::runner::RealtimePlanRunner` | struct | Executes realtime plan according to its compiled plan and cancellation contract. | `src/runtime/audio/runner.rs:305` |
-| `is_realtime` | function | Returns whether realtime applies to `ClockDomain`. | `src/graph/ports.rs:259` |
+| `is_realtime` | function | Reports whether realtime is true for `ClockDomain`. | `src/graph/ports.rs:259` |
 | `realtime_audio` | function | Generic realtime PCM edge. Concrete sample rate, frame size, and channel layout are negotiated from connected ports. | `src/graph/ports.rs:391` |
 | `pocketstation::graph::ports::DeliverySemantics::BestEffortRealtime` | variant | Identifies the best effort realtime state or stage represented by `DeliverySemantics`. | `src/graph/ports.rs:274` |
 | `pocketstation::graph::ports::DeliverySemantics::ExactlyOnceNotRealtime` | variant | Identifies the exactly once not realtime state or stage represented by `DeliverySemantics`. | `src/graph/ports.rs:276` |
@@ -86,6 +86,6 @@ Executable evidence selected for **Realtime routing** is limited to each test's 
 
 The claims on **Realtime routing** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/audio/router.rs:1-1646` (`DIRECT`)
+- `src/runtime/audio/router.rs:1-1` (`DECLARED`)
 
 For **Realtime routing**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

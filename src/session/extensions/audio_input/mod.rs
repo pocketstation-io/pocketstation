@@ -79,25 +79,25 @@ impl AudioInputConfig {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as audio input config error."]
+#[doc = "Classifies failures surfaced by audio input config operations."]
 pub enum AudioInputConfigError {
     #[error("audio input sample rate must be non-zero")]
-    #[doc = "Reports zero sample rate."]
+    #[doc = "Reports that sample rate must be greater than zero."]
     ZeroSampleRate,
     #[error("audio input currently supports mono or stereo PCM")]
-    #[doc = "Reports unsupported channel count."]
+    #[doc = "Reports that the requested channel count is unsupported."]
     UnsupportedChannelCount,
     #[error("audio input currently supports F32 interleaved PCM")]
-    #[doc = "Reports unsupported sample format."]
+    #[doc = "Reports that the requested sample format is unsupported."]
     UnsupportedSampleFormat,
     #[error("audio input capacity must be between 1 and 63 frames")]
-    #[doc = "Reports invalid capacity."]
+    #[doc = "Reports that the supplied capacity is invalid."]
     InvalidCapacity,
     #[error("audio input frame sample count must be non-zero")]
-    #[doc = "Reports zero frame samples."]
+    #[doc = "Reports that frame samples must be greater than zero."]
     ZeroFrameSamples,
     #[error("audio input frame sample count overflows the platform size")]
-    #[doc = "Reports frame sample count overflow."]
+    #[doc = "Reports that frame sample count exceeds its numeric range."]
     FrameSampleCountOverflow,
 }
 

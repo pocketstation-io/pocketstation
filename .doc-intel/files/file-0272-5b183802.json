@@ -94,14 +94,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "e472d9aabdaea6f9f6efb6fc5a0e710278366fe7645fefc5b96a7cba8da07208",
       "lines": [
-        1,
-        66
+        26,
+        65
       ],
-      "path": "tests/operator_declaration.rs",
-      "symbol": null
+      "path": "tests/operator_declaration.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "e472d9aabdaea6f9f6efb6fc5a0e710278366fe7645fefc5b96a7cba8da07208",
+      "lines": [
+        4,
+        26
+      ],
+      "path": "tests/operator_declaration.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -127,7 +135,7 @@
     "pocketstation::{ ApplicationSelector, EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, Source, }"
   ],
   "inputs": [
-    "pocketstation::{ ApplicationSelector, EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, Source, }"
+    "Depends on `pocketstation::{ ApplicationSelector, EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, Source, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -145,7 +153,7 @@
     }
   ],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/operator_declaration.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

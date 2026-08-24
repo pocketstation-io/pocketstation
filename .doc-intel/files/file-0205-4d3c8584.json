@@ -14,6 +14,9 @@
     }
   ],
   "called_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -192,6 +195,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1633,16 +1639,249 @@
       "classification": "DIRECT",
       "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
       "lines": [
-        1,
-        1405
+        19,
+        19
       ],
       "path": "src/session/declaration/draft.rs",
-      "symbol": null
+      "symbol": "NEXT_SESSION_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        22,
+        25
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "StemDraft"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "stem_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "source"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        27,
+        27
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        28,
+        33
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "SourceInstanceDraft"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        29,
+        29
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "instance_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "source_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "source_type_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "configuration"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        36,
+        40
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "SourceOutputDraft"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        37,
+        37
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "source_instance_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "output_port"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        39,
+        39
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "stream_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        42,
+        42
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        43,
+        47
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "EndpointDraft"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        44,
+        44
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "endpoint_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        45,
+        45
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "connector_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        46,
+        46
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "descriptor"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        49,
+        49
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        50,
+        53
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "OperatorDraft"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "aa5bd377a41ab3be4163f86dbf8d52b3837fea193ab0121ea9e52931513dc313",
+      "lines": [
+        51,
+        51
+      ],
+      "path": "src/session/declaration/draft.rs",
+      "symbol": "instance_id"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1671,6 +1910,9 @@
   "generated_from": "not_applicable",
   "git_object": "d40bac0d4c51d99d360e4ef925e81200642492e5",
   "implemented_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1708,6 +1950,9 @@
     "fmt::Debug for StemHandle"
   ],
   "imported_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/recording.rs",
     "CONTAINS:src/session/declaration/mod.rs",
     "IMPORTS:src/session/declaration/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1735,19 +1980,19 @@
     "super::endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "== Some(DEFAULT_MULTISTEM_RECORDING_GROUP_ID)",
-    "ApplicationSelector, DeviceSelector, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,",
-    "crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}",
-    "crate::graph::NodeTypeId",
-    "crate::session::declaration::spec::{ connection_spec, endpoint_spec, generated_audio_ingress_spec, operator_spec, source_instance_spec, source_output_spec, stem_spec, SessionSpecDeclarations, }",
-    "crate::session::{ ApplicationSelector, DeviceSelector, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
-    "crate::session::{ ConnectionTarget, EndpointConfiguration, EndpointDescriptor, OperatorConfiguration, OperatorId, OperatorInstanceId, SessionError, SessionSpec, Source, SourceConfiguration, SourceInstanceId, SourceTypeId, StreamOrigin, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
-    "std::fmt",
-    "std::sync::atomic::{AtomicU64, Ordering}",
-    "std::sync::{Arc, Mutex, MutexGuard}",
-    "super::*",
-    "super::endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY"
+    "Consumes configuration at src/session/declaration/draft.rs:1122.",
+    "Consumes configuration at src/session/declaration/draft.rs:1126.",
+    "Consumes configuration at src/session/declaration/draft.rs:1233.",
+    "Depends on `crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::graph::NodeTypeId` through a declared Rust import.",
+    "Depends on `crate::session::declaration::spec::{ connection_spec, endpoint_spec, generated_audio_ingress_spec, operator_spec, source_instance_spec, source_output_spec, stem_spec, SessionSpecDeclarations, }` through a declared Rust import.",
+    "Depends on `crate::session::{ ApplicationSelector, DeviceSelector, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }` through a declared Rust import.",
+    "Depends on `crate::session::{ ConnectionTarget, EndpointConfiguration, EndpointDescriptor, OperatorConfiguration, OperatorId, OperatorInstanceId, SessionError, SessionSpec, Source, SourceConfiguration, SourceInstanceId, SourceTypeId, StreamOrigin, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex, MutexGuard}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `super::endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1859,45 +2104,49 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::declaration::draft` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-f4814f6ae93aac327bcc"
   ],
   "outputs": [
-    "Err(SessionError::DraftFrozen { session_id })",
-    "fn:browser",
-    "fn:capture",
-    "fn:configuration",
-    "fn:connector",
-    "fn:connector_endpoint",
-    "fn:connector_id",
-    "fn:declare_endpoint_and_send",
-    "fn:declares_endpoint_operator",
-    "fn:endpoint",
-    "fn:freeze",
-    "fn:id",
-    "fn:input",
-    "fn:instance_id",
-    "fn:new",
-    "fn:operator",
-    "fn:operator_id",
-    "fn:send_to",
-    "fn:session_id",
-    "fn:source",
-    "fn:through_ports",
-    "return Err(SessionError::ForeignEndpoint {",
-    "return Err(SessionError::InvalidOperator {",
-    "return Err(SessionError::InvalidRoute {",
-    "return Err(SessionError::UnknownEndpoint { endpoint_id });",
-    "return Err(SessionError::UnknownOperatorInstance {",
-    "struct:EndpointHandle",
-    "struct:InternalStreamHandle",
-    "struct:Operator",
-    "struct:OperatorInputHandle",
-    "struct:OperatorInstanceHandle",
-    "struct:Session",
-    "struct:StemHandle"
+    "Creates a typed failure at src/session/declaration/draft.rs:125.",
+    "Creates a typed failure at src/session/declaration/draft.rs:195.",
+    "Creates a typed failure at src/session/declaration/draft.rs:218.",
+    "Creates a typed failure at src/session/declaration/draft.rs:226.",
+    "Creates a typed failure at src/session/declaration/draft.rs:258.",
+    "Creates a typed failure at src/session/declaration/draft.rs:264.",
+    "Creates a typed failure at src/session/declaration/draft.rs:622.",
+    "Creates a typed failure at src/session/declaration/draft.rs:655.",
+    "Creates a typed failure at src/session/declaration/draft.rs:720.",
+    "Creates a typed failure at src/session/declaration/draft.rs:738.",
+    "Declares public fn `browser`.",
+    "Declares public fn `capture`.",
+    "Declares public fn `configuration`.",
+    "Declares public fn `connector_endpoint`.",
+    "Declares public fn `connector_id`.",
+    "Declares public fn `connector`.",
+    "Declares public fn `declare_endpoint_and_send`.",
+    "Declares public fn `declares_endpoint_operator`.",
+    "Declares public fn `endpoint`.",
+    "Declares public fn `freeze`.",
+    "Declares public fn `id`.",
+    "Declares public fn `input`.",
+    "Declares public fn `instance_id`.",
+    "Declares public fn `new`.",
+    "Declares public fn `operator_id`.",
+    "Declares public fn `operator`.",
+    "Declares public fn `send_to`.",
+    "Declares public fn `session_id`.",
+    "Declares public fn `source`.",
+    "Declares public fn `through_ports`.",
+    "Declares public struct `EndpointHandle`.",
+    "Declares public struct `InternalStreamHandle`.",
+    "Declares public struct `OperatorInputHandle`.",
+    "Declares public struct `OperatorInstanceHandle`.",
+    "Declares public struct `Operator`.",
+    "Declares public struct `Session`.",
+    "Declares public struct `StemHandle`."
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/draft.rs",
@@ -2622,8 +2871,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::declaration::draft responsibilities, including Declares one operator instance, including its stable operator identity and validated node configuration.; Creates a new `Operator`.; Returns the operator identifier held by `Operator`.."
+    "classification": "DECLARED",
+    "text": "Declares one operator instance, including its stable operator identity and validated node configuration. Creates a new `Operator`. Returns the operator identifier held by `Operator`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2684,6 +2933,12 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/declaration/endpoint.rs",
+    "CALLS:src/session/declaration/spec.rs",
     "REFERENCES:src/frame/identity.rs",
     "REFERENCES:src/graph/node.rs",
     "REFERENCES:src/graph/operator.rs",
@@ -2788,13 +3043,13 @@
     "freeze: Freezes mutable storage owned by `Session` into its shared immutable form.",
     "default: Returns the default `Session` value.",
     "fmt: Formats `Session` with the requested formatter.",
-    "pocketstation::session::declaration::draft::EndpointHandle: Owns bounded access to endpoint.",
+    "pocketstation::session::declaration::draft::EndpointHandle: Holds the ownership or bounded access represented by endpoint handle.",
     "session_id: Returns the session identifier held by `EndpointHandle`.",
     "id: Returns the id held by `EndpointHandle`.",
     "connector_id: Returns the connector identifier held by `EndpointHandle`.",
-    "pocketstation::session::declaration::draft::StemHandle: Owns bounded access to stem.",
-    "pocketstation::session::declaration::draft::OperatorInstanceHandle: Owns bounded access to operator instance.",
-    "pocketstation::session::declaration::draft::OperatorInputHandle: Owns bounded access to operator input.",
+    "pocketstation::session::declaration::draft::StemHandle: Holds the ownership or bounded access represented by stem handle.",
+    "pocketstation::session::declaration::draft::OperatorInstanceHandle: Holds the ownership or bounded access represented by operator instance handle.",
+    "pocketstation::session::declaration::draft::OperatorInputHandle: Holds the ownership or bounded access represented by operator input handle.",
     "session_id: Returns the session identifier held by `OperatorInstanceHandle`.",
     "instance_id: Returns the instance identifier held by `OperatorInstanceHandle`.",
     "input: Returns the input held by `OperatorInstanceHandle`.",
@@ -2808,14 +3063,14 @@
     "connect: Connects the requested ports through `StemHandle`.",
     "through: Routes the current stream through a declared operator using `StemHandle`.",
     "through_ports: Returns the through ports held by `StemHandle`.",
-    "pocketstation::session::declaration::draft::DerivedStreamHandle: Owns bounded access to derived stream.",
-    "pocketstation::session::declaration::draft::SourceInstanceHandle: Owns bounded access to source instance.",
+    "pocketstation::session::declaration::draft::DerivedStreamHandle: Holds the ownership or bounded access represented by derived stream handle.",
+    "pocketstation::session::declaration::draft::SourceInstanceHandle: Holds the ownership or bounded access represented by source instance handle.",
     "session_id: Returns the session identifier held by `SourceInstanceHandle`.",
     "instance_id: Returns the instance identifier held by `SourceInstanceHandle`.",
     "source_id: Returns the source identifier held by `SourceInstanceHandle`.",
     "output: Returns the output held by `SourceInstanceHandle`.",
     "fmt: Formats `SourceInstanceHandle` with the requested formatter.",
-    "pocketstation::session::declaration::draft::SourceOutputHandle: Owns bounded access to source output.",
+    "pocketstation::session::declaration::draft::SourceOutputHandle: Holds the ownership or bounded access represented by source output handle.",
     "session_id: Returns the session identifier held by `SourceOutputHandle`.",
     "source_instance_id: Returns the source instance identifier held by `SourceOutputHandle`.",
     "source_id: Returns the source identifier held by `SourceOutputHandle`.",
@@ -2823,7 +3078,7 @@
     "output_port: Returns the output port held by `SourceOutputHandle`.",
     "send: Sends a value through `SourceOutputHandle`.",
     "connect: Connects the requested ports through `SourceOutputHandle`.",
-    "send_to: Sends to for `SourceOutputHandle`.",
+    "send_to: Connects the current stream to one explicit endpoint input through `SourceOutputHandle`.",
     "through: Routes the current stream through a declared operator using `SourceOutputHandle`.",
     "through_ports: Returns the through ports held by `SourceOutputHandle`.",
     "fmt: Formats `SourceOutputHandle` with the requested formatter.",

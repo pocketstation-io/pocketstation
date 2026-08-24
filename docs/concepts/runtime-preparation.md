@@ -1,6 +1,6 @@
 # Runtime preparation
 
-<!-- claims: CLM-DOC-015-CAP-001,CLM-DOC-015-SOURCE-001 -->
+<!-- claims: CLM-DOC-015-SCOPE-001,CLM-DOC-015-TEXT-001,CLM-DOC-015-TEXT-002,CLM-DOC-015-TEXT-003,CLM-DOC-015-TEXT-004,CLM-DOC-015-TEXT-005,CLM-DOC-015-TEXT-006,CLM-DOC-015-SOURCE-001 -->
 
 ## What it is
 
@@ -87,6 +87,19 @@ Executable evidence selected for **Runtime preparation** is limited to each test
 
 The claims on **Runtime preparation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/prepare/mod.rs:1-1331` (`DIRECT`)
+- `src/session/prepare/mod.rs:33-92` (`DIRECT`)
+- `src/session/prepare/mod.rs:94-175` (`DIRECT`)
+- `src/session/prepare/mod.rs:178-446` (`DIRECT`)
+- `src/session/prepare/mod.rs:448-466` (`DIRECT`)
+- `src/session/prepare/mod.rs:468-503` (`DIRECT`)
+- `src/session/prepare/mod.rs:505-511` (`DIRECT`)
+- `src/session/prepare/mod.rs:506-506` (`DIRECT`)
+- `src/session/prepare/mod.rs:507-507` (`DIRECT`)
+- `src/session/prepare/mod.rs:508-508` (`DIRECT`)
+- `src/session/prepare/mod.rs:509-509` (`DIRECT`)
+- `src/session/prepare/mod.rs:510-510` (`DIRECT`)
+- `src/session/prepare/mod.rs:513-1300` (`DIRECT`)
+- `src/session/prepare/mod.rs:1302-1318` (`DIRECT`)
+- `src/session/prepare/mod.rs:1320-1327` (`DIRECT`)
 
 For **Runtime preparation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -36,8 +36,8 @@
       "classification": "DIRECT",
       "content_hash": "bec831c08d5e63fd2c4093a4f03520dca10733c5cfa4bb57aa9dfd86667b9298",
       "lines": [
-        1,
-        32
+        6,
+        26
       ],
       "path": "tests/abi_codec_cpp_conformance.cpp",
       "symbol": null
@@ -73,7 +73,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/abi_codec_cpp_conformance.cpp` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

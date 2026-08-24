@@ -4,7 +4,15 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/polled_audio.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -235,7 +243,15 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/polled_audio.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -940,17 +956,255 @@
       "classification": "DIRECT",
       "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
       "lines": [
-        1,
-        815
+        31,
+        37
       ],
       "path": "src/session/lifecycle/host.rs",
-      "symbol": null
+      "symbol": "SessionEngineHost"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "engine"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "application_backend"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "microphone_backend"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        35,
+        35
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "polled_audio_receipts"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        36,
+        36
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "recording_receipts"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        40,
+        44
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "native"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        48,
+        53
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "native_with_multistem_recording"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        55,
+        57
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "compile"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        60,
+        68
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "start"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        71,
+        82
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "start_compiled"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        84,
+        97
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "start_compiled_cancellable"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        99,
+        101
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "polled_audio_receipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        104,
+        106
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "polled_audio_receipts_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        108,
+        110
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "recording_receipt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        113,
+        115
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "recording_receipts_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        117,
+        155
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "metrics_snapshot"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        158,
+        160
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "engine"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        163,
+        163
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        163,
+        163
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        163,
+        163
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        164,
+        169
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "NativeSessionEngineHostOptions"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        165,
+        165
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "sample_spec"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "88530a89497a720830c724e1260cdeb477dfc67e15c352b3e5d2fb39410a357a",
+      "lines": [
+        166,
+        166
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": "source_queue_capacity_frames"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/polled_audio.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -976,7 +1230,15 @@
   "generated_from": "not_applicable",
   "git_object": "80c38e8896a9d06b63f59d96419efa69359fc89f",
   "implemented_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/polled_audio.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -997,7 +1259,15 @@
     "RunningEndpointDriver for TestRunningEndpoint"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/polled_audio.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPLEMENTS:src/lib.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
     "REFERENCES:src/abi/session/mod.rs",
@@ -1026,29 +1296,34 @@
     "super::{SessionEngineHostBuildError, SessionEngineHostBuilder}"
   ],
   "inputs": [
-    "#[cfg(all(",
-    "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]",
-    "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]",
-    "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]",
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "crate::capture::CallbackCaptureBackend",
-    "crate::capture::platform::linux::DesktopCaptureBackend as NativeDesktopCaptureBackend",
-    "crate::capture::platform::macos::DesktopCaptureBackend as NativeDesktopCaptureBackend",
-    "crate::capture::platform::windows::DesktopCaptureBackend as NativeDesktopCaptureBackend",
-    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
-    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointPortInput, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
-    "crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistryError}",
-    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
-    "crate::frame::{SampleFormat, SampleSpec}",
-    "crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeTypeId, PrepareContext, }",
-    "crate::graph::{NodeTypeId, PrepareContext}",
-    "crate::runtime::SidecarProcessSpec",
-    "crate::session::{ ApplicationSelector, DeviceSelector, EndpointConfiguration, OperatorId, PolledAudioEndpointConfig, Session, SessionEngineStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
-    "crate::session::{ CaptureBackendSet, CompiledSession, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, RunningSession, Session, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, SessionEventReceiver, SessionMetricsSnapshot, SessionRecordingReceipt, SessionStartCancellation, SessionStartOptions, }",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, Ordering}",
-    "std::time::{Duration, Instant}",
-    "super::{SessionEngineHostBuildError, SessionEngineHostBuilder}"
+    "Consumes configuration at src/session/lifecycle/host.rs:103.",
+    "Consumes configuration at src/session/lifecycle/host.rs:11.",
+    "Consumes configuration at src/session/lifecycle/host.rs:112.",
+    "Consumes configuration at src/session/lifecycle/host.rs:13.",
+    "Consumes configuration at src/session/lifecycle/host.rs:15.",
+    "Consumes configuration at src/session/lifecycle/host.rs:157.",
+    "Consumes configuration at src/session/lifecycle/host.rs:219.",
+    "Consumes configuration at src/session/lifecycle/host.rs:47.",
+    "Consumes configuration at src/session/lifecycle/host.rs:59.",
+    "Consumes configuration at src/session/lifecycle/host.rs:70.",
+    "Depends on `crate::capture::CallbackCaptureBackend` through a declared Rust import.",
+    "Depends on `crate::capture::platform::linux::DesktopCaptureBackend as NativeDesktopCaptureBackend` through a declared Rust import.",
+    "Depends on `crate::capture::platform::macos::DesktopCaptureBackend as NativeDesktopCaptureBackend` through a declared Rust import.",
+    "Depends on `crate::capture::platform::windows::DesktopCaptureBackend as NativeDesktopCaptureBackend` through a declared Rust import.",
+    "Depends on `crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }` through a declared Rust import.",
+    "Depends on `crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointPortInput, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistryError}` through a declared Rust import.",
+    "Depends on `crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}` through a declared Rust import.",
+    "Depends on `crate::frame::{SampleFormat, SampleSpec}` through a declared Rust import.",
+    "Depends on `crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeTypeId, PrepareContext, }` through a declared Rust import.",
+    "Depends on `crate::graph::{NodeTypeId, PrepareContext}` through a declared Rust import.",
+    "Depends on `crate::runtime::SidecarProcessSpec` through a declared Rust import.",
+    "Depends on `crate::session::{ ApplicationSelector, DeviceSelector, EndpointConfiguration, OperatorId, PolledAudioEndpointConfig, Session, SessionEngineStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }` through a declared Rust import.",
+    "Depends on `crate::session::{ CaptureBackendSet, CompiledSession, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, RunningSession, Session, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, SessionEventReceiver, SessionMetricsSnapshot, SessionRecordingReceipt, SessionStartCancellation, SessionStartOptions, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, Ordering}` through a declared Rust import.",
+    "Depends on `std::time::{Duration, Instant}` through a declared Rust import.",
+    "Depends on `super::{SessionEngineHostBuildError, SessionEngineHostBuilder}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1111,46 +1386,48 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::host` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-302fd4dd990824448edd",
     "pattern-f939739091c36cc0b864"
   ],
   "outputs": [
-    "Err(SessionEngineHostBuildError::UnsupportedPlatform)",
-    "Err(crate::session::PolledAudioPollError::Empty) if Instant::now() < deadline => {",
-    "Err(error) => error,",
-    "Err(error) => panic!(\"polled batch: {error}\"),",
-    "enum:SessionEngineHostBuildError",
-    "fn:build",
-    "fn:compile",
-    "fn:engine",
-    "fn:engine_builder",
-    "fn:metrics_snapshot",
-    "fn:native",
-    "fn:native_with_multistem_recording",
-    "fn:new",
-    "fn:polled_audio_receipt",
-    "fn:polled_audio_receipts_total",
-    "fn:recording_receipt",
-    "fn:recording_receipts_total",
-    "fn:register_async_operator",
-    "fn:register_audio_endpoint_driver",
-    "fn:register_endpoint",
-    "fn:register_multistem_recording",
-    "fn:register_polled_audio_endpoint",
-    "fn:register_sidecar_process",
-    "fn:set_application_backend",
-    "fn:set_microphone_backend",
-    "fn:start",
-    "fn:start_compiled",
-    "fn:start_compiled_cancellable",
-    "fn:with_capture_backends",
-    "return Err(CaptureError::BackendInit(",
-    "struct:NativeSessionEngineHostOptions",
-    "struct:SessionEngineHost",
-    "struct:SessionEngineHostBuilder"
+    "Creates a typed failure at src/session/lifecycle/host.rs:240.",
+    "Creates a typed failure at src/session/lifecycle/host.rs:405.",
+    "Creates a typed failure at src/session/lifecycle/host.rs:472.",
+    "Creates a typed failure at src/session/lifecycle/host.rs:670.",
+    "Creates a typed failure at src/session/lifecycle/host.rs:755.",
+    "Creates a typed failure at src/session/lifecycle/host.rs:758.",
+    "Creates a typed failure at src/session/lifecycle/host.rs:802.",
+    "Declares public enum `SessionEngineHostBuildError`.",
+    "Declares public fn `build`.",
+    "Declares public fn `compile`.",
+    "Declares public fn `engine_builder`.",
+    "Declares public fn `engine`.",
+    "Declares public fn `metrics_snapshot`.",
+    "Declares public fn `native_with_multistem_recording`.",
+    "Declares public fn `native`.",
+    "Declares public fn `new`.",
+    "Declares public fn `polled_audio_receipt`.",
+    "Declares public fn `polled_audio_receipts_total`.",
+    "Declares public fn `recording_receipt`.",
+    "Declares public fn `recording_receipts_total`.",
+    "Declares public fn `register_async_operator`.",
+    "Declares public fn `register_audio_endpoint_driver`.",
+    "Declares public fn `register_endpoint`.",
+    "Declares public fn `register_multistem_recording`.",
+    "Declares public fn `register_polled_audio_endpoint`.",
+    "Declares public fn `register_sidecar_process`.",
+    "Declares public fn `set_application_backend`.",
+    "Declares public fn `set_microphone_backend`.",
+    "Declares public fn `start_compiled_cancellable`.",
+    "Declares public fn `start_compiled`.",
+    "Declares public fn `start`.",
+    "Declares public fn `with_capture_backends`.",
+    "Declares public struct `NativeSessionEngineHostOptions`.",
+    "Declares public struct `SessionEngineHostBuilder`.",
+    "Declares public struct `SessionEngineHost`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/host.rs",
@@ -1550,8 +1827,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::host responsibilities, including Owns the native Session resources projected to language adapters.; Returns the native associated with `SessionEngineHost`.; Builds a native Session host with one multistem recorder.."
+    "classification": "DECLARED",
+    "text": "Owns the native Session resources projected to language adapters. Returns the native associated with `SessionEngineHost`. Builds a native Session host with one multistem recorder."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1612,6 +1889,15 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/lib.rs",
+    "CALLS:src/session/extensions/polled_audio.rs",
+    "CALLS:src/session/extensions/recording.rs",
+    "CALLS:src/session/lifecycle/engine.rs",
+    "IMPLEMENTS:src/endpoint/polled_audio_driver.rs",
+    "IMPLEMENTS:src/endpoint/registry.rs",
+    "IMPLEMENTS:src/graph/registry.rs",
+    "IMPLEMENTS:src/session/lifecycle/engine.rs",
     "REFERENCES:src/capture/capture_owner.rs",
     "REFERENCES:src/endpoint/contract.rs",
     "REFERENCES:src/endpoint/polled_audio_driver.rs",
@@ -1855,7 +2141,7 @@
     "native_with_multistem_recording: Builds a native Session host with one multistem recorder.",
     "compile: Compiles its owned operation for `SessionEngineHost`.",
     "start: Starts the lifecycle represented by `SessionEngineHost`.",
-    "start_compiled: Starts compiled for `SessionEngineHost`.",
+    "start_compiled: Starts a previously compiled Session through `SessionEngineHost`.",
     "start_compiled_cancellable: Starts compiled cancellable for `SessionEngineHost`.",
     "polled_audio_receipt: Returns the polled audio receipt associated with `SessionEngineHost`.",
     "polled_audio_receipts_total: Returns the polled audio receipts total held by `SessionEngineHost`.",
@@ -1864,10 +2150,10 @@
     "metrics_snapshot: Returns the metrics snapshot associated with `SessionEngineHost`.",
     "engine: Returns the engine associated with `SessionEngineHost`.",
     "pocketstation::session::lifecycle::host::NativeSessionEngineHostOptions: Configures native session engine host behavior at its owning API boundary.",
-    "NativeSessionEngineHostOptions::sample_spec: Stores the sample spec used by `NativeSessionEngineHostOptions`.",
+    "NativeSessionEngineHostOptions::sample_spec: Declares the sample rate, channel layout, and format used by `NativeSessionEngineHostOptions`.",
     "NativeSessionEngineHostOptions::source_queue_capacity_frames: Sets the source queue capacity frames available to `NativeSessionEngineHostOptions`.",
-    "NativeSessionEngineHostOptions::start_options: Stores the start options used by `NativeSessionEngineHostOptions`.",
-    "NativeSessionEngineHostOptions::polled_audio_endpoint: Stores the polled audio endpoint used by `NativeSessionEngineHostOptions`.",
+    "NativeSessionEngineHostOptions::start_options: Contains the start options owned or reported by `NativeSessionEngineHostOptions`.",
+    "NativeSessionEngineHostOptions::polled_audio_endpoint: References the polled audio endpoint participating in `NativeSessionEngineHostOptions`.",
     "default: Returns the default `NativeSessionEngineHostOptions` value.",
     "pocketstation::session::lifecycle::host::SessionEngineHostBuilder: Builds a Session host from caller-owned or native capture backends.",
     "with_capture_backends: Creates the standard Session host builder with caller-owned capture",
@@ -1877,21 +2163,21 @@
     "set_microphone_backend: Sets the microphone backend used by `SessionEngineHostBuilder`.",
     "engine_builder: Borrows the mutable engine builder owned by `SessionEngineHostBuilder`.",
     "register_audio_endpoint_driver: Registers one externally owned endpoint implementation with the",
-    "register_endpoint: Registers endpoint for `SessionEngineHostBuilder`.",
+    "register_endpoint: Registers one endpoint implementation with `SessionEngineHostBuilder`.",
     "register_async_operator: Registers async operator for `SessionEngineHostBuilder`.",
     "register_sidecar_process: Registers sidecar process for `SessionEngineHostBuilder`.",
     "register_polled_audio_endpoint: Registers polled audio endpoint for `SessionEngineHostBuilder`.",
     "register_multistem_recording: Registers multistem recording for `SessionEngineHostBuilder`.",
     "build: Builds its owned operation for `SessionEngineHostBuilder`.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError: Classifies failures reported as session engine host build error.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::Engine: Reported when the owning operation encounters engine.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::EndpointRegistration: Reported when the owning operation encounters endpoint registration.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::EndpointExtensionRegistration: Reported when the owning operation encounters endpoint extension registration.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::OperatorRegistration: Reported when the owning operation encounters operator registration.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::PolledAudioEndpoint: Reported when the owning operation encounters polled audio endpoint.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::MissingApplicationBackend: Reported when the owning operation encounters missing application backend.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::MissingMicrophoneBackend: Reported when the owning operation encounters missing microphone backend.",
-    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::UnsupportedPlatform: Reported when the owning operation encounters unsupported platform."
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError: Classifies failures produced during session engine host construction and input validation.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::Engine: Classifies a failure at the engine stage or component of `SessionEngineHostBuildError`.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::EndpointRegistration: Classifies a failure at the endpoint registration stage or component of `SessionEngineHostBuildError`.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::EndpointExtensionRegistration: Classifies a failure at the endpoint extension registration stage or component of `SessionEngineHostBuildError`.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::OperatorRegistration: Classifies a failure at the operator registration stage or component of `SessionEngineHostBuildError`.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::PolledAudioEndpoint: Classifies a failure at the polled audio endpoint stage or component of `SessionEngineHostBuildError`.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::MissingApplicationBackend: Reports that the required application backend is missing.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::MissingMicrophoneBackend: Reports that the required microphone backend is missing.",
+    "pocketstation::session::lifecycle::host::SessionEngineHostBuildError::UnsupportedPlatform: Reports that the requested platform is unsupported."
   ],
   "retry_behavior": [],
   "serialization": [],

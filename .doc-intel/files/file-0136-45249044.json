@@ -60,14 +60,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "02917d26e9cb3e12e245ff6eec03009617ab5ceca3e7607586c3e798b2bce7a4",
       "lines": [
-        1,
-        43
+        22,
+        42
       ],
-      "path": "src/endpoint/runtime/tests.rs",
-      "symbol": null
+      "path": "src/endpoint/runtime/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "02917d26e9cb3e12e245ff6eec03009617ab5ceca3e7607586c3e798b2bce7a4",
+      "lines": [
+        4,
+        22
+      ],
+      "path": "src/endpoint/runtime/tests.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -95,9 +103,9 @@
     "super::{EndpointPrepareContext, EndpointRouteContext, SessionTimelineOrigin}"
   ],
   "inputs": [
-    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
-    "crate::graph::NodeConfig",
-    "super::{EndpointPrepareContext, EndpointRouteContext, SessionTimelineOrigin}"
+    "Depends on `crate::frame::{EndpointId, RouteId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::graph::NodeConfig` through a declared Rust import.",
+    "Depends on `super::{EndpointPrepareContext, EndpointRouteContext, SessionTimelineOrigin}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -106,7 +114,7 @@
   "module": "pocketstation::endpoint::runtime::tests",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::runtime::tests` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -139,7 +147,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::runtime::tests responsibilities, including the src/endpoint/runtime/tests boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::endpoint::runtime::tests`."
   },
   "queues": [],
   "recovery_behavior": [],

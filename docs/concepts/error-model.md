@@ -1,6 +1,6 @@
 # Error and status model
 
-<!-- claims: CLM-DOC-034-CAP-001,CLM-DOC-034-SOURCE-001 -->
+<!-- claims: CLM-DOC-034-SCOPE-001,CLM-DOC-034-TEXT-001,CLM-DOC-034-TEXT-002,CLM-DOC-034-TEXT-003,CLM-DOC-034-TEXT-004,CLM-DOC-034-TEXT-005,CLM-DOC-034-TEXT-006,CLM-DOC-034-SOURCE-001 -->
 
 ## What it is
 
@@ -88,7 +88,32 @@ Executable evidence selected for **Error and status model** is limited to each t
 
 The claims on **Error and status model** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/error_code.rs:1-81` (`DIRECT`)
-- `src/session/error_code.rs:1-544` (`DIRECT`)
+- `src/error_code.rs:5-11` (`DIRECT`)
+- `src/error_code.rs:15-24` (`DIRECT`)
+- `src/error_code.rs:26-28` (`DIRECT`)
+- `src/session/error_code.rs:9-9` (`DIRECT`)
+- `src/session/error_code.rs:9-9` (`DIRECT`)
+- `src/session/error_code.rs:9-9` (`DIRECT`)
+- `src/session/error_code.rs:10-28` (`DIRECT`)
+- `src/session/error_code.rs:11-11` (`DIRECT`)
+- `src/session/error_code.rs:12-12` (`DIRECT`)
+- `src/session/error_code.rs:13-13` (`DIRECT`)
+- `src/session/error_code.rs:14-14` (`DIRECT`)
+- `src/session/error_code.rs:15-15` (`DIRECT`)
+- `src/session/error_code.rs:16-16` (`DIRECT`)
+- `src/session/error_code.rs:17-17` (`DIRECT`)
+- `src/session/error_code.rs:18-18` (`DIRECT`)
+- `src/session/error_code.rs:19-19` (`DIRECT`)
+- `src/session/error_code.rs:20-20` (`DIRECT`)
+- `src/session/error_code.rs:21-21` (`DIRECT`)
+- `src/session/error_code.rs:22-22` (`DIRECT`)
+- `src/session/error_code.rs:23-23` (`DIRECT`)
+- `src/session/error_code.rs:24-24` (`DIRECT`)
+- `src/session/error_code.rs:25-25` (`DIRECT`)
+- `src/session/error_code.rs:26-26` (`DIRECT`)
+- `src/session/error_code.rs:27-27` (`DIRECT`)
+- `src/session/error_code.rs:31-51` (`DIRECT`)
+- `src/session/error_code.rs:60-60` (`DIRECT`)
+- `src/session/error_code.rs:60-60` (`DIRECT`)
 
 For **Error and status model**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

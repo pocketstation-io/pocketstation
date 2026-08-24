@@ -4,6 +4,16 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/capture/identity.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -76,6 +86,16 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/capture/identity.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -221,19 +241,29 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "d6a9e6605f036fbb13fa683a1523731b90246cbcfd2bdfe8b660f0651cdc9022",
       "lines": [
         1,
-        40
+        1
       ],
       "path": "src/frame/identity.rs",
-      "symbol": null
+      "symbol": "pocketstation::frame::identity"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/capture/identity.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -307,6 +337,16 @@
   "generated_from": "not_applicable",
   "git_object": "8d6c106699cba1a2d792b66baa797d0c3c2e008c",
   "implemented_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/capture/identity.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -371,6 +411,16 @@
     "ClockDomainId"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/conformance_fixture.rs",
+    "CALLS:src/capture/identity.rs",
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
+    "CALLS:src/conformance.rs",
+    "CALLS:src/session/declaration/draft.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/frame/mod.rs",
     "IMPORTS:src/frame/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -441,13 +491,13 @@
   "module": "pocketstation::frame::identity",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::frame::identity` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:get",
-    "fn:new",
-    "struct:ClockDomainId"
+    "Declares public fn `get`.",
+    "Declares public fn `new`.",
+    "Declares public struct `ClockDomainId`."
   ],
   "package": "pocketstation",
   "path": "src/frame/identity.rs",
@@ -500,8 +550,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::frame::identity responsibilities, including Uniquely identifies stream within its PocketStation ownership scope.; Uniquely identifies source within its PocketStation ownership scope.; Uniquely identifies session within its PocketStation ownership scope.."
+    "classification": "DECLARED",
+    "text": "Compact stable identities carried by plans and hot-path frames."
   },
   "queues": [],
   "recovery_behavior": [],

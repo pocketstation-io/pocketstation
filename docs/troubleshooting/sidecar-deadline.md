@@ -1,6 +1,6 @@
 # A sidecar misses a deadline
 
-<!-- claims: CLM-TRBL-010-CAP-001,CLM-TRBL-010-CAP-002,CLM-TRBL-010-CAP-003,CLM-TRBL-010-CAP-004,CLM-TRBL-010-SOURCE-001 -->
+<!-- claims: CLM-TRBL-010-SCOPE-001,CLM-TRBL-010-TEXT-001,CLM-TRBL-010-TEXT-002,CLM-TRBL-010-TEXT-003,CLM-TRBL-010-TEXT-004,CLM-TRBL-010-TEXT-005,CLM-TRBL-010-TEXT-006,CLM-TRBL-010-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,6 +78,29 @@ Restart is not automatically safe because external work may have occurred before
 
 The claims on **A sidecar misses a deadline** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/lifecycle/sidecar_host.rs:1-734` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:13-13` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:14-14` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:15-15` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:16-16` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:17-17` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:21-33` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:22-22` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:23-23` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:24-24` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:25-25` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:26-26` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:27-27` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:28-28` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:29-29` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:30-30` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:31-31` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:32-32` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:36-50` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
 
 For **A sidecar misses a deadline**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

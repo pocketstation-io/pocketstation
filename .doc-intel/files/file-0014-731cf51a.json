@@ -63,7 +63,7 @@
       "content_hash": "dc73a43a4302e157d676efb8e6c20f2c0c01dc111cf2f9ef6035fa24168dff5b",
       "lines": [
         1,
-        70
+        21
       ],
       "path": "benches/opus_decode.rs",
       "symbol": null
@@ -94,9 +94,9 @@
     "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
-    "opus::{Channels, Decoder}",
-    "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion}` through a declared Rust import.",
+    "Depends on `opus::{Channels, Decoder}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -105,7 +105,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/opus_decode.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -131,8 +131,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/opus decode boundary."
+    "classification": "DECLARED",
+    "text": "Measures opus decode by repeatedly exercising Decoder::new, OpusDecoder::default, OpusEncoder::default, Vec::with_capacity."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -1,6 +1,6 @@
 # Rust quickstart
 
-<!-- claims: CLM-DOC-003-CAP-001,CLM-DOC-003-CAP-002,CLM-DOC-003-CAP-003,CLM-DOC-003-CAP-004,CLM-DOC-003-CAP-005,CLM-DOC-003-SOURCE-001 -->
+<!-- claims: CLM-DOC-003-SCOPE-001,CLM-DOC-003-TEXT-001,CLM-DOC-003-TEXT-002,CLM-DOC-003-TEXT-003,CLM-DOC-003-TEXT-004,CLM-DOC-003-TEXT-005,CLM-DOC-003-TEXT-006,CLM-DOC-003-TEXT-007,CLM-DOC-003-TEXT-008,CLM-DOC-003-SOURCE-001 -->
 
 ## Audience
 
@@ -175,6 +175,6 @@ Executable evidence selected for **Rust quickstart** is limited to each test's r
 
 The claims on **Rust quickstart** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `examples/product_quickstart.rs:1-61` (`DIRECT`)
+- `examples/product_quickstart.rs:1-21` (`DIRECT`)
 
 For **Rust quickstart**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -1,6 +1,6 @@
 # Connect named operator ports
 
-<!-- claims: CLM-GUIDE-012-CAP-001,CLM-GUIDE-012-CAP-002,CLM-GUIDE-012-CAP-003,CLM-GUIDE-012-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-012-SCOPE-001,CLM-GUIDE-012-TEXT-001,CLM-GUIDE-012-TEXT-002,CLM-GUIDE-012-TEXT-003,CLM-GUIDE-012-TEXT-004,CLM-GUIDE-012-TEXT-005,CLM-GUIDE-012-TEXT-006,CLM-GUIDE-012-SOURCE-001 -->
 
 ## Scope
 
@@ -21,6 +21,80 @@ A registered operator manifest and typed declaration handles from the same Sessi
 3. Use exact port names from the manifest and preserve each source-aware binding when several stems feed one operator.
 4. Compile and inspect SessionCompileDiagnostic for the stage, stable code, and affected component identities.
 5. Confirm every compiled binding targets the intended instance.
+
+## Concrete repository example
+
+The executable repository test `given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections` (`test-d74d1c0449808ea58c4f`) shows the concrete API sequence and asserted outcome at `src/session/declaration/tests/operator_connections.rs:19`.
+
+```rust
+}
+
+#[test]
+fn given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections() {
+    let session = Session::new();
+    let application = session
+        .capture(Source::application(ApplicationSelector::name(
+            "Meeting App",
+        )))
+        .expect("application");
+    let microphone = session
+        .capture(Source::microphone_default())
+        .expect("microphone");
+    let declared = session
+        .operator(operator("example.operator.named-composition.v1"))
+        .expect("one operator instance");
+
+    application
+        .connect(declared.input("application").expect("application input"))
+        .expect("application connection");
+    microphone
+        .connect(declared.input("microphone").expect("microphone input"))
+        .expect("microphone connection");
+    declared
+        .output("primary")
+        .expect("primary output")
+        .send(endpoint(&session, "primary"))
+        .expect("primary route");
+    declared
+        .output("diagnostics")
+        .expect("diagnostics output")
+        .send(endpoint(&session, "diagnostics"))
+        .expect("diagnostics route");
+
+    let spec = session.freeze().expect("named Session specification");
+    assert_eq!(spec.operators().len(), 1);
+    let operator_inputs = spec
+        .connections()
+        .iter()
+        .filter(|connection| matches!(connection.target(), ConnectionTarget::OperatorInput { .. }))
+        .collect::<Vec<_>>();
+    let endpoint_inputs = spec
+        .connections()
+        .iter()
+        .filter(|connection| matches!(connection.target(), ConnectionTarget::EndpointInput { .. }))
+        .collect::<Vec<_>>();
+    assert_eq!(operator_inputs.len(), 2);
+    assert_eq!(endpoint_inputs.len(), 2);
+    assert_eq!(
+        operator_inputs
+            .iter()
+            .map(|connection| match connection.target() {
+                ConnectionTarget::OperatorInput {
+                    input_port: Some(input_port),
+                    ..
+                } => input_port.as_str(),
+                _ => panic!("named operator input"),
+            })
+            .collect::<Vec<_>>(),
+        ["application", "microphone"]
+    );
+    assert!(matches!(operator_inputs[0].origin(), StreamOrigin::Stem(_)));
+}
+```
+
+```bash
+cargo test --all-features given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections
+```
 
 ## Important consequence
 
@@ -66,7 +140,7 @@ Executable evidence selected for **Connect named operator ports** is limited to 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
 | `pocketstation::session::declaration::spec::ConnectionTarget::OperatorInput` | variant | Represents the operator input alternative defined by `ConnectionTarget`. | `src/session/declaration/spec.rs:225` |
-| `ConnectionTarget::OperatorInput::input_port` | struct_field | Stores the input port used by `OperatorInput`. | `src/session/declaration/spec.rs:227` |
+| `ConnectionTarget::OperatorInput::input_port` | struct_field | References the input port participating in `OperatorInput`. | `src/session/declaration/spec.rs:227` |
 | `ConnectionTarget::OperatorInput::operator_instance_id` | struct_field | Identifies the operator instance identifier recorded by `OperatorInput`. | `src/session/declaration/spec.rs:226` |
 | `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
 | `pocketstation::graph::signal::operator::AsyncOperatorFactory` | trait | Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract. | `src/graph/signal/operator.rs:368` |
@@ -89,6 +163,9 @@ Executable evidence selected for **Connect named operator ports** is limited to 
 
 The claims on **Connect named operator ports** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/declaration/tests/operator_connections.rs:1-173` (`DIRECT`)
+- `src/session/declaration/tests/operator_connections.rs:154-172` (`TESTED`)
+- `src/session/declaration/tests/operator_connections.rs:110-154` (`TESTED`)
+- `src/session/declaration/tests/operator_connections.rs:19-81` (`TESTED`)
+- `src/session/declaration/tests/operator_connections.rs:81-110` (`TESTED`)
 
 For **Connect named operator ports**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

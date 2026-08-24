@@ -1,6 +1,6 @@
 # Connector model
 
-<!-- claims: CLM-DOC-025-CAP-001,CLM-DOC-025-SOURCE-001 -->
+<!-- claims: CLM-DOC-025-SCOPE-001,CLM-DOC-025-TEXT-001,CLM-DOC-025-TEXT-002,CLM-DOC-025-TEXT-003,CLM-DOC-025-TEXT-004,CLM-DOC-025-TEXT-005,CLM-DOC-025-TEXT-006,CLM-DOC-025-SOURCE-001 -->
 
 ## What it is
 
@@ -49,9 +49,9 @@ The scope of **Connector model** ends at the native contracts and executable con
 | `pocketstation::connector::configuration::ConnectorSecret` | struct | Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop. | `src/connector/configuration.rs:11` |
 | `pocketstation::connector::configuration::ResolvedConnectorConfiguration` | struct | Configures resolved connector behavior at its owning API boundary. | `src/connector/configuration.rs:391` |
 | `pocketstation::connector::manifest::ConnectorCapability` | struct | Declares a capability advertised by a connector manifest. | `src/connector/manifest.rs:12` |
-| `pocketstation::connector::manifest::ConnectorManifest` | struct | Describes the connector manifest contract. | `src/connector/manifest.rs:75` |
+| `pocketstation::connector::manifest::ConnectorManifest` | struct | Declares connector identity, API revision, ports, capabilities, requirements, and configuration schema. | `src/connector/manifest.rs:75` |
 | `pocketstation::connector::manifest::ConnectorRequirement` | struct | Declares a host or configuration requirement that must be satisfied before connector use. | `src/connector/manifest.rs:40` |
-| `pocketstation::connector::configuration::ConnectorConfigurationConstraint` | enum | Enumerates the supported connector configuration constraint cases. | `src/connector/configuration.rs:159` |
+| `pocketstation::connector::configuration::ConnectorConfigurationConstraint` | enum | Classifies validation constraints applied to connector configuration fields. | `src/connector/configuration.rs:159` |
 
 ## Executable evidence
 
@@ -85,7 +85,53 @@ Executable evidence selected for **Connector model** is limited to each test's r
 
 The claims on **Connector model** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/connector/manifest.rs:1-255` (`DIRECT`)
-- `src/connector/configuration.rs:1-673` (`DIRECT`)
+- `src/connector/manifest.rs:7-7` (`DIRECT`)
+- `src/connector/manifest.rs:8-8` (`DIRECT`)
+- `src/connector/manifest.rs:9-9` (`DIRECT`)
+- `src/connector/manifest.rs:11-11` (`DIRECT`)
+- `src/connector/manifest.rs:11-11` (`DIRECT`)
+- `src/connector/manifest.rs:11-11` (`DIRECT`)
+- `src/connector/manifest.rs:12-15` (`DIRECT`)
+- `src/connector/manifest.rs:13-13` (`DIRECT`)
+- `src/connector/manifest.rs:14-14` (`DIRECT`)
+- `src/connector/manifest.rs:18-28` (`DIRECT`)
+- `src/connector/manifest.rs:30-32` (`DIRECT`)
+- `src/connector/manifest.rs:34-36` (`DIRECT`)
+- `src/connector/manifest.rs:39-39` (`DIRECT`)
+- `src/connector/manifest.rs:39-39` (`DIRECT`)
+- `src/connector/manifest.rs:39-39` (`DIRECT`)
+- `src/connector/manifest.rs:40-44` (`DIRECT`)
+- `src/connector/manifest.rs:41-41` (`DIRECT`)
+- `src/connector/manifest.rs:42-42` (`DIRECT`)
+- `src/connector/manifest.rs:43-43` (`DIRECT`)
+- `src/connector/manifest.rs:47-59` (`DIRECT`)
+- `src/connector/manifest.rs:61-63` (`DIRECT`)
+- `src/connector/manifest.rs:65-67` (`DIRECT`)
+- `src/connector/manifest.rs:69-71` (`DIRECT`)
+- `src/connector/manifest.rs:74-74` (`DIRECT`)
+- `src/connector/configuration.rs:7-7` (`DIRECT`)
+- `src/connector/configuration.rs:8-8` (`DIRECT`)
+- `src/connector/configuration.rs:10-10` (`DIRECT`)
+- `src/connector/configuration.rs:10-10` (`DIRECT`)
+- `src/connector/configuration.rs:11-11` (`DIRECT`)
+- `src/connector/configuration.rs:11-11` (`DIRECT`)
+- `src/connector/configuration.rs:14-31` (`DIRECT`)
+- `src/connector/configuration.rs:37-39` (`DIRECT`)
+- `src/connector/configuration.rs:43-45` (`DIRECT`)
+- `src/connector/configuration.rs:49-51` (`DIRECT`)
+- `src/connector/configuration.rs:54-54` (`DIRECT`)
+- `src/connector/configuration.rs:54-54` (`DIRECT`)
+- `src/connector/configuration.rs:54-54` (`DIRECT`)
+- `src/connector/configuration.rs:55-63` (`DIRECT`)
+- `src/connector/configuration.rs:56-56` (`DIRECT`)
+- `src/connector/configuration.rs:57-57` (`DIRECT`)
+- `src/connector/configuration.rs:58-58` (`DIRECT`)
+- `src/connector/configuration.rs:59-59` (`DIRECT`)
+- `src/connector/configuration.rs:60-60` (`DIRECT`)
+- `src/connector/configuration.rs:61-61` (`DIRECT`)
+- `src/connector/configuration.rs:62-62` (`DIRECT`)
+- `src/connector/configuration.rs:65-65` (`DIRECT`)
+- `src/connector/configuration.rs:65-65` (`DIRECT`)
+- `src/connector/configuration.rs:65-65` (`DIRECT`)
 
 For **Connector model**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

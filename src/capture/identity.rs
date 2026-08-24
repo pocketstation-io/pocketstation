@@ -8,13 +8,13 @@ use super::selection::{ProcessTreeScope, SelectorPersistenceScope};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[doc = "Selects the source kind used by PocketStation."]
 pub enum SourceKind {
-    #[doc = "Selects application behavior for `SourceKind`."]
+    #[doc = "Classifies a capture source as application."]
     Application,
-    #[doc = "Selects output device behavior for `SourceKind`."]
+    #[doc = "Classifies a capture source as output device."]
     OutputDevice,
-    #[doc = "Selects input device behavior for `SourceKind`."]
+    #[doc = "Classifies a capture source as input device."]
     InputDevice,
-    #[doc = "Selects system mix behavior for `SourceKind`."]
+    #[doc = "Classifies a capture source as system mix."]
     SystemMix,
 }
 
@@ -36,11 +36,11 @@ pub enum SourceState {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[doc = "Uniquely identifies stable source."]
 pub struct StableSourceId {
-    #[doc = "Stores the platform used by `StableSourceId`."]
+    #[doc = "Stores the platform as a `Platform` value in `StableSourceId`."]
     pub platform: Platform,
-    #[doc = "Stores the kind used by `StableSourceId`."]
+    #[doc = "Records the kind selected for `StableSourceId`."]
     pub kind: SourceKind,
-    #[doc = "Stores the stable key used by `StableSourceId`."]
+    #[doc = "Stores the stable source key associated with `StableSourceId`."]
     pub stable_key: String,
 }
 
@@ -99,19 +99,19 @@ impl StableSourceId {
 pub struct CaptureSource {
     #[doc = "Identifies the stable identifier recorded by `CaptureSource`."]
     pub stable_id: StableSourceId,
-    #[doc = "Stores the name used by `CaptureSource`."]
+    #[doc = "Stores the human-readable name used to identify `CaptureSource`."]
     pub name: String,
     #[doc = "Identifies the process identifier recorded by `CaptureSource`."]
     pub process_id: Option<u32>,
     #[doc = "Identifies the app identifier recorded by `CaptureSource`."]
     pub app_id: Option<String>,
-    #[doc = "Stores the device uid used by `CaptureSource`."]
+    #[doc = "Stores the device uid component of `CaptureSource`."]
     pub device_uid: Option<String>,
-    #[doc = "Stores the state used by `CaptureSource`."]
+    #[doc = "Records the state selected for `CaptureSource`."]
     pub state: SourceState,
     #[doc = "Stores the sample rate value for `CaptureSource`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels used by `CaptureSource`."]
+    #[doc = "Contains the channels owned or reported by `CaptureSource`."]
     pub channels: u16,
 }
 

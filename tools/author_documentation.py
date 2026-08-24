@@ -39,6 +39,8 @@ def write_jsonl(path: Path, records: list[dict[str, Any]]) -> None:
 
 
 STATE = read_json(DB / "state.json")
+WORKSPACE_QUALIFICATION = read_json(DB / "checkpoints" / "workspace-qualification.json") \
+    if (DB / "checkpoints" / "workspace-qualification.json").exists() else None
 FILES = read_jsonl(DB / "repository-manifest.jsonl")
 FILE_BY_PATH = {record["path"]: record for record in FILES}
 PAGES = read_jsonl(DB / "page-manifest.jsonl")
@@ -51,14 +53,32 @@ NATIVE_DOCS = {
     for record in read_jsonl(DB / "native-docs.jsonl")
 } if (DB / "native-docs.jsonl").exists() else {}
 TESTS = read_jsonl(DB / "tests.jsonl")
+EXAMPLES = read_jsonl(DB / "examples.jsonl")
 ERRORS = read_jsonl(DB / "errors.jsonl")
 CONFIGURATION = read_jsonl(DB / "configuration.jsonl")
 BEHAVIORS = read_jsonl(DB / "behaviors.jsonl")
 LIFECYCLES = read_jsonl(DB / "lifecycles.jsonl")
 PROTOCOLS = read_jsonl(DB / "protocols.jsonl")
 PATTERNS = read_jsonl(DB / "patterns.jsonl")
+CONFLICTS = read_jsonl(DB / "conflicts.jsonl")
 TERMINOLOGY = read_json(DB / "terminology.json")["terms"]
 SNAPSHOT = STATE["snapshot"]
+
+EVIDENCE_RECORDS: dict[str, dict[str, Any]] = {}
+for records, identifier in (
+    (SYMBOLS, "symbol_id"),
+    (TESTS, "test_id"),
+    (EXAMPLES, "example_id"),
+    (ERRORS, "error_id"),
+    (CONFIGURATION, "config_id"),
+    (BEHAVIORS, "behavior_id"),
+    (LIFECYCLES, "lifecycle_id"),
+    (PROTOCOLS, "protocol_id"),
+    (PATTERNS, "pattern_id"),
+):
+    for evidence_record in records:
+        if evidence_record.get(identifier):
+            EVIDENCE_RECORDS[str(evidence_record[identifier])] = evidence_record
 
 
 def domain_for_path(path: str) -> str:
@@ -111,6 +131,12 @@ def md(value: Any) -> str:
 
 def code(value: Any) -> str:
     return f"{BT}{md(value)}{BT}"
+
+
+def frozen_text(path: str) -> str:
+    return subprocess.check_output(
+        ["git", "show", f"{SNAPSHOT}:{path}"], cwd=ROOT, text=True
+    )
 
 
 def source_ref(record: dict[str, Any]) -> str:
@@ -187,6 +213,114 @@ def make_claim(identifier: str, page: dict[str, Any], section: str, summary: str
     }
 
 
+def unique_evidence(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Return stable, de-duplicated evidence without widening source spans."""
+    selected: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for item in items:
+        key = (
+            item.get("path"), tuple(item.get("lines", [])), item.get("symbol"),
+            item.get("classification"), item.get("content_hash"),
+        )
+        selected[key] = item
+    return [selected[key] for key in sorted(selected, key=lambda value: tuple(str(part) for part in value))]
+
+
+def capability_evidence(page: dict[str, Any]) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    for capability_id in page["capability_ids"]:
+        # A capability can draw on several representative files.  Preserve one
+        # precise anchor per file rather than copying every dossier symbol into
+        # every prose claim that mentions the capability.
+        seen_paths: set[str] = set()
+        for item in CAP_BY_ID[capability_id]["evidence"]:
+            if item["path"] in seen_paths:
+                continue
+            seen_paths.add(item["path"])
+            selected.append(item)
+    return unique_evidence(selected)
+
+
+def page_examples(page: dict[str, Any], section_text: str = "") -> list[dict[str, Any]]:
+    page_paths = {item["path"] for item in page["evidence"]}
+    return [
+        record for record in EXAMPLES
+        if record["path"] in page_paths or record["path"] in section_text
+    ]
+
+
+def section_claim_evidence(
+    page: dict[str, Any], section: str, section_text: str
+) -> list[dict[str, Any]]:
+    """Select evidence actually used by one authored section.
+
+    Stable record IDs printed in prose or tables take precedence.  Task and
+    outcome sections additionally inherit the exact example/test/error records
+    used to render them.  This prevents a broad page seed from masquerading as
+    proof for unrelated test results or failure variants.
+    """
+    selected: list[dict[str, Any]] = []
+    for identifier, record in EVIDENCE_RECORDS.items():
+        if identifier in section_text:
+            selected.extend(record.get("evidence", []))
+
+    examples = page_examples(page, section_text)
+    lower_section = section.lower()
+    if lower_section in {
+        "prerequisites", "procedure", "concrete repository example",
+        "verify the outcome", "run the first session", "success",
+    }:
+        selected.extend(
+            item for record in examples for item in record.get("evidence", [])
+        )
+    if lower_section in {
+        "verify the outcome", "executable evidence", "invariants and guarantees",
+        "success", "diagnosis",
+    }:
+        selected.extend(
+            item for record in page_tests(page) for item in record.get("evidence", [])
+        )
+    if lower_section == "concrete repository example" and not examples:
+        selected.extend(
+            item for record in page_tests(page, 1) for item in record.get("evidence", [])
+        )
+    if any(token in lower_section for token in ("failure", "cause", "corrective", "retry")) \
+            or lower_section == "important consequence":
+        selected.extend(
+            item for record in page_errors(page) for item in record.get("evidence", [])
+        )
+    if any(token in lower_section for token in ("configuration", "secret", "precedence")):
+        selected.extend(
+            item for record in [item for item in CONFIGURATION if relevant(page, item)][:12]
+            for item in record.get("evidence", [])
+        )
+    if any(token in lower_section for token in ("lifecycle", "transition", "ownership")):
+        selected.extend(
+            item for record in [item for item in LIFECYCLES if relevant(page, item)][:12]
+            for item in record.get("evidence", [])
+        )
+    if "protocol" in lower_section or "abi" in lower_section:
+        selected.extend(
+            item for record in PROTOCOLS if relevant(page, record)
+            for item in record.get("evidence", [])
+        )
+    if lower_section == "current workspace qualification":
+        selected.extend(
+            item for record in CONFLICTS
+            if record.get("kind") == "cross_repository_qualification"
+            for item in record.get("evidence", [])
+        )
+    if lower_section in {"recommendation", "reason", "tradeoff", "when it does not apply"}:
+        selected.extend(
+            item for record in [item for item in PATTERNS if relevant(page, item)][:12]
+            for item in record.get("evidence", [])
+        )
+
+    # Conceptual prose is grounded in the reviewed capability model.  Add it
+    # after section-specific records so a missing exact record cannot be hidden
+    # by a generic page seed.
+    return unique_evidence(selected or capability_evidence(page) or page["evidence"])
+
+
 def add_surface_claims(page: dict[str, Any], records: list[dict[str, Any]], prefix: str, id_field: str, summary_field: str) -> list[dict[str, Any]]:
     result = []
     for number, record in enumerate(records, 1):
@@ -201,36 +335,81 @@ def add_surface_claims(page: dict[str, Any], records: list[dict[str, Any]], pref
     return result
 
 
-def claims_for(page: dict[str, Any]) -> list[dict[str, Any]]:
-    claims = []
-    for number, capability_id in enumerate(page["capability_ids"], 1):
-        capability = CAP_BY_ID[capability_id]
-        claims.append(make_claim(
-            f"CLM-{page['page_id']}-CAP-{number:03d}",
+def claims_for(page: dict[str, Any], body: str) -> list[dict[str, Any]]:
+    """Map factual/prescriptive prose sections to precise frozen evidence.
+
+    Exhaustive inventory tables already carry their own stable evidence IDs;
+    they are not duplicated into thousands of synthetic "evidence index"
+    claims. Prose, procedures, guarantees, recovery advice, and task outcomes
+    receive page-local claim records.
+    """
+    claims: list[dict[str, Any]] = []
+    scope_evidence = capability_evidence(page)
+    claims.append(make_claim(
+        f"CLM-{page['page_id']}-SCOPE-001",
+        page,
+        "Scope",
+        f"{page['title']} covers " + "; ".join(
+            CAP_BY_ID[capability_id]["description"] for capability_id in page["capability_ids"]
+        ),
+        scope_evidence or page["evidence"],
+    ))
+
+    excluded = {
+        "Scope", "Related documentation", "Evidence boundary", "Key API",
+        "API reference", "Executable evidence", "Extracted lifecycle operations",
+    }
+    sections = list(re.finditer(r"(?m)^##\s+(.+?)\s*$", body))
+    claim_number = 1
+    for index, match in enumerate(sections):
+        section = match.group(1).strip()
+        if section in excluded:
+            continue
+        end = sections[index + 1].start() if index + 1 < len(sections) else len(body)
+        section_text = body[match.end():end]
+        evidence = section_claim_evidence(page, section, section_text)
+        if len(re.findall(r"(?m)^\|", section_text)) > 3:
+            continue
+        section_text = re.sub(r"```.*?```", "", section_text, flags=re.S)
+        units: list[str] = []
+        for block in re.split(r"\n\s*\n", section_text):
+            cleaned = re.sub(r"<!--.*?-->", "", block, flags=re.S)
+            cleaned = re.sub(r"\[([^]]+)\]\([^)]+\)", r"\1", cleaned)
+            cleaned = re.sub(r"[`*_>#|]", "", cleaned)
+            cleaned = re.sub(r"(?m)^\s*(?:[-+] |\d+\.\s*)", "", cleaned)
+            cleaned = re.sub(r"\s+", " ", cleaned).strip()
+            if len(cleaned.split()) >= 6 and not set(cleaned) <= {"-", ":"}:
+                units.append(cleaned)
+        if not units:
+            continue
+        # One section record keeps related sentences together and maps the
+        # exact published section, avoiding both untracked prose and one-record
+        # per generated table row inflation.
+        summary = " ".join(units)
+        claim = make_claim(
+            f"CLM-{page['page_id']}-TEXT-{claim_number:03d}",
             page,
-            "Scope",
-            capability["description"],
-            capability["evidence"],
-        ))
+            section,
+            summary,
+            evidence,
+        )
+        if section == "Current workspace qualification" and WORKSPACE_QUALIFICATION:
+            claim["status"] = (
+                "verified" if WORKSPACE_QUALIFICATION.get("passed") is True
+                else "conflicted" if WORKSPACE_QUALIFICATION.get("status") == "conflicted"
+                else "unknown_explicit"
+            )
+            claim["external_checkpoint"] = ".doc-intel/checkpoints/workspace-qualification.json"
+            claim["external_commit"] = WORKSPACE_QUALIFICATION.get("external_commit")
+        claims.append(claim)
+        claim_number += 1
     claims.append(make_claim(
         f"CLM-{page['page_id']}-SOURCE-001",
         page,
         "Evidence boundary",
-        "The page is scoped to the listed repository evidence at the frozen snapshot.",
-        page["evidence"],
+        f"{page['title']} is limited to its listed frozen-snapshot evidence and classifications.",
+        unique_evidence(page["evidence"]),
     ))
-    if page["path"] == "docs/reference/behavior-evidence.md":
-        claims.extend(add_surface_claims(page, BEHAVIORS, "BEHAVIOR", "behavior_id", "name"))
-    elif page["path"] == "docs/reference/protocol-surface.md":
-        claims.extend(add_surface_claims(page, PROTOCOLS, "PROTOCOL", "protocol_id", "name"))
-    elif page["path"] == "docs/reference/test-evidence.md":
-        claims.extend(add_surface_claims(page, TESTS, "TEST", "test_id", "name"))
-    elif page["path"] == "docs/reference/lifecycle-evidence.md":
-        claims.extend(add_surface_claims(page, LIFECYCLES, "LIFECYCLE", "lifecycle_id", "operation"))
-    elif page["doc_class"] == "error-reference":
-        claims.extend(add_surface_claims(page, [record for record in ERRORS if relevant(page, record)], "ERROR", "error_id", "variant"))
-    elif page["doc_class"] == "config-reference" and page["path"].endswith("configuration.md"):
-        claims.extend(add_surface_claims(page, CONFIGURATION, "CONFIG", "config_id", "name"))
     return claims
 
 
@@ -531,6 +710,82 @@ PROCEDURES = {
 }
 
 
+TASK_COMMANDS = {
+    "GUIDE-017": "mkdir -p ../protocol/conformance/connector/v1\ncp scripts/fixtures/connector-v1-vectors.json ../protocol/conformance/connector/v1/vectors.json\ncargo test --all-features connector",
+    "GUIDE-025": "./scripts/check_protocol.sh\ncargo test --test abi_c_conformance --all-features\ncargo test --test connector_portable_semantics --all-features",
+    "GUIDE-026": "cargo check --manifest-path examples/whisper-transcribe/Cargo.toml\ncargo run --manifest-path examples/whisper-transcribe/Cargo.toml",
+    "GUIDE-027": "cargo check --all-features\ncargo check --no-default-features",
+}
+
+
+def concrete_task_example(page: dict[str, Any]) -> str:
+    command = TASK_COMMANDS.get(page["page_id"])
+    if command:
+        return (
+            f"Run the {page['title'].lower()} commands from the PocketStation checkout. Each command is part of this task's documented validation surface.\n\n"
+            f"{FENCE}bash\n{command}\n{FENCE}"
+        )
+    example_path = next(
+        (
+            item["path"] for item in page["evidence"]
+            if item["path"].startswith("examples/") and item["path"].endswith((".rs", ".c", ".cpp"))
+        ),
+        None,
+    )
+    if example_path:
+        source = frozen_text(example_path).rstrip()
+        language = "rust" if example_path.endswith(".rs") else "c"
+        example = next(record for record in EXAMPLES if record["path"] == example_path)
+        return (
+            f"This is the frozen, repository-owned example {code(example['example_id'])} at {code(example_path)}. It is validated by the examples checkpoint.\n\n"
+            f"{FENCE}{language}\n{source}\n{FENCE}"
+        )
+    tests = page_tests(page, 1)
+    if tests:
+        test = tests[0]
+        lines = frozen_text(test["path"]).splitlines()
+        excerpt = "\n".join(lines[test["lines"][0] - 1:test["lines"][1]])
+        language = "rust" if test["path"].endswith(".rs") else "c"
+        location = code(f"{test['path']}:{test['lines'][0]}")
+        return (
+            f"The executable repository test {code(test['name'])} ({code(test['test_id'])}) shows the concrete API sequence and asserted outcome at {location}.\n\n"
+            f"{FENCE}{language}\n{excerpt}\n{FENCE}\n\n"
+            f"{FENCE}bash\ncargo test --all-features {test['name']}\n{FENCE}"
+        )
+    return (
+        "No standalone repository example is assigned to this task. Use the exact declarations in the API table and verify the owning target directly.\n\n"
+        f"{FENCE}bash\ncargo test --all-features\n{FENCE}"
+    )
+
+
+def workspace_qualification_section(page: dict[str, Any]) -> str:
+    if page["page_id"] != "GUIDE-025" or not WORKSPACE_QUALIFICATION:
+        return ""
+    checkpoint_link = "`.doc-intel/checkpoints/workspace-qualification.json`"
+    if not WORKSPACE_QUALIFICATION.get("observed"):
+        return (
+            "## Current workspace qualification\n\n"
+            "The sibling `pks` repository was not present when this documentation model was built, so the single-engine ownership boundary is explicitly not observable. "
+            f"Run the check with both repositories present and inspect the {checkpoint_link}; absence is not passing workspace evidence."
+        )
+    commit = WORKSPACE_QUALIFICATION.get("external_commit") or "unknown"
+    if WORKSPACE_QUALIFICATION.get("passed"):
+        return (
+            "## Current workspace qualification\n\n"
+            f"The sibling `pks` checkout at commit `{commit}` passed the single-engine ownership check. "
+            f"The exact command and output digest are recorded in the {checkpoint_link}."
+        )
+    occurrences = WORKSPACE_QUALIFICATION.get("violation_occurrences", 0)
+    paths = len(WORKSPACE_QUALIFICATION.get("violation_paths", []))
+    return (
+        "## Current workspace qualification\n\n"
+        f"The sibling `pks` checkout at commit `{commit}` failed the single-engine ownership check with {occurrences} matched occurrences across {paths} source paths. "
+        "It still imports PocketStation internal engine machinery and retains retired parallel command paths. "
+        "This is an explicit `CONFLICTED` workspace result: this documentation branch does not claim that the multi-repository single-engine boundary passes. "
+        f"The exact command, checked commit, output digest, and affected paths are recorded in the {checkpoint_link}."
+    )
+
+
 def how_to_body(page: dict[str, Any]) -> str:
     detail = GUIDES.get(page["page_id"])
     if not detail:
@@ -553,6 +808,8 @@ def how_to_body(page: dict[str, Any]) -> str:
         scope_section(page),
         "## Prerequisites\n\n" + prerequisite,
         "## Procedure\n\n" + procedure,
+        "## Concrete repository example\n\n" + concrete_task_example(page),
+        workspace_qualification_section(page),
         "## Important consequence\n\n" + failure_focus,
         "## Verify the outcome\n\n" + success + "\n\n" + tests_text(page),
         "## Failure signals\n\n" + ("\n".join(failure_lines) if failure_lines else f"No task-specific public error was resolved for {page['title'].lower()}; preserve the owning API's returned error."),
@@ -864,8 +1121,9 @@ def main() -> None:
     existing_claims = read_jsonl(DB / "claims.jsonl")
     claims = [record for record in existing_claims if record["documentation_page"] not in selected_ids]
     for page in pages:
-        page_claims = claims_for(page)
-        text = f"# {page['title']}\n\n{claim_marker(page_claims)}\n\n{body_for(page).strip()}\n"
+        body = body_for(page).strip()
+        page_claims = claims_for(page, body)
+        text = f"# {page['title']}\n\n{claim_marker(page_claims)}\n\n{body}\n"
         path = ROOT / page["path"]
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)

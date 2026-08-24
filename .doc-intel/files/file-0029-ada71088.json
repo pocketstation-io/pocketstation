@@ -94,11 +94,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "e4ae53a089d83f36bd92e995f6042d3e5929203af98f7ef6c10f4e7fc1254809",
       "lines": [
         1,
-        92
+        9
       ],
       "path": "docs/guides/extensions.md",
       "symbol": null
@@ -188,7 +188,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/guides/extensions.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

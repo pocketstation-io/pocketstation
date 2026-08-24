@@ -53,7 +53,7 @@
       "content_hash": "925e78b3952f801d3410e8f6f93eec7a33cb731fdb8aeefe880ea465783d2e7c",
       "lines": [
         1,
-        28
+        21
       ],
       "path": "benches/audio_buffer_pool.rs",
       "symbol": null
@@ -83,8 +83,8 @@
     "pocketstation::internal::{AudioBufferPool, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES}"
   ],
   "inputs": [
-    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
-    "pocketstation::internal::{AudioBufferPool, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES}"
+    "Depends on `criterion::{black_box, criterion_group, criterion_main, Criterion}` through a declared Rust import.",
+    "Depends on `pocketstation::internal::{AudioBufferPool, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -93,7 +93,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`benches/audio_buffer_pool.rs` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-88d5d10d4c8e80149f0f"
@@ -121,8 +121,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements not applicable responsibilities, including the benches/audio buffer pool boundary."
+    "classification": "DECLARED",
+    "text": "Measures audio buffer pool by repeatedly exercising AudioBufferPool::new, acquire, bench_function, bench_pool."
   },
   "queues": [],
   "recovery_behavior": [],

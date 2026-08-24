@@ -4,6 +4,8 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/driver.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs"
   ],
@@ -89,6 +91,8 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/driver.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs"
   ],
@@ -356,16 +360,208 @@
       "classification": "DIRECT",
       "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
       "lines": [
-        1,
-        315
+        15,
+        15
       ],
       "path": "src/connector/sidecar.rs",
-      "symbol": null
+      "symbol": "CONNECTOR_AUDIO_RECORD_SIGNAL_ID"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "CONNECTOR_AUDIO_RECORD_SCHEMA"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        24,
+        26
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "SidecarConnectorDriverFactory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        25,
+        25
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "process"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        29,
+        31
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "new"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        33,
+        35
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "process"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        39,
+        47
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "preparation_group"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        49,
+        92
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        95,
+        98
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "SidecarConnectorDriver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        96,
+        96
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "host"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        97,
+        97
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "protocol_limits"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        101,
+        132
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "deliver"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        134,
+        153
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "shutdown"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        155,
+        166
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "cancel_preparation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        169,
+        234
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "message_from_item"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        236,
+        253
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "sidecar_error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        255,
+        262
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "connector_error"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        264,
+        266
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": "sidecar_connector_factory"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/driver.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs"
   ],
@@ -383,6 +579,8 @@
   "generated_from": "not_applicable",
   "git_object": "017a04df9dd6bab3dfe911889e11c8fa6290fa0c",
   "implemented_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/driver.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs"
   ],
@@ -392,6 +590,8 @@
     "ConnectorDriver for SidecarConnectorDriver"
   ],
   "imported_by": [
+    "CALLS:src/connector/mod.rs",
+    "CALLS:src/connector/worker/driver.rs",
     "CONTAINS:src/connector/mod.rs",
     "IMPORTS:src/connector/mod.rs"
   ],
@@ -403,12 +603,12 @@
     "super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::runtime::SidecarHost",
-    "crate::{ EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId, SidecarHostError, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SignalPayload, }",
-    "std::sync::Arc",
-    "super::*",
-    "super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }"
+    "Consumes configuration at src/connector/sidecar.rs:268.",
+    "Depends on `crate::runtime::SidecarHost` through a declared Rust import.",
+    "Depends on `crate::{ EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId, SidecarHostError, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SignalPayload, }` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -430,23 +630,25 @@
   "module": "pocketstation::connector::sidecar",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::sidecar` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-3d974f8a195e8a91eecd",
     "pattern-aa4acf0858d935d02808"
   ],
   "outputs": [
-    "Err(SidecarHostError::DataQueueFull) => Ok(ConnectorDeliveryOutcome::Dropped),",
-    "Err(error) => Err(sidecar_error(",
-    "Err(error) => error,",
-    "const:CONNECTOR_AUDIO_RECORD_SCHEMA",
-    "const:CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
-    "fn:new",
-    "fn:process",
-    "fn:sidecar_connector_factory",
-    "return Err(connector_error(",
-    "struct:SidecarConnectorDriverFactory"
+    "Creates a typed failure at src/connector/sidecar.rs:125.",
+    "Creates a typed failure at src/connector/sidecar.rs:126.",
+    "Creates a typed failure at src/connector/sidecar.rs:205.",
+    "Creates a typed failure at src/connector/sidecar.rs:280.",
+    "Creates a typed failure at src/connector/sidecar.rs:54.",
+    "Creates a typed failure at src/connector/sidecar.rs:66.",
+    "Declares public const `CONNECTOR_AUDIO_RECORD_SCHEMA`.",
+    "Declares public const `CONNECTOR_AUDIO_RECORD_SIGNAL_ID`.",
+    "Declares public fn `new`.",
+    "Declares public fn `process`.",
+    "Declares public fn `sidecar_connector_factory`.",
+    "Declares public struct `SidecarConnectorDriverFactory`."
   ],
   "package": "pocketstation",
   "path": "src/connector/sidecar.rs",
@@ -581,8 +783,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::sidecar responsibilities, including Defines the public connector audio record signal identifier value.; Defines the public connector audio record schema value.; Adapts a bounded PocketStation sidecar process to the Connector driver SPI.."
+    "classification": "DECLARED",
+    "text": "Defines connector audio record signal identifier as `\"io.pocketstation.connector.audio-record.v1\"` for the owning public contract. Defines connector audio record schema as `\"urn:pocketstation:connector:audio-record:v1\"` for the owning public contract. Adapts a bounded PocketStation sidecar process to the Connector driver SPI."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -625,6 +827,13 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/transport.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/graph/signal/payload.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
+    "IMPLEMENTS:src/connector/worker/driver.rs",
     "REFERENCES:src/connector/configuration.rs",
     "REFERENCES:src/connector/error.rs",
     "REFERENCES:src/connector/worker/coordination.rs",
@@ -662,8 +871,8 @@
     }
   ],
   "responsibilities": [
-    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID: Defines the public connector audio record signal identifier value.",
-    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA: Defines the public connector audio record schema value.",
+    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID: Defines connector audio record signal identifier as `\"io.pocketstation.connector.audio-record.v1\"` for the owning public contract.",
+    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA: Defines connector audio record schema as `\"urn:pocketstation:connector:audio-record:v1\"` for the owning public contract.",
     "pocketstation::connector::sidecar::SidecarConnectorDriverFactory: Adapts a bounded PocketStation sidecar process to the Connector driver SPI.",
     "new: Creates a new `SidecarConnectorDriverFactory`.",
     "process: Processes an input value through `SidecarConnectorDriverFactory`.",

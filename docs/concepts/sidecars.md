@@ -1,6 +1,6 @@
 # Sidecar lifecycle
 
-<!-- claims: CLM-DOC-029-CAP-001,CLM-DOC-029-SOURCE-001 -->
+<!-- claims: CLM-DOC-029-SCOPE-001,CLM-DOC-029-TEXT-001,CLM-DOC-029-TEXT-002,CLM-DOC-029-TEXT-003,CLM-DOC-029-TEXT-004,CLM-DOC-029-TEXT-005,CLM-DOC-029-TEXT-006,CLM-DOC-029-SOURCE-001 -->
 
 ## What it is
 
@@ -49,7 +49,7 @@ The scope of **Sidecar lifecycle** ends at the native contracts and executable c
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | Configures sidecar process behavior at its owning API boundary. | `src/runtime/lifecycle/sidecar_host.rs:71` |
 | `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessage` | struct | Carries one typed control or signal message across the sidecar protocol. | `src/runtime/lifecycle/sidecar_protocol.rs:73` |
 | `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolLimits` | struct | Sets the maximum sidecar message and buffered-byte sizes enforced by protocol I/O. | `src/runtime/lifecycle/sidecar_protocol.rs:43` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures reported as sidecar host error. | `src/runtime/lifecycle/sidecar_host.rs:686` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures surfaced by sidecar host operations. | `src/runtime/lifecycle/sidecar_host.rs:686` |
 | `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | Selects the sidecar state used by PocketStation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
 | `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind` | enum | Selects the sidecar message kind used by PocketStation. | `src/runtime/lifecycle/sidecar_protocol.rs:9` |
 
@@ -85,6 +85,29 @@ Executable evidence selected for **Sidecar lifecycle** is limited to each test's
 
 The claims on **Sidecar lifecycle** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/runtime/lifecycle/sidecar_host.rs:1-734` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:13-13` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:14-14` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:15-15` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:16-16` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:17-17` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:19-19` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:21-33` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:22-22` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:23-23` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:24-24` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:25-25` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:26-26` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:27-27` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:28-28` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:29-29` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:30-30` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:31-31` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:32-32` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:36-50` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
+- `src/runtime/lifecycle/sidecar_host.rs:53-53` (`DIRECT`)
 
 For **Sidecar lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

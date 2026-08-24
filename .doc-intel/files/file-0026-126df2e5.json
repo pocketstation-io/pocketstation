@@ -30,11 +30,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "6adae08979fb2a9f4192463d79da3fcee8a78c7c772bfc7d0e1648f684e0555d",
       "lines": [
         1,
-        36
+        9
       ],
       "path": "docs/concepts/signals-and-streams.md",
       "symbol": null
@@ -70,7 +70,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/concepts/signals-and-streams.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

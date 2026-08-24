@@ -9,6 +9,7 @@
     }
   ],
   "called_by": [
+    "CALLS:src/connector/mod.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs"
   ],
@@ -95,6 +96,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/connector/mod.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs"
   ],
@@ -428,16 +430,247 @@
       "classification": "DIRECT",
       "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
       "lines": [
-        1,
-        438
+        25,
+        35
       ],
       "path": "src/connector/worker/endpoint_adapter.rs",
-      "symbol": null
+      "symbol": "connector_endpoint_factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        37,
+        47
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "connector_driver_endpoint_factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        49,
+        53
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "ConnectorDriverEndpointAdapter"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        50,
+        50
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        51,
+        51
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        52,
+        52
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "manifest"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        56,
+        69
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "preparation_group"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        71,
+        105
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        108,
+        115
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "configuration_endpoint_failure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        117,
+        121
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "ConnectorEndpointAdapter"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        118,
+        118
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "factory"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        119,
+        119
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "observations"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        120,
+        120
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "readiness_policy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        124,
+        132
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "preparation_group"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        134,
+        159
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "prepare"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        162,
+        184
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "endpoint_ids"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        186,
+        190
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "PreparedConnectorWorker"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        187,
+        187
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "worker"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        188,
+        188
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "state"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        189,
+        189
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "readiness_policy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        193,
+        265
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "start"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        267,
+        276
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "cancel_preparation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        280,
+        284
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "drop"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        287,
+        347
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": "spawn_worker"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/connector/mod.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs"
   ],
@@ -455,6 +688,7 @@
   "generated_from": "not_applicable",
   "git_object": "f68d478d5620a6f16ed86ec31b87bbe00d0091a9",
   "implemented_by": [
+    "CALLS:src/connector/mod.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs"
   ],
@@ -468,6 +702,7 @@
     "Drop for RunningConnectorWorker"
   ],
   "imported_by": [
+    "CALLS:src/connector/mod.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs"
   ],
@@ -484,16 +719,16 @@
     "super::{ConnectorContext, ConnectorFactory, ConnectorWorker}"
   ],
   "inputs": [
-    "crate::connector::{ ConnectorError, ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle, ConnectorObservationStore, ConnectorReadinessPolicy, }",
-    "crate::endpoint::EndpointDriverObservationHandle",
-    "crate::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointPreparationGroup, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
-    "std::panic::{catch_unwind, AssertUnwindSafe}",
-    "std::sync::{Arc, Mutex}",
-    "std::thread::{self, JoinHandle}",
-    "super::coordination::{ConnectorStopToken, ReadinessProbeState}",
-    "super::driver::{prepare_connector_driver, ConnectorDriverFactory}",
-    "super::supervisor::{ internal_connector_error, supervise_startup_readiness, wait_for_start_gate, ConnectorWorkerState, }",
-    "super::{ConnectorContext, ConnectorFactory, ConnectorWorker}"
+    "Depends on `crate::connector::{ ConnectorError, ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle, ConnectorObservationStore, ConnectorReadinessPolicy, }` through a declared Rust import.",
+    "Depends on `crate::endpoint::EndpointDriverObservationHandle` through a declared Rust import.",
+    "Depends on `crate::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointPreparationGroup, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }` through a declared Rust import.",
+    "Depends on `std::panic::{catch_unwind, AssertUnwindSafe}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Mutex}` through a declared Rust import.",
+    "Depends on `std::thread::{self, JoinHandle}` through a declared Rust import.",
+    "Depends on `super::coordination::{ConnectorStopToken, ReadinessProbeState}` through a declared Rust import.",
+    "Depends on `super::driver::{prepare_connector_driver, ConnectorDriverFactory}` through a declared Rust import.",
+    "Depends on `super::supervisor::{ internal_connector_error, supervise_startup_readiness, wait_for_start_gate, ConnectorWorkerState, }` through a declared Rust import.",
+    "Depends on `super::{ConnectorContext, ConnectorFactory, ConnectorWorker}` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -528,18 +763,24 @@
   "module": "pocketstation::connector::worker::endpoint_adapter",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::worker::endpoint_adapter` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-0c264e4ec468e7568a9c"
   ],
   "outputs": [
-    "Err(error) => {",
-    "Err(error.into_endpoint_failure())",
-    "fn:connector_driver_endpoint_factory",
-    "fn:connector_endpoint_factory",
-    "return Err(EndpointFailure::new(",
-    "return Err(error.into_endpoint_failure());"
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:102.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:152.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:156.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:164.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:173.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:217.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:226.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:246.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:255.",
+    "Creates a typed failure at src/connector/worker/endpoint_adapter.rs:98.",
+    "Declares public fn `connector_driver_endpoint_factory`.",
+    "Declares public fn `connector_endpoint_factory`."
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/endpoint_adapter.rs",
@@ -704,7 +945,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::worker::endpoint adapter responsibilities, including endpoint adapter; connector endpoint factory; connector driver endpoint factory."
+    "text": "Owns the internal endpoint adapter module, connector endpoint factory function, connector driver endpoint factory function, connector driver endpoint adapter struct used by `pocketstation::connector::worker::endpoint_adapter`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -747,6 +988,15 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/configuration.rs",
+    "CALLS:src/connector/error.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/mod.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/graph/plan.rs",
+    "IMPLEMENTS:src/endpoint/contract.rs",
+    "IMPLEMENTS:src/endpoint/runtime.rs",
     "REFERENCES:src/connector/configuration.rs",
     "REFERENCES:src/connector/error.rs",
     "REFERENCES:src/connector/manifest.rs",

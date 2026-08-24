@@ -4,6 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -130,6 +134,10 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -986,16 +994,250 @@
       "classification": "DIRECT",
       "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
       "lines": [
-        1,
-        736
+        15,
+        15
       ],
       "path": "src/session/lifecycle/events.rs",
-      "symbol": null
+      "symbol": "MAX_SESSION_EVENT_OWNED_BYTES"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        19,
+        25
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "SessionLifecycleState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        20,
+        20
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "Starting"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "Running"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        22,
+        22
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "Stopping"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "Stopped"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "Failed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        28,
+        28
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        29,
+        35
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "SessionRollbackStage"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        30,
+        30
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "CancelOperator"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        31,
+        31
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "CancelEndpointPreparation"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        32,
+        32
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "FinalizeStartedEndpoint"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        33,
+        33
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "StopOpenedCapture"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        34,
+        34
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "DiscardRuntimeQueues"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        38,
+        38
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        39,
+        47
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "SessionFinalizationStage"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "1de3c82f9f6b66da4a81d4897f210e73094e3f58700dc9c5c9aa71ac166be946",
+      "lines": [
+        40,
+        40
+      ],
+      "path": "src/session/lifecycle/events.rs",
+      "symbol": "StopCapture"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1026,6 +1268,10 @@
   "generated_from": "not_applicable",
   "git_object": "4516db334280bcd722de0df7ef95a64f0c1a7962",
   "implemented_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1050,6 +1296,10 @@
     "SessionEventReceiver"
   ],
   "imported_by": [
+    "CALLS:src/abi/session/runtime.rs",
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/session/lifecycle/running.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "CONTAINS:src/session/lifecycle/mod.rs",
     "IMPORTS:src/session/lifecycle/mod.rs",
     "REFERENCES:src/abi/session/runtime.rs",
@@ -1073,16 +1323,16 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::capture::SourceRuntimeEvent",
-    "crate::capture::{ CaptureRuntimeFailure, CaptureRuntimeFailureClass, SourceGeneration, SourceKind, SourceRecoveryRequirement, StableSourceId, }",
-    "crate::endpoint::{EndpointFailure, EndpointFailureStage}",
-    "crate::frame::Platform",
-    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
-    "crate::session::lifecycle::observations::{ SessionEventQueueCounters, SessionEventQueueObservations, SessionEventReservation, }",
-    "crate::session::{OperatorInstanceId, SessionTraceRecorderHandle}",
-    "std::sync::{ mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError}, Arc, }",
-    "super::*"
+    "Consumes configuration at src/session/lifecycle/events.rs:545.",
+    "Depends on `crate::capture::SourceRuntimeEvent` through a declared Rust import.",
+    "Depends on `crate::capture::{ CaptureRuntimeFailure, CaptureRuntimeFailureClass, SourceGeneration, SourceKind, SourceRecoveryRequirement, StableSourceId, }` through a declared Rust import.",
+    "Depends on `crate::endpoint::{EndpointFailure, EndpointFailureStage}` through a declared Rust import.",
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `crate::frame::{EndpointId, RouteId, SessionId, StemId}` through a declared Rust import.",
+    "Depends on `crate::session::lifecycle::observations::{ SessionEventQueueCounters, SessionEventQueueObservations, SessionEventReservation, }` through a declared Rust import.",
+    "Depends on `crate::session::{OperatorInstanceId, SessionTraceRecorderHandle}` through a declared Rust import.",
+    "Depends on `std::sync::{ mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError}, Arc, }` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -1104,38 +1354,38 @@
   "module": "pocketstation::session::lifecycle::events",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::lifecycle::events` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-a7b18d55a05177ade31e"
   ],
   "outputs": [
-    "Err(TryRecvError::Disconnected) => SessionEventReceive::Closed,",
-    "Err(TryRecvError::Empty) => SessionEventReceive::Empty,",
-    "Err(TrySendError::Disconnected(queued)) => {",
-    "Err(TrySendError::Full(queued)) => {",
-    "const:MAX_SESSION_EVENT_OWNED_BYTES",
-    "enum:SessionComponentId",
-    "enum:SessionFinalizationStage",
-    "enum:SessionLifecycleState",
-    "enum:SessionRollbackStage",
-    "enum:SessionTerminalState",
-    "fn:component",
-    "fn:endpoint_id",
-    "fn:error_class",
-    "fn:event",
-    "fn:failure",
-    "fn:new",
-    "fn:operation",
-    "fn:route_id",
-    "fn:stage",
-    "fn:stem_id",
-    "struct:SessionControlFailure",
-    "struct:SessionEndpointFailure",
-    "struct:SessionFinalizationFailure",
-    "struct:SessionRollbackFailure",
-    "struct:SessionSourceFailure",
-    "struct:SessionTerminalOutcome"
+    "Creates a typed failure at src/session/lifecycle/events.rs:478.",
+    "Creates a typed failure at src/session/lifecycle/events.rs:482.",
+    "Creates a typed failure at src/session/lifecycle/events.rs:512.",
+    "Creates a typed failure at src/session/lifecycle/events.rs:513.",
+    "Declares public const `MAX_SESSION_EVENT_OWNED_BYTES`.",
+    "Declares public enum `SessionComponentId`.",
+    "Declares public enum `SessionFinalizationStage`.",
+    "Declares public enum `SessionLifecycleState`.",
+    "Declares public enum `SessionRollbackStage`.",
+    "Declares public enum `SessionTerminalState`.",
+    "Declares public fn `component`.",
+    "Declares public fn `endpoint_id`.",
+    "Declares public fn `error_class`.",
+    "Declares public fn `event`.",
+    "Declares public fn `failure`.",
+    "Declares public fn `new`.",
+    "Declares public fn `operation`.",
+    "Declares public fn `route_id`.",
+    "Declares public fn `stage`.",
+    "Declares public fn `stem_id`.",
+    "Declares public struct `SessionControlFailure`.",
+    "Declares public struct `SessionEndpointFailure`.",
+    "Declares public struct `SessionFinalizationFailure`.",
+    "Declares public struct `SessionRollbackFailure`.",
+    "Declares public struct `SessionSourceFailure`.",
+    "Declares public struct `SessionTerminalOutcome`."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/events.rs",
@@ -1587,8 +1837,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::lifecycle::events responsibilities, including Public lifecycle states emitted by a running session.; Identifies the starting state or stage represented by `SessionLifecycleState`.; Identifies the running state or stage represented by `SessionLifecycleState`.."
+    "classification": "DECLARED",
+    "text": "Public lifecycle states emitted by a running session. Identifies the starting state or stage represented by `SessionLifecycleState`. Identifies the running state or stage represented by `SessionLifecycleState`."
   },
   "queues": [
     {
@@ -1659,6 +1909,10 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/endpoint/runtime.rs",
+    "CALLS:src/graph/plan.rs",
+    "CALLS:src/session/lifecycle/observations.rs",
+    "CALLS:src/session/lifecycle/trace.rs",
     "REFERENCES:src/capture/events.rs",
     "REFERENCES:src/endpoint/runtime.rs",
     "REFERENCES:src/frame/identity.rs",

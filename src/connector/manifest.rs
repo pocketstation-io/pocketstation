@@ -4,7 +4,7 @@ use crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId};
 
 use super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy};
 
-#[doc = "Defines the public connector API revision value."]
+#[doc = "Defines connector API revision as `1` for the owning public contract."]
 pub const CONNECTOR_API_REVISION: u32 = 1;
 #[doc = "Sets the maximum supported connector manifest entries."]
 pub const MAX_CONNECTOR_MANIFEST_ENTRIES: usize = 128;
@@ -84,7 +84,7 @@ impl ConnectorRequirement {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Describes the connector manifest contract."]
+#[doc = "Declares connector identity, API revision, ports, capabilities, requirements, and configuration schema."]
 pub struct ConnectorManifest {
     api_revision: u32,
     manifest_revision: u32,
@@ -254,45 +254,45 @@ fn validate_unique_entries<'a>(
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector manifest error."]
+#[doc = "Classifies failures surfaced by connector manifest operations."]
 pub enum ConnectorManifestError {
     #[error("connector API revision {requested} is unsupported; Core supports {supported}")]
-    #[doc = "Reports unsupported API revision."]
+    #[doc = "Reports that the requested API revision is unsupported."]
     UnsupportedApiRevision {
-        #[doc = "Stores the requested used by `UnsupportedApiRevision`."]
+        #[doc = "Stores the requested component of `UnsupportedApiRevision`."]
         requested: u32,
-        #[doc = "Stores the supported used by `UnsupportedApiRevision`."]
+        #[doc = "References the supported participating in `UnsupportedApiRevision`."]
         supported: u32,
     },
     #[error("connector manifest revision must be non-zero")]
-    #[doc = "Reports invalid manifest revision."]
+    #[doc = "Reports that the supplied manifest revision is invalid."]
     InvalidManifestRevision,
     #[error("connector operator id cannot be empty")]
-    #[doc = "Reports empty operator identifier."]
+    #[doc = "Reports that operator identifier is empty."]
     EmptyOperatorId,
     #[error("connector package version cannot be empty or exceed the byte limit")]
-    #[doc = "Reports invalid package version."]
+    #[doc = "Reports that the supplied package version is invalid."]
     InvalidPackageVersion,
     #[error("connector manifest requires at least one input port")]
-    #[doc = "Reports missing input port."]
+    #[doc = "Reports that the required input port is missing."]
     MissingInputPort,
     #[error("endpoint connectors cannot declare output ports in connector API revision 1")]
-    #[doc = "Reports output port not supported."]
+    #[doc = "Reports that output port is not supported by this boundary."]
     OutputPortNotSupported,
     #[error("connector execution cannot run on a realtime partition")]
-    #[doc = "Reports realtime execution forbidden."]
+    #[doc = "Reports that realtime execution is forbidden by the declared safety contract."]
     RealtimeExecutionForbidden,
     #[error("connector manifest entry requires a non-empty id and documentation")]
-    #[doc = "Reports invalid manifest entry."]
+    #[doc = "Reports that the supplied manifest entry is invalid."]
     InvalidManifestEntry,
     #[error("connector manifest entry exceeds the byte limit")]
-    #[doc = "Reports manifest entry too large."]
+    #[doc = "Reports that manifest entry exceeds the supported size limit."]
     ManifestEntryTooLarge,
     #[error("connector manifest exceeds the entry limit")]
-    #[doc = "Reports too many manifest entries."]
+    #[doc = "Reports that the number of manifest entries exceeds the supported limit."]
     TooManyManifestEntries,
     #[error("connector manifest contains duplicate entry '{id}'")]
-    #[doc = "Reports duplicate manifest entry."]
+    #[doc = "Reports that manifest entry duplicates an existing declaration or record."]
     DuplicateManifestEntry {
         #[doc = "Identifies the id recorded by `DuplicateManifestEntry`."]
         id: String,

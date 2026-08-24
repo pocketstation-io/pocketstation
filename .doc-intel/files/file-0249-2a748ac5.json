@@ -119,14 +119,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "7c91650d5e3a0e772b99eacec91bb86209c3c371d3f1d944e8417f5abd1786e9",
       "lines": [
         1,
-        53
+        3
       ],
       "path": "src/timing/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::timing"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -172,19 +172,19 @@
     "timeline_mapping::TimelineMapping"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "clock_correction::ClockCorrectionController",
-    "clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}",
-    "crate::frame::ClockDomainId",
-    "domain::{ describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin, }",
-    "module:clock_correction",
-    "module:clock_drift",
-    "module:domain",
-    "module:timeline_mapping",
-    "std::sync::OnceLock",
-    "std::time::Instant",
-    "super::monotonic_timestamp_ns",
-    "timeline_mapping::TimelineMapping"
+    "Consumes configuration at src/timing/mod.rs:40.",
+    "Depends on `clock_correction::ClockCorrectionController` through a declared Rust import.",
+    "Depends on `clock_correction` through a declared Rust import.",
+    "Depends on `clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}` through a declared Rust import.",
+    "Depends on `clock_drift` through a declared Rust import.",
+    "Depends on `crate::frame::ClockDomainId` through a declared Rust import.",
+    "Depends on `domain::{ describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin, }` through a declared Rust import.",
+    "Depends on `domain` through a declared Rust import.",
+    "Depends on `std::sync::OnceLock` through a declared Rust import.",
+    "Depends on `std::time::Instant` through a declared Rust import.",
+    "Depends on `super::monotonic_timestamp_ns` through a declared Rust import.",
+    "Depends on `timeline_mapping::TimelineMapping` through a declared Rust import.",
+    "Depends on `timeline_mapping` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -210,14 +210,14 @@
   "module": "pocketstation::timing",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::timing` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-c2880aa18fd8bab36b2b"
   ],
   "outputs": [
-    "const:PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
-    "fn:monotonic_timestamp_ns"
+    "Declares public const `PROCESS_MONOTONIC_CLOCK_DOMAIN_ID`.",
+    "Declares public fn `monotonic_timestamp_ns`."
   ],
   "package": "pocketstation",
   "path": "src/timing/mod.rs",
@@ -288,8 +288,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::timing responsibilities, including Timing primitives owned by the PocketStation runtime.; Clock-domain identity for timestamps produced by PocketStation's shared; Process-wide monotonic timestamp domain shared by capture, routing, and."
+    "classification": "DECLARED",
+    "text": "Timing primitives owned by the PocketStation runtime. Clock estimation and correction support source-aware stem alignment."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -317,6 +317,7 @@
     "docs/troubleshooting/timing.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/runtime/lifecycle/sidecar_protocol.rs",
     "CONTAINS:src/timing/clock_correction.rs",
     "CONTAINS:src/timing/clock_drift.rs",
     "CONTAINS:src/timing/domain.rs",

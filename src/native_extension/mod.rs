@@ -29,11 +29,11 @@ pub const EXTENSION_LIBRARY_ENTRYPOINT_V1: &str = "pks_extension_library_v1";
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the native extension kind used by PocketStation."]
 pub enum NativeExtensionKind {
-    #[doc = "Selects source behavior for `NativeExtensionKind`."]
+    #[doc = "Classifies the loaded native extension as source."]
     Source,
-    #[doc = "Selects operator behavior for `NativeExtensionKind`."]
+    #[doc = "Classifies the loaded native extension as operator."]
     Operator,
-    #[doc = "Selects endpoint behavior for `NativeExtensionKind`."]
+    #[doc = "Classifies the loaded native extension as endpoint."]
     Endpoint,
 }
 
@@ -89,37 +89,37 @@ impl NativeExtensionLibrary {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Enumerates the supported native extension library error code cases."]
+#[doc = "Provides stable categories for native-extension load and validation failures."]
 pub enum NativeExtensionLibraryErrorCode {
-    #[doc = "Reports path not absolute."]
+    #[doc = "Classifies a failure at the path not absolute stage or component of `NativeExtensionLibraryErrorCode`."]
     PathNotAbsolute,
-    #[doc = "Reports path canonicalization failed."]
+    #[doc = "Reports that path canonicalization failed."]
     PathCanonicalizationFailed,
-    #[doc = "Reports path not file."]
+    #[doc = "Classifies a failure at the path not file stage or component of `NativeExtensionLibraryErrorCode`."]
     PathNotFile,
-    #[doc = "Reports library load failed."]
+    #[doc = "Reports that library load failed."]
     LibraryLoadFailed,
-    #[doc = "Reports entrypoint missing."]
+    #[doc = "Classifies a failure at the entrypoint missing stage or component of `NativeExtensionLibraryErrorCode`."]
     EntrypointMissing,
-    #[doc = "Reports entrypoint panicked."]
+    #[doc = "Reports that entrypoint panicked while the operation was active."]
     EntrypointPanicked,
-    #[doc = "Reports entrypoint failed."]
+    #[doc = "Reports that entrypoint failed."]
     EntrypointFailed,
-    #[doc = "Reports unsupported ABI major."]
+    #[doc = "Reports that the requested ABI major is unsupported."]
     UnsupportedAbiMajor,
-    #[doc = "Reports unsupported ABI minor."]
+    #[doc = "Reports that the requested ABI minor is unsupported."]
     UnsupportedAbiMinor,
-    #[doc = "Reports invalid library descriptor."]
+    #[doc = "Reports that the supplied library descriptor is invalid."]
     InvalidLibraryDescriptor,
-    #[doc = "Reports registration acquisition panicked."]
+    #[doc = "Reports that registration acquisition panicked while the operation was active."]
     RegistrationAcquisitionPanicked,
-    #[doc = "Reports registration acquisition failed."]
+    #[doc = "Reports that registration acquisition failed."]
     RegistrationAcquisitionFailed,
-    #[doc = "Reports invalid registration."]
+    #[doc = "Reports that the supplied registration is invalid."]
     InvalidRegistration,
-    #[doc = "Reports duplicate registration."]
+    #[doc = "Reports that registration duplicates an existing declaration or record."]
     DuplicateRegistration,
-    #[doc = "Reports registration state unavailable."]
+    #[doc = "Reports that registration state is unavailable."]
     RegistrationStateUnavailable,
 }
 

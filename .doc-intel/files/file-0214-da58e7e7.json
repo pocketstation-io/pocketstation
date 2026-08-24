@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/session/extensions/audio_input/mod.rs",
@@ -78,6 +81,9 @@
   ],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/session/extensions/audio_input/mod.rs",
@@ -554,16 +560,249 @@
       "classification": "DIRECT",
       "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
       "lines": [
-        1,
-        367
+        11,
+        16
       ],
       "path": "src/session/extensions/audio_input/buffer.rs",
-      "symbol": null
+      "symbol": "AudioInputBuffer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        12,
+        12
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "writer_id"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        13,
+        13
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "buffer"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        14,
+        14
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "sample_capacity"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "discontinuity"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        19,
+        21
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "sample_capacity"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        23,
+        25
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "sample_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        27,
+        32
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "try_set_sample_count"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        34,
+        36
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "try_copy_from_slice"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        38,
+        40
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "samples"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        42,
+        44
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "samples_mut"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        46,
+        48
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "mark_discontinuity"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        52,
+        59
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        62,
+        62
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        63,
+        69
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "AudioInputState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        64,
+        64
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "cancelled"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        65,
+        65
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "closed"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        66,
+        66
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "accepted_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        67,
+        67
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "full_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        68,
+        68
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "invalid_total"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        71,
+        71
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "fmt"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        71,
+        71
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        71,
+        71
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "eq"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        72,
+        81
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": "AudioInputObservations"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/session/extensions/audio_input/mod.rs",
@@ -583,6 +822,9 @@
   "generated_from": "not_applicable",
   "git_object": "f6d30cb4352aad836b7c6c524912b2c08e5fdc34",
   "implemented_by": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/session/extensions/audio_input/mod.rs",
@@ -600,6 +842,9 @@
     "std::error::Error for AudioInputWriteError"
   ],
   "imported_by": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "CONTAINS:src/session/extensions/audio_input/mod.rs",
     "IMPORTS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/session/extensions/audio_input/mod.rs",
@@ -615,13 +860,13 @@
     "super::AudioInputConfig"
   ],
   "inputs": [
-    "crate::frame::{AudioBufferHandle, AudioBufferPool, AudioBufferWriteError}",
-    "crate::runtime::SignalEdgeSender",
-    "crate::timing::monotonic_timestamp_ns",
-    "std::fmt",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "super::AudioInputConfig"
+    "Depends on `crate::frame::{AudioBufferHandle, AudioBufferPool, AudioBufferWriteError}` through a declared Rust import.",
+    "Depends on `crate::runtime::SignalEdgeSender` through a declared Rust import.",
+    "Depends on `crate::timing::monotonic_timestamp_ns` through a declared Rust import.",
+    "Depends on `std::fmt` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `super::AudioInputConfig` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -630,41 +875,47 @@
   "module": "pocketstation::session::extensions::audio_input::buffer",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::session::extensions::audio_input::buffer` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-45cc0a7c968cd3197190",
     "pattern-bf9d68a8d25141b92721"
   ],
   "outputs": [
-    "enum:AudioInputBufferAcquireError",
-    "enum:AudioInputBufferError",
-    "enum:AudioInputWriteErrorKind",
-    "fn:close",
-    "fn:configuration",
-    "fn:into_rejected",
-    "fn:kind",
-    "fn:mark_discontinuity",
-    "fn:observations",
-    "fn:sample_capacity",
-    "fn:sample_count",
-    "fn:samples",
-    "fn:samples_mut",
-    "fn:try_acquire",
-    "fn:try_copy_from_slice",
-    "fn:try_send",
-    "fn:try_set_sample_count",
-    "fn:try_write",
-    "if let Err(error) = buffer.try_copy_from_slice(samples) {",
-    "return Err(AudioInputBufferAcquireError::Cancelled);",
-    "return Err(AudioInputBufferAcquireError::Closed);",
-    "return Err(AudioInputWriteError::new(",
-    "struct:AudioInputBuffer",
-    "struct:AudioInputObservations",
-    "struct:AudioInputState",
-    "struct:AudioInputWriteError",
-    "struct:AudioInputWriter",
-    "struct:QueuedAudioInputFrame"
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:109.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:118.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:137.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:139.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:149.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:155.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:161.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:168.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:177.",
+    "Creates a typed failure at src/session/extensions/audio_input/buffer.rs:184.",
+    "Declares public enum `AudioInputBufferAcquireError`.",
+    "Declares public enum `AudioInputBufferError`.",
+    "Declares public enum `AudioInputWriteErrorKind`.",
+    "Declares public fn `close`.",
+    "Declares public fn `configuration`.",
+    "Declares public fn `into_rejected`.",
+    "Declares public fn `kind`.",
+    "Declares public fn `mark_discontinuity`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `sample_capacity`.",
+    "Declares public fn `sample_count`.",
+    "Declares public fn `samples_mut`.",
+    "Declares public fn `samples`.",
+    "Declares public fn `try_acquire`.",
+    "Declares public fn `try_copy_from_slice`.",
+    "Declares public fn `try_send`.",
+    "Declares public fn `try_set_sample_count`.",
+    "Declares public fn `try_write`.",
+    "Declares public struct `AudioInputBuffer`.",
+    "Declares public struct `AudioInputObservations`.",
+    "Declares public struct `AudioInputState`.",
+    "Declares public struct `AudioInputWriteError`.",
+    "Declares public struct `AudioInputWriter`.",
+    "Declares public struct `QueuedAudioInputFrame`."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/audio_input/buffer.rs",
@@ -867,8 +1118,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::session::extensions::audio input::buffer responsibilities, including Leases bounded PCM storage from an external-audio input until the caller submits or releases it.; Returns the sample capacity held by `AudioInputBuffer`.; Returns the sample count held by `AudioInputBuffer`.."
+    "classification": "DECLARED",
+    "text": "Leases bounded PCM storage from an external-audio input until the caller submits or releases it. Returns the sample capacity held by `AudioInputBuffer`. Returns the sample count held by `AudioInputBuffer`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -929,6 +1180,9 @@
     "docs/best-practices/terminal-outcomes.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/frame/pool.rs",
+    "CALLS:src/runtime/signal/edge.rs",
+    "CALLS:src/session/extensions/audio_input/mod.rs",
     "REFERENCES:src/frame/pool.rs",
     "REFERENCES:src/runtime/signal/edge.rs",
     "REFERENCES:src/session/extensions/audio_input/mod.rs"
@@ -959,13 +1213,13 @@
     "fmt: Formats `AudioInputBuffer` with the requested formatter.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputObservations: Reports the audio input observations collected at an observation boundary.",
     "AudioInputObservations::capacity_frames: Sets the capacity frames available to `AudioInputObservations`.",
-    "AudioInputObservations::buffer_slots: Stores the buffer slots used by `AudioInputObservations`.",
-    "AudioInputObservations::available_buffers: Stores the available buffers used by `AudioInputObservations`.",
+    "AudioInputObservations::buffer_slots: Contains the buffer slots owned or reported by `AudioInputObservations`.",
+    "AudioInputObservations::available_buffers: Contains the available buffers owned or reported by `AudioInputObservations`.",
     "AudioInputObservations::accepted_total: Counts the total number of accepted observed by `AudioInputObservations`.",
     "AudioInputObservations::full_total: Counts the total number of full observed by `AudioInputObservations`.",
     "AudioInputObservations::invalid_total: Counts the total number of invalid observed by `AudioInputObservations`.",
-    "AudioInputObservations::cancelled: Stores the cancelled used by `AudioInputObservations`.",
-    "AudioInputObservations::closed: Stores the closed used by `AudioInputObservations`.",
+    "AudioInputObservations::cancelled: Reports whether cancelled is true for `AudioInputObservations`.",
+    "AudioInputObservations::closed: Reports whether closed is true for `AudioInputObservations`.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputWriter: Sends audio input values across its declared ownership boundary.",
     "configuration: Returns the configuration held by `AudioInputWriter`.",
     "try_acquire: Attempts to acquire through `AudioInputWriter`.",
@@ -974,24 +1228,24 @@
     "close: Closes `AudioInputWriter` to further work.",
     "observations: Returns the observations exposed by `AudioInputWriter`.",
     "fmt: Formats `AudioInputWriter` with the requested formatter.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError: Classifies failures reported as audio input buffer acquire error.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError: Classifies failures surfaced by audio input buffer acquire operations.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Full: Reports that bounded capacity is full.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Closed: Reports that the underlying channel or resource is closed.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Cancelled: Indicates that the operation was cancelled.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError: Classifies failures reported as audio input buffer error.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::WrongSource: Reported when the owning operation encounters wrong source.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError: Classifies failures surfaced by audio input buffer operations.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::WrongSource: Reports that source does not match the required identity or contract.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::Empty: Represents an empty value or collection.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::MisalignedChannels: Reported when the owning operation encounters misaligned channels.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::WrongFrameLength: Reported when the owning operation encounters wrong frame length.",
-    "AudioInputBufferError::WrongFrameLength::expected_samples: Stores the expected samples used by `WrongFrameLength`.",
-    "AudioInputBufferError::WrongFrameLength::actual_samples: Stores the actual samples used by `WrongFrameLength`.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::Capacity: Reported when the owning operation encounters capacity.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::MisalignedChannels: Reports that channels does not satisfy the required alignment.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::WrongFrameLength: Reports that frame length does not match the required identity or contract.",
+    "AudioInputBufferError::WrongFrameLength::expected_samples: Contains the expected samples owned or reported by `WrongFrameLength`.",
+    "AudioInputBufferError::WrongFrameLength::actual_samples: Contains the actual samples owned or reported by `WrongFrameLength`.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::Capacity: Classifies a failure at the capacity stage or component of `AudioInputBufferError`.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind: Selects the audio input write error kind used by PocketStation.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Full: Reports that bounded capacity is full.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Closed: Reports that the underlying channel or resource is closed.",
     "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Cancelled: Indicates that the operation was cancelled.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::InvalidBuffer: Selects invalid buffer behavior for `AudioInputWriteErrorKind`.",
-    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError: Reports a audio input write error.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::InvalidBuffer: Classifies an external-audio write failure as invalid buffer.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError: Classifies failures produced during audio input writing.",
     "kind: Returns the kind represented by `AudioInputWriteError`.",
     "into_rejected: Converts `AudioInputWriteError` into rejected.",
     "from: Converts the supplied value into `AudioInputWriteError`.",

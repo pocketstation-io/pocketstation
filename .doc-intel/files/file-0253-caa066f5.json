@@ -57,8 +57,8 @@
       "classification": "DIRECT",
       "content_hash": "73905af56254baa21732b300b4b1ccaa364528519413a659d5e617606be9620e",
       "lines": [
-        1,
-        190
+        5,
+        25
       ],
       "path": "tests/abi_session_c_conformance.c",
       "symbol": null
@@ -94,7 +94,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/abi_session_c_conformance.c` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

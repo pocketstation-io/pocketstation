@@ -38,7 +38,7 @@
       "content_hash": "ac62f0189686a77c77a1d6ade6e9dca3536160b2dc8fbcdbd20e31fd09d3cec9",
       "lines": [
         1,
-        21
+        20
       ],
       "path": "examples/whisper-transcribe/Cargo.toml",
       "symbol": null
@@ -65,8 +65,8 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "serde = { version = \"1\", features = [\"derive\"] }",
-    "tokio = { version = \"1\", features = [\"fs\", \"macros\", \"process\", \"rt-multi-thread\", \"time\"] }"
+    "Consumes configuration at examples/whisper-transcribe/Cargo.toml:14.",
+    "Consumes configuration at examples/whisper-transcribe/Cargo.toml:18."
   ],
   "invariants": [],
   "language": "TOML",
@@ -75,7 +75,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification or behavior outside the example's prerequisites."
+    "`examples/whisper-transcribe/Cargo.toml` does not establish platform qualification or behavior outside its prerequisites."
   ],
   "observed_patterns": [],
   "outputs": [

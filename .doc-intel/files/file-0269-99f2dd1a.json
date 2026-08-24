@@ -59,8 +59,8 @@
       "classification": "DIRECT",
       "content_hash": "c4597374b1cf398d695e7aa1b0f0b627c373701cb1b91a26cc1ab0ee81e0f1a8",
       "lines": [
-        1,
-        305
+        13,
+        33
       ],
       "path": "tests/macos_native_ring_contract.c",
       "symbol": null
@@ -301,7 +301,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/macos_native_ring_contract.c` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

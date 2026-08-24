@@ -1,6 +1,6 @@
 # Windows capture
 
-<!-- claims: CLM-DOC-045-CAP-001,CLM-DOC-045-CAP-002,CLM-DOC-045-CAP-003,CLM-DOC-045-CAP-004,CLM-DOC-045-SOURCE-001 -->
+<!-- claims: CLM-DOC-045-SCOPE-001,CLM-DOC-045-TEXT-001,CLM-DOC-045-TEXT-002,CLM-DOC-045-SOURCE-001 -->
 
 ## Scope
 
@@ -34,7 +34,7 @@ The scope of **Windows capture** ends at the native contracts and executable con
 | `pocketstation::capture::capture_owner::PreparedCapture` | struct | Prepared capture plus its preallocated delivery endpoints. | `src/capture/capture_owner.rs:119` |
 | `pocketstation::capture::events::CaptureRuntimeFailure` | struct | Reports a capture runtime failure. | `src/capture/events.rs:47` |
 | `pocketstation::capture::events::SourceGeneration` | struct | Identifies one appearance generation of a capture source across loss and reappearance. | `src/capture/events.rs:12` |
-| `pocketstation::capture::events::SourceRuntimeEventObservationHandle` | struct | Owns bounded access to source runtime event observation. | `src/capture/events.rs:200` |
+| `pocketstation::capture::events::SourceRuntimeEventObservationHandle` | struct | Holds the ownership or bounded access represented by source runtime event observation handle. | `src/capture/events.rs:200` |
 
 ## Permission and source opening
 
@@ -76,6 +76,6 @@ Executable evidence selected for **Windows capture** is limited to each test's r
 
 The claims on **Windows capture** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/platform/windows/mod.rs:1-26` (`DIRECT`)
+- `src/capture/platform/windows/mod.rs:2-22` (`DIRECT`)
 
 For **Windows capture**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

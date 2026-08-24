@@ -80,21 +80,22 @@
       "status": "pass"
     }
   ],
-  "generated_at": "2026-08-23T18:23:16+00:00",
+  "generated_at": "2026-08-24T14:35:25+00:00",
   "metrics": {
     "analyzed_semantic_files": 276,
     "analyzed_tests": 593,
     "concept_covered_capabilities": 33,
-    "conflicts": 0,
-    "documented_behavior_records": 708,
-    "documented_config_fields": 162,
+    "conflicts": 1,
+    "documented_behavior_records": 677,
+    "documented_config_fields": 55,
     "documented_errors": 719,
     "guide_covered_capabilities": 33,
     "reference_covered_symbols": 3915,
-    "relationships": 12466,
-    "total_behavior_records": 708,
-    "total_claims": 4204,
-    "total_config_fields": 162,
+    "relationships": 21618,
+    "strict_protocol_issues": 0,
+    "total_behavior_records": 677,
+    "total_claims": 972,
+    "total_config_fields": 55,
     "total_errors": 719,
     "total_examples": 6,
     "total_pages": 145,
@@ -108,7 +109,7 @@
     "unknowns": 3,
     "validated_pages": 145,
     "verified_examples": 6,
-    "verified_or_explicit_claims": 4204
+    "verified_or_explicit_claims": 972
   },
   "next": null,
   "snapshot": "136e74888962558aa846d3143a19136a70936f45"

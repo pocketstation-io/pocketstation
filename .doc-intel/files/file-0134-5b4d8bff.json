@@ -346,14 +346,58 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "a59f7fd01a8cfbe5852ffec29b22331bf2714949b2a658bc3b03a97b0a7a8269",
       "lines": [
-        1,
-        377
+        250,
+        272
       ],
-      "path": "src/endpoint/registry/tests.rs",
-      "symbol": null
+      "path": "src/endpoint/registry/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "a59f7fd01a8cfbe5852ffec29b22331bf2714949b2a658bc3b03a97b0a7a8269",
+      "lines": [
+        225,
+        250
+      ],
+      "path": "src/endpoint/registry/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "a59f7fd01a8cfbe5852ffec29b22331bf2714949b2a658bc3b03a97b0a7a8269",
+      "lines": [
+        328,
+        343
+      ],
+      "path": "src/endpoint/registry/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "a59f7fd01a8cfbe5852ffec29b22331bf2714949b2a658bc3b03a97b0a7a8269",
+      "lines": [
+        272,
+        294
+      ],
+      "path": "src/endpoint/registry/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "a59f7fd01a8cfbe5852ffec29b22331bf2714949b2a658bc3b03a97b0a7a8269",
+      "lines": [
+        343,
+        376
+      ],
+      "path": "src/endpoint/registry/tests.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "a59f7fd01a8cfbe5852ffec29b22331bf2714949b2a658bc3b03a97b0a7a8269",
+      "lines": [
+        294,
+        328
+      ],
+      "path": "src/endpoint/registry/tests.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -405,19 +449,19 @@
     "super::*"
   ],
   "inputs": [
-    "crate::endpoint::runtime::EndpointStartFailureCause",
-    "crate::endpoint::{ endpoint_start_gate, EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailureStage, EndpointFinalizationOutcome, EndpointPrepareContext, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
-    "crate::frame::{EndpointId, SampleFormat, SampleSpec, SessionId}",
-    "crate::graph::compile::Compiler",
-    "crate::graph::compile::RuntimePlanner",
-    "crate::graph::dsl::Pipeline",
-    "crate::graph::node::{NodeConfig, PrepareContext}",
-    "crate::graph::register_builtins",
-    "crate::graph::registry::NodeRegistry",
-    "crate::graph::{EdgeContract, MediaCaps, SignalSpec}",
-    "crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter}",
-    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
-    "super::*"
+    "Depends on `crate::endpoint::runtime::EndpointStartFailureCause` through a declared Rust import.",
+    "Depends on `crate::endpoint::{ endpoint_start_gate, EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailureStage, EndpointFinalizationOutcome, EndpointPrepareContext, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }` through a declared Rust import.",
+    "Depends on `crate::frame::{EndpointId, SampleFormat, SampleSpec, SessionId}` through a declared Rust import.",
+    "Depends on `crate::graph::compile::Compiler` through a declared Rust import.",
+    "Depends on `crate::graph::compile::RuntimePlanner` through a declared Rust import.",
+    "Depends on `crate::graph::dsl::Pipeline` through a declared Rust import.",
+    "Depends on `crate::graph::node::{NodeConfig, PrepareContext}` through a declared Rust import.",
+    "Depends on `crate::graph::register_builtins` through a declared Rust import.",
+    "Depends on `crate::graph::registry::NodeRegistry` through a declared Rust import.",
+    "Depends on `crate::graph::{EdgeContract, MediaCaps, SignalSpec}` through a declared Rust import.",
+    "Depends on `crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter}` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicBool, AtomicU64, Ordering}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -488,18 +532,19 @@
     }
   ],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::endpoint::registry::tests` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-91075ec091d43c89f1c3"
   ],
   "outputs": [
-    "Err(EndpointDriverRegistryError::OperatorNodeTypeConflict {",
-    "Err(EndpointFailure::new(",
-    "Err(EndpointPrepareError::Driver(EndpointFailure { .. }))",
-    "Err(EndpointPrepareError::NotRegistered { .. })",
-    "Err(failure) => failure,",
-    "return Err(EndpointFailure::new("
+    "Creates a typed failure at src/endpoint/registry/tests.rs:129.",
+    "Creates a typed failure at src/endpoint/registry/tests.rs:143.",
+    "Creates a typed failure at src/endpoint/registry/tests.rs:245.",
+    "Creates a typed failure at src/endpoint/registry/tests.rs:288.",
+    "Creates a typed failure at src/endpoint/registry/tests.rs:341.",
+    "Creates a typed failure at src/endpoint/registry/tests.rs:364.",
+    "Creates a typed failure at src/endpoint/registry/tests.rs:72."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/registry/tests.rs",
@@ -648,7 +693,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::endpoint::registry::tests responsibilities, including the src/endpoint/registry/tests boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::endpoint::registry::tests`."
   },
   "queues": [],
   "recovery_behavior": [

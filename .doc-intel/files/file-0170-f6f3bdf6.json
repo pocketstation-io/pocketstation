@@ -4,6 +4,9 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -72,6 +75,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -287,19 +293,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "543caae54c30ef172b77693ca74d9d555c6a78aaf760a2a56c200aa4430f989f",
       "lines": [
         1,
-        106
+        2
       ],
       "path": "src/graph/spec.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::spec"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -335,6 +344,9 @@
   "generated_from": "not_applicable",
   "git_object": "6c2edcd21f1432bbd6f4b839c13b40c1699e8585",
   "implemented_by": [
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -360,6 +372,9 @@
     "GraphSpec"
   ],
   "imported_by": [
+    "CALLS:src/graph/compile/resolve.rs",
+    "CALLS:src/graph/dsl.rs",
+    "CALLS:src/session/prepare/mod.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs",
     "REFERENCES:src/graph/compile/plan.rs",
@@ -385,11 +400,13 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "#[cfg(test)]",
-    "crate::graph::node::{NodeConfig, NodeTypeId}",
-    "crate::graph::ports::EdgeContract",
-    "super::*"
+    "Consumes configuration at src/graph/spec.rs:64.",
+    "Consumes configuration at src/graph/spec.rs:68.",
+    "Consumes configuration at src/graph/spec.rs:72.",
+    "Consumes configuration at src/graph/spec.rs:78.",
+    "Depends on `crate::graph::node::{NodeConfig, NodeTypeId}` through a declared Rust import.",
+    "Depends on `crate::graph::ports::EdgeContract` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -403,22 +420,22 @@
   "module": "pocketstation::graph::spec",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::spec` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:edge_count",
-    "fn:from_index",
-    "fn:index",
-    "fn:node",
-    "fn:node_count",
-    "struct:EdgeId",
-    "struct:EdgeSpec",
-    "struct:GraphSpec",
-    "struct:InputPortRef",
-    "struct:NodeId",
-    "struct:NodeSpec",
-    "struct:OutputPortRef"
+    "Declares public fn `edge_count`.",
+    "Declares public fn `from_index`.",
+    "Declares public fn `index`.",
+    "Declares public fn `node_count`.",
+    "Declares public fn `node`.",
+    "Declares public struct `EdgeId`.",
+    "Declares public struct `EdgeSpec`.",
+    "Declares public struct `GraphSpec`.",
+    "Declares public struct `InputPortRef`.",
+    "Declares public struct `NodeId`.",
+    "Declares public struct `NodeSpec`.",
+    "Declares public struct `OutputPortRef`."
   ],
   "package": "pocketstation",
   "path": "src/graph/spec.rs",
@@ -531,8 +548,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::spec responsibilities, including Uniquely identifies node within its PocketStation ownership scope.; Creates a stable runtime node identifier for externally assembled plans.; Returns the index held by `NodeId`.."
+    "classification": "DECLARED",
+    "text": "GraphSpec \u2014 the immutable description a builder produces and the compiler consumes. Node specifications are preserved verbatim (type id + config); nothing is discarded."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -582,23 +599,23 @@
     "pocketstation::graph::spec::EdgeId: Uniquely identifies edge within its PocketStation ownership scope.",
     "index: Returns the index held by `EdgeId`.",
     "pocketstation::graph::spec::OutputPortRef: Names an operator output port used as the origin of a graph connection.",
-    "OutputPortRef::node: Stores the node used by `OutputPortRef`.",
-    "OutputPortRef::port: Stores the port used by `OutputPortRef`.",
+    "OutputPortRef::node: References the node participating in `OutputPortRef`.",
+    "OutputPortRef::port: References the port participating in `OutputPortRef`.",
     "pocketstation::graph::spec::InputPortRef: Names an operator or endpoint input port used as the target of a graph connection.",
-    "InputPortRef::node: Stores the node used by `InputPortRef`.",
-    "InputPortRef::port: Stores the port used by `InputPortRef`.",
+    "InputPortRef::node: References the node participating in `InputPortRef`.",
+    "InputPortRef::port: References the port participating in `InputPortRef`.",
     "pocketstation::graph::spec::NodeSpec: Configures node behavior at its owning API boundary.",
     "NodeSpec::id: Identifies the id recorded by `NodeSpec`.",
     "NodeSpec::type_id: Identifies the type identifier recorded by `NodeSpec`.",
-    "NodeSpec::config: Stores the config used by `NodeSpec`.",
+    "NodeSpec::config: Stores the config as a `NodeConfig` value in `NodeSpec`.",
     "pocketstation::graph::spec::EdgeSpec: Configures edge behavior at its owning API boundary.",
     "EdgeSpec::id: Identifies the id recorded by `EdgeSpec`.",
     "EdgeSpec::from: Identifies the origin represented by `EdgeSpec`.",
     "EdgeSpec::to: Identifies the destination represented by `EdgeSpec`.",
-    "EdgeSpec::requested: Stores the requested used by `EdgeSpec`.",
+    "EdgeSpec::requested: Stores the requested component of `EdgeSpec`.",
     "pocketstation::graph::spec::GraphSpec: Configures graph behavior at its owning API boundary.",
-    "GraphSpec::nodes: Stores the nodes used by `GraphSpec`.",
-    "GraphSpec::edges: Stores the edges used by `GraphSpec`.",
+    "GraphSpec::nodes: References the nodes participating in `GraphSpec`.",
+    "GraphSpec::edges: References the edges participating in `GraphSpec`.",
     "node_count: Returns the node count held by `GraphSpec`.",
     "edge_count: Returns the edge count held by `GraphSpec`.",
     "node: Returns the node held by `GraphSpec`."

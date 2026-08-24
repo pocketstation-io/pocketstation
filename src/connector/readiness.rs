@@ -66,12 +66,12 @@ impl ConnectorReadinessPolicy {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as connector readiness policy error."]
+#[doc = "Classifies failures surfaced by connector readiness policy operations."]
 pub enum ConnectorReadinessPolicyError {
     #[error("connector readiness timeout and probe interval must be finite and non-zero")]
-    #[doc = "Reports invalid deadline."]
+    #[doc = "Reports that the connector readiness invalid deadline value is invalid."]
     InvalidDeadline,
     #[error("connector readiness thresholds must be finite and non-zero")]
-    #[doc = "Reports invalid threshold."]
+    #[doc = "Reports that the connector readiness invalid threshold value is invalid."]
     InvalidThreshold,
 }

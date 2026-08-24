@@ -1,6 +1,6 @@
 # Compatibility and evidence
 
-<!-- claims: CLM-REF-015-CAP-001,CLM-REF-015-CAP-002,CLM-REF-015-SOURCE-001 -->
+<!-- claims: CLM-REF-015-SCOPE-001,CLM-REF-015-TEXT-001,CLM-REF-015-TEXT-002,CLM-REF-015-SOURCE-001 -->
 
 ## Scope
 
@@ -16,7 +16,7 @@ The scope of **Compatibility and evidence** ends at the native contracts and exe
 | `pocketstation::conformance` | module | Deterministic Session fixture for external conformance harnesses. | `src/conformance.rs:1` |
 | `pocketstation::conformance::ExtensionConformanceReport` | struct | Language-neutral outcome returned by the W20 fixture. | `src/conformance.rs:572` |
 | `pocketstation::conformance::ExtensionSignal` | struct | Owns one signal payload used by the native-extension conformance fixtures. | `src/conformance.rs:1180` |
-| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures reported as observed endpoint error. | `src/conformance.rs:344` |
+| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures surfaced by observed endpoint operations. | `src/conformance.rs:344` |
 | `pocketstation::conformance::observed_browser` | function | Declares and registers a deterministic native browser boundary used only by cross-language conformance harnesses. | `src/conformance.rs:334` |
 | `pocketstation::conformance::observed_connector` | function | Declares and registers a deterministic native connector used only by cross-language conformance harnesses. | `src/conformance.rs:273` |
 | `pocketstation::conformance::run_extension_vector` | function | Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint vector through the public Session. | `src/conformance.rs:1005` |
@@ -26,13 +26,13 @@ The scope of **Compatibility and evidence** ends at the native contracts and exe
 | `pocketstation::conformance::session_with_recording_and_trace` | function | Creates the deterministic Session fixture with both aligned multistem recording and a bounded Session diagnostic trace. | `src/conformance.rs:230` |
 | `pocketstation::conformance::session_with_trace` | function | Creates the deterministic Session fixture with a bounded diagnostic trace. | `src/conformance.rs:216` |
 | `signal_spec` | function | Returns the signal spec held by `ExtensionSignal`. | `src/conformance.rs:1183` |
-| `pocketstation::conformance::EXTENSION_ENDPOINT_ID` | constant | Defines the public extension endpoint identifier value. | `src/conformance.rs:558` |
-| `pocketstation::conformance::EXTENSION_ENDPOINT_INPUT_PORT` | constant | Defines the public extension endpoint input port value. | `src/conformance.rs:563` |
-| `pocketstation::conformance::EXTENSION_ENDPOINT_NODE_ID` | constant | Defines the public extension endpoint node identifier value. | `src/conformance.rs:559` |
-| `pocketstation::conformance::EXTENSION_INPUT_PAYLOAD` | constant | Defines the public extension input payload value. | `src/conformance.rs:564` |
-| `pocketstation::conformance::EXTENSION_OPERATOR_ID` | constant | Defines the public extension operator identifier value. | `src/conformance.rs:556` |
-| `pocketstation::conformance::EXTENSION_OPERATOR_INPUT_PORT` | constant | Defines the public extension operator input port value. | `src/conformance.rs:561` |
-| `pocketstation::conformance::EXTENSION_OPERATOR_NODE_ID` | constant | Defines the public extension operator node identifier value. | `src/conformance.rs:557` |
+| `pocketstation::conformance::EXTENSION_ENDPOINT_ID` | constant | Defines extension endpoint identifier as `"org.pocketstation.conformance.endpoint.v1"` for the owning public contract. | `src/conformance.rs:558` |
+| `pocketstation::conformance::EXTENSION_ENDPOINT_INPUT_PORT` | constant | Defines extension endpoint input port as `"in"` for the owning public contract. | `src/conformance.rs:563` |
+| `pocketstation::conformance::EXTENSION_ENDPOINT_NODE_ID` | constant | Defines extension endpoint node identifier as `"org.pocketstation.conformance.endpoint-node.v1"` for the owning public contract. | `src/conformance.rs:559` |
+| `pocketstation::conformance::EXTENSION_INPUT_PAYLOAD` | constant | Defines extension input payload as `b"seed"` for the owning public contract. | `src/conformance.rs:564` |
+| `pocketstation::conformance::EXTENSION_OPERATOR_ID` | constant | Defines extension operator identifier as `"org.pocketstation.conformance.operator.v1"` for the owning public contract. | `src/conformance.rs:556` |
+| `pocketstation::conformance::EXTENSION_OPERATOR_INPUT_PORT` | constant | Defines extension operator input port as `"in"` for the owning public contract. | `src/conformance.rs:561` |
+| `pocketstation::conformance::EXTENSION_OPERATOR_NODE_ID` | constant | Defines extension operator node identifier as `"org.pocketstation.conformance.operator-node.v1"` for the owning public contract. | `src/conformance.rs:557` |
 
 ## Permission and source opening
 
@@ -74,7 +74,7 @@ Executable evidence selected for **Compatibility and evidence** is limited to ea
 
 The claims on **Compatibility and evidence** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `docs/compatibility/c-abi-v1.baseline:1-76` (`DIRECT`)
-- `.github/workflows/ci.yml:1-63` (`DIRECT`)
+- `docs/compatibility/c-abi-v1.baseline:1-21` (`DIRECT`)
+- `.github/workflows/ci.yml:1-21` (`DIRECT`)
 
 For **Compatibility and evidence**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

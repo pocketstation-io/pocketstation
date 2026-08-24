@@ -276,7 +276,7 @@ impl PreparedWorkerMapping {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
-    #[doc = "Prepares context for `PreparedWorkerMapping`."]
+    #[doc = "Returns the immutable preparation context retained by `PreparedWorkerMapping`."]
     pub const fn prepare_context(&self) -> &PrepareContext {
         &self.prepare_context
     }

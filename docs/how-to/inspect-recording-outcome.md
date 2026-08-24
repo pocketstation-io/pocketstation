@@ -1,6 +1,6 @@
 # Inspect recording outcomes
 
-<!-- claims: CLM-GUIDE-010-CAP-001,CLM-GUIDE-010-CAP-002,CLM-GUIDE-010-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-010-SCOPE-001,CLM-GUIDE-010-TEXT-001,CLM-GUIDE-010-TEXT-002,CLM-GUIDE-010-TEXT-003,CLM-GUIDE-010-TEXT-004,CLM-GUIDE-010-TEXT-005,CLM-GUIDE-010-TEXT-006,CLM-GUIDE-010-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,74 @@ A stopped Session with its structured `SessionStopOutcome` still available.
 3. Read recording_outcome after stop and locate the schema-versioned recording manifest using the exported file-name constant.
 4. Check overall state plus completed and failed stem counts.
 5. Use error codes and per-stem results to diagnose partial finalization.
+
+## Concrete repository example
+
+The executable repository test `given_derived_permission_epoch_when_later_frame_changes_it_then_recording_fails_closed` (`test-8c7b0f326da2b4760c28`) shows the concrete API sequence and asserted outcome at `src/recording/endpoint/tests.rs:287`.
+
+```rust
+}
+
+#[test]
+fn given_derived_permission_epoch_when_later_frame_changes_it_then_recording_fails_closed() {
+    let temp_dir = TempDir::new().unwrap();
+    let coordinator =
+        SessionMultistemEndpointCoordinator::new(temp_dir.path(), EndpointGroupId::new(GROUP_ID));
+    let receipt = coordinator.receipt();
+    let (registry, operator_id, node_type_id) = session_endpoint_registry(coordinator);
+    let (mut router, mut receivers, source_nodes, _edge_ids) = router_with_sources(1);
+    let prepared = registry
+        .prepare_batch(
+            &operator_id,
+            &node_type_id,
+            vec![session_input(
+                receivers.pop().unwrap(),
+                EndpointId(101),
+                StemId(11),
+                RouteId(21),
+                "application",
+                0,
+            )],
+        )
+        .unwrap();
+    let (gate_controller, gate) = endpoint_start_gate();
+    let mut running = prepared.start(gate).unwrap();
+    gate_controller.open();
+
+    router.dispatch_from(
+        source_nodes[0],
+        "out",
+        lineaged_frame_with_permission(31, 11, 0, 4, 0.25),
+        1,
+    );
+    wait_for_received(&running, 1);
+    router.dispatch_from(
+        source_nodes[0],
+        "out",
+        lineaged_frame_with_permission(31, 11, 1, 5, 0.5),
+        20_000_001,
+    );
+    wait_for_failure(&running);
+    running.request_stop();
+    let finalization = running.join_and_finalize();
+
+    assert!(!finalization.is_success());
+    assert_eq!(finalization.observations.frames_received_total, 2);
+    assert_eq!(finalization.observations.failures_total, 1);
+    let outcome = receipt
+        .result()
+        .expect("failed recording receipt must finalize");
+    assert_eq!(outcome.state, RecordingState::Incomplete);
+    assert!(outcome.stems[0]
+        .error
+        .as_deref()
+        .is_some_and(|error| error.contains("PermissionEpoch")));
+}
+```
+
+```bash
+cargo test --all-features given_derived_permission_epoch_when_later_frame_changes_it_then_recording_fails_closed
+```
 
 ## Important consequence
 
@@ -88,7 +156,30 @@ Executable evidence selected for **Inspect recording outcomes** is limited to ea
 
 The claims on **Inspect recording outcomes** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/recording/writer.rs:1-1262` (`DIRECT`)
-- `src/session/extensions/recording.rs:1-125` (`DIRECT`)
+- `src/recording/writer.rs:17-17` (`DIRECT`)
+- `src/recording/writer.rs:18-18` (`DIRECT`)
+- `src/recording/writer.rs:19-19` (`DIRECT`)
+- `src/recording/writer.rs:20-20` (`DIRECT`)
+- `src/recording/writer.rs:21-21` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:23-23` (`DIRECT`)
+- `src/recording/writer.rs:24-82` (`DIRECT`)
+- `src/recording/writer.rs:26-26` (`DIRECT`)
+- `src/recording/writer.rs:26-26` (`DIRECT`)
+- `src/recording/writer.rs:28-28` (`DIRECT`)
+- `src/recording/writer.rs:28-28` (`DIRECT`)
+- `src/recording/writer.rs:30-30` (`DIRECT`)
+- `src/recording/writer.rs:30-30` (`DIRECT`)
+- `src/recording/writer.rs:32-36` (`DIRECT`)
+- `src/recording/writer.rs:33-33` (`DIRECT`)
+- `src/recording/writer.rs:34-34` (`DIRECT`)
+- `src/recording/writer.rs:35-35` (`DIRECT`)
+- `src/recording/writer.rs:38-38` (`DIRECT`)
+- `src/recording/writer.rs:38-38` (`DIRECT`)
+- `src/session/extensions/recording.rs:1-4` (`DECLARED`)
 
 For **Inspect recording outcomes**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

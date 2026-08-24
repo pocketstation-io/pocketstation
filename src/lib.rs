@@ -494,7 +494,7 @@ impl Session {
         self.declaration.endpoint(descriptor)
     }
 
-    #[doc = "Registers operator for `Session`."]
+    #[doc = "Registers one asynchronous operator implementation for use by `Session`."]
     pub fn register_operator(
         &self,
         factory: Arc<dyn AsyncOperatorFactory>,
@@ -632,7 +632,7 @@ impl Session {
         self.start_cancellable(SessionStartCancellation::default())
     }
 
-    #[doc = "Starts cancellable for `Session`."]
+    #[doc = "Starts `Session` transactionally while observing the supplied cancellation handle."]
     pub fn start_cancellable(
         self,
         cancellation: SessionStartCancellation,
@@ -1035,7 +1035,7 @@ impl SessionStartError {
         }
     }
 
-    #[doc = "Returns whether cancelled applies to `SessionStartError`."]
+    #[doc = "Reports whether cancelled is true for `SessionStartError`."]
     pub fn is_cancelled(&self) -> bool {
         self.kind() == SessionStartErrorKind::Cancelled
     }
@@ -1100,19 +1100,19 @@ impl From<SourceRegistrationError> for SessionStartError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session endpoint error."]
+#[doc = "Classifies failures surfaced by session endpoint operations."]
 pub enum SessionEndpointError {
     #[error("Session endpoint-registration state is unavailable")]
-    #[doc = "Reports registration state unavailable."]
+    #[doc = "Reports that registration state is unavailable."]
     RegistrationStateUnavailable,
     #[error("Session endpoint operator id '{operator_id}' is already registered")]
-    #[doc = "Reports duplicate operator identifier."]
+    #[doc = "Reports that operator identifier duplicates an existing declaration or record."]
     DuplicateOperatorId {
         #[doc = "Identifies the operator identifier recorded by `DuplicateOperatorId`."]
         operator_id: String,
     },
     #[error("Session endpoint node type id '{node_type_id}' is already registered")]
-    #[doc = "Reports duplicate node type identifier."]
+    #[doc = "Reports that node type identifier duplicates an existing declaration or record."]
     DuplicateNodeTypeId {
         #[doc = "Identifies the node type identifier recorded by `DuplicateNodeTypeId`."]
         node_type_id: String,
@@ -1120,7 +1120,7 @@ pub enum SessionEndpointError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session sidecar error."]
+#[doc = "Classifies failures surfaced by session sidecar operations."]
 pub enum SessionSidecarError {
     #[error("Session sidecar-registration state is unavailable")]
     #[doc = "Reports registration state unavailable."]
@@ -1128,7 +1128,7 @@ pub enum SessionSidecarError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session operator error."]
+#[doc = "Classifies failures surfaced by session operator operations."]
 pub enum SessionOperatorError {
     #[error("Session operator-registration state is unavailable")]
     #[doc = "Reports registration state unavailable."]
@@ -1136,7 +1136,7 @@ pub enum SessionOperatorError {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as session source error."]
+#[doc = "Classifies failures surfaced by session source operations."]
 pub enum SessionSourceError {
     #[error("Session source-registration state is unavailable")]
     #[doc = "Reports registration state unavailable."]
@@ -1146,25 +1146,25 @@ pub enum SessionSourceError {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Selects the session start error kind used by PocketStation."]
 pub enum SessionStartErrorKind {
-    #[doc = "Reports host."]
+    #[doc = "Classifies a Session start failure attributed to host."]
     Host,
-    #[doc = "Reports engine."]
+    #[doc = "Classifies a Session start failure attributed to engine."]
     Engine,
     #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
-    #[doc = "Reports invalid selector."]
+    #[doc = "Classifies a Session start failure attributed to invalid selector."]
     InvalidSelector,
-    #[doc = "Reports missing recording configuration."]
+    #[doc = "Classifies a Session start failure attributed to missing recording configuration."]
     MissingRecordingConfiguration,
-    #[doc = "Reports invariant."]
+    #[doc = "Classifies a Session start failure attributed to invariant."]
     Invariant,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-#[doc = "Classifies failures reported as session runtime error."]
+#[doc = "Classifies failures produced during session runtime execution."]
 pub enum SessionRuntimeError {
     #[error("native running Session did not expose a metrics snapshot")]
-    #[doc = "Reports missing metrics snapshot."]
+    #[doc = "Reports that the required metrics snapshot is missing."]
     MissingMetricsSnapshot,
 }
 
@@ -1204,7 +1204,7 @@ impl SessionCancelResult {
         self.outcome
     }
 
-    #[doc = "Returns whether success applies to `SessionCancelResult`."]
+    #[doc = "Reports whether success is true for `SessionCancelResult`."]
     pub fn is_success(self) -> bool {
         self.outcome.is_success()
     }
@@ -1228,7 +1228,7 @@ impl SessionStopResult {
         self.outcome
     }
 
-    #[doc = "Returns whether success applies to `SessionStopResult`."]
+    #[doc = "Reports whether success is true for `SessionStopResult`."]
     pub fn is_success(self) -> bool {
         self.outcome.is_success()
     }

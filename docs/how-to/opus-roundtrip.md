@@ -1,6 +1,6 @@
 # Encode and decode Opus
 
-<!-- claims: CLM-GUIDE-024-CAP-001,CLM-GUIDE-024-CAP-002,CLM-GUIDE-024-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-024-SCOPE-001,CLM-GUIDE-024-TEXT-001,CLM-GUIDE-024-TEXT-002,CLM-GUIDE-024-TEXT-003,CLM-GUIDE-024-TEXT-004,CLM-GUIDE-024-TEXT-005,CLM-GUIDE-024-TEXT-006,CLM-GUIDE-024-SOURCE-001 -->
 
 ## Scope
 
@@ -20,6 +20,46 @@ An Opus profile supported by the crate and PCM frames matching its sample rate, 
 3. Encode only accepted frame formats.
 4. Construct the matching decoder and decode packets.
 5. Use the round-trip test as executable compatibility evidence.
+
+## Concrete repository example
+
+The executable repository test `given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved` (`test-8b8900f4ef016b6914cc`) shows the concrete API sequence and asserted outcome at `tests/codec_opus_roundtrip.rs:4`.
+
+```rust
+};
+
+#[test]
+fn given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved() {
+    let pool = AudioBufferPool::new(4, POOL_SLOT_SAMPLES);
+    let mut h = pool.acquire().unwrap();
+    for (sample_index, sample) in h.as_mut_slice().iter_mut().enumerate() {
+        let phase = sample_index as f32 * std::f32::consts::TAU * 440.0 / 48_000.0;
+        *sample = phase.sin() * 0.25;
+    }
+    let frame = AudioFrame::try_new(
+        StreamId::new(1),
+        SourceId::new(1),
+        0,
+        0,
+        SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+        h,
+    )
+    .expect("valid codec frame");
+    let mut enc = OpusEncoder::new().expect("OpusEncoder::new failed");
+    let mut dec = OpusDecoder::new().expect("OpusDecoder::new failed");
+    let mut encoded = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
+    enc.encode_into(frame.samples(), &mut encoded)
+        .expect("encode failed");
+    let mut decoded = Vec::with_capacity(POOL_SLOT_SAMPLES);
+    dec.decode_into(&encoded, &mut decoded, false)
+        .expect("decode failed");
+    assert_eq!(decoded.len(), POOL_SLOT_SAMPLES);
+}
+```
+
+```bash
+cargo test --all-features given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved
+```
 
 ## Important consequence
 
@@ -63,10 +103,10 @@ Executable evidence selected for **Encode and decode Opus** is limited to each t
 | `pocketstation::codec::decoder::OpusDecoder` | struct | Real Opus decoder wrapping libopus via the `opus` crate. | `src/codec/decoder.rs:15` |
 | `pocketstation::codec::encoder::OpusConfig` | struct | Explicit configuration for an Opus encoder instance. | `src/codec/encoder.rs:72` |
 | `pocketstation::codec::encoder::OpusEncoder` | struct | Real Opus encoder wrapping libopus via the `opus` crate. | `src/codec/encoder.rs:157` |
-| `pocketstation::codec::decoder::OpusDecodeError` | enum | Classifies failures reported as opus decode error. | `src/codec/decoder.rs:25` |
+| `pocketstation::codec::decoder::OpusDecodeError` | enum | Classifies failures produced during opus decoding. | `src/codec/decoder.rs:25` |
 | `pocketstation::codec::encoder::OpusApplication` | enum | Selects the Opus encoder mode used to tune speech or general audio. | `src/codec/encoder.rs:58` |
 | `pocketstation::codec::encoder::OpusChannels` | enum | Typed channel count for Opus — prevents silent u8 misuse. | `src/codec/encoder.rs:27` |
-| `pocketstation::codec::encoder::OpusEncodeError` | enum | Classifies failures reported as opus encode error. | `src/codec/encoder.rs:131` |
+| `pocketstation::codec::encoder::OpusEncodeError` | enum | Classifies failures produced during opus encoding. | `src/codec/encoder.rs:131` |
 | `pocketstation::codec::encoder::OpusFrameDuration` | enum | Supported Opus frame duration at 48 kHz. | `src/codec/encoder.rs:7` |
 
 ## Related documentation
@@ -84,6 +124,6 @@ Executable evidence selected for **Encode and decode Opus** is limited to each t
 
 The claims on **Encode and decode Opus** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `tests/codec_opus_roundtrip.rs:1-33` (`DIRECT`)
+- `tests/codec_opus_roundtrip.rs:4-32` (`TESTED`)
 
 For **Encode and decode Opus**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

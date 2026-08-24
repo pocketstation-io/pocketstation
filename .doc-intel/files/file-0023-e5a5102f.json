@@ -60,11 +60,11 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "fae1671b424fd3040dcc54d1dde61f6e8b41d124d8836e490ab93e96bef07dce",
       "lines": [
         1,
-        64
+        9
       ],
       "path": "docs/architecture/overview.md",
       "symbol": null
@@ -105,7 +105,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not override compiler-visible API contracts or executable test evidence."
+    "`docs/architecture/overview.md` does not override compiler-visible API contracts or executable tests."
   ],
   "observed_patterns": [],
   "outputs": [

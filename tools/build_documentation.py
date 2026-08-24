@@ -225,16 +225,22 @@ const box=document.querySelector('.search');box?.addEventListener('change',async
 """.strip()
 
 
-def page_document(page: dict[str, Any], pages: list[dict[str, Any]], body: str) -> str:
+def page_document(
+    page: dict[str, Any], pages: list[dict[str, Any]], body: str, snapshot: str
+) -> str:
     depth = len(output_path(page["path"]).parent.parts)
     root_prefix = "../" * depth
     return f"""<!doctype html>
 <html lang="en" data-root="{root_prefix}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(page['title'])} · PocketStation</title><meta name="description" content="Evidence-backed PocketStation documentation for {html.escape(page['title'])}."><link rel="stylesheet" href="{root_prefix}assets/site.css"></head>
-<body><a class="skip" href="#content">Skip to content</a><div class="layout"><nav aria-label="Documentation">{nav_html(pages, page)}<label for="site-search">Search documentation</label><input class="search" id="site-search" type="search" placeholder="Type and press Enter"></nav><main id="content">{body}<p class="meta">Evidence snapshot: 3b7b970f6598239e5d435b60c8d132a955a1886c</p></main></div><script src="{root_prefix}assets/site.js"></script></body></html>"""
+<body><a class="skip" href="#content">Skip to content</a><div class="layout"><nav aria-label="Documentation">{nav_html(pages, page)}<label for="site-search">Search documentation</label><input class="search" id="site-search" type="search" placeholder="Type and press Enter"></nav><main id="content">{body}<p class="meta">Evidence snapshot: {html.escape(snapshot)}</p></main></div><script src="{root_prefix}assets/site.js"></script></body></html>"""
 
 
 def build() -> tuple[list[dict[str, Any]], list[str]]:
     pages = read_jsonl(DB / "page-manifest.jsonl")
+    state = json.loads((DB / "state.json").read_text())
+    snapshot = str(state.get("snapshot", ""))
+    if not re.fullmatch(r"[0-9a-f]{40}", snapshot):
+        raise ValueError(".doc-intel/state.json does not contain a full Git snapshot hash")
     if OUTPUT.exists():
         shutil.rmtree(OUTPUT)
     (OUTPUT / "assets").mkdir(parents=True)
@@ -251,7 +257,9 @@ def build() -> tuple[list[dict[str, Any]], list[str]]:
         markdown = source.read_text()
         if "Native description pending Gate" in markdown:
             failures.append(f"stale gate marker: {page['path']}")
-        rendered = page_document(page, pages, markdown_to_html(markdown, page["path"]))
+        rendered = page_document(
+            page, pages, markdown_to_html(markdown, page["path"]), snapshot
+        )
         destination = OUTPUT / output_path(page["path"])
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(rendered)
@@ -283,6 +291,28 @@ def validate(manifest: list[dict[str, Any]], failures: list[str]) -> list[str]:
             failures.append(f"semantic page shell absent: {row['output']}")
         if row["output_sha256"] != digest(path):
             failures.append(f"output digest mismatch: {row['output']}")
+        for href in re.findall(r'href="([^"]+)"', text):
+            if href.startswith(("http://", "https://", "mailto:")):
+                continue
+            base, _, fragment = html.unescape(href).partition("#")
+            if not base:
+                target = path
+            elif base.startswith("/"):
+                target = (OUTPUT / base.lstrip("/")).resolve()
+            else:
+                target = (path.parent / base).resolve()
+            try:
+                target.relative_to(OUTPUT.resolve())
+            except ValueError:
+                failures.append(f"link escapes publication root: {row['output']} -> {href}")
+                continue
+            if not target.exists():
+                failures.append(f"missing rendered link target: {row['output']} -> {href}")
+                continue
+            if fragment and target.suffix == ".html":
+                target_text = target.read_text()
+                if f'id="{html.escape(fragment, quote=True)}"' not in target_text:
+                    failures.append(f"missing rendered anchor: {row['output']} -> {href}")
     for asset in ("assets/site.css", "assets/site.js", "search-index.json", "site-map.json"):
         if not (OUTPUT / asset).exists():
             failures.append(f"missing publication asset: {asset}")

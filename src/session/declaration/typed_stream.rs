@@ -194,61 +194,61 @@ fn validate_signal(signal: &SignalSpec) -> Result<(), TypedStreamError> {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[doc = "Classifies failures reported as typed stream error."]
+#[doc = "Classifies failures surfaced by typed stream operations."]
 pub enum TypedStreamError {
     #[error("typed stream signal is invalid: {0}")]
-    #[doc = "Reports invalid signal."]
+    #[doc = "Reports that the supplied signal is invalid."]
     InvalidSignal(String),
     #[error("typed operator manifest is invalid: {0}")]
-    #[doc = "Reports invalid manifest."]
+    #[doc = "Reports that the supplied manifest is invalid."]
     InvalidManifest(String),
     #[error("operator declaration '{declaration}' does not match manifest '{manifest}'")]
-    #[doc = "Reports operator identity mismatch."]
+    #[doc = "Reports that operator identity does not match the expected contract."]
     OperatorIdentityMismatch {
-        #[doc = "Stores the declaration used by `OperatorIdentityMismatch`."]
+        #[doc = "Stores the declaration text reported by `OperatorIdentityMismatch`."]
         declaration: String,
-        #[doc = "Stores the manifest used by `OperatorIdentityMismatch`."]
+        #[doc = "Stores the manifest text reported by `OperatorIdentityMismatch`."]
         manifest: String,
     },
     #[error("typed stream port '{port}' is not declared for direction {direction:?}")]
-    #[doc = "Reports unknown port."]
+    #[doc = "Reports that the referenced port is not declared or registered."]
     UnknownPort {
-        #[doc = "Stores the direction used by `UnknownPort`."]
+        #[doc = "Records the direction selected for `UnknownPort`."]
         direction: PortDirection,
-        #[doc = "Stores the port used by `UnknownPort`."]
+        #[doc = "References the port participating in `UnknownPort`."]
         port: String,
     },
     #[error("typed stream manifest has no port for direction {direction:?}")]
-    #[doc = "Reports missing port."]
+    #[doc = "Reports that the required port is missing."]
     MissingPort {
-        #[doc = "Stores the direction used by `MissingPort`."]
+        #[doc = "Records the direction selected for `MissingPort`."]
         direction: PortDirection,
     },
     #[error("typed stream manifest requires explicit port selection for direction {direction:?}")]
-    #[doc = "Reports ambiguous port."]
+    #[doc = "Reports that port resolves to more than one candidate."]
     AmbiguousPort {
-        #[doc = "Stores the direction used by `AmbiguousPort`."]
+        #[doc = "Records the direction selected for `AmbiguousPort`."]
         direction: PortDirection,
     },
     #[error("typed operator input marker does not match port '{port}'")]
-    #[doc = "Reports input signal mismatch."]
+    #[doc = "Reports that input signal does not match the expected contract."]
     InputSignalMismatch {
-        #[doc = "Stores the port used by `InputSignalMismatch`."]
+        #[doc = "References the port participating in `InputSignalMismatch`."]
         port: String,
     },
     #[error("typed operator output marker does not match port '{port}'")]
-    #[doc = "Reports output signal mismatch."]
+    #[doc = "Reports that output signal does not match the expected contract."]
     OutputSignalMismatch {
-        #[doc = "Stores the port used by `OutputSignalMismatch`."]
+        #[doc = "References the port participating in `OutputSignalMismatch`."]
         port: String,
     },
     #[error("typed capture stem markers must describe PCM audio")]
-    #[doc = "Reports stem requires PCM audio."]
+    #[doc = "Classifies a failure at the stem requires PCM audio stage or component of `TypedStreamError`."]
     StemRequiresPcmAudio,
     #[error("typed stream output does not match the next operator input")]
-    #[doc = "Reports stream input mismatch."]
+    #[doc = "Reports that stream input does not match the expected contract."]
     StreamInputMismatch,
     #[error(transparent)]
-    #[doc = "Reports session."]
+    #[doc = "Classifies a failure at the session stage or component of `TypedStreamError`."]
     Session(#[from] SessionError),
 }

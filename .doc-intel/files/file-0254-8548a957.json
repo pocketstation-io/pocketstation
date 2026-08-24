@@ -90,14 +90,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "c834bbf0d4520a16816c3879ed1657c872f928c88e9b259e5338a3014f66826b",
       "lines": [
-        1,
-        74
+        62,
+        73
       ],
-      "path": "tests/abi_session_c_conformance.rs",
-      "symbol": null
+      "path": "tests/abi_session_c_conformance.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "c834bbf0d4520a16816c3879ed1657c872f928c88e9b259e5338a3014f66826b",
+      "lines": [
+        51,
+        62
+      ],
+      "path": "tests/abi_session_c_conformance.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -124,14 +132,14 @@
     "std::process::Command"
   ],
   "inputs": [
-    "#[cfg(unix)]",
-    "CARGO_MANIFEST_DIR",
-    "CC",
-    "let compiler = std::env::var(\"CC\").unwrap_or_else(|_| \"cc\".to_owned());",
-    "let executable_dir = std::env::current_exe()",
-    "std::env::temp_dir().join(format!(\"{executable_name}-{}\", std::process::id()));",
-    "std::path::{Path, PathBuf}",
-    "std::process::Command"
+    "Consumes configuration at tests/abi_session_c_conformance.rs:13.",
+    "Consumes configuration at tests/abi_session_c_conformance.rs:14.",
+    "Consumes configuration at tests/abi_session_c_conformance.rs:26.",
+    "Consumes configuration at tests/abi_session_c_conformance.rs:7.",
+    "Depends on `std::path::{Path, PathBuf}` through a declared Rust import.",
+    "Depends on `std::process::Command` through a declared Rust import.",
+    "Reads process environment variable `CARGO_MANIFEST_DIR`.",
+    "Reads process environment variable `CC`."
   ],
   "invariants": [],
   "language": "Rust",
@@ -140,7 +148,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not define production behavior beyond the test setup and asserted outcome."
+    "`tests/abi_session_c_conformance.rs` does not define production behavior beyond its recorded setup and assertions."
   ],
   "observed_patterns": [],
   "outputs": [

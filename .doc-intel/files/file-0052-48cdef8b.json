@@ -28,8 +28,8 @@
       "classification": "DIRECT",
       "content_hash": "01c5eb98e90d60ba38ce9f0ae69cfa38809661f8a03e15debcc1e5b0df43f276",
       "lines": [
-        1,
-        8
+        7,
+        7
       ],
       "path": "proptest-regressions/compiler.txt",
       "symbol": null
@@ -65,7 +65,7 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+    "`proptest-regressions/compiler.txt` declares repository inputs and does not by itself prove product runtime behavior."
   ],
   "observed_patterns": [],
   "outputs": [

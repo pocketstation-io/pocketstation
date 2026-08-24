@@ -1,6 +1,6 @@
 # macOS capture
 
-<!-- claims: CLM-DOC-044-CAP-001,CLM-DOC-044-CAP-002,CLM-DOC-044-CAP-003,CLM-DOC-044-CAP-004,CLM-DOC-044-SOURCE-001 -->
+<!-- claims: CLM-DOC-044-SCOPE-001,CLM-DOC-044-TEXT-001,CLM-DOC-044-TEXT-002,CLM-DOC-044-SOURCE-001 -->
 
 ## Scope
 
@@ -76,6 +76,18 @@ Executable evidence selected for **macOS capture** is limited to each test's rec
 
 The claims on **macOS capture** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/capture/platform/macos/mod.rs:1-112` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:33-33` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:33-33` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:36-39` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:37-37` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:37-37` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:38-38` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:38-38` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:44-52` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:54-80` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:82-87` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:89-94` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:96-101` (`DIRECT`)
+- `src/capture/platform/macos/mod.rs:103-110` (`DIRECT`)
 
 For **macOS capture**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

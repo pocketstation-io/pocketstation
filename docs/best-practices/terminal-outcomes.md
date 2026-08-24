@@ -1,6 +1,6 @@
 # Treat stop outcomes as data
 
-<!-- claims: CLM-BEST-004-CAP-001,CLM-BEST-004-CAP-002,CLM-BEST-004-CAP-003,CLM-BEST-004-CAP-004,CLM-BEST-004-CAP-005,CLM-BEST-004-SOURCE-001 -->
+<!-- claims: CLM-BEST-004-SCOPE-001,CLM-BEST-004-TEXT-001,CLM-BEST-004-TEXT-002,CLM-BEST-004-TEXT-003,CLM-BEST-004-TEXT-004,CLM-BEST-004-TEXT-005,CLM-BEST-004-TEXT-006,CLM-BEST-004-SOURCE-001 -->
 
 ## Problem
 
@@ -58,6 +58,29 @@ Executable evidence selected for **Treat stop outcomes as data** is limited to e
 
 The claims on **Treat stop outcomes as data** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/events.rs:1-736` (`DIRECT`)
+- `src/session/lifecycle/events.rs:15-15` (`DIRECT`)
+- `src/session/lifecycle/events.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/events.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/events.rs:18-18` (`DIRECT`)
+- `src/session/lifecycle/events.rs:19-25` (`DIRECT`)
+- `src/session/lifecycle/events.rs:20-20` (`DIRECT`)
+- `src/session/lifecycle/events.rs:21-21` (`DIRECT`)
+- `src/session/lifecycle/events.rs:22-22` (`DIRECT`)
+- `src/session/lifecycle/events.rs:23-23` (`DIRECT`)
+- `src/session/lifecycle/events.rs:24-24` (`DIRECT`)
+- `src/session/lifecycle/events.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/events.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/events.rs:28-28` (`DIRECT`)
+- `src/session/lifecycle/events.rs:29-35` (`DIRECT`)
+- `src/session/lifecycle/events.rs:30-30` (`DIRECT`)
+- `src/session/lifecycle/events.rs:31-31` (`DIRECT`)
+- `src/session/lifecycle/events.rs:32-32` (`DIRECT`)
+- `src/session/lifecycle/events.rs:33-33` (`DIRECT`)
+- `src/session/lifecycle/events.rs:34-34` (`DIRECT`)
+- `src/session/lifecycle/events.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/events.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/events.rs:38-38` (`DIRECT`)
+- `src/session/lifecycle/events.rs:39-47` (`DIRECT`)
+- `src/session/lifecycle/events.rs:40-40` (`DIRECT`)
 
 For **Treat stop outcomes as data**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

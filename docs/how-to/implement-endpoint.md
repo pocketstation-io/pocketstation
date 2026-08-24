@@ -1,6 +1,6 @@
 # Implement an endpoint driver
 
-<!-- claims: CLM-GUIDE-014-CAP-001,CLM-GUIDE-014-SOURCE-001 -->
+<!-- claims: CLM-GUIDE-014-SCOPE-001,CLM-GUIDE-014-TEXT-001,CLM-GUIDE-014-TEXT-002,CLM-GUIDE-014-TEXT-003,CLM-GUIDE-014-TEXT-004,CLM-GUIDE-014-TEXT-005,CLM-GUIDE-014-TEXT-006,CLM-GUIDE-014-SOURCE-001 -->
 
 ## Scope
 
@@ -19,6 +19,40 @@ An endpoint manifest with declared inputs and a factory that can prepare resourc
 3. Consume matching audio or signal inputs.
 4. Honor cancellation and shutdown mode.
 5. Return finalization observations and staged failures.
+
+## Concrete repository example
+
+The executable repository test `given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably` (`test-70431fbc7f2633c86453`) shows the concrete API sequence and asserted outcome at `src/endpoint/registry/tests.rs:272`.
+
+```rust
+}
+
+#[test]
+fn given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably() {
+    let operator_id = OperatorId::new("connector.test");
+    let node_type_id = NodeTypeId::from("endpoint.connector");
+    let control = TestDriverControl::new();
+    let registry = registry_with(&operator_id, &node_type_id, &control);
+    let prepared = registry
+        .prepare(&operator_id, &node_type_id, input())
+        .unwrap();
+    let (gate_controller, gate) = endpoint_start_gate();
+    gate_controller.open();
+
+    let failure = match prepared.start(gate) {
+        Ok(_) => panic!("an already-open gate must reject endpoint start"),
+        Err(failure) => failure,
+    };
+
+    assert_eq!(failure.cause(), &EndpointStartFailureCause::GateAlreadyOpen);
+    assert_eq!(control.start_calls_total.load(Ordering::Relaxed), 0);
+    assert!(failure.into_prepared().is_some());
+}
+```
+
+```bash
+cargo test --all-features given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably
+```
 
 ## Important consequence
 
@@ -69,7 +103,7 @@ Executable evidence selected for **Implement an endpoint driver** is limited to 
 | `pocketstation::endpoint::registry::EndpointDriverRegistry` | struct | Indexes registered endpoint driver implementations by their stable identities. | `src/endpoint/registry.rs:54` |
 | `pocketstation::endpoint::runtime::EndpointDriverFinalization` | struct | Reports an endpoint driver's terminal observations and any finalization failure. | `src/endpoint/runtime.rs:295` |
 | `pocketstation::endpoint::runtime::EndpointDriverObservations` | struct | Reports the endpoint driver observations collected at an observation boundary. | `src/endpoint/runtime.rs:228` |
-| `pocketstation::endpoint::registry::EndpointDriverRegistryError` | enum | Classifies failures reported as endpoint driver registry error. | `src/endpoint/registry.rs:16` |
+| `pocketstation::endpoint::registry::EndpointDriverRegistryError` | enum | Classifies failures surfaced by endpoint driver registry operations. | `src/endpoint/registry.rs:16` |
 | `EndpointDriverFactory::preparation_group` | function | Returns the preparation group associated with `EndpointDriverFactory`. | `src/endpoint/contract.rs:263` |
 
 ## Related documentation
@@ -87,6 +121,29 @@ Executable evidence selected for **Implement an endpoint driver** is limited to 
 
 The claims on **Implement an endpoint driver** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/endpoint/contract.rs:1-276` (`DIRECT`)
+- `src/endpoint/contract.rs:18-22` (`DIRECT`)
+- `src/endpoint/contract.rs:19-19` (`DIRECT`)
+- `src/endpoint/contract.rs:20-20` (`DIRECT`)
+- `src/endpoint/contract.rs:21-21` (`DIRECT`)
+- `src/endpoint/contract.rs:25-35` (`DIRECT`)
+- `src/endpoint/contract.rs:37-39` (`DIRECT`)
+- `src/endpoint/contract.rs:41-43` (`DIRECT`)
+- `src/endpoint/contract.rs:45-47` (`DIRECT`)
+- `src/endpoint/contract.rs:49-51` (`DIRECT`)
+- `src/endpoint/contract.rs:53-55` (`DIRECT`)
+- `src/endpoint/contract.rs:57-59` (`DIRECT`)
+- `src/endpoint/contract.rs:61-63` (`DIRECT`)
+- `src/endpoint/contract.rs:65-67` (`DIRECT`)
+- `src/endpoint/contract.rs:69-71` (`DIRECT`)
+- `src/endpoint/contract.rs:73-75` (`DIRECT`)
+- `src/endpoint/contract.rs:78-80` (`DIRECT`)
+- `src/endpoint/contract.rs:83-85` (`DIRECT`)
+- `src/endpoint/contract.rs:92-94` (`DIRECT`)
+- `src/endpoint/contract.rs:93-93` (`DIRECT`)
+- `src/endpoint/contract.rs:97-99` (`DIRECT`)
+- `src/endpoint/contract.rs:101-103` (`DIRECT`)
+- `src/endpoint/contract.rs:106-108` (`DIRECT`)
+- `src/endpoint/contract.rs:110-120` (`DIRECT`)
+- `src/endpoint/contract.rs:122-124` (`DIRECT`)
 
 For **Implement an endpoint driver**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

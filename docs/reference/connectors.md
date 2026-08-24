@@ -1,6 +1,6 @@
 # Connector API
 
-<!-- claims: CLM-REF-009-CAP-001,CLM-REF-009-CAP-002,CLM-REF-009-SOURCE-001 -->
+<!-- claims: CLM-REF-009-SCOPE-001,CLM-REF-009-TEXT-001,CLM-REF-009-TEXT-002,CLM-REF-009-SOURCE-001 -->
 
 ## Scope
 
@@ -21,42 +21,42 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-4d9191cba5863424f902 | `pocketstation::connector::configuration::MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES` | constant | Sets the maximum supported connector configuration text bytes. | `src/connector/configuration.rs:8` |
 | sym-924e23cbd531280ca555 | `pocketstation::connector::error::MAX_CONNECTOR_ERROR_CODE_BYTES` | constant | Sets the maximum supported connector error code bytes. | `src/connector/error.rs:6` |
 | sym-9e444653483fa4f02fa0 | `pocketstation::connector::error::MAX_CONNECTOR_ERROR_MESSAGE_BYTES` | constant | Sets the maximum supported connector error message bytes. | `src/connector/error.rs:7` |
-| sym-757c38dcb30074da8581 | `pocketstation::connector::manifest::CONNECTOR_API_REVISION` | constant | Defines the public connector API revision value. | `src/connector/manifest.rs:7` |
+| sym-757c38dcb30074da8581 | `pocketstation::connector::manifest::CONNECTOR_API_REVISION` | constant | Defines connector API revision as `1` for the owning public contract. | `src/connector/manifest.rs:7` |
 | sym-f0d13b3a5e8fa03517d4 | `pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_ENTRIES` | constant | Sets the maximum supported connector manifest entries. | `src/connector/manifest.rs:8` |
 | sym-8c599603d4781320e76d | `pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_TEXT_BYTES` | constant | Sets the maximum supported connector manifest text bytes. | `src/connector/manifest.rs:9` |
 | sym-5c81b5fa9bc04f842d85 | `pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_THRESHOLD` | constant | Sets the maximum supported connector readiness threshold. | `src/connector/readiness.rs:3` |
 | sym-aec7604fe15b924867aa | `pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_TIMEOUT` | constant | Sets the maximum supported connector readiness timeout. | `src/connector/readiness.rs:4` |
-| sym-422d9d058d7efb3d7df3 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA` | constant | Defines the public connector audio record schema value. | `src/connector/sidecar.rs:16` |
-| sym-ebefb51273c068a49190 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID` | constant | Defines the public connector audio record signal identifier value. | `src/connector/sidecar.rs:15` |
+| sym-422d9d058d7efb3d7df3 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA` | constant | Defines connector audio record schema as `"urn:pocketstation:connector:audio-record:v1"` for the owning public contract. | `src/connector/sidecar.rs:16` |
+| sym-ebefb51273c068a49190 | `pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID` | constant | Defines connector audio record signal identifier as `"io.pocketstation.connector.audio-record.v1"` for the owning public contract. | `src/connector/sidecar.rs:15` |
 | sym-49c977d37090f05fdc4f | `pocketstation::connector::transport::CONNECTOR_AUDIO_RECORD_MAJOR` | constant | Defines the major version of connector audio record. | `src/connector/transport.rs:19` |
 | sym-8df8d2d405c7a4341c3b | `pocketstation::connector::transport::CONNECTOR_AUDIO_RECORD_MINOR` | constant | Defines the minor version of connector audio record. | `src/connector/transport.rs:20` |
 | sym-d5023e4750724b6eb269 | `pocketstation::connector::transport::CONNECTOR_CONFIGURATION_RECORD_MAJOR` | constant | Defines the major version of connector configuration record. | `src/connector/transport.rs:35` |
 | sym-3623310c7f84b4a816da | `pocketstation::connector::transport::CONNECTOR_CONFIGURATION_RECORD_MINOR` | constant | Defines the minor version of connector configuration record. | `src/connector/transport.rs:36` |
 | sym-8fa3ab71f953b0df2d48 | `pocketstation::connector::transport::MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES` | constant | Sets the maximum supported connector audio record port bytes. | `src/connector/transport.rs:21` |
 | sym-267083f78abe7e48cdc2 | `pocketstation::connector::transport::MAX_CONNECTOR_AUDIO_RECORD_SAMPLES` | constant | Sets the maximum supported connector audio record samples. | `src/connector/transport.rs:22` |
-| sym-8dbc9bd88b1575dd438d | `pocketstation::connector::ConnectorDeclarationError` | enum | Classifies failures reported as connector declaration error. | `src/connector/mod.rs:233` |
-| sym-a78af2f1f714d50e5fb2 | `pocketstation::connector::ConnectorObservationLookupError` | enum | Classifies failures reported as connector observation lookup error. | `src/connector/mod.rs:246` |
-| sym-c609c374fa8e6866eeee | `pocketstation::connector::ConnectorRegistrationError` | enum | Classifies failures reported as connector registration error. | `src/connector/mod.rs:225` |
-| sym-13750a98063d811df25f | `pocketstation::connector::configuration::ConnectorConfigurationConstraint` | enum | Enumerates the supported connector configuration constraint cases. | `src/connector/configuration.rs:159` |
-| sym-4c8ab28f0ba8c890be55 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` | enum | Enumerates the supported connector configuration error code cases. | `src/connector/configuration.rs:568` |
+| sym-8dbc9bd88b1575dd438d | `pocketstation::connector::ConnectorDeclarationError` | enum | Classifies failures surfaced by connector declaration operations. | `src/connector/mod.rs:233` |
+| sym-a78af2f1f714d50e5fb2 | `pocketstation::connector::ConnectorObservationLookupError` | enum | Classifies failures surfaced by connector observation lookup operations. | `src/connector/mod.rs:246` |
+| sym-c609c374fa8e6866eeee | `pocketstation::connector::ConnectorRegistrationError` | enum | Classifies failures produced during connector registration. | `src/connector/mod.rs:225` |
+| sym-13750a98063d811df25f | `pocketstation::connector::configuration::ConnectorConfigurationConstraint` | enum | Classifies validation constraints applied to connector configuration fields. | `src/connector/configuration.rs:159` |
+| sym-4c8ab28f0ba8c890be55 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` | enum | Provides stable categories for connector configuration validation failures. | `src/connector/configuration.rs:568` |
 | sym-a40cb5d8365f9ea24105 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement` | enum | Selects the connector configuration requirement used by PocketStation. | `src/connector/configuration.rs:152` |
-| sym-6966c55cb774b54182be | `pocketstation::connector::configuration::ConnectorConfigurationValue` | enum | Enumerates the supported connector configuration value cases. | `src/connector/configuration.rs:66` |
+| sym-6966c55cb774b54182be | `pocketstation::connector::configuration::ConnectorConfigurationValue` | enum | Carries one validated connector configuration value in its declared scalar or secret form. | `src/connector/configuration.rs:66` |
 | sym-80830e3822c869f170f3 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind` | enum | Selects the connector configuration value kind used by PocketStation. | `src/connector/configuration.rs:55` |
-| sym-936b382b77b874531096 | `pocketstation::connector::error::ConnectorErrorBuildError` | enum | Classifies failures reported as connector error build error. | `src/connector/error.rs:184` |
-| sym-736ab1f377099246ab6c | `pocketstation::connector::error::ConnectorErrorCodeError` | enum | Classifies failures reported as connector error code error. | `src/connector/error.rs:50` |
+| sym-936b382b77b874531096 | `pocketstation::connector::error::ConnectorErrorBuildError` | enum | Classifies failures produced during connector error construction and input validation. | `src/connector/error.rs:184` |
+| sym-736ab1f377099246ab6c | `pocketstation::connector::error::ConnectorErrorCodeError` | enum | Classifies failures surfaced by connector error code operations. | `src/connector/error.rs:50` |
 | sym-a833cb405d6b510ca450 | `pocketstation::connector::error::ConnectorErrorStage` | enum | Selects the connector error stage used by PocketStation. | `src/connector/error.rs:60` |
-| sym-47fa722e871287abe9c1 | `pocketstation::connector::error::ConnectorRetryability` | enum | Enumerates the supported connector retryability cases. | `src/connector/error.rs:72` |
-| sym-eb9a6bafd07d87b6d706 | `pocketstation::connector::manifest::ConnectorManifestError` | enum | Classifies failures reported as connector manifest error. | `src/connector/manifest.rs:231` |
-| sym-a62dc6612ed60bf01537 | `pocketstation::connector::observations::ConnectorObservationError` | enum | Classifies failures reported as connector observation error. | `src/connector/observations.rs:175` |
-| sym-0c5d86ed5e47145073e6 | `pocketstation::connector::readiness::ConnectorReadinessPolicyError` | enum | Classifies failures reported as connector readiness policy error. | `src/connector/readiness.rs:61` |
-| sym-57a90efe5d877dea505e | `pocketstation::connector::status::ConnectorDeliveryReadiness` | enum | Enumerates the supported connector delivery readiness cases. | `src/connector/status.rs:4` |
-| sym-95843fa35c7fe6258767 | `pocketstation::connector::status::ConnectorHealth` | enum | Enumerates the supported connector health cases. | `src/connector/status.rs:17` |
-| sym-2e6f8e216a5a39ba1c46 | `pocketstation::connector::status::ConnectorRecovery` | enum | Enumerates the supported connector recovery cases. | `src/connector/status.rs:24` |
-| sym-a8e9c6600f9fddcb4ca9 | `pocketstation::connector::transport::ConnectorAudioRecordError` | enum | Classifies failures reported as connector audio record error. | `src/connector/transport.rs:568` |
-| sym-26e401bc8ce6686aafa5 | `pocketstation::connector::transport::ConnectorConfigurationRecordError` | enum | Classifies failures reported as connector configuration record error. | `src/connector/transport.rs:251` |
+| sym-47fa722e871287abe9c1 | `pocketstation::connector::error::ConnectorRetryability` | enum | Declares whether a connector failure may be retried under the connector contract. | `src/connector/error.rs:72` |
+| sym-eb9a6bafd07d87b6d706 | `pocketstation::connector::manifest::ConnectorManifestError` | enum | Classifies failures surfaced by connector manifest operations. | `src/connector/manifest.rs:231` |
+| sym-a62dc6612ed60bf01537 | `pocketstation::connector::observations::ConnectorObservationError` | enum | Classifies failures surfaced by connector observation operations. | `src/connector/observations.rs:175` |
+| sym-0c5d86ed5e47145073e6 | `pocketstation::connector::readiness::ConnectorReadinessPolicyError` | enum | Classifies failures surfaced by connector readiness policy operations. | `src/connector/readiness.rs:61` |
+| sym-57a90efe5d877dea505e | `pocketstation::connector::status::ConnectorDeliveryReadiness` | enum | Reports whether connector delivery is ready, degraded, or unavailable. | `src/connector/status.rs:4` |
+| sym-95843fa35c7fe6258767 | `pocketstation::connector::status::ConnectorHealth` | enum | Reports the current operational health of a connector worker. | `src/connector/status.rs:17` |
+| sym-2e6f8e216a5a39ba1c46 | `pocketstation::connector::status::ConnectorRecovery` | enum | Declares the recovery state exposed after a connector failure. | `src/connector/status.rs:24` |
+| sym-a8e9c6600f9fddcb4ca9 | `pocketstation::connector::transport::ConnectorAudioRecordError` | enum | Classifies failures surfaced by connector audio record operations. | `src/connector/transport.rs:568` |
+| sym-26e401bc8ce6686aafa5 | `pocketstation::connector::transport::ConnectorConfigurationRecordError` | enum | Classifies failures surfaced by connector configuration record operations. | `src/connector/transport.rs:251` |
 | sym-c61e48a0b277b7e058f2 | `pocketstation::connector::worker::driver::ConnectorDeliveryOutcome` | enum | Explicit delivery result used for Core-owned accounting. | `src/connector/worker/driver.rs:83` |
 | sym-5d275693e8d66effdd4e | `pocketstation::connector::worker::driver::ConnectorItem` | enum | One bounded item delivered by Core to a connector driver. | `src/connector/worker/driver.rs:62` |
-| sym-116294235e95d6969503 | `ConnectorDriver::cancel_preparation` | function | Cancels preparation for `ConnectorDriver`. | `src/connector/worker/driver.rs:116` |
+| sym-116294235e95d6969503 | `ConnectorDriver::cancel_preparation` | function | Cancels resources created while preparing `ConnectorDriver`. | `src/connector/worker/driver.rs:116` |
 | sym-c3743aa2faf26b1ae2ba | `ConnectorDriver::deliver` | function | Delivers the next input through `ConnectorDriver`. | `src/connector/worker/driver.rs:98` |
 | sym-a015cd11b00099f1959b | `ConnectorDriver::idle` | function | Advances `ConnectorDriver` while no input is available. | `src/connector/worker/driver.rs:104` |
 | sym-be0022e2a56f799fb3e7 | `ConnectorDriver::shutdown` | function | Shuts down `ConnectorDriver` according to its lifecycle contract. | `src/connector/worker/driver.rs:108` |
@@ -65,10 +65,10 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-f83e889dd44a61772bbe | `ConnectorDriverFactory::prepare` | function | Prepares resources required by `ConnectorDriverFactory`. | `src/connector/worker/driver.rs:132` |
 | sym-4825cbede5c6ebfaec8f | `ConnectorFactory::preparation_group` | function | Returns the preparation group associated with `ConnectorFactory`. | `src/connector/worker/mod.rs:18` |
 | sym-6015b5e7fee5a0b0c418 | `ConnectorFactory::prepare` | function | Prepares resources required by `ConnectorFactory`. | `src/connector/worker/mod.rs:26` |
-| sym-832954574d8962ffafee | `ConnectorWorker::cancel_preparation` | function | Cancels preparation for `ConnectorWorker`. | `src/connector/worker/mod.rs:35` |
+| sym-832954574d8962ffafee | `ConnectorWorker::cancel_preparation` | function | Cancels resources created while preparing `ConnectorWorker`. | `src/connector/worker/mod.rs:35` |
 | sym-b9c16a875bf523033d20 | `ConnectorWorker::run` | function | Runs `ConnectorWorker` until completion or cancellation. | `src/connector/worker/mod.rs:33` |
-| sym-42a8e5c4d0cbc083c502 | `accepts_delivery` | function | Returns whether accepts delivery applies to `ConnectorDeliveryReadiness`. | `src/connector/status.rs:10` |
-| sym-8d570ccfcc6f8f22adb8 | `accepts_delivery` | function | Returns whether accepts delivery applies to `ConnectorServiceStatus`. | `src/connector/status.rs:74` |
+| sym-42a8e5c4d0cbc083c502 | `accepts_delivery` | function | Reports whether accepts delivery is true for `ConnectorDeliveryReadiness`. | `src/connector/status.rs:10` |
+| sym-8d570ccfcc6f8f22adb8 | `accepts_delivery` | function | Reports whether accepts delivery is true for `ConnectorServiceStatus`. | `src/connector/status.rs:74` |
 | sym-e9973a9598777cbaefb0 | `api_revision` | function | Returns the API revision held by `ConnectorManifest`. | `src/connector/manifest.rs:124` |
 | sym-ecb602e99c0dba24af4f | `as_str` | function | Returns the stable string representation of `ConnectorConfigurationErrorCode`. | `src/connector/configuration.rs:585` |
 | sym-f5caa543ea9c940cafb1 | `as_str` | function | Returns the stable string representation of `ConnectorErrorCode`. | `src/connector/error.rs:29` |
@@ -116,9 +116,9 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-fd92f420eac5795ad4f9 | `insert` | function | Inserts a typed configuration value into `ConnectorConfiguration`. | `src/connector/configuration.rs:126` |
 | sym-7108c905ca4780df696b | `into_configuration` | function | Converts `ConnectorConfigurationRecord` into configuration. | `src/connector/transport.rs:57` |
 | sym-b74082477b551771a0a0 | `into_endpoint_failure` | function | Converts `ConnectorError` into endpoint failure. | `src/connector/error.rs:125` |
-| sym-0eefd4234befb8a34c61 | `is_abort_requested` | function | Returns whether abort requested applies to `ConnectorContext`. | `src/connector/worker/coordination.rs:36` |
+| sym-0eefd4234befb8a34c61 | `is_abort_requested` | function | Reports whether abort requested is true for `ConnectorContext`. | `src/connector/worker/coordination.rs:36` |
 | sym-104b3bac350417f37f40 | `is_empty` | function | Returns whether `ConnectorConfiguration` contains no values. | `src/connector/configuration.rs:146` |
-| sym-1440b0574deddcb13357 | `is_stop_requested` | function | Returns whether stop requested applies to `ConnectorContext`. | `src/connector/worker/coordination.rs:28` |
+| sym-1440b0574deddcb13357 | `is_stop_requested` | function | Reports whether stop requested is true for `ConnectorContext`. | `src/connector/worker/coordination.rs:28` |
 | sym-77a3c9fd80fed3c3b18f | `iter` | function | Iterates over the values held by `ConnectorConfiguration`. | `src/connector/configuration.rs:138` |
 | sym-d8cf73924fb51e8b2b8e | `iter` | function | Iterates over the values held by `ResolvedConnectorConfiguration`. | `src/connector/configuration.rs:398` |
 | sym-e136b77b30dedf88de08 | `kind` | function | Returns the kind represented by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:77` |
@@ -159,15 +159,15 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-dff6c45f96347045eb76 | `process` | function | Processes an input value through `SidecarConnectorDriverFactory`. | `src/connector/sidecar.rs:33` |
 | sym-e60f163a42c86e627c15 | `readiness` | function | Returns the readiness held by `ConnectorManifest`. | `src/connector/manifest.rs:148` |
 | sym-14159ada749817248906 | `readiness_reason_code` | function | Returns the readiness reason code held by `ConnectorServiceStatus`. | `src/connector/status.rs:54` |
-| sym-cf9795799631aa59db4d | `record_discontinuity` | function | Records discontinuity for `ConnectorContext`. | `src/connector/worker/coordination.rs:126` |
-| sym-4db69bd3b958653d5a39 | `record_failure` | function | Records failure for `ConnectorContext`. | `src/connector/worker/coordination.rs:134` |
+| sym-cf9795799631aa59db4d | `record_discontinuity` | function | Increments the discontinuity observation recorded by `ConnectorContext`. | `src/connector/worker/coordination.rs:126` |
+| sym-4db69bd3b958653d5a39 | `record_failure` | function | Records a connector failure and its retry classification in `ConnectorContext`. | `src/connector/worker/coordination.rs:134` |
 | sym-56b7d6a6b13ac312c206 | `record_frame_delivered` | function | Records frame delivered for `ConnectorContext`. | `src/connector/worker/coordination.rs:118` |
 | sym-5fdc554f555394e3829a | `record_frame_dropped` | function | Records frame dropped for `ConnectorContext`. | `src/connector/worker/coordination.rs:122` |
 | sym-fef19c653c5b665bfdb1 | `record_frame_received` | function | Records frame received for `ConnectorContext`. | `src/connector/worker/coordination.rs:114` |
-| sym-a45c024f475a58d1b180 | `record_retry` | function | Records retry for `ConnectorContext`. | `src/connector/worker/coordination.rs:130` |
+| sym-a45c024f475a58d1b180 | `record_retry` | function | Increments the retry-attempt observation recorded by `ConnectorContext`. | `src/connector/worker/coordination.rs:130` |
 | sym-e929ec8f8bd8d46681a3 | `recovery` | function | Returns the recovery held by `ConnectorServiceStatus`. | `src/connector/status.rs:50` |
 | sym-4e9f9c99a9cb2e52f040 | `recovery_reason_code` | function | Returns the recovery reason code held by `ConnectorServiceStatus`. | `src/connector/status.rs:62` |
-| sym-4a56bcf46740dc03c2d8 | `register_connector` | function | Registers connector for `Session`. | `src/connector/mod.rs:204` |
+| sym-4a56bcf46740dc03c2d8 | `register_connector` | function | Registers one connector implementation for use by `Session`. | `src/connector/mod.rs:204` |
 | sym-076cb297137035bb5445 | `report_readiness_failure` | function | Returns the report readiness failure held by `ConnectorContext`. | `src/connector/worker/coordination.rs:97` |
 | sym-d772a418c19fd77add1e | `report_readiness_success` | function | Records a successful readiness probe for `ConnectorContext`. | `src/connector/worker/coordination.rs:80` |
 | sym-15106c234ce96f901dad | `required` | function | Returns the required held by `ConnectorRequirement`. | `src/connector/manifest.rs:65` |
@@ -204,7 +204,7 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-4e4a1d1eb2e93242edf6 | `with_constraint` | function | Sets the constraint on `ConnectorConfigurationField` and returns the updated value. | `src/connector/configuration.rs:195` |
 | sym-5db6054df927f0d88625 | `with_driver` | function | Builds a connector whose bounded receiver loop is owned by Core. | `src/connector/mod.rs:88` |
 | sym-840d33f0f72a5f846357 | `with_requirement` | function | Sets the requirement on `ConnectorManifest` and returns the updated value. | `src/connector/manifest.rs:119` |
-| sym-2759496bc4da50b77077 | `pocketstation::connector` | module | Types and operations for connector. | `src/connector/mod.rs:1` |
+| sym-2759496bc4da50b77077 | `pocketstation::connector` | module | Connector manifests, configuration, workers, transport records, readiness, and observations. | `src/connector/mod.rs:1` |
 | sym-2643a4aac0860723b15d | `pocketstation::connector::Connector` | struct | Declares a connector endpoint and the manifest-backed configuration used to instantiate it. | `src/connector/mod.rs:61` |
 | sym-26833010c1d279ca5fad | `pocketstation::connector::RegisteredConnector` | struct | Retains a connector declaration after its factory has been registered with the node registry. | `src/connector/mod.rs:125` |
 | sym-54e5f0babb7503a71dd4 | `pocketstation::connector::configuration::ConnectorConfiguration` | struct | Configures connector behavior at its owning API boundary. | `src/connector/configuration.rs:111` |
@@ -216,9 +216,9 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-fc733bba3416b6904a41 | `pocketstation::connector::error::ConnectorError` | struct | Reports a connector error. | `src/connector/error.rs:80` |
 | sym-852fcec3d11a7f031380 | `pocketstation::connector::error::ConnectorErrorCode` | struct | Carries the stable external error code exported for a connector failure. | `src/connector/error.rs:10` |
 | sym-8e8fc2d19d8e3f81f2e6 | `pocketstation::connector::manifest::ConnectorCapability` | struct | Declares a capability advertised by a connector manifest. | `src/connector/manifest.rs:12` |
-| sym-80cc7810d7774b6e700f | `pocketstation::connector::manifest::ConnectorManifest` | struct | Describes the connector manifest contract. | `src/connector/manifest.rs:75` |
+| sym-80cc7810d7774b6e700f | `pocketstation::connector::manifest::ConnectorManifest` | struct | Declares connector identity, API revision, ports, capabilities, requirements, and configuration schema. | `src/connector/manifest.rs:75` |
 | sym-a6270afb57aa40f4748e | `pocketstation::connector::manifest::ConnectorRequirement` | struct | Declares a host or configuration requirement that must be satisfied before connector use. | `src/connector/manifest.rs:40` |
-| sym-92d5e9e03f1b807baad9 | `pocketstation::connector::observations::ConnectorObservationHandle` | struct | Owns bounded access to connector observation. | `src/connector/observations.rs:15` |
+| sym-92d5e9e03f1b807baad9 | `pocketstation::connector::observations::ConnectorObservationHandle` | struct | Holds the ownership or bounded access represented by connector observation handle. | `src/connector/observations.rs:15` |
 | sym-4dc6e800ff3daf898c34 | `pocketstation::connector::observations::ConnectorObservations` | struct | Reports the connector observations collected at an observation boundary. | `src/connector/observations.rs:158` |
 | sym-fb9390342c3c28a176ed | `pocketstation::connector::observations::ConnectorRuntimeObservations` | struct | Reports the connector runtime observations collected at an observation boundary. | `src/connector/observations.rs:168` |
 | sym-2b8230059d41f75e876f | `pocketstation::connector::readiness::ConnectorReadinessPolicy` | struct | Configures connector readiness behavior at its owning API boundary. | `src/connector/readiness.rs:7` |
@@ -230,12 +230,12 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-9b020b7c50129f5ed934 | `pocketstation::connector::worker::ConnectorRunOutcome` | struct | Reports the structured connector run outcome. | `src/connector/worker/mod.rs:42` |
 | sym-8019a7ff49d910e90dd0 | `pocketstation::connector::worker::coordination::ConnectorContext` | struct | Carries the inputs and runtime context required to connector. | `src/connector/worker/coordination.rs:14` |
 | sym-545609dfc875348c0cad | `pocketstation::connector::worker::driver::ConnectorInputDescriptor` | struct | Immutable Session and graph metadata for one connector input. | `src/connector/worker/driver.rs:16` |
-| sym-38ee30a2a78799ac7538 | `ConnectorAudioMetadata::channels` | struct_field | Stores the channels used by `ConnectorAudioMetadata`. | `src/connector/transport.rs:288` |
+| sym-38ee30a2a78799ac7538 | `ConnectorAudioMetadata::channels` | struct_field | Contains the channels owned or reported by `ConnectorAudioMetadata`. | `src/connector/transport.rs:288` |
 | sym-0bcef6e8ce4a79c56e13 | `ConnectorAudioMetadata::connector_id` | struct_field | Identifies the connector identifier recorded by `ConnectorAudioMetadata`. | `src/connector/transport.rs:283` |
 | sym-75554d12f59bc50d8daa | `ConnectorAudioMetadata::endpoint_id` | struct_field | Identifies the endpoint identifier recorded by `ConnectorAudioMetadata`. | `src/connector/transport.rs:282` |
-| sym-49c28d13d9815161fa91 | `ConnectorAudioMetadata::lineage` | struct_field | Stores the lineage used by `ConnectorAudioMetadata`. | `src/connector/transport.rs:286` |
+| sym-49c28d13d9815161fa91 | `ConnectorAudioMetadata::lineage` | struct_field | Preserves the source and stream lineage attached to `ConnectorAudioMetadata`. | `src/connector/transport.rs:286` |
 | sym-6f20ab7210fb2a83371e | `ConnectorAudioMetadata::route_id` | struct_field | Identifies the route identifier recorded by `ConnectorAudioMetadata`. | `src/connector/transport.rs:284` |
-| sym-7d045b14d056d39deb9a | `ConnectorAudioMetadata::sample_format` | struct_field | Stores the sample format used by `ConnectorAudioMetadata`. | `src/connector/transport.rs:289` |
+| sym-7d045b14d056d39deb9a | `ConnectorAudioMetadata::sample_format` | struct_field | Stores the sample format as a `SampleFormat` value in `ConnectorAudioMetadata`. | `src/connector/transport.rs:289` |
 | sym-f695c94706756d4c54ca | `ConnectorAudioMetadata::sample_rate_hz` | struct_field | Stores the sample rate value for `ConnectorAudioMetadata`, in hertz. | `src/connector/transport.rs:287` |
 | sym-6078a5aa450d00807875 | `ConnectorAudioMetadata::stream_id` | struct_field | Identifies the stream identifier recorded by `ConnectorAudioMetadata`. | `src/connector/transport.rs:285` |
 | sym-fab2083461544e4336cf | `ConnectorConfigurationConstraint::SignedRange::maximum` | struct_field | Sets the inclusive maximum accepted by `SignedRange`. | `src/connector/configuration.rs:162` |
@@ -244,57 +244,57 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-2cb5e15c4fc3df99b57d | `ConnectorConfigurationConstraint::TextLengthBytes::minimum` | struct_field | Sets the inclusive minimum accepted by `TextLengthBytes`. | `src/connector/configuration.rs:161` |
 | sym-a81f7a15d20dd2029844 | `ConnectorConfigurationConstraint::UnsignedRange::maximum` | struct_field | Sets the inclusive maximum accepted by `UnsignedRange`. | `src/connector/configuration.rs:163` |
 | sym-0d021f4166c067723d29 | `ConnectorConfigurationConstraint::UnsignedRange::minimum` | struct_field | Sets the inclusive minimum accepted by `UnsignedRange`. | `src/connector/configuration.rs:163` |
-| sym-540cb13ecaa8e4b2e1e6 | `ConnectorItem::Audio::frame` | struct_field | Stores the frame used by `Audio`. | `src/connector/worker/driver.rs:65` |
-| sym-62300d0c5453fecd25fc | `ConnectorItem::Audio::input` | struct_field | Stores the input used by `Audio`. | `src/connector/worker/driver.rs:64` |
-| sym-3b57e5805404d97d9a6a | `ConnectorItem::Signal::input` | struct_field | Stores the input used by `Signal`. | `src/connector/worker/driver.rs:68` |
-| sym-2a34f67641fcb62ae6f2 | `ConnectorItem::Signal::signal` | struct_field | Stores the signal used by `Signal`. | `src/connector/worker/driver.rs:69` |
+| sym-540cb13ecaa8e4b2e1e6 | `ConnectorItem::Audio::frame` | struct_field | Stores the frame as a `EndpointAudioFrame` value in `Audio`. | `src/connector/worker/driver.rs:65` |
+| sym-62300d0c5453fecd25fc | `ConnectorItem::Audio::input` | struct_field | References the input participating in `Audio`. | `src/connector/worker/driver.rs:64` |
+| sym-3b57e5805404d97d9a6a | `ConnectorItem::Signal::input` | struct_field | References the input participating in `Signal`. | `src/connector/worker/driver.rs:68` |
+| sym-2a34f67641fcb62ae6f2 | `ConnectorItem::Signal::signal` | struct_field | Stores the signal component of `Signal`. | `src/connector/worker/driver.rs:69` |
 | sym-4d9cd4cd7ce144626451 | `ConnectorManifestError::DuplicateManifestEntry::id` | struct_field | Identifies the id recorded by `DuplicateManifestEntry`. | `src/connector/manifest.rs:253` |
-| sym-1c697783f13dd686b2c9 | `ConnectorManifestError::UnsupportedApiRevision::requested` | struct_field | Stores the requested used by `UnsupportedApiRevision`. | `src/connector/manifest.rs:233` |
-| sym-4582619673410fe66675 | `ConnectorManifestError::UnsupportedApiRevision::supported` | struct_field | Stores the supported used by `UnsupportedApiRevision`. | `src/connector/manifest.rs:233` |
+| sym-1c697783f13dd686b2c9 | `ConnectorManifestError::UnsupportedApiRevision::requested` | struct_field | Stores the requested component of `UnsupportedApiRevision`. | `src/connector/manifest.rs:233` |
+| sym-4582619673410fe66675 | `ConnectorManifestError::UnsupportedApiRevision::supported` | struct_field | References the supported participating in `UnsupportedApiRevision`. | `src/connector/manifest.rs:233` |
 | sym-efdfba7041f7cf72d3a1 | `ConnectorObservations::failures_total` | struct_field | Counts the total number of failures observed by `ConnectorObservations`. | `src/connector/observations.rs:163` |
 | sym-22d3f76efb08286196d1 | `ConnectorObservations::last_error` | struct_field | Carries the last error reported by `ConnectorObservations`. | `src/connector/observations.rs:164` |
 | sym-2588b5cb0817be4d8ac9 | `ConnectorObservations::reconnects_total` | struct_field | Counts the total number of reconnects observed by `ConnectorObservations`. | `src/connector/observations.rs:162` |
 | sym-7940ce0e86b9ba2b7e0d | `ConnectorObservations::retry_attempts_total` | struct_field | Counts the total number of retry attempts observed by `ConnectorObservations`. | `src/connector/observations.rs:161` |
-| sym-5d26bd73d61604db9f4b | `ConnectorObservations::service_status` | struct_field | Stores the service status used by `ConnectorObservations`. | `src/connector/observations.rs:159` |
+| sym-5d26bd73d61604db9f4b | `ConnectorObservations::service_status` | struct_field | Contains the service status owned or reported by `ConnectorObservations`. | `src/connector/observations.rs:159` |
 | sym-f6e6b5f611b1a10d986f | `ConnectorObservations::status_transitions_total` | struct_field | Counts the total number of status transitions observed by `ConnectorObservations`. | `src/connector/observations.rs:160` |
-| sym-49fe0d4e4422ca286a7c | `ConnectorRuntimeObservations::connector` | struct_field | Stores the connector used by `ConnectorRuntimeObservations`. | `src/connector/observations.rs:170` |
-| sym-4e9e7b9291340f1ffd2e | `ConnectorRuntimeObservations::endpoint` | struct_field | Stores the endpoint used by `ConnectorRuntimeObservations`. | `src/connector/observations.rs:171` |
+| sym-49fe0d4e4422ca286a7c | `ConnectorRuntimeObservations::connector` | struct_field | Stores the connector as a `ConnectorObservations` value in `ConnectorRuntimeObservations`. | `src/connector/observations.rs:170` |
+| sym-4e9e7b9291340f1ffd2e | `ConnectorRuntimeObservations::endpoint` | struct_field | References the endpoint participating in `ConnectorRuntimeObservations`. | `src/connector/observations.rs:171` |
 | sym-4a969a58f4ac2b5709e8 | `ConnectorRuntimeObservations::endpoint_ids` | struct_field | Identifies the endpoint identifiers recorded by `ConnectorRuntimeObservations`. | `src/connector/observations.rs:169` |
-| sym-b6ef30d262e385fa8459 | `pocketstation::connector::ConnectorDeclarationError::WrongSession::registered` | struct_field | Stores the registered used by `WrongSession`. | `src/connector/mod.rs:236` |
-| sym-0d9c40408e097e6c9eb3 | `pocketstation::connector::ConnectorDeclarationError::WrongSession::requested` | struct_field | Stores the requested used by `WrongSession`. | `src/connector/mod.rs:237` |
-| sym-b9c47bf9d684d27871ea | `pocketstation::connector::ConnectorObservationLookupError::WrongSession::registered` | struct_field | Stores the registered used by `WrongSession`. | `src/connector/mod.rs:249` |
-| sym-d3562b133871922e82cf | `pocketstation::connector::ConnectorObservationLookupError::WrongSession::requested` | struct_field | Stores the requested used by `WrongSession`. | `src/connector/mod.rs:250` |
+| sym-b6ef30d262e385fa8459 | `pocketstation::connector::ConnectorDeclarationError::WrongSession::registered` | struct_field | Stores the registered as a `SessionId` value in `WrongSession`. | `src/connector/mod.rs:236` |
+| sym-0d9c40408e097e6c9eb3 | `pocketstation::connector::ConnectorDeclarationError::WrongSession::requested` | struct_field | Stores the requested as a `SessionId` value in `WrongSession`. | `src/connector/mod.rs:237` |
+| sym-b9c47bf9d684d27871ea | `pocketstation::connector::ConnectorObservationLookupError::WrongSession::registered` | struct_field | Stores the registered as a `SessionId` value in `WrongSession`. | `src/connector/mod.rs:249` |
+| sym-d3562b133871922e82cf | `pocketstation::connector::ConnectorObservationLookupError::WrongSession::requested` | struct_field | Stores the requested as a `SessionId` value in `WrongSession`. | `src/connector/mod.rs:250` |
 | sym-ef774811a957059cea80 | `pocketstation::connector::worker::ConnectorFactory` | trait | Implement this trait to provide connector behavior to PocketStation; its methods define the preparation and runtime contract. | `src/connector/worker/mod.rs:17` |
 | sym-d5b0bf5fc25d3e2230c9 | `pocketstation::connector::worker::ConnectorWorker` | trait | Implement this trait to provide connector worker behavior to PocketStation; its methods define the preparation and runtime contract. | `src/connector/worker/mod.rs:32` |
 | sym-2c2a9d5455c4d0a0a073 | `pocketstation::connector::worker::driver::ConnectorDriver` | trait | Provider-specific behavior executed on Core's bounded connector worker. | `src/connector/worker/driver.rs:92` |
 | sym-7047fbea68de3230c646 | `pocketstation::connector::worker::driver::ConnectorDriverFactory` | trait | Prepares provider state while Core retains receiver and lifecycle authority. | `src/connector/worker/driver.rs:123` |
-| sym-20504ee51243d676efd2 | `pocketstation::connector::ConnectorDeclarationError::Configuration` | variant | Reported when the owning operation encounters configuration. | `src/connector/mod.rs:240` |
-| sym-ea7f89ebcc7ce3d40861 | `pocketstation::connector::ConnectorDeclarationError::Session` | variant | Reported when the owning operation encounters session. | `src/connector/mod.rs:242` |
-| sym-5ca718d6ae8b88bfcc8b | `pocketstation::connector::ConnectorDeclarationError::WrongSession` | variant | Reported when the owning operation encounters wrong session. | `src/connector/mod.rs:235` |
-| sym-858b5620a5b6192d5543 | `pocketstation::connector::ConnectorObservationLookupError::WrongSession` | variant | Reported when the owning operation encounters wrong session. | `src/connector/mod.rs:248` |
-| sym-5ea4372428f39cc8c7cb | `pocketstation::connector::ConnectorRegistrationError::InvalidManifest` | variant | Reported when the owning operation encounters invalid manifest. | `src/connector/mod.rs:227` |
-| sym-d24bef3f6a3ec69c07c9 | `pocketstation::connector::ConnectorRegistrationError::Session` | variant | Reported when the owning operation encounters session. | `src/connector/mod.rs:229` |
+| sym-20504ee51243d676efd2 | `pocketstation::connector::ConnectorDeclarationError::Configuration` | variant | Classifies a failure at the configuration stage or component of `ConnectorDeclarationError`. | `src/connector/mod.rs:240` |
+| sym-ea7f89ebcc7ce3d40861 | `pocketstation::connector::ConnectorDeclarationError::Session` | variant | Classifies a failure at the session stage or component of `ConnectorDeclarationError`. | `src/connector/mod.rs:242` |
+| sym-5ca718d6ae8b88bfcc8b | `pocketstation::connector::ConnectorDeclarationError::WrongSession` | variant | Reports that session does not match the required identity or contract. | `src/connector/mod.rs:235` |
+| sym-858b5620a5b6192d5543 | `pocketstation::connector::ConnectorObservationLookupError::WrongSession` | variant | Reports that session does not match the required identity or contract. | `src/connector/mod.rs:248` |
+| sym-5ea4372428f39cc8c7cb | `pocketstation::connector::ConnectorRegistrationError::InvalidManifest` | variant | Reports that the supplied manifest is invalid. | `src/connector/mod.rs:227` |
+| sym-d24bef3f6a3ec69c07c9 | `pocketstation::connector::ConnectorRegistrationError::Session` | variant | Classifies a failure at the session stage or component of `ConnectorRegistrationError`. | `src/connector/mod.rs:229` |
 | sym-0ae943d9a157383f9e56 | `pocketstation::connector::configuration::ConnectorConfigurationConstraint::NonEmpty` | variant | Represents the non empty alternative defined by `ConnectorConfigurationConstraint`. | `src/connector/configuration.rs:160` |
 | sym-14e3d4519ff8e1e24eb4 | `pocketstation::connector::configuration::ConnectorConfigurationConstraint::OneOf` | variant | Represents the one of alternative defined by `ConnectorConfigurationConstraint`. | `src/connector/configuration.rs:164` |
 | sym-cd73fd2f20a364ef3f88 | `pocketstation::connector::configuration::ConnectorConfigurationConstraint::SignedRange` | variant | Represents the signed range alternative defined by `ConnectorConfigurationConstraint`. | `src/connector/configuration.rs:162` |
 | sym-4c37185c18ca3ecfee2c | `pocketstation::connector::configuration::ConnectorConfigurationConstraint::TextLengthBytes` | variant | Represents the text length bytes alternative defined by `ConnectorConfigurationConstraint`. | `src/connector/configuration.rs:161` |
 | sym-9b15ab1a2019e876ffb7 | `pocketstation::connector::configuration::ConnectorConfigurationConstraint::UnsignedRange` | variant | Represents the unsigned range alternative defined by `ConnectorConfigurationConstraint`. | `src/connector/configuration.rs:163` |
-| sym-d2c747adcfa98684f2af | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ConstraintViolation` | variant | Reported when the owning operation encounters constraint violation. | `src/connector/configuration.rs:576` |
-| sym-8a104dba8f99928965f2 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::DuplicateField` | variant | Reported when the owning operation encounters duplicate field. | `src/connector/configuration.rs:570` |
-| sym-9e2f2b50b31db44e2e64 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::EmptySecret` | variant | Reported when the owning operation encounters empty secret. | `src/connector/configuration.rs:578` |
-| sym-bab6c1f53caaf4883592 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidSchema` | variant | Reported when the owning operation encounters invalid schema. | `src/connector/configuration.rs:569` |
-| sym-b124cb29d6a7033b8828 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidValue` | variant | Reported when the owning operation encounters invalid value. | `src/connector/configuration.rs:575` |
-| sym-d974b1c2473aab3f1804 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::MissingRequiredField` | variant | Reported when the owning operation encounters missing required field. | `src/connector/configuration.rs:573` |
-| sym-1f47f8b885b2294727a6 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretClassificationMismatch` | variant | Reported when the owning operation encounters secret classification mismatch. | `src/connector/configuration.rs:580` |
-| sym-dd8a399b30db92f5508d | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretDefaultForbidden` | variant | Reported when the owning operation encounters secret default forbidden. | `src/connector/configuration.rs:579` |
-| sym-e69e9e65a60e3b2f0800 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::TooManyFields` | variant | Reported when the owning operation encounters too many fields. | `src/connector/configuration.rs:571` |
-| sym-a51c4ed347407ec0d7a3 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnexpectedSensitiveValue` | variant | Reported when the owning operation encounters unexpected sensitive value. | `src/connector/configuration.rs:581` |
-| sym-b96b2aede72dccce9c79 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnknownField` | variant | Reported when the owning operation encounters unknown field. | `src/connector/configuration.rs:572` |
-| sym-015cea668b34afb11177 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ValueTooLarge` | variant | Reported when the owning operation encounters value too large. | `src/connector/configuration.rs:577` |
-| sym-c77d1e603732e42edaed | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::WrongType` | variant | Reported when the owning operation encounters wrong type. | `src/connector/configuration.rs:574` |
-| sym-e8f46354a1f342d259f3 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement::Default` | variant | Selects default behavior for `ConnectorConfigurationRequirement`. | `src/connector/configuration.rs:155` |
-| sym-7a7905799d55908ac371 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement::Optional` | variant | Selects optional behavior for `ConnectorConfigurationRequirement`. | `src/connector/configuration.rs:154` |
-| sym-d790f641e6117466fe75 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement::Required` | variant | Selects required behavior for `ConnectorConfigurationRequirement`. | `src/connector/configuration.rs:153` |
+| sym-d2c747adcfa98684f2af | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ConstraintViolation` | variant | Classifies a failure at the constraint violation stage or component of `ConnectorConfigurationErrorCode`. | `src/connector/configuration.rs:576` |
+| sym-8a104dba8f99928965f2 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::DuplicateField` | variant | Reports that field duplicates an existing declaration or record. | `src/connector/configuration.rs:570` |
+| sym-9e2f2b50b31db44e2e64 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::EmptySecret` | variant | Reports that secret is empty. | `src/connector/configuration.rs:578` |
+| sym-bab6c1f53caaf4883592 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidSchema` | variant | Reports that the supplied schema is invalid. | `src/connector/configuration.rs:569` |
+| sym-b124cb29d6a7033b8828 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidValue` | variant | Reports that the supplied value is invalid. | `src/connector/configuration.rs:575` |
+| sym-d974b1c2473aab3f1804 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::MissingRequiredField` | variant | Reports that the required required field is missing. | `src/connector/configuration.rs:573` |
+| sym-1f47f8b885b2294727a6 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretClassificationMismatch` | variant | Reports that secret classification does not match the expected contract. | `src/connector/configuration.rs:580` |
+| sym-dd8a399b30db92f5508d | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretDefaultForbidden` | variant | Reports that secret default is forbidden by the declared safety contract. | `src/connector/configuration.rs:579` |
+| sym-e69e9e65a60e3b2f0800 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::TooManyFields` | variant | Reports that the number of fields exceeds the supported limit. | `src/connector/configuration.rs:571` |
+| sym-a51c4ed347407ec0d7a3 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnexpectedSensitiveValue` | variant | Reports that sensitive value is not valid in the current protocol or lifecycle state. | `src/connector/configuration.rs:581` |
+| sym-b96b2aede72dccce9c79 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnknownField` | variant | Reports that the referenced field is not declared or registered. | `src/connector/configuration.rs:572` |
+| sym-015cea668b34afb11177 | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ValueTooLarge` | variant | Reports that value exceeds the supported size limit. | `src/connector/configuration.rs:577` |
+| sym-c77d1e603732e42edaed | `pocketstation::connector::configuration::ConnectorConfigurationErrorCode::WrongType` | variant | Reports that type does not match the required identity or contract. | `src/connector/configuration.rs:574` |
+| sym-e8f46354a1f342d259f3 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement::Default` | variant | Declares the connector configuration field to be default. | `src/connector/configuration.rs:155` |
+| sym-7a7905799d55908ac371 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement::Optional` | variant | Declares the connector configuration field to be optional. | `src/connector/configuration.rs:154` |
+| sym-d790f641e6117466fe75 | `pocketstation::connector::configuration::ConnectorConfigurationRequirement::Required` | variant | Declares the connector configuration field to be required. | `src/connector/configuration.rs:153` |
 | sym-c440607f532e230e8c95 | `pocketstation::connector::configuration::ConnectorConfigurationValue::Boolean` | variant | Represents the boolean alternative defined by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:68` |
 | sym-c0a0d348fa6e4f8b6e3f | `pocketstation::connector::configuration::ConnectorConfigurationValue::ByteCount` | variant | Represents the byte count alternative defined by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:72` |
 | sym-f8bc83ad8a328a716dd9 | `pocketstation::connector::configuration::ConnectorConfigurationValue::DurationMilliseconds` | variant | Represents the duration milliseconds alternative defined by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:71` |
@@ -302,18 +302,18 @@ For **Connector API**, the generated [docs.rs API](https://docs.rs/pocketstation
 | sym-81c41d1e7047ecdf7412 | `pocketstation::connector::configuration::ConnectorConfigurationValue::SignedInteger` | variant | Represents the signed integer alternative defined by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:69` |
 | sym-2f49577ba2188ac42094 | `pocketstation::connector::configuration::ConnectorConfigurationValue::Text` | variant | Represents the text alternative defined by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:67` |
 | sym-2dfed62a999d185cde99 | `pocketstation::connector::configuration::ConnectorConfigurationValue::UnsignedInteger` | variant | Represents the unsigned integer alternative defined by `ConnectorConfigurationValue`. | `src/connector/configuration.rs:70` |
-| sym-504a0756b59d2900d994 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::Boolean` | variant | Selects boolean behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:57` |
-| sym-9dfa7cf35f8bffb2a344 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::ByteCount` | variant | Selects byte count behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:61` |
-| sym-a9b80443061bd30d4c97 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::DurationMilliseconds` | variant | Selects duration milliseconds behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:60` |
-| sym-5e78dd1a417086528f74 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::Secret` | variant | Selects secret behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:62` |
-| sym-190faf4d738b28a1d9b8 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::SignedInteger` | variant | Selects signed integer behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:58` |
-| sym-b3fc65ee658e3effe93f | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::Text` | variant | Selects text behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:56` |
-| sym-be10276b6362605e6101 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::UnsignedInteger` | variant | Selects unsigned integer behavior for `ConnectorConfigurationValueKind`. | `src/connector/configuration.rs:59` |
-| sym-52d3e5e7e67b686743f8 | `pocketstation::connector::error::ConnectorErrorBuildError::EmptyMessage` | variant | Reported when the owning operation encounters empty message. | `src/connector/error.rs:186` |
-| sym-9e361554f4ebbe14a874 | `pocketstation::connector::error::ConnectorErrorBuildError::MessageTooLarge` | variant | Reported when the owning operation encounters message too large. | `src/connector/error.rs:188` |
+| sym-504a0756b59d2900d994 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::Boolean` | variant | Declares that a connector configuration value is encoded as boolean. | `src/connector/configuration.rs:57` |
+| sym-9dfa7cf35f8bffb2a344 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::ByteCount` | variant | Declares that a connector configuration value is encoded as byte count. | `src/connector/configuration.rs:61` |
+| sym-a9b80443061bd30d4c97 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::DurationMilliseconds` | variant | Declares that a connector configuration value is encoded as duration milliseconds. | `src/connector/configuration.rs:60` |
+| sym-5e78dd1a417086528f74 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::Secret` | variant | Declares that a connector configuration value is encoded as secret. | `src/connector/configuration.rs:62` |
+| sym-190faf4d738b28a1d9b8 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::SignedInteger` | variant | Declares that a connector configuration value is encoded as signed integer. | `src/connector/configuration.rs:58` |
+| sym-b3fc65ee658e3effe93f | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::Text` | variant | Declares that a connector configuration value is encoded as text. | `src/connector/configuration.rs:56` |
+| sym-be10276b6362605e6101 | `pocketstation::connector::configuration::ConnectorConfigurationValueKind::UnsignedInteger` | variant | Declares that a connector configuration value is encoded as unsigned integer. | `src/connector/configuration.rs:59` |
+| sym-52d3e5e7e67b686743f8 | `pocketstation::connector::error::ConnectorErrorBuildError::EmptyMessage` | variant | Reports that message is empty. | `src/connector/error.rs:186` |
+| sym-9e361554f4ebbe14a874 | `pocketstation::connector::error::ConnectorErrorBuildError::MessageTooLarge` | variant | Reports that message exceeds the supported size limit. | `src/connector/error.rs:188` |
 | sym-c010bfd87b0061c360b9 | `pocketstation::connector::error::ConnectorErrorCodeError::Empty` | variant | Represents an empty value or collection. | `src/connector/error.rs:52` |
-| sym-c52cbc6886f8ef27ff7a | `pocketstation::connector::error::ConnectorErrorCodeError::InvalidCharacter` | variant | Reported when the owning operation encounters invalid character. | `src/connector/error.rs:56` |
-| sym-cf47009e5570ae11db79 | `pocketstation::connector::error::ConnectorErrorCodeError::TooLong` | variant | Reported when the owning operation encounters too long. | `src/connector/error.rs:54` |
+| sym-c52cbc6886f8ef27ff7a | `pocketstation::connector::error::ConnectorErrorCodeError::InvalidCharacter` | variant | Reports that the supplied character is invalid. | `src/connector/error.rs:56` |
+| sym-cf47009e5570ae11db79 | `pocketstation::connector::error::ConnectorErrorCodeError::TooLong` | variant | Classifies a failure at the too long stage or component of `ConnectorErrorCodeError`. | `src/connector/error.rs:54` |
 | sym-f576b14caa64fd181bd9 | `pocketstation::connector::error::ConnectorErrorStage::Configuration` | variant | Identifies the configuration state or stage represented by `ConnectorErrorStage`. | `src/connector/error.rs:61` |
 | sym-fd87d9371e6f48e38da2 | `pocketstation::connector::error::ConnectorErrorStage::Delivery` | variant | Identifies the delivery state or stage represented by `ConnectorErrorStage`. | `src/connector/error.rs:65` |
 | sym-739b90f7a29cc3393e58 | `pocketstation::connector::error::ConnectorErrorStage::Join` | variant | Identifies the join state or stage represented by `ConnectorErrorStage`. | `src/connector/error.rs:68` |
@@ -337,6 +337,29 @@ The **Connector API** inventory records compiler-visible or extracted evidence a
 
 The claims on **Connector API** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/connector/mod.rs:1-253` (`DIRECT`)
+- `src/connector/mod.rs:61-65` (`DIRECT`)
+- `src/connector/mod.rs:62-62` (`DIRECT`)
+- `src/connector/mod.rs:63-63` (`DIRECT`)
+- `src/connector/mod.rs:64-64` (`DIRECT`)
+- `src/connector/mod.rs:68-81` (`DIRECT`)
+- `src/connector/mod.rs:88-105` (`DIRECT`)
+- `src/connector/mod.rs:112-117` (`DIRECT`)
+- `src/connector/mod.rs:119-121` (`DIRECT`)
+- `src/connector/mod.rs:124-124` (`DIRECT`)
+- `src/connector/mod.rs:125-129` (`DIRECT`)
+- `src/connector/mod.rs:126-126` (`DIRECT`)
+- `src/connector/mod.rs:127-127` (`DIRECT`)
+- `src/connector/mod.rs:128-128` (`DIRECT`)
+- `src/connector/mod.rs:132-134` (`DIRECT`)
+- `src/connector/mod.rs:136-138` (`DIRECT`)
+- `src/connector/mod.rs:140-151` (`DIRECT`)
+- `src/connector/mod.rs:153-157` (`DIRECT`)
+- `src/connector/mod.rs:159-179` (`DIRECT`)
+- `src/connector/mod.rs:182-184` (`DIRECT`)
+- `src/connector/mod.rs:183-183` (`DIRECT`)
+- `src/connector/mod.rs:187-189` (`DIRECT`)
+- `src/connector/mod.rs:191-200` (`DIRECT`)
+- `src/connector/mod.rs:204-221` (`DIRECT`)
+- `src/connector/mod.rs:224-224` (`DIRECT`)
 
 For **Connector API**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

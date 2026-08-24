@@ -4,6 +4,10 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -84,6 +88,10 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -276,19 +284,23 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "dd6873b1fc08844e81bf6b33711f703fc74bc4aa09f97dd293176ad13a4e2490",
       "lines": [
         1,
-        238
+        5
       ],
       "path": "src/graph/identifier.rs",
-      "symbol": null
+      "symbol": "pocketstation::graph::identifier"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -308,11 +320,19 @@
   "generated_from": "not_applicable",
   "git_object": "761ef280317192913607b4fe69bc894a8ae08c73",
   "implemented_by": [
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
   "implements": [],
   "imported_by": [
+    "CALLS:src/graph/node.rs",
+    "CALLS:src/graph/operator.rs",
+    "CALLS:src/graph/signal/spec.rs",
+    "CALLS:src/session/extensions/source.rs",
     "CONTAINS:src/graph/mod.rs",
     "IMPORTS:src/graph/mod.rs"
   ],
@@ -327,16 +347,21 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(feature = \"internal-testing\")]",
-    "#[cfg(test)]",
-    "crate::endpoint::POLLED_AUDIO_OPERATOR_ID",
-    "crate::graph::builtins::{ GAIN_CONFIGURATION_KEY, GAIN_NODE_TYPE_ID, MONO_MIX_NODE_TYPE_ID, PASSTHROUGH_NODE_TYPE_ID, }",
-    "crate::recording::{MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY}",
-    "crate::session::declaration::{ BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, BROWSER_RECEIVER_URI_CONFIGURATION_KEY, CONNECTOR_NODE_TYPE_ID, }",
-    "crate::session::extensions::builtins::{ APPLICATION_SOURCE_NODE_TYPE_ID, EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID, GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID, GENERATED_AUDIO_INGRESS_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
-    "crate::session::extensions::{ PCM_SOURCE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
-    "crate::{BinaryFormat, Codec, EventFormat, SignalSpec, TextFormat}",
-    "super::*"
+    "Consumes configuration at src/graph/identifier.rs:114.",
+    "Consumes configuration at src/graph/identifier.rs:226.",
+    "Consumes configuration at src/graph/identifier.rs:23.",
+    "Consumes configuration at src/graph/identifier.rs:32.",
+    "Consumes configuration at src/graph/identifier.rs:45.",
+    "Consumes configuration at src/graph/identifier.rs:58.",
+    "Consumes configuration at src/graph/identifier.rs:8.",
+    "Depends on `crate::endpoint::POLLED_AUDIO_OPERATOR_ID` through a declared Rust import.",
+    "Depends on `crate::graph::builtins::{ GAIN_CONFIGURATION_KEY, GAIN_NODE_TYPE_ID, MONO_MIX_NODE_TYPE_ID, PASSTHROUGH_NODE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `crate::recording::{MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY}` through a declared Rust import.",
+    "Depends on `crate::session::declaration::{ BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, BROWSER_RECEIVER_URI_CONFIGURATION_KEY, CONNECTOR_NODE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `crate::session::extensions::builtins::{ APPLICATION_SOURCE_NODE_TYPE_ID, EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID, GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID, GENERATED_AUDIO_INGRESS_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }` through a declared Rust import.",
+    "Depends on `crate::session::extensions::{ PCM_SOURCE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }` through a declared Rust import.",
+    "Depends on `crate::{BinaryFormat, Codec, EventFormat, SignalSpec, TextFormat}` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -414,17 +439,17 @@
   "module": "pocketstation::graph::identifier",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::graph::identifier` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "const:MAX_CONFIGURATION_KEY_BYTES",
-    "const:MAX_IDENTIFIER_BYTES",
-    "fn:is_first_party_configuration_key",
-    "fn:is_first_party_structural_node_id",
-    "fn:is_node_type_id",
-    "fn:is_portable_contract_id",
-    "fn:is_protocol_id"
+    "Declares public const `MAX_CONFIGURATION_KEY_BYTES`.",
+    "Declares public const `MAX_IDENTIFIER_BYTES`.",
+    "Declares public fn `is_first_party_configuration_key`.",
+    "Declares public fn `is_first_party_structural_node_id`.",
+    "Declares public fn `is_node_type_id`.",
+    "Declares public fn `is_portable_contract_id`.",
+    "Declares public fn `is_protocol_id`."
   ],
   "package": "pocketstation",
   "path": "src/graph/identifier.rs",
@@ -561,8 +586,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::graph::identifier responsibilities, including identifier; max identifier bytes; is portable contract id."
+    "classification": "DECLARED",
+    "text": "Syntax checks for the distinct identifier categories owned by the graph. Portable contract identifiers are available to public identifier types. First-party structural and configuration conventions are test-only audits; external providers retain their native identifier and configuration syntax."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -600,7 +625,9 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
-  "relationship_outputs": [],
+  "relationship_outputs": [
+    "CALLS:src/codec/encoder.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
     "MAX_IDENTIFIER_BYTES (const)",

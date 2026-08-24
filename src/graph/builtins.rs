@@ -88,7 +88,7 @@ impl NodeFactory for PassthroughFactory {
         }
     }
 
-    #[doc = "Validates config for `PassthroughFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `PassthroughFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
@@ -103,7 +103,7 @@ impl NodeFactory for PassthroughFactory {
     }
 }
 
-#[doc = "Executes the graph-node behavior defined for passthrough."]
+#[doc = "Represents the executable graph node for passthrough."]
 pub struct PassthroughNode;
 
 impl RuntimeNode for PassthroughNode {
@@ -135,7 +135,7 @@ impl NodeFactory for GainFactory {
         }
     }
 
-    #[doc = "Validates config for `GainFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `GainFactory`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
         match config.get(GAIN_CONFIGURATION_KEY) {
             None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),
@@ -164,7 +164,7 @@ impl NodeFactory for GainFactory {
     }
 }
 
-#[doc = "Executes the graph-node behavior defined for gain."]
+#[doc = "Represents the executable graph node for gain."]
 pub struct GainNode {
     gain_ratio: f32, // dimensionless amplitude ratio derived from gain_db
 }
@@ -201,7 +201,7 @@ impl NodeFactory for MonoMixFactory {
         }
     }
 
-    #[doc = "Validates config for `MonoMixFactory`."]
+    #[doc = "Validates supplied node configuration against the schema declared by `MonoMixFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
@@ -216,7 +216,7 @@ impl NodeFactory for MonoMixFactory {
     }
 }
 
-#[doc = "Executes the graph-node behavior defined for mono mix."]
+#[doc = "Represents the executable graph node for mono mix."]
 pub struct MonoMixNode;
 
 impl RuntimeNode for MonoMixNode {
@@ -245,7 +245,7 @@ impl RuntimeNode for MonoMixNode {
     }
 }
 
-#[doc = "Registers builtins for `builtins`."]
+#[doc = "Registers the passthrough, gain, and mono-mix node factories in the supplied registry."]
 pub fn register_builtins(
     registry: &mut NodeRegistry,
 ) -> Result<(), crate::graph::NodeRegistrationError> {

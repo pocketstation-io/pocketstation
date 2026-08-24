@@ -1,6 +1,6 @@
 # A connector is not ready
 
-<!-- claims: CLM-TRBL-008-CAP-001,CLM-TRBL-008-CAP-002,CLM-TRBL-008-CAP-003,CLM-TRBL-008-CAP-004,CLM-TRBL-008-CAP-005,CLM-TRBL-008-SOURCE-001 -->
+<!-- claims: CLM-TRBL-008-SCOPE-001,CLM-TRBL-008-TEXT-001,CLM-TRBL-008-TEXT-002,CLM-TRBL-008-TEXT-003,CLM-TRBL-008-TEXT-004,CLM-TRBL-008-TEXT-005,CLM-TRBL-008-TEXT-006,CLM-TRBL-008-SOURCE-001 -->
 
 ## Symptom
 
@@ -78,7 +78,51 @@ Retry is allowed only by the typed retryability and application policy. No deliv
 
 The claims on **A connector is not ready** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/connector/readiness.rs:1-67` (`DIRECT`)
-- `src/connector/status.rs:1-79` (`DIRECT`)
+- `src/connector/readiness.rs:3-3` (`DIRECT`)
+- `src/connector/readiness.rs:4-4` (`DIRECT`)
+- `src/connector/readiness.rs:6-6` (`DIRECT`)
+- `src/connector/readiness.rs:6-6` (`DIRECT`)
+- `src/connector/readiness.rs:6-6` (`DIRECT`)
+- `src/connector/readiness.rs:7-12` (`DIRECT`)
+- `src/connector/readiness.rs:8-8` (`DIRECT`)
+- `src/connector/readiness.rs:9-9` (`DIRECT`)
+- `src/connector/readiness.rs:10-10` (`DIRECT`)
+- `src/connector/readiness.rs:11-11` (`DIRECT`)
+- `src/connector/readiness.rs:15-41` (`DIRECT`)
+- `src/connector/readiness.rs:43-45` (`DIRECT`)
+- `src/connector/readiness.rs:47-49` (`DIRECT`)
+- `src/connector/readiness.rs:51-53` (`DIRECT`)
+- `src/connector/readiness.rs:55-57` (`DIRECT`)
+- `src/connector/readiness.rs:60-60` (`DIRECT`)
+- `src/connector/readiness.rs:60-60` (`DIRECT`)
+- `src/connector/readiness.rs:60-60` (`DIRECT`)
+- `src/connector/readiness.rs:60-60` (`DIRECT`)
+- `src/connector/readiness.rs:61-66` (`DIRECT`)
+- `src/connector/readiness.rs:63-63` (`DIRECT`)
+- `src/connector/readiness.rs:65-65` (`DIRECT`)
+- `src/connector/status.rs:2-2` (`DIRECT`)
+- `src/connector/status.rs:2-2` (`DIRECT`)
+- `src/connector/status.rs:2-2` (`DIRECT`)
+- `src/connector/status.rs:4-7` (`DIRECT`)
+- `src/connector/status.rs:5-5` (`DIRECT`)
+- `src/connector/status.rs:6-6` (`DIRECT`)
+- `src/connector/status.rs:10-12` (`DIRECT`)
+- `src/connector/status.rs:15-15` (`DIRECT`)
+- `src/connector/status.rs:15-15` (`DIRECT`)
+- `src/connector/status.rs:15-15` (`DIRECT`)
+- `src/connector/status.rs:17-20` (`DIRECT`)
+- `src/connector/status.rs:18-18` (`DIRECT`)
+- `src/connector/status.rs:19-19` (`DIRECT`)
+- `src/connector/status.rs:22-22` (`DIRECT`)
+- `src/connector/status.rs:22-22` (`DIRECT`)
+- `src/connector/status.rs:22-22` (`DIRECT`)
+- `src/connector/status.rs:24-27` (`DIRECT`)
+- `src/connector/status.rs:25-25` (`DIRECT`)
+- `src/connector/status.rs:26-26` (`DIRECT`)
+- `src/connector/status.rs:29-29` (`DIRECT`)
+- `src/connector/status.rs:29-29` (`DIRECT`)
+- `src/connector/status.rs:29-29` (`DIRECT`)
+- `src/connector/status.rs:30-39` (`DIRECT`)
+- `src/connector/status.rs:31-31` (`DIRECT`)
 
 For **A connector is not ready**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

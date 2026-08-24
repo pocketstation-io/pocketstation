@@ -9,6 +9,9 @@
     }
   ],
   "called_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -58,6 +61,9 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -279,19 +285,22 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "679cb084183e588a581f9cf6b7306d26ac56d1659f209d48322207af6dbb03a1",
       "lines": [
         1,
-        130
+        1
       ],
       "path": "src/capture/observations.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::observations"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -321,6 +330,9 @@
   "generated_from": "not_applicable",
   "git_object": "545b619ace5f140110c81292b09d8f1d8c18f1d0",
   "implemented_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -337,6 +349,9 @@
     "CaptureObservationCounters"
   ],
   "imported_by": [
+    "CALLS:src/capture/platform/macos/input.rs",
+    "CALLS:src/capture/platform/macos/loopback.rs",
+    "CALLS:src/capture/platform/macos/macos_tap.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/abi/session/conformance_fixture.rs",
@@ -354,11 +369,12 @@
     "std::sync::atomic::{AtomicU64, Ordering}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
-    "#[cfg(any(test, target_os = \"linux\", target_os = \"windows\"))]",
-    "serde::Serialize",
-    "std::sync::Arc",
-    "std::sync::atomic::{AtomicU64, Ordering}"
+    "Consumes configuration at src/capture/observations.rs:45.",
+    "Consumes configuration at src/capture/observations.rs:50.",
+    "Consumes configuration at src/capture/observations.rs:82.",
+    "Depends on `serde::Serialize` through a declared Rust import.",
+    "Depends on `std::sync::Arc` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU64, Ordering}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -367,25 +383,25 @@
   "module": "pocketstation::capture::observations",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::observations` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:observation_handle",
-    "fn:observations",
-    "fn:observe_callback_buffer",
-    "fn:observe_dispatch_queue_full",
-    "fn:observe_dispatch_queue_full_frames",
-    "fn:observe_enqueued_frame",
-    "fn:observe_invalid_buffer",
-    "fn:observe_oversized_buffer",
-    "fn:observe_pool_exhaustion",
-    "fn:observe_stream_error",
-    "fn:observe_timestamp_epoch_clamp",
-    "fn:snapshot",
-    "struct:CaptureObservationCounters",
-    "struct:CaptureObservationHandle",
-    "struct:CaptureObservations"
+    "Declares public fn `observation_handle`.",
+    "Declares public fn `observations`.",
+    "Declares public fn `observe_callback_buffer`.",
+    "Declares public fn `observe_dispatch_queue_full_frames`.",
+    "Declares public fn `observe_dispatch_queue_full`.",
+    "Declares public fn `observe_enqueued_frame`.",
+    "Declares public fn `observe_invalid_buffer`.",
+    "Declares public fn `observe_oversized_buffer`.",
+    "Declares public fn `observe_pool_exhaustion`.",
+    "Declares public fn `observe_stream_error`.",
+    "Declares public fn `observe_timestamp_epoch_clamp`.",
+    "Declares public fn `snapshot`.",
+    "Declares public struct `CaptureObservationCounters`.",
+    "Declares public struct `CaptureObservationHandle`.",
+    "Declares public struct `CaptureObservations`."
   ],
   "package": "pocketstation",
   "path": "src/capture/observations.rs",
@@ -505,8 +521,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::observations responsibilities, including Reports the capture observations collected at an observation boundary.; Counts the total number of callback buffers observed by `CaptureObservations`.; Counts the total number of frames enqueued observed by `CaptureObservations`.."
+    "classification": "DECLARED",
+    "text": "Allocation-free capture callback observations."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -589,7 +605,7 @@
     "CaptureObservations::oversized_buffer_total: Counts the total number of oversized buffer observed by `CaptureObservations`.",
     "CaptureObservations::stream_errors_total: Counts the total number of stream errors observed by `CaptureObservations`.",
     "CaptureObservations::timestamp_epoch_clamps_total: Counts the total number of timestamp epoch clamps observed by `CaptureObservations`.",
-    "pocketstation::capture::observations::CaptureObservationHandle: Owns bounded access to capture observation.",
+    "pocketstation::capture::observations::CaptureObservationHandle: Holds the ownership or bounded access represented by capture observation handle.",
     "observations: Returns the observations exposed by `CaptureObservationHandle`.",
     "pocketstation::capture::observations::CaptureObservationCounters: Setup-time cloneable handle; every observation is one relaxed atomic",
     "observe_callback_buffer: Records an observation for callback buffer for `CaptureObservationCounters`.",

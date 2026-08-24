@@ -168,14 +168,40 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "TESTED",
       "content_hash": "5a29372918838b114f273b3c676cf7be70e66201e731281a59b5aa40f7bd08da",
       "lines": [
-        1,
-        73
+        64,
+        71
       ],
-      "path": "src/capture/platform/windows/process_identity.rs",
-      "symbol": null
+      "path": "src/capture/platform/windows/process_identity.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5a29372918838b114f273b3c676cf7be70e66201e731281a59b5aa40f7bd08da",
+      "lines": [
+        57,
+        64
+      ],
+      "path": "src/capture/platform/windows/process_identity.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5a29372918838b114f273b3c676cf7be70e66201e731281a59b5aa40f7bd08da",
+      "lines": [
+        52,
+        57
+      ],
+      "path": "src/capture/platform/windows/process_identity.rs"
+    },
+    {
+      "classification": "TESTED",
+      "content_hash": "5a29372918838b114f273b3c676cf7be70e66201e731281a59b5aa40f7bd08da",
+      "lines": [
+        41,
+        52
+      ],
+      "path": "src/capture/platform/windows/process_identity.rs"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -209,8 +235,8 @@
     "super::*"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "super::*"
+    "Consumes configuration at src/capture/platform/windows/process_identity.rs:39.",
+    "Depends on `super::*` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -228,15 +254,15 @@
   "module": "pocketstation::capture::platform::windows::process_identity",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::platform::windows::process_identity` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "fn:matches",
-    "fn:new",
-    "fn:parse",
-    "fn:stable_key",
-    "struct:ProcessInstanceFingerprint"
+    "Declares public fn `matches`.",
+    "Declares public fn `new`.",
+    "Declares public fn `parse`.",
+    "Declares public fn `stable_key`.",
+    "Declares public struct `ProcessInstanceFingerprint`."
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/process_identity.rs",
@@ -326,7 +352,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::platform::windows::process identity responsibilities, including the src/capture/platform/windows/process identity boundary."
+    "text": "Owns the internal implementation boundary in `pocketstation::capture::platform::windows::process_identity`."
   },
   "queues": [],
   "recovery_behavior": [],

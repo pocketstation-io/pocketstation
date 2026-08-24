@@ -83,14 +83,14 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "cabcdb336364108c24721b3186801be6278da7c517dfaa06639d9472c861099f",
       "lines": [
         1,
-        31
+        1
       ],
       "path": "src/runtime/signal/mod.rs",
-      "symbol": null
+      "symbol": "pocketstation::runtime::signal"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
@@ -143,24 +143,27 @@
     "operator::{AsyncOperatorWorker, CompiledOperatorInputContract}"
   ],
   "inputs": [
-    "#[cfg(any(test, feature = \"internal-testing\"))]",
-    "edge::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError, TypedEdgeReceiver, }",
-    "edge::{SignalEdge, SignalEdgeReceiver, SignalEdgeSender}",
-    "edge::{SignalEdgeSendError, TypedEdgePublishReport}",
-    "error::AsyncOperatorWorkerError",
-    "io::AsyncOperatorInputAccessError",
-    "io::AsyncOperatorOutputObservations",
-    "io::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, AsyncOperatorOutputObservationHandle, AsyncOperatorTypedInput, }",
-    "io::{AsyncOperatorInput, AsyncOperatorNamedOutput}",
-    "module:edge",
-    "module:error",
-    "module:io",
-    "module:observations",
-    "module:operator",
-    "observations::AsyncOperatorObservationHandle",
-    "observations::AsyncOperatorObservations",
-    "operator::SessionOperatorInput",
-    "operator::{AsyncOperatorWorker, CompiledOperatorInputContract}"
+    "Consumes configuration at src/runtime/signal/mod.rs:10.",
+    "Consumes configuration at src/runtime/signal/mod.rs:16.",
+    "Consumes configuration at src/runtime/signal/mod.rs:18.",
+    "Consumes configuration at src/runtime/signal/mod.rs:21.",
+    "Depends on `edge::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError, TypedEdgeReceiver, }` through a declared Rust import.",
+    "Depends on `edge::{SignalEdge, SignalEdgeReceiver, SignalEdgeSender}` through a declared Rust import.",
+    "Depends on `edge::{SignalEdgeSendError, TypedEdgePublishReport}` through a declared Rust import.",
+    "Depends on `edge` through a declared Rust import.",
+    "Depends on `error::AsyncOperatorWorkerError` through a declared Rust import.",
+    "Depends on `error` through a declared Rust import.",
+    "Depends on `io::AsyncOperatorInputAccessError` through a declared Rust import.",
+    "Depends on `io::AsyncOperatorOutputObservations` through a declared Rust import.",
+    "Depends on `io::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, AsyncOperatorOutputObservationHandle, AsyncOperatorTypedInput, }` through a declared Rust import.",
+    "Depends on `io::{AsyncOperatorInput, AsyncOperatorNamedOutput}` through a declared Rust import.",
+    "Depends on `io` through a declared Rust import.",
+    "Depends on `observations::AsyncOperatorObservationHandle` through a declared Rust import.",
+    "Depends on `observations::AsyncOperatorObservations` through a declared Rust import.",
+    "Depends on `observations` through a declared Rust import.",
+    "Depends on `operator::SessionOperatorInput` through a declared Rust import.",
+    "Depends on `operator::{AsyncOperatorWorker, CompiledOperatorInputContract}` through a declared Rust import.",
+    "Depends on `operator` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -169,7 +172,7 @@
   "module": "pocketstation::runtime::signal",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::runtime::signal` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
@@ -219,8 +222,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::runtime::signal responsibilities, including Bounded asynchronous signal execution lane.."
+    "classification": "DECLARED",
+    "text": "Bounded asynchronous signal execution lane."
   },
   "queues": [],
   "recovery_behavior": [],

@@ -4,6 +4,7 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/capture/selection.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/capture/authorization.rs",
@@ -36,6 +37,7 @@
   "channels": [],
   "configuration_read": [],
   "constructed_by": [
+    "CALLS:src/capture/selection.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/capture/authorization.rs",
@@ -203,19 +205,20 @@
   "errors_wrapped": [],
   "evidence": [
     {
-      "classification": "DIRECT",
+      "classification": "DECLARED",
       "content_hash": "6c4b0001b1e9562b9bfeb8b1e447b3ec0c229cd700fc676a56e7b0fbeb904af1",
       "lines": [
         1,
-        166
+        1
       ],
       "path": "src/capture/identity.rs",
-      "symbol": null
+      "symbol": "pocketstation::capture::identity"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/capture/selection.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/capture/authorization.rs",
@@ -241,6 +244,7 @@
   "generated_from": "not_applicable",
   "git_object": "e53e69bd2aa4149c8dbdb90811e415452527747b",
   "implemented_by": [
+    "CALLS:src/capture/selection.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/capture/authorization.rs",
@@ -257,6 +261,7 @@
     "CaptureSource"
   ],
   "imported_by": [
+    "CALLS:src/capture/selection.rs",
     "CONTAINS:src/capture/mod.rs",
     "IMPORTS:src/capture/mod.rs",
     "REFERENCES:src/capture/authorization.rs",
@@ -274,9 +279,9 @@
     "super::selection::{ProcessTreeScope, SelectorPersistenceScope}"
   ],
   "inputs": [
-    "crate::frame::Platform",
-    "super::authorization::SourceIdentityStrength",
-    "super::selection::{ProcessTreeScope, SelectorPersistenceScope}"
+    "Depends on `crate::frame::Platform` through a declared Rust import.",
+    "Depends on `super::authorization::SourceIdentityStrength` through a declared Rust import.",
+    "Depends on `super::selection::{ProcessTreeScope, SelectorPersistenceScope}` through a declared Rust import."
   ],
   "invariants": [],
   "language": "Rust",
@@ -285,19 +290,19 @@
   "module": "pocketstation::capture::identity",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::capture::identity` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "enum:SourceKind",
-    "enum:SourceState",
-    "fn:identity_strength",
-    "fn:new",
-    "fn:process_tree_scope",
-    "fn:selector_persistence_scope",
-    "fn:source_id",
-    "struct:CaptureSource",
-    "struct:StableSourceId"
+    "Declares public enum `SourceKind`.",
+    "Declares public enum `SourceState`.",
+    "Declares public fn `identity_strength`.",
+    "Declares public fn `new`.",
+    "Declares public fn `process_tree_scope`.",
+    "Declares public fn `selector_persistence_scope`.",
+    "Declares public fn `source_id`.",
+    "Declares public struct `CaptureSource`.",
+    "Declares public struct `StableSourceId`."
   ],
   "package": "pocketstation",
   "path": "src/capture/identity.rs",
@@ -386,8 +391,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::capture::identity responsibilities, including Stable source identity and source discovery state.; Selects the source kind used by PocketStation.; Selects application behavior for `SourceKind`.."
+    "classification": "DECLARED",
+    "text": "Stable source identity and source discovery state."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -442,6 +447,10 @@
     "docs/best-practices/source-identity.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/capture/authorization.rs",
+    "CALLS:src/capture/selection.rs",
+    "CALLS:src/frame/identity.rs",
+    "CALLS:src/graph/plan.rs",
     "REFERENCES:src/capture/authorization.rs",
     "REFERENCES:src/capture/selection.rs",
     "REFERENCES:src/frame/identity.rs",
@@ -456,10 +465,10 @@
   "responsibilities": [
     "identity: Stable source identity and source discovery state.",
     "pocketstation::capture::identity::SourceKind: Selects the source kind used by PocketStation.",
-    "pocketstation::capture::identity::SourceKind::Application: Selects application behavior for `SourceKind`.",
-    "pocketstation::capture::identity::SourceKind::OutputDevice: Selects output device behavior for `SourceKind`.",
-    "pocketstation::capture::identity::SourceKind::InputDevice: Selects input device behavior for `SourceKind`.",
-    "pocketstation::capture::identity::SourceKind::SystemMix: Selects system mix behavior for `SourceKind`.",
+    "pocketstation::capture::identity::SourceKind::Application: Classifies a capture source as application.",
+    "pocketstation::capture::identity::SourceKind::OutputDevice: Classifies a capture source as output device.",
+    "pocketstation::capture::identity::SourceKind::InputDevice: Classifies a capture source as input device.",
+    "pocketstation::capture::identity::SourceKind::SystemMix: Classifies a capture source as system mix.",
     "pocketstation::capture::identity::SourceState: Selects the source state used by PocketStation.",
     "pocketstation::capture::identity::SourceState::Available: Identifies the available state or stage represented by `SourceState`.",
     "pocketstation::capture::identity::SourceState::Playing: Identifies the playing state or stage represented by `SourceState`.",
@@ -467,20 +476,20 @@
     "pocketstation::capture::identity::SourceState::Unavailable: Reports that the requested resource is unavailable.",
     "pocketstation::capture::identity::SourceState::PermissionBlocked: Identifies the permission blocked state or stage represented by `SourceState`.",
     "pocketstation::capture::identity::StableSourceId: Uniquely identifies stable source within its PocketStation ownership scope.",
-    "identity::StableSourceId::platform: Stores the platform used by `StableSourceId`.",
-    "identity::StableSourceId::kind: Stores the kind used by `StableSourceId`.",
-    "identity::StableSourceId::stable_key: Stores the stable key used by `StableSourceId`.",
+    "identity::StableSourceId::platform: Stores the platform as a `Platform` value in `StableSourceId`.",
+    "identity::StableSourceId::kind: Records the kind selected for `StableSourceId`.",
+    "identity::StableSourceId::stable_key: Stores the stable source key associated with `StableSourceId`.",
     "new: Creates a new `StableSourceId`.",
     "source_id: Derives the immutable captured-frame identity for this resolved source.",
     "pocketstation::capture::identity::CaptureSource: Owns production of capture values and its lifecycle state.",
     "identity::CaptureSource::stable_id: Identifies the stable identifier recorded by `CaptureSource`.",
-    "identity::CaptureSource::name: Stores the name used by `CaptureSource`.",
+    "identity::CaptureSource::name: Stores the human-readable name used to identify `CaptureSource`.",
     "identity::CaptureSource::process_id: Identifies the process identifier recorded by `CaptureSource`.",
     "identity::CaptureSource::app_id: Identifies the app identifier recorded by `CaptureSource`.",
-    "identity::CaptureSource::device_uid: Stores the device uid used by `CaptureSource`.",
-    "identity::CaptureSource::state: Stores the state used by `CaptureSource`.",
+    "identity::CaptureSource::device_uid: Stores the device uid component of `CaptureSource`.",
+    "identity::CaptureSource::state: Records the state selected for `CaptureSource`.",
     "identity::CaptureSource::sample_rate_hz: Stores the sample rate value for `CaptureSource`, in hertz.",
-    "identity::CaptureSource::channels: Stores the channels used by `CaptureSource`.",
+    "identity::CaptureSource::channels: Contains the channels owned or reported by `CaptureSource`.",
     "identity_strength: Returns the identity strength held by `CaptureSource`.",
     "selector_persistence_scope: Reports how long this discovered selector can be reused without",
     "process_tree_scope: Reports the native process boundary represented by this discovery"

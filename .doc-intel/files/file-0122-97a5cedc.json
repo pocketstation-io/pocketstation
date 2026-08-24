@@ -4,6 +4,12 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -79,6 +85,12 @@
     }
   ],
   "constructed_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -483,16 +495,252 @@
       "classification": "DIRECT",
       "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
       "lines": [
-        1,
-        231
+        13,
+        13
       ],
       "path": "src/connector/worker/coordination.rs",
-      "symbol": null
+      "symbol": "clone"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        14,
+        19
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "ConnectorContext"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        15,
+        15
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "stop"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        16,
+        16
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "state"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        17,
+        17
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "readiness_policy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        18,
+        18
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "readiness_probes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        21,
+        21
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "default"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        22,
+        25
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "ReadinessProbeState"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        23,
+        23
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "consecutive_successes"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        24,
+        24
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "consecutive_failures"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        28,
+        30
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "is_stop_requested"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        32,
+        34
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "shutdown_mode"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        36,
+        38
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "is_abort_requested"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        40,
+        42
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "wait_for_stop"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        44,
+        48
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "set_ready"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        50,
+        54
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "set_not_ready"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        56,
+        60
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "set_degraded"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        62,
+        66
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "set_healthy"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        68,
+        72
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "set_reconnecting"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        74,
+        78
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "set_connected"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        80,
+        95
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "report_readiness_success"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        97,
+        112
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "report_readiness_failure"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        114,
+        116
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "record_frame_received"
+    },
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        118,
+        120
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": "record_frame_delivered"
     }
   ],
   "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -516,6 +764,12 @@
   "generated_from": "not_applicable",
   "git_object": "6c294659f59d83b9991ee1d07c947ce8e964cbe7",
   "implemented_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -530,6 +784,12 @@
     "ConnectorStopToken"
   ],
   "imported_by": [
+    "CALLS:src/conformance.rs",
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/connector/worker/driver.rs",
+    "CALLS:src/connector/worker/supervisor.rs",
+    "CALLS:src/endpoint/polled_audio_driver.rs",
+    "CALLS:src/runtime/lifecycle/sidecar_host.rs",
     "CONTAINS:src/connector/worker/mod.rs",
     "IMPORTS:src/connector/worker/mod.rs",
     "REFERENCES:src/conformance.rs",
@@ -549,14 +809,14 @@
     "super::supervisor::ConnectorWorkerState"
   ],
   "inputs": [
-    "#[cfg(test)]",
-    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorObservationError, ConnectorReadinessPolicy, ConnectorRecovery, }",
-    "crate::{EndpointDriverObservations, EndpointShutdownMode}",
-    "std::sync::atomic::{AtomicU8, Ordering}",
-    "std::sync::{Arc, Condvar, Mutex}",
-    "std::time::Duration",
-    "super::*",
-    "super::supervisor::ConnectorWorkerState"
+    "Consumes configuration at src/connector/worker/coordination.rs:214.",
+    "Depends on `crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorObservationError, ConnectorReadinessPolicy, ConnectorRecovery, }` through a declared Rust import.",
+    "Depends on `crate::{EndpointDriverObservations, EndpointShutdownMode}` through a declared Rust import.",
+    "Depends on `std::sync::atomic::{AtomicU8, Ordering}` through a declared Rust import.",
+    "Depends on `std::sync::{Arc, Condvar, Mutex}` through a declared Rust import.",
+    "Depends on `std::time::Duration` through a declared Rust import.",
+    "Depends on `super::*` through a declared Rust import.",
+    "Depends on `super::supervisor::ConnectorWorkerState` through a declared Rust import."
   ],
   "invariants": [
     {
@@ -599,39 +859,39 @@
   "module": "pocketstation::connector::worker::coordination",
   "network_io": [],
   "non_responsibilities": [
-    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+    "`pocketstation::connector::worker::coordination` does not establish qualification, performance, or retry guarantees outside its direct evidence."
   ],
   "observed_patterns": [
     "pattern-37360a0c06d47c6f4697"
   ],
   "outputs": [
-    "fn:endpoint_observations",
-    "fn:is_abort_requested",
-    "fn:is_requested",
-    "fn:is_stop_requested",
-    "fn:mode",
-    "fn:new",
-    "fn:record_discontinuity",
-    "fn:record_failure",
-    "fn:record_frame_delivered",
-    "fn:record_frame_dropped",
-    "fn:record_frame_received",
-    "fn:record_retry",
-    "fn:report_readiness_failure",
-    "fn:report_readiness_success",
-    "fn:request",
-    "fn:set_connected",
-    "fn:set_degraded",
-    "fn:set_healthy",
-    "fn:set_not_ready",
-    "fn:set_ready",
-    "fn:set_reconnecting",
-    "fn:shutdown_mode",
-    "fn:wait_for_stop",
-    "fn:wait_timeout",
-    "struct:ConnectorContext",
-    "struct:ConnectorStopToken",
-    "struct:ReadinessProbeState"
+    "Declares public fn `endpoint_observations`.",
+    "Declares public fn `is_abort_requested`.",
+    "Declares public fn `is_requested`.",
+    "Declares public fn `is_stop_requested`.",
+    "Declares public fn `mode`.",
+    "Declares public fn `new`.",
+    "Declares public fn `record_discontinuity`.",
+    "Declares public fn `record_failure`.",
+    "Declares public fn `record_frame_delivered`.",
+    "Declares public fn `record_frame_dropped`.",
+    "Declares public fn `record_frame_received`.",
+    "Declares public fn `record_retry`.",
+    "Declares public fn `report_readiness_failure`.",
+    "Declares public fn `report_readiness_success`.",
+    "Declares public fn `request`.",
+    "Declares public fn `set_connected`.",
+    "Declares public fn `set_degraded`.",
+    "Declares public fn `set_healthy`.",
+    "Declares public fn `set_not_ready`.",
+    "Declares public fn `set_ready`.",
+    "Declares public fn `set_reconnecting`.",
+    "Declares public fn `shutdown_mode`.",
+    "Declares public fn `wait_for_stop`.",
+    "Declares public fn `wait_timeout`.",
+    "Declares public struct `ConnectorContext`.",
+    "Declares public struct `ConnectorStopToken`.",
+    "Declares public struct `ReadinessProbeState`."
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/coordination.rs",
@@ -828,8 +1088,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Implements pocketstation::connector::worker::coordination responsibilities, including Carries the inputs and runtime context required to connector.; Returns whether stop requested applies to `ConnectorContext`.; Returns the shutdown mode held by `ConnectorContext`.."
+    "classification": "DECLARED",
+    "text": "Carries the inputs and runtime context required to connector. Reports whether stop requested is true for `ConnectorContext`. Returns the shutdown mode held by `ConnectorContext`."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -872,6 +1132,8 @@
     "docs/security/boundaries.md"
   ],
   "relationship_outputs": [
+    "CALLS:src/connector/observations.rs",
+    "CALLS:src/endpoint/runtime.rs",
     "REFERENCES:src/connector/error.rs",
     "REFERENCES:src/connector/observations.rs",
     "REFERENCES:src/connector/readiness.rs",
@@ -898,9 +1160,9 @@
   ],
   "responsibilities": [
     "pocketstation::connector::worker::coordination::ConnectorContext: Carries the inputs and runtime context required to connector.",
-    "is_stop_requested: Returns whether stop requested applies to `ConnectorContext`.",
+    "is_stop_requested: Reports whether stop requested is true for `ConnectorContext`.",
     "shutdown_mode: Returns the shutdown mode held by `ConnectorContext`.",
-    "is_abort_requested: Returns whether abort requested applies to `ConnectorContext`.",
+    "is_abort_requested: Reports whether abort requested is true for `ConnectorContext`.",
     "wait_for_stop: Waits until a stop request is visible to `ConnectorContext`.",
     "set_ready: Sets the ready used by `ConnectorContext`.",
     "set_not_ready: Sets the not ready used by `ConnectorContext`.",
@@ -913,9 +1175,9 @@
     "record_frame_received: Records frame received for `ConnectorContext`.",
     "record_frame_delivered: Records frame delivered for `ConnectorContext`.",
     "record_frame_dropped: Records frame dropped for `ConnectorContext`.",
-    "record_discontinuity: Records discontinuity for `ConnectorContext`.",
-    "record_retry: Records retry for `ConnectorContext`.",
-    "record_failure: Records failure for `ConnectorContext`.",
+    "record_discontinuity: Increments the discontinuity observation recorded by `ConnectorContext`.",
+    "record_retry: Increments the retry-attempt observation recorded by `ConnectorContext`.",
+    "record_failure: Records a connector failure and its retry classification in `ConnectorContext`.",
     "endpoint_observations: Returns the endpoint observations held by `ConnectorContext`."
   ],
   "retry_behavior": [],

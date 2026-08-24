@@ -3,13 +3,13 @@
   "broken_internal_links": [],
   "build_checkpoint": ".doc-intel/checkpoints/documentation-build.json",
   "claim_failures": [],
-  "claims_sha256": "2672c5952ec18419a72735f0f822be561018d39ef8e42a86de53000f560e6591",
-  "created_at": "2026-08-23T18:23:10+00:00",
-  "docs_digest": "5c0a3d1a95039a00db359d7a0b453b140effcd05c58fe2083415f0e6e426ffbf",
+  "claims_sha256": "e955282c97377e424900b5e6f815edb22425f1bcc8a3e7c1c4ef77f788be927f",
+  "created_at": "2026-08-24T14:34:55+00:00",
+  "docs_digest": "685b5e6edc6d07cd96ed1ebe0a875a3498bd86101295551e22ac5d71733a95ce",
   "dossier_semantic_failures": [],
   "editorial_failures": [],
   "mapping_failures": [],
-  "page_manifest_sha256": "b8a1e7e90a05a88cba04a7411ab06f7ac4e6d44b9f9822e9db21780d4d12b83d",
+  "page_manifest_sha256": "9ec090a14f5c2b1a3a3f25629ffd0640b212db737f7cdaee9674c4a139af5076",
   "passed": true,
-  "source_digest": "4f6e3318be72227f9a90b12b1d7acbab4fc548a530793bd40154ab5960fe56b9"
+  "source_digest": "307873cfa06d7650d44381aed991790e18a8d069cb2612b77bb62a7e2a134067"
 }
