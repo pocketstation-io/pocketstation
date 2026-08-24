@@ -60,3 +60,22 @@ jobs:
 
       - name: Validate the exact crates.io facade closure
         run: bash scripts/publish.sh --dry-run
+
+  native-platforms:
+    name: release library / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust 1.95
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.95.0
+
+      - name: Compile the default native capture library
+        run: cargo check --release --locked -p pocketstation
