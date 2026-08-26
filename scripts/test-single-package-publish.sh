@@ -22,7 +22,7 @@ package_files="$(cargo package \
   --manifest-path "${repo_root}/Cargo.toml" \
   --locked \
   --list)"
-for forbidden_prefix in .github/ AGENTS.md PHASE scripts/; do
+for forbidden_prefix in .github/ scripts/; do
   while IFS= read -r package_file; do
     if [[ "${package_file}" == "${forbidden_prefix}"* ]]; then
       echo "internal execution material leaked into package: ${forbidden_prefix}" >&2

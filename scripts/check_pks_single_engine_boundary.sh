@@ -54,8 +54,7 @@ fi
 for retired_path in \
   "$pks_root/cli.zip" \
   "$pks_root/artifacts/live-proof" \
-  "$pks_root/docs/architecture/pocketstation-v3.0.md" \
-  "$pks_root/docs/roadmap/PHASE3_PROGRESS.md"; do
+  "$pks_root/docs/architecture/pocketstation-v3.0.md"; do
   [ ! -e "$retired_path" ] || {
     echo "pks retains stale generated or duplicate authority: $retired_path" >&2
     exit 1

@@ -546,7 +546,7 @@ impl Drop for RunningObservedEndpoint {
     }
 }
 
-// W20 cross-language conformance uses deliberately neutral vocabulary. These
+// Cross-language conformance uses deliberately neutral vocabulary. These
 // identities are shared verbatim by Rust, C, managed SDK, and PKSS fixtures;
 // no Rust type identity is serialized at any boundary.
 pub const EXTENSION_SIGNAL_ID: &str = "org.pocketstation.conformance.signal.v1";
@@ -564,7 +564,7 @@ pub const EXTENSION_ENDPOINT_INPUT_PORT: &str = "in";
 pub const EXTENSION_INPUT_PAYLOAD: &[u8] = b"seed";
 pub const EXTENSION_OUTPUT_PAYLOAD: &[u8] = b"seed!";
 
-/// Language-neutral outcome returned by the W20 fixture.
+/// Language-neutral outcome returned by the extension fixture.
 ///
 /// This is test evidence, not a second runtime API. All counters come from the
 /// `Session` and its registered Source, Operator, and Endpoint owners.

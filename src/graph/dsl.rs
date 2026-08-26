@@ -1,5 +1,5 @@
 //! Ergonomic builder frontend. It only assembles a GraphSpec — it never executes.
-//! Compilation (Wave 4) and execution (Wave 6) consume the spec downstream.
+//! Compilation and execution consume the specification downstream.
 
 use crate::graph::node::{NodeConfig, NodeTypeId};
 use crate::graph::ports::EdgeContract;

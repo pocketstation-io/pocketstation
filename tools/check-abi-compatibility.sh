@@ -2,9 +2,8 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-workspace_root="$(cd "${repo_root}/../.." && pwd -P)"
 baseline="${repo_root}/docs/compatibility/c-abi-v1.baseline"
-baseline_crate="${PKS_ABI_BASELINE_CRATE:-${workspace_root}/pocketstation-lab/artifacts/w20-final-requalification/pks-20260812-w20-final-requalification-9/run-1/package/pocketstation-0.1.2.crate}"
+baseline_crate="${PKS_ABI_BASELINE_CRATE:?set PKS_ABI_BASELINE_CRATE to the accepted pocketstation 0.1.2 crate}"
 expected_baseline_sha="${PKS_ABI_BASELINE_SHA256:-$(awk -F= '$1 == "baseline_crate_sha256" {print $2}' "${baseline}")}"
 expected_header_sha="$(awk -F= '$1 == "header_sha256" {print $2}' "${baseline}")"
 

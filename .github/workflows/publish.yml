@@ -76,7 +76,7 @@ jobs:
             fi
             unexpected_paths="$(
               git diff --name-only "${tag_commit}..${GITHUB_SHA}" |
-              grep -Ev '^(\.github/workflows/publish\.yml|PHASE2_PROGRESS\.md|scripts/publish\.sh|scripts/test-publish-recovery\.sh|scripts/fixtures/connector-v1-vectors\.json)$' ||
+              grep -Ev '^(\.github/workflows/publish\.yml|scripts/publish\.sh|scripts/test-publish-recovery\.sh|scripts/fixtures/connector-v1-vectors\.json)$' ||
                 true
             )"
             if [[ -n "${unexpected_paths}" ]]; then

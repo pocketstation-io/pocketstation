@@ -1,4 +1,4 @@
-// Verifies zero heap allocation on the audio hot path — Phase 0 exit criterion.
+// Verifies zero heap allocation on the audio hot path.
 //
 // Uses the `assert_no_alloc` crate (assert_no_alloc = "1.1") which panics if
 // any heap allocation occurs inside the guarded closure.  The `AllocDisabler`

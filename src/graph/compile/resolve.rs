@@ -1,7 +1,7 @@
 //! Verification-pass pipeline that turns a `GraphSpec` into a checked `GraphIr`.
 //! Resolution binds descriptors; ordered passes validate ids, ports, media,
 //! clock domains, realtime boundaries, and acyclicity. Lowering into a
-//! `RuntimePlan` lives in `planner::RuntimePlanner` (Wave 5).
+//! `RuntimePlan` lives in `planner::RuntimePlanner`.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -281,7 +281,7 @@ impl GraphPass for ValidateClockDomainsPass {
     fn run(&self, ir: &mut GraphIr, _cx: &CompileContext) -> Result<(), CompileError> {
         // Every edge feeding one input port must share a clock domain: blindly
         // mixing sources from different clocks (e.g. Capture + Network) without a
-        // resampling adapter drifts and glitches (ADR-006). A registered clock
+        // resampling adapter drifts and glitches. A registered clock
         // conversion capability must bridge different clock domains.
         let mut seen: Vec<(InputPortRef, ClockDomain)> = Vec::new();
         for edge in &ir.edges {

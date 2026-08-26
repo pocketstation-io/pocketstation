@@ -74,7 +74,7 @@ pub struct OpusConfig {
     pub sample_rate: OpusSampleRate,
     /// Channel layout.
     pub channels: OpusChannels,
-    /// Frame duration. Default: 20 ms (AUDIO-012).
+    /// Frame duration. The default is 20 ms.
     pub frame_duration: OpusFrameDuration,
     /// Opus application mode.
     pub application: OpusApplication,
@@ -143,8 +143,8 @@ pub enum OpusEncodeError {
 
 /// Real Opus encoder wrapping libopus via the `opus` crate.
 ///
-/// Configured for 48 000 Hz, mono, [`Application::Voip`], 20 ms frames
-/// (960 samples) per AUDIO-012.
+/// Configured for 48 kHz mono, [`Application::Voip`], and 20 ms frames
+/// (960 samples).
 ///
 /// # Heap allocation notes
 ///
@@ -269,13 +269,13 @@ impl OpusEncoder {
 
     /// Set encoder complexity (0 = fastest, 10 = highest quality).
     ///
-    /// Production default is 9. Set to 0 only in throughput benchmarks where
-    /// quality is irrelevant (AUDIO-012 §10.4 codec control).
+    /// The default is 9. Set to 0 only in throughput benchmarks where quality
+    /// is irrelevant.
     pub fn set_complexity(&mut self, complexity: i32) -> Result<(), opus::Error> {
         self.inner.set_complexity(complexity)
     }
 
-    /// Update the live encoder bitrate. Called by CODEC_HINT handler (AUDIO-021).
+    /// Update the live encoder bitrate after a relay codec hint.
     /// `kbps` = 0 switches to Opus auto (VBR). Safe to call mid-stream.
     pub fn set_bitrate_kbps(&mut self, kbps: u32) -> Result<(), opus::Error> {
         let bitrate = if kbps > 0 {
@@ -335,7 +335,7 @@ mod tests {
 
     #[test]
     fn given_960_sample_frame_when_encoded_then_packet_is_not_empty() {
-        // Given: 960 silent samples (valid 20 ms frame per AUDIO-012)
+        // Given: 960 silent samples, which is one 20 ms frame.
         let mut enc = OpusEncoder::new().unwrap();
         let pcm = vec![0.0f32; OPUS_FRAME_SAMPLES];
         let mut out = Vec::new();

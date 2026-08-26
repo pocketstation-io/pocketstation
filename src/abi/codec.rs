@@ -4,9 +4,8 @@
 //!
 //! The checked header is the unified `include/pocketstation.h`.
 //!
-//! Canonical SDK copies use the same `pocketstation.h` name.
-//! Swift usage: import via module.modulemap in sdk-ios (AUDIO-001).
-//! AUDIO-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
+//! Canonical SDK copies use the same `pocketstation.h` name. Swift imports it
+//! through the SDK's module map.
 
 use std::os::raw::{c_int, c_uchar, c_uint};
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -117,7 +116,7 @@ pub unsafe extern "C" fn pks_opus_encoder_destroy(enc: *mut PksOpusEncoder) {
     }
 }
 
-/// Update the bitrate of a running encoder. Called on CODEC_HINT relay messages (AUDIO-021).
+/// Update the bitrate of a running encoder after a relay codec hint.
 ///
 /// enc:          pointer from pks_opus_encoder_create. No-op if null (returns -1).
 /// bitrate_kbps: new target bitrate in kbps (e.g. 32, 64, 96). 0 = Opus auto (VBR).

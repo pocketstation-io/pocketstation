@@ -1,7 +1,7 @@
-/// 48 000 Hz, mono, VOIP application profile (AUDIO-012 default).
+/// Opus sample rate used by PocketStation audio routes.
 pub const OPUS_SAMPLE_RATE_HZ: u32 = 48_000;
 
-/// 20 ms frame = 960 samples at 48 kHz (AUDIO-012).
+/// Twenty milliseconds at 48 kHz.
 pub const OPUS_FRAME_SAMPLES: usize = 960;
 
 /// 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 §3.1).

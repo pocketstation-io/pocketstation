@@ -17,10 +17,9 @@ impl RuntimePlanner {
 
     /// Lower a verified IR into an execution-ready plan.
     ///
-    /// Adapter insertion (resample/remix) and linear-kernel fusion are deferred
-    /// (see AUDIO-026); they are not run here. Every edge reaching this stage is
-    /// already caps-compatible because Wave 4's `NegotiateCapsPass` rejected any
-    /// incompatible edge, so the planner assumes compatible negotiated media.
+    /// Adapter insertion (resample/remix) and linear-kernel fusion are not run
+    /// here. Every edge reaching this stage is already caps-compatible because
+    /// `NegotiateCapsPass` rejects incompatible edges.
     pub fn plan(&self, ir: &GraphIr) -> Result<RuntimePlan, PlanError> {
         let fan_out = self.lower_fan_out(ir);
         let fan_in = self.lower_fan_in_mix(ir)?;

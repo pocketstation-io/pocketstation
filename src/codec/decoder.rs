@@ -5,7 +5,7 @@ use crate::codec::encoder::{OpusChannels, OpusFrameDuration};
 
 /// Real Opus decoder wrapping libopus via the `opus` crate.
 ///
-/// Configured for 48 000 Hz, mono per AUDIO-012.
+/// Configured for 48 kHz mono audio.
 ///
 /// # Heap allocation notes
 ///

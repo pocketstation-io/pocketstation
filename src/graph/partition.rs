@@ -18,8 +18,8 @@
 pub enum ExecutionPartition {
     /// Platform OS audio callback — the strictest domain.
     ///
-    /// The OS calls this on a high-priority real-time thread.  Must be
-    /// alloc-free, lock-free, blocking-free, and log-free (LAW 15).
+    /// The OS calls this on a high-priority real-time thread. It must be
+    /// allocation-free, lock-free, blocking-free, and log-free.
     /// Only `SafetyContract::RealtimeSafe` operators may live here.
     AudioCallback,
 

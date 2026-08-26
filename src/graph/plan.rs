@@ -1,15 +1,15 @@
 //! RuntimePlan — the lowered, execution-ready shape the planner emits from a
 //! verified `GraphIr`. It carries the execution partitions, per-edge buffer
-//! sizing, fan-out/fan-in groupings, and stable metric handles the runtime
-//! (Wave 6) consumes. No node is executed here; this is the plan, not the run.
+//! sizing, fan-out/fan-in groupings, and stable metric handles consumed by the
+//! runtime. No node is executed here; this is the plan, not the run.
 
 use crate::graph::partition::ExecutionPartition;
 use crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps};
 use crate::graph::signal::SignalSpec;
 use crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
 
-pub const FRAME_BYTES_MONO_48K: usize = 960 * 4; // 20ms × 48kHz mono = 960 f32 × 4 bytes (ADR-012/013)
-pub const EDGE_RING_CAPACITY_FRAMES: usize = 8; // 8 × 20ms = 160ms de-jitter headroom (ADR-010)
+pub const FRAME_BYTES_MONO_48K: usize = 960 * 4; // 20 ms × 48 kHz mono = 960 f32 × 4 bytes
+pub const EDGE_RING_CAPACITY_FRAMES: usize = 8; // 8 × 20 ms = 160 ms de-jitter headroom
 /// A sequential edge receiver may retain the frame it just popped while it
 /// processes that frame. Copy-pool sizing must cover that owned frame in
 /// addition to every frame that can still be queued.
