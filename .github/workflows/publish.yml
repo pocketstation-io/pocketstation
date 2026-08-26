@@ -119,7 +119,7 @@ jobs:
         run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu
 
       - name: Compile the public quickstart
-        run: cargo build --release -p pocketstation --example product_quickstart --locked
+        run: cargo build --release -p pocketstation --example quickstart --locked
 
       - name: Architecture constraints
         run: bash scripts/lint/check-architecture-constraints.sh
