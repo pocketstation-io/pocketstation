@@ -344,7 +344,7 @@ impl MixerSourceNode {
                         }
                     }
                     (1, 2) => {
-                        for pair in samples.chunks_exact(2) {
+                        for pair in samples.as_chunks::<2>().0 {
                             if accumulator.len() == MIXER_ACCUMULATOR_CAPACITY {
                                 break;
                             }

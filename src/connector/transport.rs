@@ -478,12 +478,13 @@ impl ConnectorAudioRecord {
             None
         };
         let mut samples = Vec::with_capacity(sample_count);
-        for chunk in input[HEADER_BYTES + port_bytes..].chunks_exact(size_of::<f32>()) {
-            samples.push(f32::from_le_bytes(
-                chunk
-                    .try_into()
-                    .map_err(|_| ConnectorAudioRecordError::Truncated)?,
-            ));
+        let (encoded_samples, remainder) =
+            input[HEADER_BYTES + port_bytes..].as_chunks::<{ size_of::<f32>() }>();
+        if !remainder.is_empty() {
+            return Err(ConnectorAudioRecordError::Truncated);
+        }
+        for encoded in encoded_samples {
+            samples.push(f32::from_le_bytes(*encoded));
         }
         Self::try_new(
             port_name,
