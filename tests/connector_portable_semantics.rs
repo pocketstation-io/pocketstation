@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 
 use serde_json::Value;
 
-const VECTORS: &str = include_str!("../../protocol/conformance/connector/v1/vectors.json");
+const VECTORS: &str = include_str!("../scripts/fixtures/connector-v1-vectors.json");
 
 fn nonempty_text(value: Option<&Value>) -> bool {
     value

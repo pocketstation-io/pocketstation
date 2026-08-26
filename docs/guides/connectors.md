@@ -143,25 +143,21 @@ Core handles receiver polling and monotonic shutdown: an abort can upgrade
 drain, but a later drain cannot weaken an abort. Low-level Connector workers
 remain responsible for their own bounded loop and must follow the same rule.
 
-## Package and language boundary
+## Package boundary
 
-Do not add provider dependencies to `pocketstation`. The authoritative
-`pocketstation-relay` implementation lives in `pocketstation-io/connectors/relay`.
-`pks`, Python, JavaScript, Lab, and Bench consume or project that package; none
-owns a second Relay media engine. Protocol owns portable wire semantics and
-conformance vectors.
+Keep provider dependencies in the Connector package, not in `pocketstation`.
+The package owns authentication, protocol framing, provider deadlines,
+reconnection, and provider-specific errors. Core continues to own Session
+lifecycle, bounded routing, lineage, and Endpoint shutdown.
 
-A Python or JavaScript process may use its supported native projection or a
-bounded sidecar/extension boundary, but it never runs foreign-language code on the
-realtime PCM path. The current native extension ABI does not provide arbitrary
-dynamic PCM Endpoint authoring. Do not claim that third-party Python or
-JavaScript code can author an audio connector until a versioned managed/native
-audio boundary and cross-language conformance suite exist.
+Language SDKs can project this Connector contract when they provide a supported
+native or managed boundary. Provider callbacks remain off the realtime PCM
+path. Check the SDK documentation before depending on a language-specific
+authoring feature.
 
 Enable `conformance-fixtures` and execute the deterministic Session fixtures in
 `pocketstation::conformance` against the package's `Connector`
 registration. Connector does not publish a second conformance namespace. A
-checklist or self-reported result is not conformance. Core component
-conformance is not provider proof: a supported package must also test
-authentication, network setup, readiness, reconnect, multi-bus delivery, and a
-receiver-visible outcome in its owning repository.
+checklist or self-reported result is not conformance. A provider package must
+also test its own authentication, network setup, readiness, reconnect,
+multi-bus delivery, and a receiver-visible result.
