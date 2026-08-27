@@ -2070,6 +2070,7 @@ mod generated_audio_reentry {
                     timing,
                     lineage: Some(lineage),
                     derivation: None,
+                    output_generation: input.output_generation,
                 };
                 output.derivation = Some(
                     SignalDerivation::new(

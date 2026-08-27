@@ -4,7 +4,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use crate::frame::{AudioBufferPool, AudioFrame};
+use crate::frame::{AudioBufferPool, AudioFrame, OutputGenerationState};
 use crate::graph::{
     AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity,
     PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec,
@@ -224,6 +224,7 @@ impl AudioInputFactory {
             next_sequence: 0,
             next_timestamp_ns: None,
             discontinuity_epoch: 0,
+            output_generation_state: OutputGenerationState::new(),
         };
         Ok(AudioInputReservation {
             pending: PendingAudioInput { receiver, state },
@@ -339,24 +340,27 @@ impl AudioInputDriver {
             queued.buffer,
         )
         .map_err(|error| SourceDriverError::Failed(error.to_string()))?;
-        let envelope = SignalEnvelope::from_audio(frame, None).with_lineage(
-            SignalLineage {
-                session_id: session.session_id,
-                stream_id: output.stream_id,
-                source_id: session.source_id,
-                clock_id: PROCESS_MONOTONIC_CLOCK_DOMAIN_ID,
-                sequence_number: queued.sequence_number,
-                source_generation: 1,
-                discontinuity_epoch: queued.discontinuity_epoch,
-                policy_epoch: 0,
-            },
-            SignalTiming {
-                source_timestamp_ns: Some(queued.timestamp_ns),
-                observed_timestamp_ns: monotonic_timestamp_ns(),
-                session_timestamp_ns: Some(queued.timestamp_ns),
-                duration_ns: Some(queued.duration_ns),
-            },
-        );
+        let output_generation = queued.output_generation;
+        let envelope = SignalEnvelope::from_audio(frame, None)
+            .with_lineage(
+                SignalLineage {
+                    session_id: session.session_id,
+                    stream_id: output.stream_id,
+                    source_id: session.source_id,
+                    clock_id: PROCESS_MONOTONIC_CLOCK_DOMAIN_ID,
+                    sequence_number: queued.sequence_number,
+                    source_generation: 1,
+                    discontinuity_epoch: queued.discontinuity_epoch,
+                    policy_epoch: 0,
+                },
+                SignalTiming {
+                    source_timestamp_ns: Some(queued.timestamp_ns),
+                    observed_timestamp_ns: monotonic_timestamp_ns(),
+                    session_timestamp_ns: Some(queued.timestamp_ns),
+                    duration_ns: Some(queued.duration_ns),
+                },
+            )
+            .with_output_generation(output_generation);
         Ok(SourceEmission {
             output_port: OUTPUT_PORT.to_owned(),
             envelope,

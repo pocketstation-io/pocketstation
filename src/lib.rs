@@ -79,8 +79,9 @@ pub use crate::endpoint::{
 };
 pub use crate::frame::{
     AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId,
-    FrameLineage, FrameLineageBuildError, RouteId, SampleFormat, SampleSpec, SessionId, SourceId,
-    StemId, StreamId,
+    FrameLineage, FrameLineageBuildError, OutputCancelResult, OutputGeneration,
+    OutputGenerationError, OutputGenerationId, RouteId, SampleFormat, SampleSpec, SessionId,
+    SourceId, StemId, StreamId,
 };
 pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,

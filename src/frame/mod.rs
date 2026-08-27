@@ -7,11 +7,13 @@
 mod audio;
 mod identity;
 mod lineage;
+mod output_generation;
 mod platform;
 mod pool;
 
 pub use audio::*;
 pub use identity::*;
 pub use lineage::*;
+pub use output_generation::*;
 pub use platform::Platform;
 pub use pool::*;

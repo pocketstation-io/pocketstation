@@ -2,7 +2,10 @@ use std::fmt;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 
-use crate::frame::{AudioBufferHandle, AudioBufferPool, AudioBufferWriteError};
+use crate::frame::{
+    AudioBufferHandle, AudioBufferPool, AudioBufferWriteError, OutputGeneration,
+    OutputGenerationError, OutputGenerationId, OutputGenerationState,
+};
 use crate::runtime::SignalEdgeSender;
 use crate::timing::monotonic_timestamp_ns;
 
@@ -13,6 +16,7 @@ pub struct AudioInputBuffer {
     buffer: AudioBufferHandle,
     sample_capacity: usize,
     discontinuity: bool,
+    output_generation: Option<OutputGeneration>,
 }
 
 impl AudioInputBuffer {
@@ -46,6 +50,14 @@ impl AudioInputBuffer {
     pub fn mark_discontinuity(&mut self) {
         self.discontinuity = true;
     }
+
+    pub fn set_output_generation(&mut self, generation: &OutputGeneration) {
+        self.output_generation = Some(generation.clone());
+    }
+
+    pub fn output_generation_id(&self) -> Option<OutputGenerationId> {
+        self.output_generation.as_ref().map(OutputGeneration::id)
+    }
 }
 
 impl fmt::Debug for AudioInputBuffer {
@@ -55,6 +67,7 @@ impl fmt::Debug for AudioInputBuffer {
             .field("sample_count", &self.sample_count())
             .field("sample_capacity", &self.sample_capacity())
             .field("discontinuity", &self.discontinuity)
+            .field("output_generation_id", &self.output_generation_id())
             .finish()
     }
 }
@@ -66,6 +79,8 @@ pub(super) struct AudioInputState {
     accepted_total: AtomicU64,
     full_total: AtomicU64,
     invalid_total: AtomicU64,
+    pub(super) discarded_output_frames_total: AtomicU64,
+    inactive_output_writes_total: AtomicU64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -76,6 +91,8 @@ pub struct AudioInputObservations {
     pub accepted_total: u64,
     pub full_total: u64,
     pub invalid_total: u64,
+    pub discarded_output_frames_total: u64,
+    pub inactive_output_writes_total: u64,
     pub cancelled: bool,
     pub closed: bool,
 }
@@ -86,6 +103,7 @@ pub(super) struct QueuedAudioInputFrame {
     pub(super) timestamp_ns: u64,
     pub(super) duration_ns: u64,
     pub(super) discontinuity_epoch: u64,
+    pub(super) output_generation: Option<OutputGeneration>,
 }
 
 pub struct AudioInputWriter {
@@ -97,11 +115,20 @@ pub struct AudioInputWriter {
     pub(super) next_sequence: u64,
     pub(super) next_timestamp_ns: Option<u64>,
     pub(super) discontinuity_epoch: u64,
+    pub(super) output_generation_state: Arc<OutputGenerationState>,
 }
 
 impl AudioInputWriter {
     pub const fn configuration(&self) -> AudioInputConfig {
         self.config
+    }
+
+    /// Starts a replaceable output operation for this input.
+    ///
+    /// Starting a newer generation deactivates every older generation without
+    /// closing the input or stopping the Session.
+    pub fn begin_output_generation(&self) -> Result<OutputGeneration, OutputGenerationError> {
+        self.output_generation_state.begin()
     }
 
     pub fn try_acquire(&self) -> Result<AudioInputBuffer, AudioInputBufferAcquireError> {
@@ -129,11 +156,31 @@ impl AudioInputWriter {
             buffer,
             sample_capacity: self.config.interleaved_samples_per_frame(),
             discontinuity: false,
+            output_generation: None,
         })
     }
 
     pub fn try_write(&mut self, samples: &[f32]) -> Result<(), AudioInputWriteError> {
         let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;
+        if let Err(error) = buffer.try_copy_from_slice(samples) {
+            self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
+            return Err(AudioInputWriteError::new(
+                AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::Capacity(error)),
+                Some(buffer),
+            ));
+        }
+        self.try_send(buffer)
+    }
+
+    /// Writes one complete frame owned by an output generation.
+    pub fn try_write_for_output(
+        &mut self,
+        generation: &OutputGeneration,
+        samples: &[f32],
+    ) -> Result<(), AudioInputWriteError> {
+        self.validate_output_generation(generation)?;
+        let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;
+        buffer.set_output_generation(generation);
         if let Err(error) = buffer.try_copy_from_slice(samples) {
             self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
             return Err(AudioInputWriteError::new(
@@ -169,6 +216,26 @@ impl AudioInputWriter {
                 AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::WrongSource),
                 Some(buffer),
             ));
+        }
+        if let Some(generation) = &buffer.output_generation {
+            if !self.output_generation_state.owns(generation) {
+                self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
+                return Err(AudioInputWriteError::new(
+                    AudioInputWriteErrorKind::InvalidBuffer(
+                        AudioInputBufferError::WrongOutputGeneration,
+                    ),
+                    Some(buffer),
+                ));
+            }
+            if generation.should_discard() {
+                self.state
+                    .inactive_output_writes_total
+                    .fetch_add(1, Ordering::Relaxed);
+                return Err(AudioInputWriteError::new(
+                    AudioInputWriteErrorKind::OutputGenerationInactive(generation.id()),
+                    Some(buffer),
+                ));
+            }
         }
         let sample_count = buffer.buffer.len();
         let channels = usize::from(self.config.sample_spec.channels);
@@ -214,6 +281,7 @@ impl AudioInputWriter {
             timestamp_ns,
             duration_ns,
             discontinuity_epoch: next_discontinuity_epoch,
+            output_generation: buffer.output_generation,
         };
         match sender.try_send(queued) {
             Ok(()) => {
@@ -233,6 +301,7 @@ impl AudioInputWriter {
                         buffer: queued.buffer,
                         sample_capacity: self.config.interleaved_samples_per_frame(),
                         discontinuity: queued.discontinuity_epoch > self.discontinuity_epoch,
+                        output_generation: queued.output_generation,
                     }),
                 ))
             }
@@ -251,9 +320,42 @@ impl AudioInputWriter {
             accepted_total: self.state.accepted_total.load(Ordering::Relaxed),
             full_total: self.state.full_total.load(Ordering::Relaxed),
             invalid_total: self.state.invalid_total.load(Ordering::Relaxed),
+            discarded_output_frames_total: self
+                .state
+                .discarded_output_frames_total
+                .load(Ordering::Relaxed),
+            inactive_output_writes_total: self
+                .state
+                .inactive_output_writes_total
+                .load(Ordering::Relaxed),
             cancelled: self.state.cancelled.load(Ordering::Acquire),
             closed: self.sender.is_none() || self.state.closed.load(Ordering::Acquire),
         }
+    }
+
+    fn validate_output_generation(
+        &self,
+        generation: &OutputGeneration,
+    ) -> Result<(), AudioInputWriteError> {
+        if !self.output_generation_state.owns(generation) {
+            self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
+            return Err(AudioInputWriteError::new(
+                AudioInputWriteErrorKind::InvalidBuffer(
+                    AudioInputBufferError::WrongOutputGeneration,
+                ),
+                None,
+            ));
+        }
+        if generation.should_discard() {
+            self.state
+                .inactive_output_writes_total
+                .fetch_add(1, Ordering::Relaxed);
+            return Err(AudioInputWriteError::new(
+                AudioInputWriteErrorKind::OutputGenerationInactive(generation.id()),
+                None,
+            ));
+        }
+        Ok(())
     }
 }
 
@@ -281,6 +383,8 @@ pub enum AudioInputBufferAcquireError {
 pub enum AudioInputBufferError {
     #[error("audio buffer belongs to another audio input")]
     WrongSource,
+    #[error("audio output generation belongs to another audio input")]
+    WrongOutputGeneration,
     #[error("audio buffer contains no samples")]
     Empty,
     #[error("interleaved sample count is not divisible by the channel count")]
@@ -299,6 +403,7 @@ pub enum AudioInputWriteErrorKind {
     Full,
     Closed,
     Cancelled,
+    OutputGenerationInactive(OutputGenerationId),
     InvalidBuffer(AudioInputBufferError),
 }
 
@@ -350,6 +455,11 @@ impl fmt::Display for AudioInputWriteError {
             AudioInputWriteErrorKind::Cancelled => {
                 formatter.write_str("audio input Session was cancelled")
             }
+            AudioInputWriteErrorKind::OutputGenerationInactive(generation_id) => write!(
+                formatter,
+                "audio output generation {} is no longer active",
+                generation_id.get()
+            ),
             AudioInputWriteErrorKind::InvalidBuffer(error) => error.fmt(formatter),
         }
     }

@@ -1,6 +1,8 @@
 use std::sync::Arc;
 
-use crate::frame::{FrameLineage, SampleFormat, SampleSpec, SourceId, StreamId};
+use crate::frame::{
+    FrameLineage, OutputGenerationId, SampleFormat, SampleSpec, SourceId, StreamId,
+};
 use crate::graph::{EdgeContract, MediaCaps, PrepareContext, SignalEnvelope, SignalSpec};
 use crate::runtime::{
     PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver, TypedEdgeReceiver,
@@ -72,6 +74,12 @@ impl EndpointAudioFrame {
 
     pub fn lineage(&self) -> FrameLineage {
         self.frame.lineage()
+    }
+
+    pub fn output_generation_id(&self) -> Option<OutputGenerationId> {
+        self.frame
+            .output_generation()
+            .map(crate::frame::OutputGeneration::id)
     }
 
     /// Monotonic instant when the runtime accepted this frame into the route.

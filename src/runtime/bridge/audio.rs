@@ -238,6 +238,7 @@ fn run_bridge(
             payload,
             timing,
             lineage: signal_lineage,
+            output_generation,
             ..
         } = envelope;
         let SignalPayload::Audio(input) = payload else {
@@ -304,6 +305,7 @@ fn run_bridge(
             observations.invalid_total.fetch_add(1, Ordering::Relaxed);
             continue;
         };
+        let frame = frame.with_output_generation(output_generation);
         observations
             .normalized_total
             .fetch_add(1, Ordering::Relaxed);

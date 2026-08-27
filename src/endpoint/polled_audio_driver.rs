@@ -63,6 +63,7 @@ pub struct PolledAudioObservations {
     pub frames_delivered_total: u64,
     pub queue_full_drops_total: u64,
     pub invalid_ownership_drops_total: u64,
+    pub discarded_output_frames_total: u64,
     pub lease_capacity_count: u64,
     pub outstanding_leases: u64,
     pub lease_exhausted_total: u64,
@@ -138,9 +139,19 @@ impl PolledAudioReceipt {
                 let Ok(mut frame) = consumer.pop() else {
                     break;
                 };
+                self.shared.observe_dequeued(1);
+                if frame
+                    .frame
+                    .output_generation()
+                    .is_some_and(crate::frame::OutputGeneration::should_discard)
+                {
+                    self.shared
+                        .discarded_output_frames_total
+                        .fetch_add(1, Ordering::Relaxed);
+                    continue;
+                }
                 frame.polled_at_ns = crate::timing::monotonic_timestamp_ns();
                 frames.push(frame);
-                self.shared.observe_dequeued(1);
             }
         }
 
@@ -192,21 +203,21 @@ impl PolledAudioReceipt {
             if now >= deadline {
                 return Ok(None);
             }
-            let state = self
+            let wake = self
                 .shared
-                .state
+                .wake
                 .lock()
                 .map_err(|_| PolledAudioPollError::StatePoisoned)?;
             if self.shared.wake_generation.load(Ordering::Acquire) != generation
                 || self.shared.queue_depth_frames.load(Ordering::Acquire) > 0
             {
-                drop(state);
+                drop(wake);
                 continue;
             }
-            let (_state, wait) = self
+            let (_wake, wait) = self
                 .shared
                 .available
-                .wait_timeout(state, deadline.saturating_duration_since(now))
+                .wait_timeout(wake, deadline.saturating_duration_since(now))
                 .map_err(|_| PolledAudioPollError::StatePoisoned)?;
             if wait.timed_out() {
                 return Ok(None);
@@ -305,6 +316,13 @@ impl<'lease> PolledAudioFrame<'lease> {
     pub fn samples(self) -> &'lease [f32] {
         self.delivered.frame.frame().buffer.as_slice()
     }
+
+    pub fn output_generation_id(self) -> Option<crate::frame::OutputGenerationId> {
+        self.delivered
+            .frame
+            .output_generation()
+            .map(crate::frame::OutputGeneration::id)
+    }
 }
 
 #[derive(Debug)]
@@ -327,6 +345,7 @@ struct ReceiptState {
 
 struct ReceiptShared {
     state: Mutex<ReceiptState>,
+    wake: Mutex<()>,
     available: Condvar,
     wake_generation: AtomicU64,
     max_batch_frames: usize,
@@ -339,6 +358,7 @@ struct ReceiptShared {
     frames_delivered_total: AtomicU64,
     queue_full_drops_total: AtomicU64,
     invalid_ownership_drops_total: AtomicU64,
+    discarded_output_frames_total: AtomicU64,
     lease_capacity_count: u64,
     outstanding_leases: AtomicU64,
     lease_exhausted_total: AtomicU64,
@@ -358,6 +378,7 @@ impl ReceiptShared {
                 recycled_batches,
                 next_consumer: 0,
             }),
+            wake: Mutex::new(()),
             available: Condvar::new(),
             wake_generation: AtomicU64::new(0),
             max_batch_frames: config.max_batch_frames,
@@ -370,6 +391,7 @@ impl ReceiptShared {
             frames_delivered_total: AtomicU64::new(0),
             queue_full_drops_total: AtomicU64::new(0),
             invalid_ownership_drops_total: AtomicU64::new(0),
+            discarded_output_frames_total: AtomicU64::new(0),
             lease_capacity_count: config.max_outstanding_leases as u64,
             outstanding_leases: AtomicU64::new(0),
             lease_exhausted_total: AtomicU64::new(0),
@@ -429,8 +451,10 @@ impl ReceiptShared {
         self.registered_endpoints.fetch_sub(1, Ordering::Relaxed);
         self.queue_capacity_frames
             .fetch_sub(capacity_frames as u64, Ordering::Relaxed);
+        let wake = self.wake.lock().unwrap_or_else(|error| error.into_inner());
         self.wake_generation.fetch_add(1, Ordering::Release);
         self.available.notify_all();
+        drop(wake);
         Ok(())
     }
 
@@ -457,8 +481,10 @@ impl ReceiptShared {
         self.frames_delivered_total.fetch_add(1, Ordering::Relaxed);
         let depth = self.queue_depth_frames.load(Ordering::Relaxed);
         self.queue_peak_frames.fetch_max(depth, Ordering::Relaxed);
+        let wake = self.wake.lock().unwrap_or_else(|error| error.into_inner());
         self.wake_generation.fetch_add(1, Ordering::Release);
         self.available.notify_one();
+        drop(wake);
     }
 
     fn release_queue_reservation(&self) {
@@ -499,6 +525,9 @@ impl ReceiptShared {
             queue_full_drops_total: self.queue_full_drops_total.load(Ordering::Relaxed),
             invalid_ownership_drops_total: self
                 .invalid_ownership_drops_total
+                .load(Ordering::Relaxed),
+            discarded_output_frames_total: self
+                .discarded_output_frames_total
                 .load(Ordering::Relaxed),
             lease_capacity_count: self.lease_capacity_count,
             outstanding_leases: self.outstanding_leases.load(Ordering::Relaxed),

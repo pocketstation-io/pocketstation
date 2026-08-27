@@ -4,6 +4,7 @@ mod source;
 use std::fmt;
 
 use crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle};
+use crate::{OutputGeneration, OutputGenerationError};
 use crate::{SampleFormat, SampleSpec};
 
 pub use buffer::{
@@ -116,6 +117,20 @@ impl AudioInput {
     /// Writes one complete interleaved frame without blocking.
     pub fn try_write(&mut self, samples: &[f32]) -> Result<(), AudioInputWriteError> {
         self.pcm.writer_mut().try_write(samples)
+    }
+
+    pub fn begin_output_generation(&self) -> Result<OutputGeneration, OutputGenerationError> {
+        self.pcm.writer().begin_output_generation()
+    }
+
+    pub fn try_write_for_output(
+        &mut self,
+        generation: &OutputGeneration,
+        samples: &[f32],
+    ) -> Result<(), AudioInputWriteError> {
+        self.pcm
+            .writer_mut()
+            .try_write_for_output(generation, samples)
     }
 
     /// Submits one previously acquired buffer without blocking.

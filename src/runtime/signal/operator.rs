@@ -123,7 +123,8 @@ impl AsyncOperatorWorkerSource {
                 lineage: lineage_contract,
             } => receiver.try_recv().map_or(Ok(None), |frame| match frame {
                 PlanEdgeFrame::Exclusive(frame) => {
-                    let (frame, lineage) = frame.into_parts();
+                    let (frame, lineage, output_generation) =
+                        frame.into_parts_with_output_generation();
                     if lineage.session_id != lineage_contract.session_id
                         || lineage.stem_id != lineage_contract.stem_id
                         || lineage_contract
@@ -132,7 +133,10 @@ impl AsyncOperatorWorkerSource {
                     {
                         return Err(AsyncOperatorWorkerError::PlanInputLineageMismatch);
                     }
-                    Ok(Some(SignalEnvelope::from_audio(frame, Some(lineage))))
+                    Ok(Some(
+                        SignalEnvelope::from_audio(frame, Some(lineage))
+                            .with_output_generation(output_generation),
+                    ))
                 }
                 PlanEdgeFrame::Shared(_) => {
                     Err(AsyncOperatorWorkerError::InvalidPlanInput { kind: "shared" })
@@ -153,6 +157,7 @@ impl AsyncOperatorWorkerSource {
                                 timing: shared.timing,
                                 lineage: shared.lineage,
                                 derivation: shared.derivation.clone(),
+                                output_generation: shared.output_generation.clone(),
                             }))
                         }
                     })

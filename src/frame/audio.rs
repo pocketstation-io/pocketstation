@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle};
-use crate::frame::{FrameLineage, SourceId, StreamId};
+use crate::frame::{FrameLineage, OutputGeneration, SourceId, StreamId};
 
 pub const SAMPLE_RATE_HZ: u32 = 48_000;
 #[cfg(test)]
@@ -266,12 +266,17 @@ pub enum FrameLineageError {
 pub struct LineagedAudioFrame {
     frame: AudioFrame,
     lineage: FrameLineage,
+    output_generation: Option<OutputGeneration>,
 }
 
 impl LineagedAudioFrame {
     pub fn new(frame: AudioFrame, lineage: FrameLineage) -> Result<Self, FrameLineageError> {
         validate_frame_lineage(&frame, lineage)?;
-        Ok(Self { frame, lineage })
+        Ok(Self {
+            frame,
+            lineage,
+            output_generation: None,
+        })
     }
 
     pub const fn frame(&self) -> &AudioFrame {
@@ -282,14 +287,26 @@ impl LineagedAudioFrame {
         self.lineage
     }
 
-    pub fn into_parts(self) -> (AudioFrame, FrameLineage) {
-        (self.frame, self.lineage)
+    pub fn output_generation(&self) -> Option<&OutputGeneration> {
+        self.output_generation.as_ref()
+    }
+
+    pub fn with_output_generation(mut self, generation: Option<OutputGeneration>) -> Self {
+        self.output_generation = generation;
+        self
+    }
+
+    pub fn into_parts_with_output_generation(
+        self,
+    ) -> (AudioFrame, FrameLineage, Option<OutputGeneration>) {
+        (self.frame, self.lineage, self.output_generation)
     }
 
     pub fn freeze(self) -> Option<SharedLineagedAudioFrame> {
         Some(SharedLineagedAudioFrame {
             frame: self.frame.freeze()?,
             lineage: self.lineage,
+            output_generation: self.output_generation,
         })
     }
 }
@@ -298,6 +315,7 @@ impl LineagedAudioFrame {
 pub struct SharedLineagedAudioFrame {
     frame: SharedAudioFrame,
     lineage: FrameLineage,
+    output_generation: Option<OutputGeneration>,
 }
 
 impl SharedLineagedAudioFrame {
@@ -309,10 +327,15 @@ impl SharedLineagedAudioFrame {
         self.lineage
     }
 
+    pub fn output_generation(&self) -> Option<&OutputGeneration> {
+        self.output_generation.as_ref()
+    }
+
     pub fn try_clone(&self) -> Option<Self> {
         Some(Self {
             frame: self.frame.try_clone()?,
             lineage: self.lineage,
+            output_generation: self.output_generation.clone(),
         })
     }
 
@@ -320,6 +343,7 @@ impl SharedLineagedAudioFrame {
         Some(LineagedAudioFrame {
             frame: self.frame.copy_to_pool(pool)?,
             lineage: self.lineage,
+            output_generation: self.output_generation.clone(),
         })
     }
 }
