@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicU64, AtomicU8, Ordering};
 use std::sync::{Arc, OnceLock};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
@@ -9,7 +9,8 @@ use crate::endpoint::{
     EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
     EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage,
     EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver,
-    EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
+    EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
+    SessionTimelineOrigin,
 };
 use crate::frame::{EndpointId, RouteId, SessionId, StemId};
 use crate::runtime::PlanEdgeFrame;
@@ -21,6 +22,9 @@ use crate::recording::{
 };
 
 const SESSION_RECORDER_IDLE_WAIT_MS: u64 = 1;
+const RECORDER_RUNNING: u8 = 0;
+const RECORDER_DRAIN: u8 = 1;
+const RECORDER_ABORT: u8 = 2;
 pub const MULTISTEM_GROUP_CONFIGURATION_KEY: &str = "recording_group_id";
 pub const MULTISTEM_NAME_CONFIGURATION_KEY: &str = "stem_name";
 
@@ -307,7 +311,14 @@ impl RunningEndpointDriver for RunningSessionMultistemEndpoint {
 
     fn request_stop(&mut self) -> Result<(), EndpointFailure> {
         if let Some(worker) = &self.worker {
-            worker.request_stop();
+            worker.request_shutdown(EndpointShutdownMode::Drain);
+        }
+        Ok(())
+    }
+
+    fn request_shutdown(&mut self, mode: EndpointShutdownMode) -> Result<(), EndpointFailure> {
+        if let Some(worker) = &self.worker {
+            worker.request_shutdown(mode);
         }
         Ok(())
     }
@@ -364,7 +375,7 @@ fn failed_finalization(message: impl Into<String>) -> EndpointDriverFinalization
 }
 
 struct SessionRecorderWorker {
-    stop_requested: Arc<AtomicBool>,
+    shutdown_mode: Arc<AtomicU8>,
     join_handle: Option<JoinHandle<SessionRecorderWorkerOutcome>>,
     telemetry: Arc<SessionRecorderTelemetry>,
 }
@@ -377,8 +388,8 @@ impl SessionRecorderWorker {
         stems: Vec<SessionPreparedStem>,
         start_gate: Arc<EndpointStartGate>,
     ) -> Result<Self, std::io::Error> {
-        let stop_requested = Arc::new(AtomicBool::new(false));
-        let worker_stop = Arc::clone(&stop_requested);
+        let shutdown_mode = Arc::new(AtomicU8::new(RECORDER_RUNNING));
+        let worker_shutdown = Arc::clone(&shutdown_mode);
         let telemetry = Arc::new(SessionRecorderTelemetry::default());
         let worker_telemetry = Arc::clone(&telemetry);
         let join_handle = thread::Builder::new()
@@ -393,19 +404,23 @@ impl SessionRecorderWorker {
                     timeline_origin,
                     stems,
                     &start_gate,
-                    &worker_stop,
+                    &worker_shutdown,
                     &worker_telemetry,
                 )
             })?;
         Ok(Self {
-            stop_requested,
+            shutdown_mode,
             join_handle: Some(join_handle),
             telemetry,
         })
     }
 
-    fn request_stop(&self) {
-        self.stop_requested.store(true, Ordering::Release);
+    fn request_shutdown(&self, mode: EndpointShutdownMode) {
+        let requested = match mode {
+            EndpointShutdownMode::Drain => RECORDER_DRAIN,
+            EndpointShutdownMode::Abort => RECORDER_ABORT,
+        };
+        self.shutdown_mode.fetch_max(requested, Ordering::AcqRel);
         if let Some(join_handle) = &self.join_handle {
             join_handle.thread().unpark();
         }
@@ -439,7 +454,7 @@ impl SessionRecorderWorker {
 
 impl Drop for SessionRecorderWorker {
     fn drop(&mut self) {
-        self.stop_requested.store(true, Ordering::Release);
+        self.shutdown_mode.store(RECORDER_ABORT, Ordering::Release);
         if let Some(join_handle) = self.join_handle.take() {
             join_handle.thread().unpark();
             let _ = join_handle.join();
@@ -507,12 +522,12 @@ fn run_session_recorder(
     timeline_origin: SessionTimelineOrigin,
     mut stems: Vec<SessionPreparedStem>,
     start_gate: &EndpointStartGate,
-    stop_requested: &AtomicBool,
+    shutdown_mode: &AtomicU8,
     telemetry: &SessionRecorderTelemetry,
 ) -> SessionRecorderWorkerOutcome {
     let session_id = identity.session_id;
     while !start_gate.is_open() {
-        if stop_requested.load(Ordering::Acquire) {
+        if shutdown_mode.load(Ordering::Acquire) != RECORDER_RUNNING {
             return SessionRecorderWorkerOutcome::CancelledBeforeStart;
         }
         thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));
@@ -550,10 +565,19 @@ fn run_session_recorder(
         if first_frames.iter().all(Option::is_some) {
             break;
         }
-        if stop_requested.load(Ordering::Acquire) {
+        let requested_shutdown = shutdown_mode.load(Ordering::Acquire);
+        if requested_shutdown == RECORDER_ABORT {
+            return SessionRecorderWorkerOutcome::CancelledBeforeStart;
+        }
+        if requested_shutdown == RECORDER_DRAIN
+            && stems
+                .iter()
+                .zip(&first_frames)
+                .all(|(stem, first_frame)| first_frame.is_some() || stem.receiver.is_abandoned())
+        {
             telemetry.record_initialization_failure(received_frames);
             return SessionRecorderWorkerOutcome::Failed {
-                message: "recording stopped before every stem delivered authoritative lineage"
+                message: "recording input ended before every stem delivered authoritative lineage"
                     .to_owned(),
                 observations: telemetry.snapshot(),
             };
@@ -611,7 +635,7 @@ fn run_session_recorder(
         }
     };
 
-    while !stop_requested.load(Ordering::Acquire) {
+    while shutdown_mode.load(Ordering::Acquire) == RECORDER_RUNNING {
         telemetry.update(endpoint_observations(recording.observations()));
         thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));
     }

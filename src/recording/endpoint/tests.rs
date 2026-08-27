@@ -262,6 +262,50 @@ fn given_session_context_and_two_first_frames_when_recorded_then_manifest_derive
 }
 
 #[test]
+fn given_an_accepted_first_frame_when_drain_starts_immediately_then_recording_preserves_it() {
+    let temp_dir = TempDir::new().unwrap();
+    let coordinator =
+        SessionMultistemEndpointCoordinator::new(temp_dir.path(), EndpointGroupId::new(GROUP_ID));
+    let receipt = coordinator.receipt();
+    let (registry, operator_id, node_type_id) = session_endpoint_registry(coordinator);
+    let (mut router, mut receivers, source_nodes, _edge_ids) = router_with_sources(1);
+    let prepared = registry
+        .prepare_batch(
+            &operator_id,
+            &node_type_id,
+            vec![session_input(
+                receivers.pop().unwrap(),
+                EndpointId(101),
+                StemId(11),
+                RouteId(21),
+                "assistant",
+                0,
+            )],
+        )
+        .unwrap();
+    let (gate_controller, gate) = endpoint_start_gate();
+    let mut running = prepared.start(gate).unwrap();
+    gate_controller.open();
+
+    router.dispatch_from(
+        source_nodes[0],
+        "out",
+        lineaged_frame_with_permission(31, 11, 0, 4, 0.25),
+        1,
+    );
+    drop(router);
+    running.request_shutdown(EndpointShutdownMode::Drain);
+    let finalization = running.join_and_finalize();
+
+    assert!(finalization.is_success());
+    assert_eq!(finalization.observations.frames_received_total, 1);
+    assert_eq!(finalization.observations.frames_delivered_total, 1);
+    let outcome = receipt.result().expect("recording receipt must finalize");
+    assert_eq!(outcome.state, RecordingState::Complete);
+    assert_eq!(outcome.stems[0].written_frames, 1);
+}
+
+#[test]
 fn given_session_recorder_input_without_audio_stem_origin_when_prepared_then_it_is_rejected() {
     let temp_dir = TempDir::new().unwrap();
     let coordinator =
