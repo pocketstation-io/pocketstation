@@ -1,4 +1,4 @@
-use crate::frame::{AudioFrame, FrameLineage, SourceId};
+use crate::frame::{AudioFrame, FrameLineage, OutputGeneration, SourceId};
 use crate::graph::signal::payload::SignalPayload;
 use crate::graph::signal::{SignalDerivation, SignalLineage, SignalSpec, SignalTiming};
 
@@ -9,6 +9,7 @@ pub struct SignalEnvelope {
     pub(crate) timing: SignalTiming,
     pub(crate) lineage: Option<SignalLineage>,
     pub(crate) derivation: Option<SignalDerivation>,
+    pub(crate) output_generation: Option<OutputGeneration>,
 }
 
 impl SignalEnvelope {
@@ -21,6 +22,7 @@ impl SignalEnvelope {
             timing: SignalTiming::observed(observed_timestamp_ns),
             lineage: None,
             derivation: None,
+            output_generation: None,
         }
     }
 
@@ -39,6 +41,7 @@ impl SignalEnvelope {
             timing,
             lineage: signal_lineage,
             derivation: None,
+            output_generation: None,
         }
     }
 
@@ -56,6 +59,11 @@ impl SignalEnvelope {
 
     pub fn with_derivation(mut self, derivation: SignalDerivation) -> Self {
         self.derivation = Some(derivation);
+        self
+    }
+
+    pub fn with_output_generation(mut self, generation: Option<OutputGeneration>) -> Self {
+        self.output_generation = generation;
         self
     }
 
@@ -81,6 +89,10 @@ impl SignalEnvelope {
 
     pub const fn derivation(&self) -> Option<&SignalDerivation> {
         self.derivation.as_ref()
+    }
+
+    pub fn output_generation(&self) -> Option<&OutputGeneration> {
+        self.output_generation.as_ref()
     }
 
     pub fn into_payload(self) -> SignalPayload {

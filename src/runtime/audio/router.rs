@@ -94,6 +94,18 @@ impl PlanEdgeFrame {
             Self::Shared(frame) => frame.lineage(),
         }
     }
+
+    pub fn output_generation(&self) -> Option<&crate::frame::OutputGeneration> {
+        match self {
+            Self::Exclusive(frame) => frame.output_generation(),
+            Self::Shared(frame) => frame.output_generation(),
+        }
+    }
+
+    fn should_discard(&self) -> bool {
+        self.output_generation()
+            .is_some_and(crate::frame::OutputGeneration::should_discard)
+    }
 }
 
 impl std::fmt::Debug for PlanEdgeFrame {
@@ -174,6 +186,7 @@ pub struct EdgeObservations {
     pub source_timestamp_to_receive_max_ns: u64,
     pub worker_failures_total: u64,
     pub shutdown_discarded_total: u64,
+    pub discarded_output_frames_total: u64,
 }
 
 impl EdgeObservations {
@@ -211,6 +224,7 @@ struct EdgeTelemetry {
     lineage_epoch_discontinuities_total: AtomicU64,
     manually_reported_discontinuities_total: AtomicU64,
     shutdown_discarded_total: AtomicU64,
+    discarded_output_frames_total: AtomicU64,
     queue_peak_frames: AtomicU64,
     worker_failures_total: AtomicU64,
     enqueue_to_receive_histogram: [AtomicU64; LATENCY_HISTOGRAM_BUCKETS],
@@ -260,6 +274,7 @@ impl EdgeTelemetry {
             lineage_epoch_discontinuities_total: AtomicU64::new(0),
             manually_reported_discontinuities_total: AtomicU64::new(0),
             shutdown_discarded_total: AtomicU64::new(0),
+            discarded_output_frames_total: AtomicU64::new(0),
             queue_peak_frames: AtomicU64::new(0),
             worker_failures_total: AtomicU64::new(0),
             enqueue_to_receive_histogram: std::array::from_fn(|_| AtomicU64::new(0)),
@@ -276,8 +291,14 @@ impl EdgeTelemetry {
         self.enqueued_total.load(Ordering::Relaxed).saturating_sub(
             self.delivered_total
                 .load(Ordering::Relaxed)
-                .saturating_add(self.shutdown_discarded_total.load(Ordering::Relaxed)),
+                .saturating_add(self.shutdown_discarded_total.load(Ordering::Relaxed))
+                .saturating_add(self.discarded_output_frames_total.load(Ordering::Relaxed)),
         )
+    }
+
+    fn observe_output_discard(&self) {
+        self.discarded_output_frames_total
+            .fetch_add(1, Ordering::Relaxed);
     }
 
     fn observe_enqueue(&self) {
@@ -428,6 +449,9 @@ impl EdgeTelemetry {
                 .load(Ordering::Relaxed),
             worker_failures_total: self.worker_failures_total.load(Ordering::Relaxed),
             shutdown_discarded_total: self.shutdown_discarded_total.load(Ordering::Relaxed),
+            discarded_output_frames_total: self
+                .discarded_output_frames_total
+                .load(Ordering::Relaxed),
         }
     }
 }
@@ -550,9 +574,17 @@ impl PlanEdgeReceiver {
     }
 
     pub(crate) fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
-        let queued = self.consumer.pop().ok()?;
-        self.observe_received(queued, delivered_at_ns)
-            .map(PlanEdgeReceipt::into_frame)
+        loop {
+            let queued = self.consumer.pop().ok()?;
+            if queued.frame.should_discard() {
+                self.observe_continuity(&queued.frame);
+                self.telemetry.observe_output_discard();
+                continue;
+            }
+            return self
+                .observe_received(queued, delivered_at_ns)
+                .map(PlanEdgeReceipt::into_frame);
+        }
     }
 
     /// Pops one queued frame before sampling the monotonic process clock.
@@ -575,10 +607,19 @@ impl PlanEdgeReceiver {
         self.consumer.is_abandoned()
     }
 
-    fn recv_receipt_with_clock(&mut self, clock: impl FnOnce() -> u64) -> Option<PlanEdgeReceipt> {
-        let queued = self.consumer.pop().ok()?;
-        let delivered_at_ns = clock();
-        self.observe_received(queued, delivered_at_ns)
+    fn recv_receipt_with_clock(
+        &mut self,
+        mut clock: impl FnMut() -> u64,
+    ) -> Option<PlanEdgeReceipt> {
+        loop {
+            let queued = self.consumer.pop().ok()?;
+            if queued.frame.should_discard() {
+                self.observe_continuity(&queued.frame);
+                self.telemetry.observe_output_discard();
+                continue;
+            }
+            return self.observe_received(queued, clock());
+        }
     }
 
     fn observe_received(
@@ -1102,6 +1143,50 @@ mod tests {
             assert_eq!(received.source_id(), SourceId(7));
             assert_eq!(received.sequence_number(), 11);
         }
+    }
+
+    #[test]
+    fn given_replaced_output_in_edge_when_received_then_inactive_frame_is_discarded() {
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let pool = AudioBufferPool::new(2, 2);
+        let output_state = crate::frame::OutputGenerationState::new();
+        let first = output_state.begin().unwrap();
+
+        router.dispatch_from(
+            source.id(),
+            "out",
+            frame(&pool, 7, 1).with_output_generation(Some(first)),
+            100,
+        );
+        let replacement = output_state.begin().unwrap();
+        router.dispatch_from(
+            source.id(),
+            "out",
+            frame(&pool, 7, 2).with_output_generation(Some(replacement.clone())),
+            101,
+        );
+
+        let received = receivers[0].recv_at(102).unwrap();
+        let observations = receivers[0].observations();
+        assert_eq!(received.sequence_number(), 2);
+        assert_eq!(
+            received
+                .output_generation()
+                .map(crate::frame::OutputGeneration::id),
+            Some(replacement.id())
+        );
+        assert_eq!(observations.frames_delivered_total, 1);
+        assert_eq!(observations.discarded_output_frames_total, 1);
+        assert_eq!(observations.queue_depth_frames, 0);
     }
 
     #[test]

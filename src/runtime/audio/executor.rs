@@ -206,16 +206,18 @@ impl RealtimePlanExecutor {
                 node_id.index()
             )));
         };
-        let (frame, lineage) = frame.into_parts();
+        let (frame, lineage, output_generation) = frame.into_parts_with_output_generation();
         let output = slot.node.process(frame).map_err(ExecError::from_node)?;
         summary.nodes_executed = summary.nodes_executed.saturating_add(1);
         if let (Some(output), Some(output_port)) = (output, slot.output_port.as_deref()) {
-            let output = LineagedAudioFrame::new(output, lineage).map_err(|error| {
-                ExecError::Node(format!(
-                    "realtime node {} changed lineage-authoritative frame identity: {error}",
-                    node_id.index()
-                ))
-            })?;
+            let output = LineagedAudioFrame::new(output, lineage)
+                .map_err(|error| {
+                    ExecError::Node(format!(
+                        "realtime node {} changed lineage-authoritative frame identity: {error}",
+                        node_id.index()
+                    ))
+                })?
+                .with_output_generation(output_generation);
             let dispatch = self
                 .router
                 .dispatch_from(node_id, output_port, output, now_ns);
