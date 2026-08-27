@@ -109,11 +109,11 @@ pub use crate::session::error::SessionError;
 pub use crate::session::extensions::{
     AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError,
     AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations,
-    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource,
-    SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission,
-    SourceFactory, SourceManifest, SourceManifestError, SourceOutputIdentity, SourcePrepareContext,
-    SourceRegistrationError, SourceRuntimeObservations, SourceSessionContext, SourceTypeId,
-    SourceTypeIdError, PCM_SOURCE_TYPE_ID,
+    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, AudioOutputWriteError,
+    AudioOutputWriteErrorKind, PcmSource, SourceCancellation, SourceConfiguration, SourceDriver,
+    SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError,
+    SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRuntimeObservations,
+    SourceSessionContext, SourceTypeId, SourceTypeIdError, PCM_SOURCE_TYPE_ID,
 };
 pub use crate::session::lifecycle::{
     SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure,
@@ -821,6 +821,17 @@ impl RunningSession {
 
     pub fn audio_observations(&self) -> PolledAudioObservations {
         self.receipt.observations()
+    }
+
+    pub fn audio_discarded_output_frames_total(&self) -> u64 {
+        self.receipt.discarded_output_frames_total()
+    }
+
+    pub fn route_discarded_output_frames_total(
+        &self,
+        route_id: crate::session::RouteId,
+    ) -> Option<u64> {
+        self.running.route_discarded_output_frames_total(route_id)
     }
 
     pub fn recording_outcome(&self) -> Option<&crate::session::SessionRecordingOutcome> {

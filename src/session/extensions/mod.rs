@@ -13,8 +13,8 @@ pub(crate) use audio_input::AudioInputFactory;
 pub use audio_input::{
     AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError,
     AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations,
-    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource,
-    PCM_SOURCE_TYPE_ID,
+    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, AudioOutputWriteError,
+    AudioOutputWriteErrorKind, PcmSource, PCM_SOURCE_TYPE_ID,
 };
 pub use builtins::SessionGraphRegistrationError;
 #[cfg(any(test, feature = "internal-testing"))]
