@@ -27,7 +27,7 @@ include = [
   "/src/**",
   "/native/**",
   "/include/**",
-  "/examples/product_quickstart.rs",
+  "/examples/quickstart.rs",
   "/examples/connector_authoring.rs",
   "/tests/**",
   "/benches/**",

@@ -15,8 +15,8 @@ multistem recording.
 desktop application ─┐
 microphone ──────────┼─ source-aware Session ─┬─ Operator
 application PCM ─────┘                        ├─ Endpoint or Connector
-                                             ├─ application polling
-                                             └─ multistem recording
+                                              ├─ application polling
+                                              └─ multistem recording
 ```
 
 ## Get started
@@ -28,24 +28,18 @@ You need Rust 1.95 or newer. Native capture is enabled by default.
 pocketstation = "1.1.2"
 ```
 
-Clone this repository and build the product quickstart:
+From a clone of this repository, start the quickstart:
 
 ```bash
-cargo build --release --example product_quickstart --locked
+cargo run --release --example quickstart --locked
 ```
 
-The example declares one application and the default microphone, observes both
-stems, and finalizes a two-stem recording. Running it also requires the named
-application, operating-system capture permission, and an available microphone:
-
-```bash
-cargo run --release --example product_quickstart --locked
-```
-
-It stops after observing both stems or returns a typed setup/runtime failure.
-Completed recordings are written under `pocketstation-recordings/`. See the
-[Rust quickstart](docs/getting-started/rust-quickstart.md) for native
-prerequisites, expected results, and cleanup.
+Choose a running application when prompted. The quickstart captures only that
+application. It does not open a microphone or write files. The example stops
+after observing audio from the selected application, or returns the setup or
+runtime error that prevented capture. See the
+[Rust quickstart](docs/getting-started/rust-quickstart.md) for platform
+selection details and optional microphone and recording commands.
 
 For contracts-only tooling or documentation builds, disable native capture:
 
@@ -64,7 +58,7 @@ pocketstation = { version = "1.1.2", default-features = false }
 | Add a source, computation, or destination | [`Extension` guide](docs/guides/extensions.md) |
 | Inspect lineage and delivery behavior | [`Signals and streams`](docs/concepts/signals-and-streams.md) |
 
-## Understand the Session contract
+## How a Session handles audio
 
 PocketStation keeps the following information explicit as work moves between
 realtime audio and off-realtime integrations:
@@ -122,7 +116,7 @@ These boundaries use the same Session compiler, lifecycle, observations,
 cancellation, and shutdown. Python, JavaScript, and provider packages must not
 create a second Session or media runtime.
 
-## Operate within explicit bounds
+## Resource and realtime behavior
 
 Audio callbacks and realtime partitions are designed and checked to remain:
 
@@ -168,13 +162,13 @@ sudo apt install build-essential cmake pkg-config \
 - [Check compatibility](docs/compatibility/README.md)
 - [Read the API reference](https://docs.rs/pocketstation/latest/pocketstation/)
 
-## Verify a change
+## Verify a local change
 
 ```bash
 cargo fmt --all -- --check
 cargo clippy --all-targets --all-features --locked -- -D warnings
 cargo test --all-targets --all-features --locked
-cargo build --release --example product_quickstart --locked
+cargo build --release --example quickstart --locked
 bash scripts/check_protocol.sh
 ```
 

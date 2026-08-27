@@ -6,7 +6,7 @@ your integration requires them.
 
 ## Get started
 
-- [Capture an application and microphone in Rust](getting-started/rust-quickstart.md)
+- [Capture a desktop application in Rust](getting-started/rust-quickstart.md)
 
 ## Develop
 
@@ -28,9 +28,8 @@ your integration requires them.
 - [Rust API on docs.rs](https://docs.rs/pocketstation/latest/pocketstation/)
 - [C header](../include/pocketstation.h)
 
-The public API, current guides, compatibility page, and release notes describe
-the shipped contract. Architecture snapshots, progress files, and engineering
-records are maintainer material and do not override the current API.
+The public API, guides, compatibility page, and release notes describe the
+features available to developers.
 
 Evidence is scoped to the environment named by each artifact. Component tests
 do not establish physical-device, cross-network, or cross-platform behavior.
