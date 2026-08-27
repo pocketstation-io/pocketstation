@@ -566,7 +566,7 @@ fn decode_trace(path: &Path, bytes: &[u8]) -> Result<SessionTrace, SessionTraceV
     }
     let mut records = Vec::with_capacity(records_written_total as usize);
     let mut rolling_hash = FNV_OFFSET_BASIS;
-    for encoded in record_bytes.chunks_exact(RECORD_SIZE_BYTES) {
+    for encoded in record_bytes.as_chunks::<RECORD_SIZE_BYTES>().0 {
         if get_u32(encoded, 0)? != RECORD_MARKER {
             return Err(SessionTraceValidationError::InvalidLayout);
         }

@@ -498,7 +498,7 @@ impl RunningSession {
                 |host| {
                     let outcomes = terminate_operators(
                         &host,
-                        self.operators.drain(..).collect(),
+                        std::mem::take(&mut self.operators),
                         operator_termination,
                     );
                     let shutdown_error = host.shutdown().err().map(|error| error.to_string());

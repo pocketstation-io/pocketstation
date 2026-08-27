@@ -1,17 +1,21 @@
-# Core 1.0 compatibility authority
+# Compatibility
 
-`c-abi-v1.baseline` is the reviewed 64-bit C ABI and PKSS identity baseline for
-Core 1.0. `tools/check-abi-compatibility.sh` checks the public header digest,
-every listed public type layout, the append-only executable-extension callback
-table prefix, exported symbols, and an exact PKSS 1.0 wire vector.
+PocketStation follows semantic versioning for its public Rust API. A compatible
+minor or patch release keeps existing applications building against the normal
+feature set. The `internal-testing` feature is not a public compatibility
+promise.
 
-`tools/check-api-compatibility.sh` runs pinned `cargo-semver-checks` against the
-hash-pinned packaged predecessor selected for the compatibility check. It
-checks the normal/default Rust API only; the
-`internal-testing` feature is intentionally not a product compatibility
-contract.
+The native library also preserves the versioned C ABI and PKSS sidecar protocol.
+The repository stores their accepted layouts, symbols, and wire values in
+[`c-abi-v1.baseline`](c-abi-v1.baseline).
 
-Changing this baseline requires an explicit compatibility review. Removing a
-symbol, changing an existing layout or wire value, or breaking an accepted
-consumer is not repaired by editing the baseline. Compatible additions require
-the appropriate ABI/protocol minor-version change and a newly accepted report.
+Use the repository checks before changing a public boundary:
+
+```bash
+bash tools/check-api-compatibility.sh
+bash tools/check-abi-compatibility.sh
+```
+
+The checks compare the candidate with a packaged earlier release. Do not make a
+breaking change appear compatible by editing the baseline. Additive changes
+still require the matching API, ABI, or protocol version update.

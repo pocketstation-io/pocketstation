@@ -1,14 +1,13 @@
-# Capture an application and microphone in Rust
+# Capture a desktop application in Rust
 
-This quickstart runs one `Session`, observes a desktop application and the
-default microphone as separate stems, and finalizes a two-stem recording.
+This quickstart runs one `Session` and observes the desktop application you
+select. Microphone capture and recording are explicit opt-ins.
 
 ## Prerequisites
 
 - Rust 1.95 or newer;
-- a desktop application named `PocketStation Demo` running on the host;
-- an available default microphone;
-- operating-system permission to capture the application and microphone.
+- a desktop application you want to capture running on the host;
+- operating-system permission to capture that application.
 
 Native build requirements:
 
@@ -25,37 +24,62 @@ Native build requirements:
 
 ```toml
 [dependencies]
-pocketstation = "1.1.1"
+pocketstation = "1.1.2"
 ```
 
 The complete program is
-[`examples/product_quickstart.rs`](../../examples/product_quickstart.rs).
+[`examples/quickstart.rs`](../../examples/quickstart.rs).
 
-## Build and run
+## Run the quickstart
 
 From this repository:
 
 ```bash
-cargo build --release --example product_quickstart --locked
-cargo run --release --example product_quickstart --locked
+cargo run --release --example quickstart --locked
 ```
 
-The Session stops after it observes at least two frames from both stems. It
-then requires a successful Session outcome and a completed recording with two
+Choose a running application from the list. PocketStation resolves the selected
+process and stable source identity before the Session starts. The Session stops
+after it observes at least two frames from that application. It does not open a
+microphone or write a recording by default.
+
+## Options
+
+Use an exact display name, application identifier, or process ID when you want
+to skip the prompt:
+
+```bash
+cargo run --release --example quickstart --locked -- --application "Spotify"
+```
+
+To include the default microphone as a separate stem:
+
+```bash
+cargo run --release --example quickstart --locked -- --microphone
+```
+
+To record every selected stem, provide an output directory:
+
+```bash
+cargo run --release --example quickstart --locked -- --record pocketstation-recordings
+```
+
+Options can be combined. For example, add `--microphone --record recordings` to
+capture and record the selected application and default microphone as separate
 stems.
 
 ## Inspect the result
 
-Completed artifacts are written under `pocketstation-recordings/`. The
-application and microphone remain separately identified by their source and
-stem lineage.
+When `--record` is set, completed artifacts are written under the directory you
+provide. Application and microphone audio remain separately identified by
+their source and stem lineage.
 
 If setup fails, inspect the typed permission or source error. A preflight
 `PermissionObservation::NotObservable` is not permission approval; source
-opening determines whether the selected backend can run. If only one source
-produces media, the example exits without claiming a complete recording.
+opening determines whether the selected backend can run. If a requested source
+does not produce media, the example exits without claiming success.
 
-Remove `pocketstation-recordings/` when you no longer need the artifacts.
+Remove the directory passed to `--record` when you no longer need the artifacts.
 
 ## Continue developing
 
@@ -63,5 +87,6 @@ Remove `pocketstation-recordings/` when you no longer need the artifacts.
 - [Build a Connector](../guides/connectors.md)
 - [Add another extension boundary](../guides/extensions.md)
 
-The compile command verifies the installed API and example. Running on one host
-does not establish behavior for other devices, operating systems, or networks.
+Building this example verifies its use of the public Rust API. Running it on
+one computer does not establish behavior for other devices, operating systems,
+or networks.

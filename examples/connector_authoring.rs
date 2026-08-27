@@ -132,6 +132,9 @@ fn connector_manifest() -> Result<ConnectorManifest, Box<dyn Error>> {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let application_name = std::env::args()
+        .nth(1)
+        .ok_or("provide the running application name or identifier as the first argument")?;
     let session = Session::new();
     let connector =
         Connector::with_driver(connector_manifest()?, Arc::new(ExampleConnectorFactory))?;
@@ -151,7 +154,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     )?;
 
     let application = session.capture(Source::application(ApplicationSelector::name(
-        "PocketStation Demo",
+        application_name,
     )))?;
     let microphone = session.capture(Source::microphone_default())?;
     application.send(endpoint)?;
