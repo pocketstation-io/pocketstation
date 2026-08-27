@@ -77,9 +77,13 @@ impl EndpointAudioFrame {
     }
 
     pub fn output_generation_id(&self) -> Option<OutputGenerationId> {
-        self.frame
-            .output_generation()
+        self.output_generation()
             .map(crate::frame::OutputGeneration::id)
+    }
+
+    /// Returns the output operation that owns this frame, when present.
+    pub fn output_generation(&self) -> Option<&crate::frame::OutputGeneration> {
+        self.frame.output_generation()
     }
 
     /// Monotonic instant when the runtime accepted this frame into the route.

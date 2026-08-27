@@ -32,7 +32,7 @@ impl OutputGenerationState {
         let previous = self
             .active_id
             .fetch_update(Ordering::AcqRel, Ordering::Acquire, |current| {
-                (current < MAX_OUTPUT_GENERATION).then_some(current + 1)
+                (current < MAX_OUTPUT_GENERATION).then(|| current + 1)
             })
             .map_err(|_| OutputGenerationError::LimitReached)?;
         Ok(OutputGeneration {
