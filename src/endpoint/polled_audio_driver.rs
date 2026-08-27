@@ -63,7 +63,6 @@ pub struct PolledAudioObservations {
     pub frames_delivered_total: u64,
     pub queue_full_drops_total: u64,
     pub invalid_ownership_drops_total: u64,
-    pub discarded_output_frames_total: u64,
     pub lease_capacity_count: u64,
     pub outstanding_leases: u64,
     pub lease_exhausted_total: u64,
@@ -178,6 +177,13 @@ impl PolledAudioReceipt {
 
     pub fn observations(&self) -> PolledAudioObservations {
         self.shared.observations()
+    }
+
+    /// Returns frames removed after their sender cancelled the owning output.
+    pub fn discarded_output_frames_total(&self) -> u64 {
+        self.shared
+            .discarded_output_frames_total
+            .load(Ordering::Relaxed)
     }
 
     /// Waits for a batch until the finite deadline expires.
@@ -525,9 +531,6 @@ impl ReceiptShared {
             queue_full_drops_total: self.queue_full_drops_total.load(Ordering::Relaxed),
             invalid_ownership_drops_total: self
                 .invalid_ownership_drops_total
-                .load(Ordering::Relaxed),
-            discarded_output_frames_total: self
-                .discarded_output_frames_total
                 .load(Ordering::Relaxed),
             lease_capacity_count: self.lease_capacity_count,
             outstanding_leases: self.outstanding_leases.load(Ordering::Relaxed),

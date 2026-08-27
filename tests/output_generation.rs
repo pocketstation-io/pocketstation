@@ -1,7 +1,7 @@
 use std::time::{Duration, Instant};
 
 use pocketstation::{
-    AudioInputConfig, AudioInputWriteErrorKind, OutputCancelResult, SampleFormat, SampleSpec,
+    AudioInputConfig, AudioOutputWriteErrorKind, OutputCancelResult, SampleFormat, SampleSpec,
     Session,
 };
 
@@ -54,7 +54,7 @@ fn given_replaced_output_when_session_starts_then_only_active_frames_are_deliver
             .try_write_for_output(&first, &vec![-0.75; FRAME_SAMPLES])
             .expect_err("inactive output must reject new samples")
             .kind(),
-        AudioInputWriteErrorKind::OutputGenerationInactive(first.id())
+        AudioOutputWriteErrorKind::OutputCancelled(first.id())
     );
 
     let replacement = output
@@ -87,11 +87,7 @@ fn given_replaced_output_when_session_starts_then_only_active_frames_are_deliver
 
     output.close();
     assert!(running.stop().is_success());
-    let observations = output.observations();
-    assert_eq!(observations.discarded_output_frames_total, 0);
-    assert_eq!(observations.inactive_output_writes_total, 1);
-    assert_eq!(
-        running.audio_observations().discarded_output_frames_total,
-        2
-    );
+    assert_eq!(output.discarded_output_frames_total(), 0);
+    assert_eq!(output.cancelled_output_writes_total(), 1);
+    assert_eq!(running.audio_discarded_output_frames_total(), 2);
 }

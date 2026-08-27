@@ -51,10 +51,6 @@ impl AudioInputBuffer {
         self.discontinuity = true;
     }
 
-    pub fn set_output_generation(&mut self, generation: &OutputGeneration) {
-        self.output_generation = Some(generation.clone());
-    }
-
     pub fn output_generation_id(&self) -> Option<OutputGenerationId> {
         self.output_generation.as_ref().map(OutputGeneration::id)
     }
@@ -80,7 +76,7 @@ pub(super) struct AudioInputState {
     full_total: AtomicU64,
     invalid_total: AtomicU64,
     pub(super) discarded_output_frames_total: AtomicU64,
-    inactive_output_writes_total: AtomicU64,
+    cancelled_output_writes_total: AtomicU64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -91,8 +87,6 @@ pub struct AudioInputObservations {
     pub accepted_total: u64,
     pub full_total: u64,
     pub invalid_total: u64,
-    pub discarded_output_frames_total: u64,
-    pub inactive_output_writes_total: u64,
     pub cancelled: bool,
     pub closed: bool,
 }
@@ -177,18 +171,28 @@ impl AudioInputWriter {
         &mut self,
         generation: &OutputGeneration,
         samples: &[f32],
-    ) -> Result<(), AudioInputWriteError> {
+    ) -> Result<(), AudioOutputWriteError> {
         self.validate_output_generation(generation)?;
-        let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;
-        buffer.set_output_generation(generation);
+        let mut buffer = self.try_acquire().map_err(AudioOutputWriteError::from)?;
         if let Err(error) = buffer.try_copy_from_slice(samples) {
             self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
-            return Err(AudioInputWriteError::new(
-                AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::Capacity(error)),
+            return Err(AudioOutputWriteError::new(
+                AudioOutputWriteErrorKind::InvalidBuffer(AudioInputBufferError::Capacity(error)),
                 Some(buffer),
             ));
         }
-        self.try_send(buffer)
+        self.try_send_for_output(generation, buffer)
+    }
+
+    /// Submits one previously acquired buffer as replaceable output.
+    pub fn try_send_for_output(
+        &mut self,
+        generation: &OutputGeneration,
+        mut buffer: AudioInputBuffer,
+    ) -> Result<(), AudioOutputWriteError> {
+        self.validate_output_generation(generation)?;
+        buffer.output_generation = Some(generation.clone());
+        self.try_send(buffer).map_err(AudioOutputWriteError::from)
     }
 
     pub fn try_send(&mut self, buffer: AudioInputBuffer) -> Result<(), AudioInputWriteError> {
@@ -216,26 +220,6 @@ impl AudioInputWriter {
                 AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::WrongSource),
                 Some(buffer),
             ));
-        }
-        if let Some(generation) = &buffer.output_generation {
-            if !self.output_generation_state.owns(generation) {
-                self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
-                return Err(AudioInputWriteError::new(
-                    AudioInputWriteErrorKind::InvalidBuffer(
-                        AudioInputBufferError::WrongOutputGeneration,
-                    ),
-                    Some(buffer),
-                ));
-            }
-            if generation.should_discard() {
-                self.state
-                    .inactive_output_writes_total
-                    .fetch_add(1, Ordering::Relaxed);
-                return Err(AudioInputWriteError::new(
-                    AudioInputWriteErrorKind::OutputGenerationInactive(generation.id()),
-                    Some(buffer),
-                ));
-            }
         }
         let sample_count = buffer.buffer.len();
         let channels = usize::from(self.config.sample_spec.channels);
@@ -320,38 +304,40 @@ impl AudioInputWriter {
             accepted_total: self.state.accepted_total.load(Ordering::Relaxed),
             full_total: self.state.full_total.load(Ordering::Relaxed),
             invalid_total: self.state.invalid_total.load(Ordering::Relaxed),
-            discarded_output_frames_total: self
-                .state
-                .discarded_output_frames_total
-                .load(Ordering::Relaxed),
-            inactive_output_writes_total: self
-                .state
-                .inactive_output_writes_total
-                .load(Ordering::Relaxed),
             cancelled: self.state.cancelled.load(Ordering::Acquire),
             closed: self.sender.is_none() || self.state.closed.load(Ordering::Acquire),
         }
     }
 
+    pub fn discarded_output_frames_total(&self) -> u64 {
+        self.state
+            .discarded_output_frames_total
+            .load(Ordering::Relaxed)
+    }
+
+    pub fn cancelled_output_writes_total(&self) -> u64 {
+        self.state
+            .cancelled_output_writes_total
+            .load(Ordering::Relaxed)
+    }
+
     fn validate_output_generation(
         &self,
         generation: &OutputGeneration,
-    ) -> Result<(), AudioInputWriteError> {
+    ) -> Result<(), AudioOutputWriteError> {
         if !self.output_generation_state.owns(generation) {
             self.state.invalid_total.fetch_add(1, Ordering::Relaxed);
-            return Err(AudioInputWriteError::new(
-                AudioInputWriteErrorKind::InvalidBuffer(
-                    AudioInputBufferError::WrongOutputGeneration,
-                ),
+            return Err(AudioOutputWriteError::new(
+                AudioOutputWriteErrorKind::WrongInput,
                 None,
             ));
         }
         if generation.should_discard() {
             self.state
-                .inactive_output_writes_total
+                .cancelled_output_writes_total
                 .fetch_add(1, Ordering::Relaxed);
-            return Err(AudioInputWriteError::new(
-                AudioInputWriteErrorKind::OutputGenerationInactive(generation.id()),
+            return Err(AudioOutputWriteError::new(
+                AudioOutputWriteErrorKind::OutputCancelled(generation.id()),
                 None,
             ));
         }
@@ -383,8 +369,6 @@ pub enum AudioInputBufferAcquireError {
 pub enum AudioInputBufferError {
     #[error("audio buffer belongs to another audio input")]
     WrongSource,
-    #[error("audio output generation belongs to another audio input")]
-    WrongOutputGeneration,
     #[error("audio buffer contains no samples")]
     Empty,
     #[error("interleaved sample count is not divisible by the channel count")]
@@ -403,7 +387,6 @@ pub enum AudioInputWriteErrorKind {
     Full,
     Closed,
     Cancelled,
-    OutputGenerationInactive(OutputGenerationId),
     InvalidBuffer(AudioInputBufferError),
 }
 
@@ -455,17 +438,97 @@ impl fmt::Display for AudioInputWriteError {
             AudioInputWriteErrorKind::Cancelled => {
                 formatter.write_str("audio input Session was cancelled")
             }
-            AudioInputWriteErrorKind::OutputGenerationInactive(generation_id) => write!(
-                formatter,
-                "audio output generation {} is no longer active",
-                generation_id.get()
-            ),
             AudioInputWriteErrorKind::InvalidBuffer(error) => error.fmt(formatter),
         }
     }
 }
 
 impl std::error::Error for AudioInputWriteError {}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AudioOutputWriteErrorKind {
+    Full,
+    Closed,
+    SessionCancelled,
+    OutputCancelled(OutputGenerationId),
+    WrongInput,
+    InvalidBuffer(AudioInputBufferError),
+}
+
+pub struct AudioOutputWriteError {
+    kind: AudioOutputWriteErrorKind,
+    rejected: Option<AudioInputBuffer>,
+}
+
+impl AudioOutputWriteError {
+    fn new(kind: AudioOutputWriteErrorKind, rejected: Option<AudioInputBuffer>) -> Self {
+        Self { kind, rejected }
+    }
+
+    pub const fn kind(&self) -> AudioOutputWriteErrorKind {
+        self.kind
+    }
+
+    pub fn into_rejected(self) -> Option<AudioInputBuffer> {
+        self.rejected
+    }
+}
+
+impl From<AudioInputBufferAcquireError> for AudioOutputWriteError {
+    fn from(error: AudioInputBufferAcquireError) -> Self {
+        let kind = match error {
+            AudioInputBufferAcquireError::Full => AudioOutputWriteErrorKind::Full,
+            AudioInputBufferAcquireError::Closed => AudioOutputWriteErrorKind::Closed,
+            AudioInputBufferAcquireError::Cancelled => AudioOutputWriteErrorKind::SessionCancelled,
+        };
+        Self::new(kind, None)
+    }
+}
+
+impl From<AudioInputWriteError> for AudioOutputWriteError {
+    fn from(error: AudioInputWriteError) -> Self {
+        let kind = match error.kind {
+            AudioInputWriteErrorKind::Full => AudioOutputWriteErrorKind::Full,
+            AudioInputWriteErrorKind::Closed => AudioOutputWriteErrorKind::Closed,
+            AudioInputWriteErrorKind::Cancelled => AudioOutputWriteErrorKind::SessionCancelled,
+            AudioInputWriteErrorKind::InvalidBuffer(error) => {
+                AudioOutputWriteErrorKind::InvalidBuffer(error)
+            }
+        };
+        Self::new(kind, error.rejected)
+    }
+}
+
+impl fmt::Debug for AudioOutputWriteError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("AudioOutputWriteError")
+            .field("kind", &self.kind)
+            .field("has_rejected_buffer", &self.rejected.is_some())
+            .finish()
+    }
+}
+
+impl fmt::Display for AudioOutputWriteError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.kind {
+            AudioOutputWriteErrorKind::Full => formatter.write_str("audio input is full"),
+            AudioOutputWriteErrorKind::Closed => formatter.write_str("audio input is closed"),
+            AudioOutputWriteErrorKind::SessionCancelled => {
+                formatter.write_str("audio input Session was cancelled")
+            }
+            AudioOutputWriteErrorKind::OutputCancelled(output_id) => {
+                write!(formatter, "audio output {} was cancelled", output_id.get())
+            }
+            AudioOutputWriteErrorKind::WrongInput => {
+                formatter.write_str("audio output belongs to another audio input")
+            }
+            AudioOutputWriteErrorKind::InvalidBuffer(error) => error.fmt(formatter),
+        }
+    }
+}
+
+impl std::error::Error for AudioOutputWriteError {}
 
 fn sample_duration_ns(sample_frames: usize, sample_rate_hz: u32) -> u64 {
     (sample_frames as u128)

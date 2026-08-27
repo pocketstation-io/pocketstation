@@ -220,6 +220,13 @@ impl RunningSession {
         self.indexed_metrics_full().4
     }
 
+    pub fn route_discarded_output_frames_total(&self, route_id: RouteId) -> Option<u64> {
+        self.route_observations
+            .iter()
+            .find(|binding| binding.route_id == route_id)
+            .map(|binding| binding.edge.discarded_output_frames_total())
+    }
+
     pub fn audio_reentry_metrics(&self) -> Box<[SessionAudioReentryMetrics]> {
         if !self.operators.is_empty() {
             return self

@@ -9,7 +9,8 @@ use crate::{SampleFormat, SampleSpec};
 
 pub use buffer::{
     AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputObservations,
-    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter,
+    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, AudioOutputWriteError,
+    AudioOutputWriteErrorKind,
 };
 pub(crate) use source::AudioInputFactory;
 pub use source::{AudioInputError, PcmSource};
@@ -127,10 +128,21 @@ impl AudioInput {
         &mut self,
         generation: &OutputGeneration,
         samples: &[f32],
-    ) -> Result<(), AudioInputWriteError> {
+    ) -> Result<(), AudioOutputWriteError> {
         self.pcm
             .writer_mut()
             .try_write_for_output(generation, samples)
+    }
+
+    /// Submits one previously acquired buffer as replaceable output.
+    pub fn try_send_for_output(
+        &mut self,
+        generation: &OutputGeneration,
+        buffer: AudioInputBuffer,
+    ) -> Result<(), AudioOutputWriteError> {
+        self.pcm
+            .writer_mut()
+            .try_send_for_output(generation, buffer)
     }
 
     /// Submits one previously acquired buffer without blocking.
@@ -145,6 +157,14 @@ impl AudioInput {
 
     pub fn observations(&self) -> AudioInputObservations {
         self.pcm.writer().observations()
+    }
+
+    pub fn discarded_output_frames_total(&self) -> u64 {
+        self.pcm.writer().discarded_output_frames_total()
+    }
+
+    pub fn cancelled_output_writes_total(&self) -> u64 {
+        self.pcm.writer().cancelled_output_writes_total()
     }
 
     /// Converts the convenience façade into explicit source, output, and

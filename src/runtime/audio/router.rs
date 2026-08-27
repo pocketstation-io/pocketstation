@@ -186,7 +186,6 @@ pub struct EdgeObservations {
     pub source_timestamp_to_receive_max_ns: u64,
     pub worker_failures_total: u64,
     pub shutdown_discarded_total: u64,
-    pub discarded_output_frames_total: u64,
 }
 
 impl EdgeObservations {
@@ -250,6 +249,13 @@ impl PlanEdgeObservationHandle {
     /// Returns a point-in-time snapshot of the edge's live observations.
     pub fn observations(&self) -> EdgeObservations {
         self.telemetry.snapshot()
+    }
+
+    /// Returns frames removed after their sender cancelled the owning output.
+    pub fn discarded_output_frames_total(&self) -> u64 {
+        self.telemetry
+            .discarded_output_frames_total
+            .load(Ordering::Relaxed)
     }
 }
 
@@ -449,9 +455,6 @@ impl EdgeTelemetry {
                 .load(Ordering::Relaxed),
             worker_failures_total: self.worker_failures_total.load(Ordering::Relaxed),
             shutdown_discarded_total: self.shutdown_discarded_total.load(Ordering::Relaxed),
-            discarded_output_frames_total: self
-                .discarded_output_frames_total
-                .load(Ordering::Relaxed),
         }
     }
 }
@@ -1175,6 +1178,7 @@ mod tests {
             101,
         );
 
+        let output_observations = receivers[0].observation_handle();
         let received = receivers[0].recv_at(102).unwrap();
         let observations = receivers[0].observations();
         assert_eq!(received.sequence_number(), 2);
@@ -1185,7 +1189,7 @@ mod tests {
             Some(replacement.id())
         );
         assert_eq!(observations.frames_delivered_total, 1);
-        assert_eq!(observations.discarded_output_frames_total, 1);
+        assert_eq!(output_observations.discarded_output_frames_total(), 1);
         assert_eq!(observations.queue_depth_frames, 0);
     }
 
