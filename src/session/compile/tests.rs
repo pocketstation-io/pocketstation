@@ -16,10 +16,12 @@ use crate::graph::{
 };
 
 use super::*;
+use crate::session::extensions::builtins::APPLICATION_SOURCE_NODE_TYPE_ID;
 use crate::session::{
     register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor,
     Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID,
-    BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
+    BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID,
+    RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
 };
 
 const TEST_CONNECTOR_OPERATOR_ID: &str = "example.connector.streaming-stt.v1";
@@ -510,6 +512,26 @@ fn given_product_spec_when_compiled_then_six_independent_edges_are_planned() {
     assert_eq!(compiled.node_count(), 8);
     assert_eq!(compiled.edge_count(), 6);
     assert_eq!(compiled.planned_edge_count(), 6);
+
+    for edge in &compiled.graph_ir.edges {
+        let source_type = compiled
+            .graph_ir
+            .node(edge.spec.from.node)
+            .expect("source node")
+            .spec
+            .type_id
+            .as_str();
+        let planned = compiled
+            .runtime_plan
+            .memory_plan
+            .edge_buffer(edge.spec.id)
+            .expect("planned audio edge");
+        match source_type {
+            APPLICATION_SOURCE_NODE_TYPE_ID => assert_eq!(planned.bytes_per_frame, 7_680),
+            MICROPHONE_SOURCE_NODE_TYPE_ID => assert_eq!(planned.bytes_per_frame, 3_840),
+            _ => panic!("unexpected product source node '{source_type}'"),
+        }
+    }
 
     let recorder_edges = compiled
         .graph_ir

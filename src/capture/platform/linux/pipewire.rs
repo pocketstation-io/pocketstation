@@ -49,10 +49,10 @@ const MICROPHONE_CHANNEL_COUNT: u8 = 1;
 const CAPTURE_FRAME_SAMPLES: usize = POOL_SLOT_SAMPLES * CAPTURE_CHANNEL_COUNT as usize;
 
 /// Maximum interleaved sample count accepted from one PipeWire callback.
-/// OS graph quantums are independent of PocketStation's 10/20 ms transport
-/// frames; a 2048-frame stereo quantum contains 4096 samples and must reach the
-/// downstream profile accumulator without truncation.
-const PIPEWIRE_CALLBACK_MAX_SAMPLES: usize = 4096;
+/// PipeWire's default graph quantum limit is 8192 sample frames. The callback
+/// scratch space is fixed at setup and normalizes that input into PocketStation
+/// 20 ms frames without allocating on the realtime thread.
+const PIPEWIRE_CALLBACK_MAX_SAMPLES: usize = 8192 * CAPTURE_CHANNEL_COUNT as usize;
 
 /// Pool depth: 8 frames absorb callback jitter without unbounded growth.
 const CAPTURE_POOL_CAPACITY_FRAMES: usize = 8;
@@ -127,6 +127,10 @@ struct PipeWireCaptureState {
     connected: bool,
     open_result_sent: bool,
     format_failed: bool,
+    callback_samples: [f32; PIPEWIRE_CALLBACK_MAX_SAMPLES],
+    normalized_frame: [f32; CAPTURE_FRAME_SAMPLES],
+    normalized_sample_count: usize,
+    normalized_timestamp_ns: Option<u64>,
 }
 
 impl PipeWireCaptureState {
@@ -139,6 +143,10 @@ impl PipeWireCaptureState {
             connected: false,
             open_result_sent: false,
             format_failed: false,
+            callback_samples: [0.0; PIPEWIRE_CALLBACK_MAX_SAMPLES],
+            normalized_frame: [0.0; CAPTURE_FRAME_SAMPLES],
+            normalized_sample_count: 0,
+            normalized_timestamp_ns: None,
         }
     }
 
@@ -156,6 +164,10 @@ impl PipeWireCaptureState {
         if negotiated_format.channel_count != self.expected_channel_count {
             self.format_failed = true;
             return Err("PipeWire negotiated an unexpected channel count");
+        }
+        if negotiated_format.sample_rate_hz.get() != SAMPLE_RATE_HZ {
+            self.format_failed = true;
+            return Err("PipeWire negotiated an unexpected sample rate");
         }
         self.sample_timeline = Some(CaptureSampleTimeline::new(negotiated_format.sample_rate_hz));
         self.negotiated_format = Some(negotiated_format);
@@ -440,6 +452,135 @@ fn pipewire_f32_sample_count(
     }
 
     None
+}
+
+fn normalize_pipewire_samples(
+    callback_samples: &[f32],
+    channel_count: usize,
+    callback_timestamp_ns: u64,
+    sample_rate_hz: u32,
+    normalized_frame: &mut [f32; CAPTURE_FRAME_SAMPLES],
+    normalized_sample_count: &mut usize,
+    normalized_timestamp_ns: &mut Option<u64>,
+    mut emit: impl FnMut(u64, &[f32]),
+) {
+    let target_sample_count = POOL_SLOT_SAMPLES.saturating_mul(channel_count);
+    if target_sample_count == 0 || target_sample_count > normalized_frame.len() {
+        return;
+    }
+    if *normalized_sample_count == 0 {
+        *normalized_timestamp_ns = Some(callback_timestamp_ns);
+    }
+
+    let frame_duration_ns = u64::try_from(POOL_SLOT_SAMPLES)
+        .unwrap_or(u64::MAX)
+        .saturating_mul(1_000_000_000)
+        .checked_div(u64::from(sample_rate_hz))
+        .unwrap_or(0);
+    let mut source_offset = 0usize;
+    while source_offset < callback_samples.len() {
+        let available = target_sample_count.saturating_sub(*normalized_sample_count);
+        let copy_count = available.min(callback_samples.len() - source_offset);
+        let destination_end = normalized_sample_count.saturating_add(copy_count);
+        let source_end = source_offset.saturating_add(copy_count);
+        normalized_frame[*normalized_sample_count..destination_end]
+            .copy_from_slice(&callback_samples[source_offset..source_end]);
+        *normalized_sample_count = destination_end;
+        source_offset = source_end;
+
+        if *normalized_sample_count == target_sample_count {
+            let timestamp_ns = normalized_timestamp_ns
+                .take()
+                .unwrap_or(callback_timestamp_ns);
+            emit(timestamp_ns, &normalized_frame[..target_sample_count]);
+            *normalized_sample_count = 0;
+            if source_offset < callback_samples.len() {
+                *normalized_timestamp_ns = Some(timestamp_ns.saturating_add(frame_duration_ns));
+            }
+        }
+    }
+}
+
+fn process_pipewire_audio(
+    stream: &pw::stream::Stream,
+    state: &mut PipeWireCaptureState,
+    pool: &Arc<AudioBufferPool>,
+    sequence: &AtomicU64,
+    producer: &mut Producer<AudioFrame>,
+    counters: &CaptureObservationCounters,
+    source_id: SourceId,
+) {
+    let mut buffer = match stream.dequeue_buffer() {
+        Some(buffer) => buffer,
+        None => {
+            counters.observe_invalid_buffer();
+            return;
+        }
+    };
+    counters.observe_callback_buffer();
+    let datas = buffer.datas_mut();
+    if datas.is_empty() {
+        counters.observe_invalid_buffer();
+        return;
+    }
+    let channel_count = usize::from(state.expected_channel_count);
+    let Some(sample_count) = pipewire_f32_sample_count(datas, channel_count) else {
+        counters.observe_invalid_buffer();
+        return;
+    };
+    if sample_count > state.callback_samples.len() {
+        counters.observe_oversized_buffer();
+        return;
+    }
+    let copy_count = copy_pipewire_f32_samples(
+        datas,
+        &mut state.callback_samples[..sample_count],
+        channel_count,
+    );
+    if copy_count != sample_count {
+        counters.observe_invalid_buffer();
+        return;
+    }
+    let source_sample_frame = state
+        .negotiated_format
+        .and_then(|format| pipewire_source_sample_position(stream, format.sample_rate_hz.get()));
+    let Some((timestamp_ns, sample_rate_hz, output_channel_count)) = state.advance_sample_timeline(
+        source_sample_frame,
+        u64::try_from(sample_count / channel_count).unwrap_or(u64::MAX),
+    ) else {
+        counters.observe_invalid_buffer();
+        return;
+    };
+
+    normalize_pipewire_samples(
+        &state.callback_samples[..sample_count],
+        channel_count,
+        timestamp_ns,
+        sample_rate_hz,
+        &mut state.normalized_frame,
+        &mut state.normalized_sample_count,
+        &mut state.normalized_timestamp_ns,
+        |frame_timestamp_ns, samples| {
+            let frame_sequence = sequence.fetch_add(1, Ordering::Relaxed);
+            let Some(mut handle) = acquire_capture_buffer(pool, counters) else {
+                return;
+            };
+            if handle.try_copy_from_slice(samples).is_err() {
+                counters.observe_oversized_buffer();
+                return;
+            }
+            let mut frame = AudioFrame::new(
+                StreamId(0),
+                source_id,
+                frame_sequence,
+                frame_timestamp_ns,
+                output_channel_count,
+                handle,
+            );
+            frame.sample_rate_hz = sample_rate_hz;
+            enqueue_capture_frame(producer, frame, counters);
+        },
+    );
 }
 
 fn capture_channel_count(mode: &CaptureMode) -> u8 {
@@ -790,7 +931,7 @@ where
     let (frame_producer, mut frame_consumer) =
         RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
 
-    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, PIPEWIRE_CALLBACK_MAX_SAMPLES);
+    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
     let seq = Arc::new(AtomicU64::new(0));
     let counters = CaptureObservationCounters::default();
     let capture_counters = counters.clone();
@@ -906,68 +1047,15 @@ where
                     }
                 })
                 .process(move |stream, state| {
-                    let mut buf = match stream.dequeue_buffer() {
-                        Some(b) => b,
-                        None => {
-                            process_counters.observe_invalid_buffer();
-                            return;
-                        }
-                    };
-                    process_counters.observe_callback_buffer();
-                    let datas = buf.datas_mut();
-                    if datas.is_empty() {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    }
-                    let channel_count = CAPTURE_CHANNEL_COUNT as usize;
-                    let Some(sample_count) = pipewire_f32_sample_count(datas, channel_count) else {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    };
-                    let source_sample_frame = state.negotiated_format.and_then(|format| {
-                        pipewire_source_sample_position(stream, format.sample_rate_hz.get())
-                    });
-                    let Some((timestamp_ns, sample_rate_hz, output_channel_count)) = state
-                        .advance_sample_timeline(
-                            source_sample_frame,
-                            (sample_count / channel_count) as u64,
-                        )
-                    else {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    };
-                    if sample_count > PIPEWIRE_CALLBACK_MAX_SAMPLES {
-                        process_counters.observe_oversized_buffer();
-                        return;
-                    }
-                    let mut handle = match acquire_capture_buffer(&pool_cb, &process_counters) {
-                        Some(h) => h,
-                        None => return,
-                    };
-                    let dst = handle.as_mut_slice();
-                    let copy_count = copy_pipewire_f32_samples(datas, dst, channel_count);
-                    if copy_count != sample_count {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    }
-                    if handle.try_set_len(copy_count).is_err() {
-                        process_counters.observe_oversized_buffer();
-                        return;
-                    }
-
-                    let s = seq_cb.fetch_add(1, Ordering::Relaxed);
-
-                    let mut frame = AudioFrame::new(
-                        StreamId(0),
+                    process_pipewire_audio(
+                        stream,
+                        state,
+                        &pool_cb,
+                        &seq_cb,
+                        &mut frame_producer,
+                        &process_counters,
                         source_id,
-                        s,
-                        timestamp_ns,
-                        output_channel_count,
-                        handle,
                     );
-                    frame.sample_rate_hz = sample_rate_hz;
-
-                    enqueue_capture_frame(&mut frame_producer, frame, &process_counters);
                 })
                 .register()
             {
@@ -1320,7 +1408,7 @@ where
     let (frame_producer, mut frame_consumer) =
         RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
 
-    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, PIPEWIRE_CALLBACK_MAX_SAMPLES);
+    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
     let seq = Arc::new(AtomicU64::new(0));
     let counters = CaptureObservationCounters::default();
     let capture_counters = counters.clone();
@@ -1434,68 +1522,15 @@ where
                     }
                 })
                 .process(move |stream, state| {
-                    let mut buf = match stream.dequeue_buffer() {
-                        Some(b) => b,
-                        None => {
-                            process_counters.observe_invalid_buffer();
-                            return;
-                        }
-                    };
-                    process_counters.observe_callback_buffer();
-                    let datas = buf.datas_mut();
-                    if datas.is_empty() {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    }
-                    let channel_count = capture_channel_count as usize;
-                    let Some(sample_count) = pipewire_f32_sample_count(datas, channel_count) else {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    };
-                    let source_sample_frame = state.negotiated_format.and_then(|format| {
-                        pipewire_source_sample_position(stream, format.sample_rate_hz.get())
-                    });
-                    let Some((timestamp_ns, sample_rate_hz, output_channel_count)) = state
-                        .advance_sample_timeline(
-                            source_sample_frame,
-                            (sample_count / channel_count) as u64,
-                        )
-                    else {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    };
-                    if sample_count > PIPEWIRE_CALLBACK_MAX_SAMPLES {
-                        process_counters.observe_oversized_buffer();
-                        return;
-                    }
-                    let mut handle = match acquire_capture_buffer(&pool_cb, &process_counters) {
-                        Some(h) => h,
-                        None => return,
-                    };
-                    let dst = handle.as_mut_slice();
-                    let copy_count = copy_pipewire_f32_samples(datas, dst, channel_count);
-                    if copy_count != sample_count {
-                        process_counters.observe_invalid_buffer();
-                        return;
-                    }
-                    if handle.try_set_len(copy_count).is_err() {
-                        process_counters.observe_oversized_buffer();
-                        return;
-                    }
-
-                    let s = seq_cb.fetch_add(1, Ordering::Relaxed);
-
-                    let mut frame = AudioFrame::new(
-                        StreamId(0),
+                    process_pipewire_audio(
+                        stream,
+                        state,
+                        &pool_cb,
+                        &seq_cb,
+                        &mut frame_producer,
+                        &process_counters,
                         source_id,
-                        s,
-                        timestamp_ns,
-                        output_channel_count,
-                        handle,
                     );
-                    frame.sample_rate_hz = sample_rate_hz;
-
-                    enqueue_capture_frame(&mut frame_producer, frame, &process_counters);
                 })
                 .register()
             {
@@ -1906,6 +1941,59 @@ mod tests {
             capture_channel_count(&CaptureMode::SystemMix),
             CAPTURE_CHANNEL_COUNT
         );
+    }
+
+    #[test]
+    fn given_1024_frame_pipewire_quantums_when_normalized_then_20_ms_frames_are_contiguous() {
+        let first_callback = (0..2_048).map(|sample| sample as f32).collect::<Vec<_>>();
+        let second_callback = (2_048..4_096)
+            .map(|sample| sample as f32)
+            .collect::<Vec<_>>();
+        let mut normalized_frame = [0.0; CAPTURE_FRAME_SAMPLES];
+        let mut normalized_sample_count = 0;
+        let mut normalized_timestamp_ns = None;
+        let mut emitted = Vec::new();
+
+        normalize_pipewire_samples(
+            &first_callback,
+            2,
+            1_000_000_000,
+            SAMPLE_RATE_HZ,
+            &mut normalized_frame,
+            &mut normalized_sample_count,
+            &mut normalized_timestamp_ns,
+            |timestamp_ns, samples| emitted.push((timestamp_ns, samples.to_vec())),
+        );
+        normalize_pipewire_samples(
+            &second_callback,
+            2,
+            1_021_333_333,
+            SAMPLE_RATE_HZ,
+            &mut normalized_frame,
+            &mut normalized_sample_count,
+            &mut normalized_timestamp_ns,
+            |timestamp_ns, samples| emitted.push((timestamp_ns, samples.to_vec())),
+        );
+
+        assert_eq!(emitted.len(), 2);
+        assert_eq!(emitted[0].0, 1_000_000_000);
+        assert_eq!(emitted[1].0, 1_020_000_000);
+        let emitted_samples = emitted
+            .iter()
+            .flat_map(|(_, samples)| samples.iter().copied())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            emitted_samples,
+            (0..3_840).map(|sample| sample as f32).collect::<Vec<_>>()
+        );
+        assert_eq!(normalized_sample_count, 256);
+        assert_eq!(
+            &normalized_frame[..normalized_sample_count],
+            &(3_840..4_096)
+                .map(|sample| sample as f32)
+                .collect::<Vec<_>>()
+        );
+        assert_eq!(normalized_timestamp_ns, Some(1_040_000_000));
     }
 
     #[test]
