@@ -275,6 +275,27 @@ fn parse_pipewire_channel_count(audio_channels: Option<&str>) -> u16 {
         .unwrap_or(0)
 }
 
+fn pipewire_source_name(
+    kind: SourceKind,
+    application_name: Option<&str>,
+    node_description: Option<&str>,
+    device_description: Option<&str>,
+    node_name: Option<&str>,
+) -> String {
+    let preferred_name = if kind == SourceKind::Application {
+        application_name
+            .or(node_description)
+            .or(device_description)
+            .or(node_name)
+    } else {
+        node_description
+            .or(device_description)
+            .or(node_name)
+            .or(application_name)
+    };
+    preferred_name.unwrap_or("unknown").to_owned()
+}
+
 fn pipewire_discovered_node(
     props: &spa::utils::dict::DictRef,
     global_id: u32,
@@ -285,11 +306,13 @@ fn pipewire_discovered_node(
         "Audio/Sink" => SourceKind::OutputDevice,
         _ => return None,
     };
-    let name = props
-        .get("application.name")
-        .or_else(|| props.get("node.name"))
-        .unwrap_or("unknown")
-        .to_owned();
+    let name = pipewire_source_name(
+        kind,
+        props.get("application.name"),
+        props.get("node.description"),
+        props.get("device.description"),
+        props.get("node.name"),
+    );
     let node_name = props.get("node.name").map(str::to_owned);
     let process_id = props
         .get("application.process.id")
@@ -1940,6 +1963,30 @@ mod tests {
         assert_eq!(
             capture_channel_count(&CaptureMode::SystemMix),
             CAPTURE_CHANNEL_COUNT
+        );
+    }
+
+    #[test]
+    fn given_pipewire_source_metadata_when_named_then_human_description_precedes_node_name() {
+        assert_eq!(
+            pipewire_source_name(
+                SourceKind::InputDevice,
+                None,
+                Some("Studio Microphone"),
+                None,
+                Some("alsa_input.usb-42"),
+            ),
+            "Studio Microphone"
+        );
+        assert_eq!(
+            pipewire_source_name(
+                SourceKind::Application,
+                Some("Meeting"),
+                Some("Meeting audio output"),
+                None,
+                Some("meeting-output"),
+            ),
+            "Meeting"
         );
     }
 
