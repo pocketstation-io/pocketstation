@@ -38,7 +38,7 @@ use spa::param::audio::AudioFormat;
 use crate::capture::{
     CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
     CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource,
-    SourceKind, StableSourceId,
+    SourceKind, SourceState, StableSourceId,
 };
 
 /// Stereo application/system capture.
@@ -261,6 +261,58 @@ fn parse_pipewire_channel_count(audio_channels: Option<&str>) -> u16 {
         .and_then(|value| value.parse::<u16>().ok())
         .filter(|channels| *channels > 0)
         .unwrap_or(0)
+}
+
+fn pipewire_discovered_node(
+    props: &spa::utils::dict::DictRef,
+    global_id: u32,
+) -> Option<PipeWireDiscoveredNode> {
+    let kind = match props.get("media.class")? {
+        "Stream/Output/Audio" => SourceKind::Application,
+        "Audio/Source" => SourceKind::InputDevice,
+        "Audio/Sink" => SourceKind::OutputDevice,
+        _ => return None,
+    };
+    let name = props
+        .get("application.name")
+        .or_else(|| props.get("node.name"))
+        .unwrap_or("unknown")
+        .to_owned();
+    let node_name = props.get("node.name").map(str::to_owned);
+    let process_id = props
+        .get("application.process.id")
+        .and_then(|value| value.parse::<u32>().ok());
+    let app_id = (kind == SourceKind::Application)
+        .then(|| props.get("application.id").map(str::to_owned))
+        .flatten();
+    let stable_key = if kind == SourceKind::Application {
+        pipewire_application_identity(app_id.as_deref(), node_name.as_deref(), global_id).0
+    } else {
+        node_name
+            .as_deref()
+            .map(|value| format!("pw-node:{value}"))
+            .unwrap_or_else(|| format!("pw-transient:{global_id}"))
+    };
+    let device_uid = (kind != SourceKind::Application)
+        .then(|| node_name.clone())
+        .flatten();
+
+    Some(PipeWireDiscoveredNode {
+        source: CaptureSource {
+            stable_id: StableSourceId::new(Platform::Linux, kind, stable_key),
+            name,
+            process_id,
+            app_id,
+            device_uid,
+            state: SourceState::Available,
+            sample_rate_hz: parse_pipewire_sample_rate(
+                props.get("audio.rate"),
+                props.get("node.rate"),
+            ),
+            channels: parse_pipewire_channel_count(props.get("audio.channels")),
+        },
+        target_object: props.get("object.serial").map(str::to_owned),
+    })
 }
 
 fn pipewire_application_identity(
@@ -594,7 +646,7 @@ impl SystemLoopbackSource {
                                 .is_some_and(|app_id| app_id.eq_ignore_ascii_case(name)))
                 });
                 match matches.next() {
-                    Some(node) if matches.next().is_some() => Err(LoopbackError::BackendInit(
+                    Some(_node) if matches.next().is_some() => Err(LoopbackError::BackendInit(
                         format!(
                             "application '{name}' matches multiple PipeWire audio nodes — select one from source discovery"
                         ),
@@ -1075,9 +1127,7 @@ pub fn discover_sources_linux() -> Vec<crate::capture::CaptureSource> {
 /// and waits for the initial round-trip to complete (or 300 ms timeout).
 /// Returns an empty `Vec` on any error.
 fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
-    use crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
-    use crate::frame::Platform;
-    use std::cell::RefCell;
+    use std::cell::{Cell, RefCell};
     use std::rc::Rc;
     use std::sync::mpsc as smpsc;
 
@@ -1110,7 +1160,7 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
                 }
             };
 
-            let registry = match core.get_registry() {
+            let registry = match core.get_registry_rc() {
                 Ok(r) => r,
                 Err(_) => {
                     let _ = tx.send(Vec::new());
@@ -1118,9 +1168,13 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
                 }
             };
 
-            let collected: Rc<RefCell<Vec<PipeWireDiscoveredNode>>> =
+            let collected: Rc<RefCell<Vec<(u32, PipeWireDiscoveredNode)>>> =
                 Rc::new(RefCell::new(Vec::new()));
             let collected_for_reg = collected.clone();
+            let node_bindings: Rc<RefCell<Vec<(pw::node::Node, pw::node::NodeListener)>>> =
+                Rc::new(RefCell::new(Vec::new()));
+            let node_bindings_for_reg = node_bindings.clone();
+            let registry_weak = registry.downgrade();
 
             let _reg_listener = registry
                 .add_listener_local()
@@ -1130,66 +1184,45 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
                         None => return,
                     };
                     let media_class = props.get("media.class").unwrap_or("");
-                    let (kind, is_audio) = match media_class {
-                        "Stream/Output/Audio" => (SourceKind::Application, true),
-                        "Audio/Source" => (SourceKind::InputDevice, true),
-                        "Audio/Sink" => (SourceKind::OutputDevice, true),
-                        _ => (SourceKind::SystemMix, false),
-                    };
-                    if !is_audio {
+                    if !matches!(
+                        media_class,
+                        "Stream/Output/Audio" | "Audio/Source" | "Audio/Sink"
+                    ) {
                         return;
                     }
 
-                    let name = props
-                        .get("application.name")
-                        .or_else(|| props.get("node.name"))
-                        .unwrap_or("unknown")
-                        .to_owned();
-                    let node_name = props.get("node.name").map(str::to_owned);
-                    let pid = props
-                        .get("application.process.id")
-                        .and_then(|s| s.parse::<u32>().ok());
-
-                    let app_id = if kind == SourceKind::Application {
-                        props.get("application.id").map(str::to_owned)
-                    } else {
-                        None
+                    let Some(registry) = registry_weak.upgrade() else {
+                        return;
                     };
-                    let stable_key = if kind == SourceKind::Application {
-                        let (stable_key, _) = pipewire_application_identity(
-                            app_id.as_deref(),
-                            node_name.as_deref(),
-                            global.id,
-                        );
-                        stable_key
-                    } else {
-                        node_name
-                            .as_deref()
-                            .map(|value| format!("pw-node:{value}"))
-                            .unwrap_or_else(|| format!("pw-transient:{}", global.id))
+                    let Ok(node) = registry.bind::<pw::node::Node, _>(global) else {
+                        return;
                     };
-                    let target_object = props.get("object.serial").map(str::to_owned);
-                    let device_uid = if kind == SourceKind::Application {
-                        None
-                    } else {
-                        node_name.clone()
-                    };
-                    let sample_rate_hz =
-                        parse_pipewire_sample_rate(props.get("audio.rate"), props.get("node.rate"));
-                    let channels = parse_pipewire_channel_count(props.get("audio.channels"));
-                    collected_for_reg.borrow_mut().push(PipeWireDiscoveredNode {
-                        source: CaptureSource {
-                            stable_id: StableSourceId::new(Platform::Linux, kind, stable_key),
-                            name,
-                            process_id: pid,
-                            app_id,
-                            device_uid,
-                            state: SourceState::Available,
-                            sample_rate_hz,
-                            channels,
-                        },
-                        target_object,
-                    });
+                    let global_id = global.id;
+                    let collected_for_info = collected_for_reg.clone();
+                    let node_listener = node
+                        .add_listener_local()
+                        .info(move |info| {
+                            let Some(props) = info.props() else {
+                                return;
+                            };
+                            let Some(discovered) = pipewire_discovered_node(props, global_id)
+                            else {
+                                return;
+                            };
+                            let mut collected = collected_for_info.borrow_mut();
+                            if let Some((_, existing)) = collected
+                                .iter_mut()
+                                .find(|(candidate_id, _)| *candidate_id == global_id)
+                            {
+                                *existing = discovered;
+                            } else {
+                                collected.push((global_id, discovered));
+                            }
+                        })
+                        .register();
+                    node_bindings_for_reg
+                        .borrow_mut()
+                        .push((node, node_listener));
                 })
                 .register();
 
@@ -1205,15 +1238,36 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
             let ml_for_done = mainloop.downgrade();
             let collected_for_done = collected.clone();
             let tx_clone = tx.clone();
+            let core_weak = core.downgrade();
+            let final_seq = Rc::new(Cell::new(None));
+            let final_seq_for_done = final_seq.clone();
 
             let _core_listener = core
                 .add_listener_local()
                 .done(move |id, done_seq| {
-                    if id == 0 && done_seq == seq {
-                        let sources = collected_for_done.borrow().clone();
+                    if id != 0 {
+                        return;
+                    }
+                    if done_seq == seq {
+                        if let Some(core) = core_weak.upgrade() {
+                            if let Ok(seq) = core.sync(0) {
+                                final_seq_for_done.set(Some(seq));
+                                return;
+                            }
+                        }
+                    }
+                    if final_seq_for_done
+                        .get()
+                        .is_some_and(|final_seq| done_seq == final_seq)
+                    {
+                        let sources = collected_for_done
+                            .borrow()
+                            .iter()
+                            .map(|(_, source)| source.clone())
+                            .collect();
                         let _ = tx_clone.send(sources);
-                        if let Some(ml) = ml_for_done.upgrade() {
-                            ml.quit();
+                        if let Some(mainloop) = ml_for_done.upgrade() {
+                            mainloop.quit();
                         }
                     }
                 })
@@ -1224,7 +1278,11 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
             let tx_timer = tx.clone();
             let collected_timer = collected.clone();
             let timer = mainloop.loop_().add_timer(move |_| {
-                let sources = collected_timer.borrow().clone();
+                let sources = collected_timer
+                    .borrow()
+                    .iter()
+                    .map(|(_, source)| source.clone())
+                    .collect();
                 let _ = tx_timer.send(sources);
                 if let Some(ml) = ml_timer.upgrade() {
                     ml.quit();
