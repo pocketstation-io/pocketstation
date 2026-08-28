@@ -27,11 +27,13 @@ You need Rust 1.95 or newer. Native capture is enabled by default.
 cargo add pocketstation@1.1.3
 ```
 
-The capture path is three lines:
+Import the three capture types, then use the three-line capture path:
 
 ```rust,no_run
-let session = pocketstation::Session::new();
-session.capture(pocketstation::Source::application(pocketstation::ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
+use pocketstation::{ApplicationSelector, Session, Source};
+
+let session = Session::new();
+session.capture(Source::application(ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
 let mut running = session.start().expect("Session failed to start");
 ```
 
