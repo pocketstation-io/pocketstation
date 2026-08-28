@@ -1,110 +1,72 @@
-# PocketStation 1.x release notes
+# PocketStation release notes
 
-PocketStation 1.x is the compatible release line for one source-aware desktop
-audio `Session`.
+This page covers user-visible changes in the PocketStation 1.x release line.
 
-## 1.1.3
+## 1.1.3 — Interrupt generated audio without stopping capture
 
-PocketStation 1.1.3 corrects lifecycle, platform, and output-cancellation
-behavior without adding a provider or another runtime:
+Voice applications often need to stop an outdated response as soon as a person
+starts speaking again. Stopping the whole Session also stops the microphone,
+recording, and every unrelated route.
 
-- application-owned generated audio can carry an output generation, allowing a
-  Session to discard pending frames for one cancelled response while unrelated
-  Sources and routes continue;
-- Endpoints receive that output identity through the existing bounded delivery
-  path, and multistem recording preserves the Session's `Drain` or `Abort`
-  request during finalization;
-- the Windows native-capture library builds through the supported observation
-  boundary; and
-- macOS application capture accepts an exact display name or bundle identifier,
-  preserves the discovered stable identity, and rejects ambiguous display
-  names before capture begins.
+PocketStation 1.1.3 adds replaceable output to application-owned audio inputs.
+An application can begin an output generation, write generated PCM to it, and
+cancel only that output. PocketStation rejects later writes for the cancelled
+generation and discards its pending frames from bounded Core delivery paths.
+Application capture, microphone capture, recording, and unrelated output keep
+running.
 
-The release does not add turn, model, provider, or conversation policy to Core.
-Those concerns remain in SDK composition and provider packages.
+The relevant Rust methods are:
 
-## 1.1.2
+- `AudioInput::begin_output_generation`
+- `AudioInput::try_write_for_output`
+- `OutputGeneration::cancel`
 
-PocketStation 1.1.2 completes the Core contracts required by the Python SDK
-without changing the established 1.1 API:
+Cancellation cannot recall audio that an external service or playback device
+has already accepted. A Connector must provide its own playout-clear operation
+when that destination supports one.
 
-- application-owned PCM uses the existing bounded Source lifecycle;
-- Session lifecycle, compiler diagnostics, faults, timing, discontinuities,
-  delivery, and recording observations have typed SDK projections;
-- Python-authored Operators can return generated PCM through the existing
-  bounded audio reentry path;
-- recording metadata uses stable additive constants without changing the
-  externally constructible `RecordingOutcome` structure; and
-- source-aware Operator input bindings remain intact when multiple stems use
-  the same Operator.
+### Select a macOS application by name
 
-The stable Session declaration continues to provide application and microphone
-Sources. System-output discovery remains available, but this patch does not add
-a new exhaustive `Source` enum variant. `cargo-semver-checks` passes all 223
-applicable checks against 1.1.1.
+Application capture on macOS now accepts either the exact application name
+shown to the user, such as `Brave Browser`, or its bundle identifier. When an
+application uses multiple processes, PocketStation captures the processes that
+share the same discovered application identity.
 
-## Scope of the 1.x line
+If the name matches different applications, selection fails before capture and
+asks for the bundle identifier. PocketStation never guesses between ambiguous
+matches.
 
-The core workflow keeps one desktop application and one microphone as
-independent stems while a Session routes them concurrently to Operators,
-application callbacks, remote delivery, and aligned multistem recording.
+### Reliability
 
-The stable execution contract preserves source, stream, stem, sequence,
-timestamp, clock, discontinuity, capacity, backpressure, loss, lifecycle, and
-failure semantics across:
+- Multistem recording now preserves the requested `Drain` or `Abort` behavior
+  through finalization.
+- The default native-capture library builds on Windows through the supported
+  observation boundary.
 
-- the specialized realtime audio lane;
-- bounded typed-signal lanes;
-- Rust and the versioned C ABI;
-- bounded PKSS process sidecars;
-- external source, Operator, Endpoint, Connector, and generated-audio
-  extensions.
+### Upgrade
 
-Provider implementations, customer protocols, models, transports, exporters,
-storage policy, and application business logic remain outside Core.
+This is a compatible 1.x update. It requires no configuration or data migration.
 
-## Compatibility promise
+```console
+cargo update -p pocketstation --precise 1.1.3
+```
 
-Compatible 1.x patches may correct documentation, packaging, security,
-correctness, OS or toolchain integration, and measured regressions without
-redefining the accepted Core contract. Rust API changes follow SemVer. The C
-ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol
-versions and stable `SignalSpec` identities.
+## 1.1.2 — Use application-owned audio in a Session
 
-During the 1.x line, a new provider, model, customer workflow, or exporter
-belongs in an extension rather than a new Core category whenever the public
-contracts can express it.
+PocketStation 1.1.2 made PCM produced by an application a normal source in the
+same Session as desktop application and microphone capture. That audio can use
+the same bounded routing, lineage, recording, and delivery paths as captured
+audio.
 
-The extension-first Core freeze is active from 2026-08-13 through 2028-08-13.
-During that period, additions use the existing open boundaries unless a
-reviewed compatibility change shows that those contracts cannot express the
-task.
+This release also:
 
-## What ships in 1.x
+- made lifecycle, timing, discontinuity, delivery, and recording observations
+  available to SDK bindings;
+- allowed SDK-authored Operators to return generated PCM through the existing
+  audio reentry path;
+- preserved source identity when multiple stems connect to the same Operator;
+  and
+- added recording metadata without changing the existing
+  `RecordingOutcome` layout.
 
-- Source-aware application and microphone capture with independent stems.
-- Bounded realtime audio and typed-signal lanes with explicit capacity,
-  backpressure, loss, discontinuity, and lifecycle behavior.
-- Open Operator, Endpoint, Connector, external-source, and generated-audio
-  extension contracts rather than closed provider categories.
-- A Connector driver authoring path where Core owns bounded receiver polling,
-  accounting, drain/abort, panic containment, and joined finalization while
-  providers implement typed preparation and delivery only. The lower-level
-  Endpoint-backed worker path remains available for specialized transports.
-- Typed Connector configuration, redacted and destruction-cleared secrets,
-  per-route edge authority, orthogonal provider service status, and structured
-  failure codes/retryability preserved in terminal Session outcomes.
-- Named composition, generated-audio reentry, aligned multistem recording,
-  runtime observations, and explicit stop and fault outcomes.
-- A versioned C ABI with executable callbacks and bounded PKSS process
-  sidecars.
-- Non-prompting microphone permission observation where the operating system
-  exposes an authoritative query. `NotObservable` remains unknown; selected
-  source prepare/open is authoritative on every platform.
-- A compiling public quickstart, extension guidance, platform prerequisites,
-  compatibility checks, and scoped evidence.
-
-Realtime callbacks remain allocation-free, lock-free, blocking-free,
-async-free, log-free, and panic-free by contract and repository checks. Each
-evidence artifact names its environment; 1.x does not claim universal platform
-parity or overall performance superiority.
+This was a compatible 1.x update and required no configuration migration.
