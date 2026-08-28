@@ -28,11 +28,14 @@ cargo add pocketstation@1.1.3
 
 ## The three-line capture path
 
-Application capture uses the same declaration on macOS, Windows, and Linux:
+Import the three capture types. Application capture then uses the same three
+lines on macOS, Windows, and Linux:
 
 ```rust,no_run
-let session = pocketstation::Session::new();
-session.capture(pocketstation::Source::application(pocketstation::ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
+use pocketstation::{ApplicationSelector, Session, Source};
+
+let session = Session::new();
+session.capture(Source::application(ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
 let mut running = session.start().expect("Session failed to start");
 ```
 
