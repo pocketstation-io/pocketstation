@@ -100,6 +100,17 @@ fn given_macos_input_callback_when_source_changes_then_realtime_contract_remains
 
 #[test]
 fn given_pipewire_process_callbacks_when_source_changes_then_realtime_contract_remains_explicit() {
+    let process_audio = fragment_between(
+        LINUX_CAPTURE,
+        "fn process_pipewire_audio(",
+        "fn capture_channel_count(",
+    );
+    assert_realtime_fragment(
+        "PipeWire bounded audio processing",
+        process_audio,
+        &["acquire_capture_buffer", "enqueue_capture_frame"],
+    );
+
     let callbacks = fragments_between_all(
         LINUX_CAPTURE,
         ".process(move |stream, state| {",
@@ -114,7 +125,7 @@ fn given_pipewire_process_callbacks_when_source_changes_then_realtime_contract_r
         assert_realtime_fragment(
             &format!("PipeWire process callback {index}"),
             callback,
-            &["acquire_capture_buffer", "enqueue_capture_frame"],
+            &["process_pipewire_audio"],
         );
     }
 }
