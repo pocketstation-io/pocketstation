@@ -28,8 +28,7 @@ cargo add pocketstation@1.1.3
 
 ## The three-line capture path
 
-Import the three capture types. Application capture then uses the same three
-lines on macOS, Windows, and Linux:
+Capture any running application with the same API on macOS, Windows, and Linux:
 
 ```rust,no_run
 use pocketstation::{ApplicationSelector, Session, Source};

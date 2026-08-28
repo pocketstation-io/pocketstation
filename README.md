@@ -27,7 +27,7 @@ You need Rust 1.95 or newer. Native capture is enabled by default.
 cargo add pocketstation@1.1.3
 ```
 
-Import the three capture types, then use the three-line capture path:
+Capture any running application with the same API on macOS, Windows, and Linux:
 
 ```rust,no_run
 use pocketstation::{ApplicationSelector, Session, Source};
