@@ -19,32 +19,36 @@ application PCM ─────┘                        ├─ Endpoint or Con
                                               └─ multistem recording
 ```
 
-## Get started
+## Capture any running application
 
 You need Rust 1.95 or newer. Native capture is enabled by default.
 
-```toml
-[dependencies]
-pocketstation = "1.1.2"
-```
-
-From a clone of this repository, start the quickstart:
-
 ```bash
-cargo run --release --example quickstart --locked
+cargo add pocketstation@1.1.3
 ```
 
-Choose a running application when prompted. The quickstart captures only that
-application. It does not open a microphone or write files. The example stops
-after observing audio from the selected application, or returns the setup or
-runtime error that prevented capture. See the
-[Rust quickstart](docs/getting-started/rust-quickstart.md) for platform
-selection details and optional microphone and recording commands.
+The capture path is three lines:
+
+```rust,no_run
+let session = pocketstation::Session::new();
+session.capture(pocketstation::Source::application(pocketstation::ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
+let mut running = session.start().expect("Session failed to start");
+```
+
+Replace `Spotify` with the exact name or identifier of any running application.
+The same declaration is used on macOS, Windows, and Linux; permissions and
+native build prerequisites remain platform-specific. No microphone opens and
+no file is written unless you request those routes.
+
+The [Rust quickstart](docs/getting-started/rust-quickstart.md) provides the
+complete program: interactive application selection, bounded frame polling,
+optional microphone and recording routes, a finite deadline, and joined
+shutdown.
 
 For contracts-only tooling or documentation builds, disable native capture:
 
 ```toml
-pocketstation = { version = "1.1.2", default-features = false }
+pocketstation = { version = "1.1.3", default-features = false }
 ```
 
 ## Choose a task
@@ -160,6 +164,7 @@ sudo apt install build-essential cmake pkg-config \
 - [Build a Connector](docs/guides/connectors.md)
 - [Extend PocketStation](docs/guides/extensions.md)
 - [Check compatibility](docs/compatibility/README.md)
+- [Read the release notes](RELEASE_NOTES.md)
 - [Read the API reference](https://docs.rs/pocketstation/latest/pocketstation/)
 
 ## Verify a local change
