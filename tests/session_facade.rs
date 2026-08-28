@@ -5,7 +5,9 @@ use std::time::{Duration, Instant};
 
 #[cfg(feature = "conformance-fixtures")]
 use pocketstation::SessionRecordingState;
-use pocketstation::{Session, Source};
+use pocketstation::{
+    ApplicationSelector, Platform, ProcessId, Session, Source, SourceKind, StableSourceId,
+};
 
 #[test]
 fn given_public_facade_when_session_declared_then_canonical_types_are_used() {
@@ -17,6 +19,25 @@ fn given_public_facade_when_session_declared_then_canonical_types_are_used() {
 
     let configured = Session::builder().recording_root("recordings").build();
     let _ = configured.id();
+}
+
+#[test]
+fn given_application_selector_inputs_when_declared_then_public_facade_remains_concise() {
+    let explicit_constructor: fn(ApplicationSelector) -> Source = Source::application;
+    let stable_id = StableSourceId::new(Platform::Macos, SourceKind::Application, "us.zoom.xos");
+
+    assert_eq!(
+        Source::application("Zoom"),
+        explicit_constructor(ApplicationSelector::name("Zoom"))
+    );
+    assert_eq!(
+        Source::application(ProcessId::new(1234)),
+        explicit_constructor(ApplicationSelector::process_id(ProcessId::new(1234)))
+    );
+    assert_eq!(
+        Source::application(&stable_id),
+        explicit_constructor(ApplicationSelector::stable_id(stable_id))
+    );
 }
 
 #[cfg(feature = "conformance-fixtures")]

@@ -886,31 +886,98 @@ impl SystemLoopbackSource {
 }
 
 fn resolve_application_mode(mode: CaptureMode) -> Result<CaptureMode, LoopbackError> {
-    let CaptureMode::Application(name) = mode else {
-        return Ok(mode);
-    };
-    let name_lower = name.to_ascii_lowercase();
-    let sources = discover_sources_windows();
-    let source = sources
-        .iter()
-        .find(|source| {
-            source.name.to_ascii_lowercase() == name_lower
-                || source.app_id.as_deref().map(str::to_ascii_lowercase) == Some(name_lower.clone())
-        })
-        .ok_or_else(|| {
-            LoopbackError::BackendInit(format!(
-                "no audio session found for '{name}' — run `pks sources list`"
-            ))
-        })?;
-    let process_id = source.process_id.ok_or_else(|| {
-        LoopbackError::BackendInit(format!(
-            "audio source '{name}' has no process identity — run `pks sources list`"
-        ))
-    })?;
-    Ok(CaptureMode::ExactApplication {
-        process_id,
-        stable_id: source.stable_id.clone(),
-    })
+    match mode {
+        CaptureMode::Application(name) => {
+            let sources = discover_sources_windows();
+            let mut matches = sources.iter().filter(|source| {
+                source.name.eq_ignore_ascii_case(&name)
+                    || source
+                        .app_id
+                        .as_deref()
+                        .is_some_and(|app_id| app_id.eq_ignore_ascii_case(&name))
+            });
+            let source = matches.next().ok_or_else(|| {
+                LoopbackError::BackendInit(format!(
+                    "no running audio source matches application '{name}'"
+                ))
+            })?;
+            if matches.any(|candidate| candidate.stable_id != source.stable_id) {
+                return Err(LoopbackError::BackendInit(format!(
+                    "application '{name}' matches multiple audio sessions — select one from source discovery"
+                )));
+            }
+            let process_id = source.process_id.ok_or_else(|| {
+                LoopbackError::BackendInit(format!(
+                    "audio source for application '{name}' has no process identity"
+                ))
+            })?;
+            Ok(CaptureMode::ExactApplication {
+                process_id,
+                stable_id: source.stable_id.clone(),
+            })
+        }
+        CaptureMode::ExactApplicationStable { stable_id } => {
+            if stable_id.platform != Platform::Windows || stable_id.kind != SourceKind::Application
+            {
+                return Err(LoopbackError::SourceUnavailable {
+                    stable_key: stable_id.stable_key,
+                });
+            }
+            let Some(process_instance) = ProcessInstanceFingerprint::parse(&stable_id.stable_key)
+            else {
+                return Err(LoopbackError::SourceUnavailable {
+                    stable_key: stable_id.stable_key,
+                });
+            };
+            if process_instance.process_id == 0 || process_instance.creation_time_100ns == 0 {
+                return Err(LoopbackError::SourceUnavailable {
+                    stable_key: stable_id.stable_key,
+                });
+            }
+            Ok(CaptureMode::ExactApplication {
+                process_id: process_instance.process_id,
+                stable_id,
+            })
+        }
+        other => Ok(other),
+    }
+}
+
+#[cfg(test)]
+mod application_selection_tests {
+    use super::*;
+
+    #[test]
+    fn given_discovered_stable_identity_when_resolved_then_exact_process_instance_is_retained() {
+        let fingerprint = ProcessInstanceFingerprint::new(42, 133_980_144_000_000_000);
+        let stable_id = StableSourceId::new(
+            Platform::Windows,
+            SourceKind::Application,
+            fingerprint.stable_key(),
+        );
+
+        assert_eq!(
+            resolve_application_mode(CaptureMode::ExactApplicationStable {
+                stable_id: stable_id.clone(),
+            }),
+            Ok(CaptureMode::ExactApplication {
+                process_id: 42,
+                stable_id,
+            })
+        );
+    }
+
+    #[test]
+    fn given_foreign_stable_identity_when_resolved_then_selection_fails_closed() {
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::Application, "com.acme.meeting");
+
+        assert!(matches!(
+            resolve_application_mode(CaptureMode::ExactApplicationStable { stable_id }),
+            Err(LoopbackError::SourceUnavailable { stable_key })
+                if stable_key == "com.acme.meeting"
+        ));
+    }
 }
 
 /// Drop contract — control thread only: signal once, join both owned workers,

@@ -97,7 +97,6 @@ struct PipeWireDiscoveredNode {
     /// Current PipeWire object serial used only to open this live node. It is
     /// deliberately separate from the persistent public source identity.
     target_object: Option<String>,
-    application_identity_scope: Option<ApplicationIdentityScope>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -297,9 +296,7 @@ fn select_unique_exact_application<'a>(
     }
 
     let mut matching_nodes = nodes.iter().filter(|node| {
-        (process_id.is_some()
-            || node.application_identity_scope == Some(ApplicationIdentityScope::Persistent))
-            && node.source.stable_id == *stable_id
+        node.source.stable_id == *stable_id
             && process_id.is_none_or(|pid| node.source.process_id == Some(pid))
     });
     let Some(matching_node) = matching_nodes.next() else {
@@ -587,7 +584,7 @@ impl SystemLoopbackSource {
                 let nodes = enumerate_pipewire_nodes();
                 let name_lower = name.to_ascii_lowercase();
                 let name_clone = name.clone();
-                match nodes.iter().find(|node| {
+                let mut matches = nodes.iter().filter(|node| {
                     node.source.stable_id.kind == SourceKind::Application
                         && (node.source.name.to_ascii_lowercase() == name_lower
                             || node
@@ -595,7 +592,13 @@ impl SystemLoopbackSource {
                                 .app_id
                                 .as_deref()
                                 .is_some_and(|app_id| app_id.eq_ignore_ascii_case(name)))
-                }) {
+                });
+                match matches.next() {
+                    Some(node) if matches.next().is_some() => Err(LoopbackError::BackendInit(
+                        format!(
+                            "application '{name}' matches multiple PipeWire audio nodes — select one from source discovery"
+                        ),
+                    )),
                     Some(node) => run_pipewire_targeted(
                         pipewire_node_target(node)?,
                         node.source.stable_id.source_id(),
@@ -1152,23 +1155,19 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
                     } else {
                         None
                     };
-                    let (stable_key, application_identity_scope) =
-                        if kind == SourceKind::Application {
-                            let (stable_key, identity_scope) = pipewire_application_identity(
-                                app_id.as_deref(),
-                                node_name.as_deref(),
-                                global.id,
-                            );
-                            (stable_key, Some(identity_scope))
-                        } else {
-                            (
-                                node_name
-                                    .as_deref()
-                                    .map(|value| format!("pw-node:{value}"))
-                                    .unwrap_or_else(|| format!("pw-transient:{}", global.id)),
-                                None,
-                            )
-                        };
+                    let stable_key = if kind == SourceKind::Application {
+                        let (stable_key, _) = pipewire_application_identity(
+                            app_id.as_deref(),
+                            node_name.as_deref(),
+                            global.id,
+                        );
+                        stable_key
+                    } else {
+                        node_name
+                            .as_deref()
+                            .map(|value| format!("pw-node:{value}"))
+                            .unwrap_or_else(|| format!("pw-transient:{}", global.id))
+                    };
                     let target_object = props.get("object.serial").map(str::to_owned);
                     let device_uid = if kind == SourceKind::Application {
                         None
@@ -1190,7 +1189,6 @@ fn enumerate_pipewire_nodes() -> Vec<PipeWireDiscoveredNode> {
                             channels,
                         },
                         target_object,
-                        application_identity_scope,
                     });
                 })
                 .register();
@@ -1813,7 +1811,6 @@ mod tests {
     fn discovered_application(
         stable_key: &str,
         process_id: u32,
-        identity_scope: ApplicationIdentityScope,
         target_object: &str,
     ) -> PipeWireDiscoveredNode {
         PipeWireDiscoveredNode {
@@ -1832,7 +1829,6 @@ mod tests {
                 channels: 2,
             },
             target_object: Some(target_object.to_owned()),
-            application_identity_scope: Some(identity_scope),
         }
     }
 
@@ -1935,18 +1931,8 @@ mod tests {
     fn given_exact_application_selector_when_one_live_node_matches_then_current_target_is_selected()
     {
         let nodes = vec![
-            discovered_application(
-                "pw-app:org.example.Meeting",
-                41,
-                ApplicationIdentityScope::Persistent,
-                "812",
-            ),
-            discovered_application(
-                "pw-app:org.example.Other",
-                42,
-                ApplicationIdentityScope::Persistent,
-                "813",
-            ),
+            discovered_application("pw-app:org.example.Meeting", 41, "812"),
+            discovered_application("pw-app:org.example.Other", 42, "813"),
         ];
         let selector = StableSourceId::new(
             Platform::Linux,
@@ -1962,32 +1948,21 @@ mod tests {
     }
 
     #[test]
-    fn given_exact_application_selector_when_identity_is_transient_then_selection_fails_closed() {
-        let nodes = vec![discovered_application(
-            "pw-transient:91",
-            41,
-            ApplicationIdentityScope::ProcessLifetime,
-            "812",
-        )];
+    fn given_exact_application_selector_when_identity_is_transient_then_live_source_is_selected() {
+        let nodes = vec![discovered_application("pw-transient:91", 41, "812")];
         let selector =
             StableSourceId::new(Platform::Linux, SourceKind::Application, "pw-transient:91");
 
-        assert!(matches!(
-            select_unique_exact_application(&nodes, &selector, None),
-            Err(CaptureError::SourceUnavailable { stable_key })
-                if stable_key == "pw-transient:91"
-        ));
+        let selected = select_unique_exact_application(&nodes, &selector, None)
+            .expect("an exact transient identity remains valid while its node is live");
+
+        assert_eq!(selected.target_object.as_deref(), Some("812"));
     }
 
     #[test]
     fn given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed()
     {
-        let nodes = vec![discovered_application(
-            "pw-transient:91",
-            41,
-            ApplicationIdentityScope::ProcessLifetime,
-            "812",
-        )];
+        let nodes = vec![discovered_application("pw-transient:91", 41, "812")];
         let selector =
             StableSourceId::new(Platform::Linux, SourceKind::Application, "pw-transient:91");
 
@@ -2000,18 +1975,8 @@ mod tests {
     #[test]
     fn given_exact_application_selector_when_multiple_nodes_match_then_selection_is_ambiguous() {
         let nodes = vec![
-            discovered_application(
-                "pw-app:org.example.Meeting",
-                41,
-                ApplicationIdentityScope::Persistent,
-                "812",
-            ),
-            discovered_application(
-                "pw-app:org.example.Meeting",
-                42,
-                ApplicationIdentityScope::Persistent,
-                "813",
-            ),
+            discovered_application("pw-app:org.example.Meeting", 41, "812"),
+            discovered_application("pw-app:org.example.Meeting", 42, "813"),
         ];
         let selector = StableSourceId::new(
             Platform::Linux,
