@@ -219,6 +219,36 @@ fn select_application_capture(
     })
 }
 
+fn select_stable_application_capture(
+    sources: &[CaptureSource],
+    stable_id: &StableSourceId,
+) -> Result<ApplicationCaptureSelection, LoopbackError> {
+    if stable_id.platform != Platform::Macos || stable_id.kind != SourceKind::Application {
+        return Err(LoopbackError::SourceUnavailable {
+            stable_key: stable_id.stable_key.clone(),
+        });
+    }
+
+    let mut process_ids = sources
+        .iter()
+        .filter(|source| source.stable_id == *stable_id)
+        .filter_map(|source| source.process_id)
+        .map(|process_id| process_id as i32)
+        .collect::<Vec<_>>();
+    process_ids.sort_unstable();
+    process_ids.dedup();
+    if process_ids.is_empty() {
+        return Err(LoopbackError::SourceUnavailable {
+            stable_key: stable_id.stable_key.clone(),
+        });
+    }
+
+    Ok(ApplicationCaptureSelection {
+        process_ids,
+        stable_id: stable_id.clone(),
+    })
+}
+
 fn cstr_to_string(buf: &[u8]) -> Option<String> {
     let end = buf.iter().position(|&b| b == 0).unwrap_or(buf.len());
     if end == 0 {
@@ -526,8 +556,13 @@ impl TapLoopbackSource {
                 ProcessTap::for_pids(&[*process_id as i32])?,
                 stable_source_id(&mode)?,
             ),
-            CaptureMode::ExactApplicationStable { .. } => {
-                return Err(LoopbackError::ModeUnsupported(mode.clone()));
+            CaptureMode::ExactApplicationStable { stable_id } => {
+                let sources = discover_sources_native();
+                let selected = select_stable_application_capture(&sources, stable_id)?;
+                (
+                    ProcessTap::for_pids(&selected.process_ids)?,
+                    selected.stable_id,
+                )
             }
             CaptureMode::Application(application) => {
                 let sources = discover_sources_native();
@@ -720,8 +755,9 @@ impl Drop for TapLoopbackSource {
 mod tests {
     use super::{
         exact_application_open_audit, process_timestamp_ns, select_application_capture,
-        source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource,
-        ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
+        select_stable_application_capture, source_host_timestamp_ns, stable_source_id, tap_error,
+        AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch,
+        CORE_AUDIO_PERMISSION_DENIED_STATUS,
     };
     use crate::capture::{
         CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId,
@@ -853,6 +889,44 @@ mod tests {
 
         assert_eq!(selected.process_ids, vec![42]);
         assert_eq!(selected.stable_id.stable_key, "com.brave.Browser");
+    }
+
+    #[test]
+    fn given_stable_application_identity_when_selected_then_all_live_processes_are_captured() {
+        let stable_id = StableSourceId::new(
+            Platform::Macos,
+            SourceKind::Application,
+            "com.brave.Browser",
+        );
+        let sources = vec![
+            application_source("Brave Browser", "com.brave.Browser", Some(42)),
+            application_source("Brave Browser", "com.brave.Browser", Some(43)),
+        ];
+
+        let selected = select_stable_application_capture(&sources, &stable_id).unwrap();
+
+        assert_eq!(selected.process_ids, vec![42, 43]);
+        assert_eq!(selected.stable_id, stable_id);
+    }
+
+    #[test]
+    fn given_foreign_platform_identity_when_selected_then_capture_fails_closed() {
+        let stable_id = StableSourceId::new(
+            Platform::Windows,
+            SourceKind::Application,
+            "com.brave.Browser",
+        );
+        let sources = vec![application_source(
+            "Brave Browser",
+            "com.brave.Browser",
+            Some(42),
+        )];
+
+        assert!(matches!(
+            select_stable_application_capture(&sources, &stable_id),
+            Err(CaptureError::SourceUnavailable { stable_key })
+                if stable_key == "com.brave.Browser"
+        ));
     }
 
     #[test]

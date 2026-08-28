@@ -41,10 +41,19 @@ pub enum ApplicationSelector {
 }
 
 impl ApplicationSelector {
+    /// Selects an application by its native application identifier.
+    ///
+    /// Application identifiers are platform-specific. Use a discovered
+    /// [`StableSourceId`] when the selection must be reused without repeating
+    /// a display-name lookup.
     pub fn bundle_id(bundle_id: impl Into<String>) -> Self {
         Self::BundleId(bundle_id.into())
     }
 
+    /// Selects one currently running process.
+    ///
+    /// Process identifiers are temporary and can be reused after a process
+    /// exits. Prefer a discovered [`StableSourceId`] when one is available.
     pub const fn process_id(process_id: ProcessId) -> Self {
         Self::ProcessId(process_id)
     }
@@ -56,6 +65,12 @@ impl ApplicationSelector {
         }
     }
 
+    /// Selects the live application represented by a discovered identity.
+    ///
+    /// The identity's persistence is reported by
+    /// [`crate::CaptureSource::selector_persistence_scope`]. Some platforms
+    /// provide an application identity that survives restarts; others can
+    /// provide only an identity for the current process or audio node.
     pub fn stable_id(source_id: StableSourceId) -> Self {
         Self::StableId(source_id)
     }
@@ -103,6 +118,42 @@ impl ApplicationSelector {
     }
 }
 
+impl From<&str> for ApplicationSelector {
+    fn from(name: &str) -> Self {
+        Self::name(name)
+    }
+}
+
+impl From<String> for ApplicationSelector {
+    fn from(name: String) -> Self {
+        Self::name(name)
+    }
+}
+
+impl From<&String> for ApplicationSelector {
+    fn from(name: &String) -> Self {
+        Self::name(name)
+    }
+}
+
+impl From<ProcessId> for ApplicationSelector {
+    fn from(process_id: ProcessId) -> Self {
+        Self::process_id(process_id)
+    }
+}
+
+impl From<StableSourceId> for ApplicationSelector {
+    fn from(stable_id: StableSourceId) -> Self {
+        Self::stable_id(stable_id)
+    }
+}
+
+impl From<&StableSourceId> for ApplicationSelector {
+    fn from(stable_id: &StableSourceId) -> Self {
+        Self::stable_id(stable_id.clone())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DeviceSelector {
     Default,
@@ -137,8 +188,26 @@ pub enum Source {
 }
 
 impl Source {
-    pub fn application(selector: ApplicationSelector) -> Self {
-        Self::Application(selector)
+    /// Selects one running desktop application.
+    ///
+    /// A string matches an exact display name or native application ID,
+    /// ignoring ASCII case. Selection fails before capture begins when no
+    /// application matches or when the value identifies more than one
+    /// application. PocketStation never guesses or selects the first match.
+    ///
+    /// Use [`ProcessId`] for a temporary process selection or a discovered
+    /// [`StableSourceId`] for exact identity selection.
+    ///
+    /// ```
+    /// use pocketstation::{ProcessId, Source};
+    ///
+    /// let by_name = Source::application("Zoom");
+    /// let by_application_id = Source::application("us.zoom.xos");
+    /// let by_process = Source::application(ProcessId::new(1234));
+    /// # let _ = (by_name, by_application_id, by_process);
+    /// ```
+    pub fn application(selector: impl Into<ApplicationSelector>) -> Self {
+        Self::Application(selector.into())
     }
 
     pub fn microphone(selector: DeviceSelector) -> Self {
@@ -162,7 +231,7 @@ mod tests {
     use crate::capture::{SourceKind, StableSourceId};
     use crate::frame::Platform;
 
-    use super::{ApplicationSelector, ProcessId};
+    use super::{ApplicationSelector, ProcessId, Source};
     use crate::session::SessionError;
 
     #[test]
@@ -210,5 +279,50 @@ mod tests {
             selector.validate(),
             Err(SessionError::InvalidSelector { .. })
         ));
+    }
+
+    #[test]
+    fn given_application_name_when_source_declared_then_name_selector_is_inferred() {
+        assert_eq!(
+            Source::application("Zoom"),
+            Source::Application(ApplicationSelector::Name("Zoom".to_owned()))
+        );
+    }
+
+    #[test]
+    fn given_owned_application_name_when_source_declared_then_name_selector_is_inferred() {
+        assert_eq!(
+            Source::application("Zoom".to_owned()),
+            Source::Application(ApplicationSelector::Name("Zoom".to_owned()))
+        );
+    }
+
+    #[test]
+    fn given_borrowed_owned_name_when_source_declared_then_name_selector_is_inferred() {
+        let name = "Zoom".to_owned();
+
+        assert_eq!(
+            Source::application(&name),
+            Source::Application(ApplicationSelector::Name("Zoom".to_owned()))
+        );
+    }
+
+    #[test]
+    fn given_process_id_when_source_declared_then_process_selector_is_inferred() {
+        assert_eq!(
+            Source::application(ProcessId::new(42)),
+            Source::Application(ApplicationSelector::ProcessId(ProcessId::new(42)))
+        );
+    }
+
+    #[test]
+    fn given_stable_identity_when_source_declared_then_exact_selector_is_inferred() {
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::Application, "com.acme.meeting");
+
+        assert_eq!(
+            Source::application(&stable_id),
+            Source::Application(ApplicationSelector::StableId(stable_id))
+        );
     }
 }
