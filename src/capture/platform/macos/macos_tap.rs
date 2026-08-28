@@ -35,6 +35,12 @@ struct AuditedCaptureSource {
     process_start_time_ns: u64,
 }
 
+#[derive(Debug, PartialEq, Eq)]
+struct ApplicationCaptureSelection {
+    process_ids: Vec<i32>,
+    stable_id: StableSourceId,
+}
+
 extern "C" {
     fn pks_process_tap_available() -> i32;
     fn pks_discover_sources(out: *mut RawSourceInfo, max_count: i32) -> i32;
@@ -162,6 +168,55 @@ fn discover_sources_native_with_audit() -> Vec<AuditedCaptureSource> {
             }
         })
         .collect()
+}
+
+fn select_application_capture(
+    sources: &[CaptureSource],
+    application: &str,
+) -> Result<ApplicationCaptureSelection, LoopbackError> {
+    let mut matches = sources.iter().filter(|source| {
+        source.stable_id.kind == SourceKind::Application
+            && (source.name.eq_ignore_ascii_case(application)
+                || source
+                    .app_id
+                    .as_deref()
+                    .is_some_and(|app_id| app_id.eq_ignore_ascii_case(application)))
+    });
+    let first = matches.next().ok_or_else(|| {
+        LoopbackError::BackendInit(format!(
+            "no running audio source found for application '{application}'"
+        ))
+    })?;
+    let stable_id = first.stable_id.clone();
+    let mut process_ids = first
+        .process_id
+        .map(|process_id| process_id as i32)
+        .into_iter()
+        .collect::<Vec<_>>();
+
+    for source in matches {
+        if source.stable_id != stable_id {
+            return Err(LoopbackError::BackendInit(format!(
+                "application '{application}' matches multiple running audio sources; select one from source discovery"
+            )));
+        }
+        if let Some(process_id) = source.process_id {
+            process_ids.push(process_id as i32);
+        }
+    }
+
+    process_ids.sort_unstable();
+    process_ids.dedup();
+    if process_ids.is_empty() {
+        return Err(LoopbackError::BackendInit(format!(
+            "audio source for application '{application}' has no process identity"
+        )));
+    }
+
+    Ok(ApplicationCaptureSelection {
+        process_ids,
+        stable_id,
+    })
 }
 
 fn cstr_to_string(buf: &[u8]) -> Option<String> {
@@ -461,36 +516,34 @@ impl TapLoopbackSource {
             None
         };
 
-        let mut tap = match &mode {
-            CaptureMode::SystemMix => ProcessTap::global()?,
-            CaptureMode::Process(pid) => ProcessTap::for_pids(&[*pid as i32])?,
-            CaptureMode::ExactApplication { process_id, .. } => {
-                ProcessTap::for_pids(&[*process_id as i32])?
-            }
+        let (mut tap, stable_id) = match &mode {
+            CaptureMode::SystemMix => (ProcessTap::global()?, stable_source_id(&mode)?),
+            CaptureMode::Process(pid) => (
+                ProcessTap::for_pids(&[*pid as i32])?,
+                stable_source_id(&mode)?,
+            ),
+            CaptureMode::ExactApplication { process_id, .. } => (
+                ProcessTap::for_pids(&[*process_id as i32])?,
+                stable_source_id(&mode)?,
+            ),
             CaptureMode::ExactApplicationStable { .. } => {
                 return Err(LoopbackError::ModeUnsupported(mode.clone()));
             }
-            CaptureMode::Application(bundle_id) => {
+            CaptureMode::Application(application) => {
                 let sources = discover_sources_native();
-                let pids: Vec<i32> = sources
-                    .iter()
-                    .filter(|s| s.app_id.as_deref() == Some(bundle_id.as_str()))
-                    .filter_map(|s| s.process_id.map(|p| p as i32))
-                    .collect();
+                let selected = select_application_capture(&sources, application)?;
                 if std::env::var_os("PKS_TAP_DIAG").is_some() {
                     eprintln!(
-                        "tap_diag: app_source_lookup bundle_id={} sources={} pids={:?}",
-                        bundle_id,
+                        "tap_diag: application={} sources={} process_ids={:?}",
+                        application,
                         sources.len(),
-                        pids
+                        selected.process_ids
                     );
                 }
-                if pids.is_empty() {
-                    return Err(LoopbackError::BackendInit(format!(
-                        "no running audio process found for bundle ID: {bundle_id}"
-                    )));
-                }
-                ProcessTap::for_pids(&pids)?
+                (
+                    ProcessTap::for_pids(&selected.process_ids)?,
+                    selected.stable_id,
+                )
             }
             CaptureMode::InputDevice(_) => {
                 return Err(LoopbackError::ModeUnsupported(mode));
@@ -528,7 +581,6 @@ impl TapLoopbackSource {
         let counters = CaptureObservationCounters::default();
         let capture_counters = counters.clone();
 
-        let stable_id = stable_source_id(&mode)?;
         let source_id = stable_id.source_id();
         let failure_counters = counters.clone();
 
@@ -667,9 +719,9 @@ impl Drop for TapLoopbackSource {
 #[cfg(test)]
 mod tests {
     use super::{
-        exact_application_open_audit, process_timestamp_ns, source_host_timestamp_ns,
-        stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit,
-        ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
+        exact_application_open_audit, process_timestamp_ns, select_application_capture,
+        source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource,
+        ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
     };
     use crate::capture::{
         CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId,
@@ -695,6 +747,19 @@ mod tests {
                 channels: 2,
             },
             process_start_time_ns,
+        }
+    }
+
+    fn application_source(name: &str, app_id: &str, process_id: Option<u32>) -> CaptureSource {
+        CaptureSource {
+            stable_id: StableSourceId::new(Platform::Macos, SourceKind::Application, app_id),
+            name: name.to_owned(),
+            process_id,
+            app_id: Some(app_id.to_owned()),
+            device_uid: None,
+            state: SourceState::Playing,
+            sample_rate_hz: 48_000,
+            channels: 2,
         }
     }
 
@@ -761,6 +826,54 @@ mod tests {
         .source_id();
 
         assert_eq!(observed, expected);
+    }
+
+    #[test]
+    fn given_display_name_when_application_selected_then_all_matching_processes_are_captured() {
+        let sources = vec![
+            application_source("Brave Browser", "com.brave.Browser", Some(42)),
+            application_source("Brave Browser", "com.brave.Browser", Some(43)),
+        ];
+
+        let selected = select_application_capture(&sources, "Brave Browser").unwrap();
+
+        assert_eq!(selected.process_ids, vec![42, 43]);
+        assert_eq!(selected.stable_id.stable_key, "com.brave.Browser");
+    }
+
+    #[test]
+    fn given_bundle_id_when_application_selected_then_discovered_identity_is_preserved() {
+        let sources = vec![application_source(
+            "Brave Browser",
+            "com.brave.Browser",
+            Some(42),
+        )];
+
+        let selected = select_application_capture(&sources, "com.brave.Browser").unwrap();
+
+        assert_eq!(selected.process_ids, vec![42]);
+        assert_eq!(selected.stable_id.stable_key, "com.brave.Browser");
+    }
+
+    #[test]
+    fn given_ambiguous_display_name_when_application_selected_then_capture_fails_closed() {
+        let sources = vec![
+            application_source("Meeting", "com.acme.meeting", Some(42)),
+            application_source("Meeting", "com.other.meeting", Some(43)),
+        ];
+
+        let error = select_application_capture(&sources, "Meeting").unwrap_err();
+
+        assert!(error.to_string().contains("multiple running audio sources"));
+    }
+
+    #[test]
+    fn given_application_without_process_identity_when_selected_then_capture_fails_closed() {
+        let sources = vec![application_source("Meeting", "com.acme.meeting", None)];
+
+        let error = select_application_capture(&sources, "Meeting").unwrap_err();
+
+        assert!(error.to_string().contains("has no process identity"));
     }
 
     #[test]
