@@ -22,15 +22,26 @@ Native build requirements:
 
 ## Add PocketStation
 
-```toml
-[dependencies]
-pocketstation = "1.1.2"
+```bash
+cargo add pocketstation@1.1.3
 ```
 
-The complete program is
-[`examples/quickstart.rs`](../../examples/quickstart.rs).
+## The three-line capture path
 
-## Run the quickstart
+Application capture uses the same declaration on macOS, Windows, and Linux:
+
+```rust,no_run
+let session = pocketstation::Session::new();
+session.capture(pocketstation::Source::application(pocketstation::ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
+let mut running = session.start().expect("Session failed to start");
+```
+
+Replace `Spotify` with the exact display name or application identifier of a
+running application. These lines select one application, route its audio to a
+bounded polling Endpoint, and start the Session. A complete program must poll
+the frames and stop the Session; the repository quickstart below includes both.
+
+## Run the complete quickstart
 
 From this repository:
 
@@ -42,6 +53,9 @@ Choose a running application from the list. PocketStation resolves the selected
 process and stable source identity before the Session starts. The Session stops
 after it observes at least two frames from that application. It does not open a
 microphone or write a recording by default.
+
+The complete program is
+[`examples/quickstart.rs`](../../examples/quickstart.rs).
 
 ## Options
 
