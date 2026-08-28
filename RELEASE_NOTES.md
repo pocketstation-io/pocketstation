@@ -3,6 +3,26 @@
 PocketStation 1.x is the compatible release line for one source-aware desktop
 audio `Session`.
 
+## 1.1.3
+
+PocketStation 1.1.3 corrects lifecycle, platform, and output-cancellation
+behavior without adding a provider or another runtime:
+
+- application-owned generated audio can carry an output generation, allowing a
+  Session to discard pending frames for one cancelled response while unrelated
+  Sources and routes continue;
+- Endpoints receive that output identity through the existing bounded delivery
+  path, and multistem recording preserves the Session's `Drain` or `Abort`
+  request during finalization;
+- the Windows native-capture library builds through the supported observation
+  boundary; and
+- macOS application capture accepts an exact display name or bundle identifier,
+  preserves the discovered stable identity, and rejects ambiguous display
+  names before capture begins.
+
+The release does not add turn, model, provider, or conversation policy to Core.
+Those concerns remain in SDK composition and provider packages.
+
 ## 1.1.2
 
 PocketStation 1.1.2 completes the Core contracts required by the Python SDK
