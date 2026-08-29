@@ -370,6 +370,33 @@ fn exact_application_open_audit(
         })
 }
 
+fn application_open_audit_for_process(
+    sources: &[AuditedCaptureSource],
+    process_id: u32,
+) -> Option<ExactApplicationOpenAudit> {
+    sources
+        .iter()
+        .find(|audited| {
+            audited.process_start_time_ns != 0
+                && audited.source.process_id == Some(process_id)
+                && audited.source.stable_id.kind == SourceKind::Application
+        })
+        .map(|audited| ExactApplicationOpenAudit {
+            process_id,
+            stable_id: audited.source.stable_id.clone(),
+            process_start_time_ns: audited.process_start_time_ns,
+        })
+}
+
+fn capture_application_open_audit_for_process(
+    process_id: u32,
+) -> Result<ExactApplicationOpenAudit, LoopbackError> {
+    application_open_audit_for_process(&discover_sources_native_with_audit(), process_id)
+        .ok_or_else(|| LoopbackError::SourceUnavailable {
+            stable_key: format!("pid:{process_id}"),
+        })
+}
+
 fn capture_exact_application_open_audit(
     process_id: u32,
     stable_id: &StableSourceId,
@@ -533,25 +560,31 @@ impl TapLoopbackSource {
             ));
         }
 
-        let exact_application_open_audit = if let CaptureMode::ExactApplication {
-            process_id,
-            stable_id,
-        } = &mode
-        {
-            Some(capture_exact_application_open_audit(
+        let exact_application_open_audit = match &mode {
+            CaptureMode::Process(process_id) => {
+                Some(capture_application_open_audit_for_process(*process_id)?)
+            }
+            CaptureMode::ExactApplication {
+                process_id,
+                stable_id,
+            } => Some(capture_exact_application_open_audit(
                 *process_id,
                 stable_id,
-            )?)
-        } else {
-            None
+            )?),
+            _ => None,
         };
 
         let (mut tap, stable_id) = match &mode {
             CaptureMode::SystemMix => (ProcessTap::global()?, stable_source_id(&mode)?),
-            CaptureMode::Process(pid) => (
-                ProcessTap::for_pids(&[*pid as i32])?,
-                stable_source_id(&mode)?,
-            ),
+            CaptureMode::Process(pid) => {
+                let stable_id = exact_application_open_audit
+                    .as_ref()
+                    .map(|audit| audit.stable_id.clone())
+                    .ok_or_else(|| LoopbackError::SourceUnavailable {
+                        stable_key: format!("pid:{pid}"),
+                    })?;
+                (ProcessTap::for_pids(&[*pid as i32])?, stable_id)
+            }
             CaptureMode::ExactApplication { process_id, .. } => (
                 ProcessTap::for_pids(&[*process_id as i32])?,
                 stable_source_id(&mode)?,
@@ -754,10 +787,10 @@ impl Drop for TapLoopbackSource {
 #[cfg(test)]
 mod tests {
     use super::{
-        exact_application_open_audit, process_timestamp_ns, select_application_capture,
-        select_stable_application_capture, source_host_timestamp_ns, stable_source_id, tap_error,
-        AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch,
-        CORE_AUDIO_PERMISSION_DENIED_STATUS,
+        application_open_audit_for_process, exact_application_open_audit, process_timestamp_ns,
+        select_application_capture, select_stable_application_capture, source_host_timestamp_ns,
+        stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit,
+        ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
     };
     use crate::capture::{
         CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId,
@@ -862,6 +895,19 @@ mod tests {
         .source_id();
 
         assert_eq!(observed, expected);
+    }
+
+    #[test]
+    fn given_process_id_when_resolved_then_discovered_application_identity_is_preserved() {
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::Application, "com.acme.meeting");
+        let sources = vec![audited_application(stable_id.clone(), 42, 73)];
+
+        let audit = application_open_audit_for_process(&sources, 42).unwrap();
+
+        assert_eq!(audit.process_id, 42);
+        assert_eq!(audit.stable_id, stable_id);
+        assert_eq!(audit.process_start_time_ns, 73);
     }
 
     #[test]

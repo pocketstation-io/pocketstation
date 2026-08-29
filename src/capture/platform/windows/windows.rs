@@ -885,6 +885,26 @@ impl SystemLoopbackSource {
     }
 }
 
+fn select_process_source(
+    sources: &[crate::capture::CaptureSource],
+    process_id: u32,
+) -> Result<StableSourceId, LoopbackError> {
+    let mut matches = sources.iter().filter(|source| {
+        source.stable_id.kind == SourceKind::Application && source.process_id == Some(process_id)
+    });
+    let source = matches
+        .next()
+        .ok_or_else(|| LoopbackError::SourceUnavailable {
+            stable_key: format!("wasapi:pid:{process_id}"),
+        })?;
+    if matches.any(|candidate| candidate.stable_id != source.stable_id) {
+        return Err(LoopbackError::BackendInit(format!(
+            "process '{process_id}' exposes more than one audio source identity"
+        )));
+    }
+    Ok(source.stable_id.clone())
+}
+
 fn resolve_application_mode(mode: CaptureMode) -> Result<CaptureMode, LoopbackError> {
     match mode {
         CaptureMode::Application(name) => {
@@ -914,6 +934,13 @@ fn resolve_application_mode(mode: CaptureMode) -> Result<CaptureMode, LoopbackEr
             Ok(CaptureMode::ExactApplication {
                 process_id,
                 stable_id: source.stable_id.clone(),
+            })
+        }
+        CaptureMode::Process(process_id) => {
+            let stable_id = select_process_source(&discover_sources_windows(), process_id)?;
+            Ok(CaptureMode::ExactApplication {
+                process_id,
+                stable_id,
             })
         }
         CaptureMode::ExactApplicationStable { stable_id } => {
@@ -946,6 +973,32 @@ fn resolve_application_mode(mode: CaptureMode) -> Result<CaptureMode, LoopbackEr
 #[cfg(test)]
 mod application_selection_tests {
     use super::*;
+    use crate::capture::{CaptureSource, SourceState};
+
+    fn application_source(process_id: u32, stable_id: StableSourceId) -> CaptureSource {
+        CaptureSource {
+            stable_id,
+            name: "Application".to_owned(),
+            process_id: Some(process_id),
+            app_id: None,
+            device_uid: None,
+            state: SourceState::Playing,
+            sample_rate_hz: 48_000,
+            channels: 2,
+        }
+    }
+
+    #[test]
+    fn given_process_id_when_resolved_then_discovered_instance_identity_is_preserved() {
+        let stable_id = StableSourceId::new(
+            Platform::Windows,
+            SourceKind::Application,
+            ProcessInstanceFingerprint::new(42, 133_980_144_000_000_000).stable_key(),
+        );
+        let sources = vec![application_source(42, stable_id.clone())];
+
+        assert_eq!(select_process_source(&sources, 42), Ok(stable_id));
+    }
 
     #[test]
     fn given_discovered_stable_identity_when_resolved_then_exact_process_instance_is_retained() {
