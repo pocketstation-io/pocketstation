@@ -20,13 +20,13 @@ pub enum RecordingErrorCode {
     TimestampOutOfRange,
     GapTooLarge,
     TooManyGaps,
-    MissingInitialFrame,
     WorkerPanicked,
     IoFailed,
     WavFailed,
     JsonFailed,
     NotFinalized,
     Incomplete,
+    MissingInitialFrame,
 }
 
 impl RecordingErrorCode {
@@ -144,10 +144,6 @@ mod tests {
             (RecordingErrorCode::GapTooLarge, "recording.gap_too_large"),
             (RecordingErrorCode::TooManyGaps, "recording.too_many_gaps"),
             (
-                RecordingErrorCode::MissingInitialFrame,
-                "recording.missing_initial_frame",
-            ),
-            (
                 RecordingErrorCode::WorkerPanicked,
                 "recording.worker_panicked",
             ),
@@ -156,6 +152,10 @@ mod tests {
             (RecordingErrorCode::JsonFailed, "recording.json_failed"),
             (RecordingErrorCode::NotFinalized, "recording.not_finalized"),
             (RecordingErrorCode::Incomplete, "recording.incomplete"),
+            (
+                RecordingErrorCode::MissingInitialFrame,
+                "recording.missing_initial_frame",
+            ),
         ];
         let mut unique = std::collections::HashSet::new();
         for (code, value) in expected {
