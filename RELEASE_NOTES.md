@@ -2,6 +2,19 @@
 
 This page covers user-visible changes in the PocketStation 1.x release line.
 
+## 1.1.5 — 2026-08-31
+
+Repeated microphone permission checks now retain valid WinRT thread state for
+the lifetime of the calling thread. This prevents a second non-prompting query
+from terminating Python and other embedded hosts on Windows.
+
+PocketStation still returns `NotObservable` when Windows cannot provide a safe
+authorization result. Permission checks never display a system prompt.
+
+```console
+cargo update -p pocketstation --precise 1.1.5
+```
+
 ## 1.1.4 — 2026-08-31
 
 Select applications consistently across desktop platforms.

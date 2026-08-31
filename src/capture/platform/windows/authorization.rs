@@ -12,9 +12,9 @@ const RPC_E_CHANGED_MODE: HRESULT = HRESULT(0x8001_0106_u32 as i32);
 /// Observes the current process' Windows microphone capability without
 /// requesting access or displaying user interface.
 pub fn microphone_permission_observation() -> PermissionObservation {
-    let Ok(_apartment) = WinRtApartment::initialize() else {
+    if !winrt_apartment_available() {
         return PermissionObservation::NotObservable;
-    };
+    }
     let Ok(capability) = AppCapability::Create(&HSTRING::from("Microphone")) else {
         return PermissionObservation::NotObservable;
     };
@@ -22,6 +22,18 @@ pub fn microphone_permission_observation() -> PermissionObservation {
         .CheckAccess()
         .map(permission_observation)
         .unwrap_or(PermissionObservation::NotObservable)
+}
+
+thread_local! {
+    // Keep library-owned WinRT initialization alive for the thread lifetime.
+    // The Windows projection caches activation factories, so balancing
+    // RoInitialize after every query can leave cached runtime state behind a
+    // torn-down apartment. Host-owned apartments are never uninitialized here.
+    static WINRT_APARTMENT: Option<WinRtApartment> = WinRtApartment::initialize().ok();
+}
+
+fn winrt_apartment_available() -> bool {
+    WINRT_APARTMENT.with(Option::is_some)
 }
 
 fn permission_observation(status: AppCapabilityAccessStatus) -> PermissionObservation {
@@ -64,5 +76,16 @@ impl Drop for WinRtApartment {
             // control thread. It never runs on an audio callback.
             unsafe { RoUninitialize() };
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::microphone_permission_observation;
+
+    #[test]
+    fn repeated_permission_observation_keeps_winrt_state_valid() {
+        let _first = microphone_permission_observation();
+        let _second = microphone_permission_observation();
     }
 }
