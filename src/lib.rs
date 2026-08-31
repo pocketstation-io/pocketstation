@@ -503,6 +503,14 @@ impl Session {
         self.declaration.polled_audio()
     }
 
+    /// Declares application-polled audio with one explicit bounded input edge.
+    pub fn polled_audio_with_input_edge(
+        &self,
+        input_edge: EdgeContract,
+    ) -> Result<EndpointHandle, SessionError> {
+        self.declaration.polled_audio_with_input_edge(input_edge)
+    }
+
     /// Declares an external connector. Register its implementation after route
     /// identities are available with [`Self::register_connector_driver`].
     #[deprecated(

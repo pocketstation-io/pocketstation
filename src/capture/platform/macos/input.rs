@@ -5,6 +5,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
+use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
     CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
@@ -101,23 +102,29 @@ impl MacosInputSource {
         let fallback_max_callback_frames =
             (sample_rate_hz / (1_000 / FALLBACK_MAX_CALLBACK_DURATION_MS)).max(1);
         let mut stream_config = supported_config.config();
-        let slot_frames = match supported_config.buffer_size() {
+        let maximum_callback_frames = match supported_config.buffer_size() {
             SupportedBufferSize::Range { min, max }
                 if target_callback_frames >= *min && target_callback_frames <= *max =>
             {
                 stream_config.buffer_size = BufferSize::Fixed(target_callback_frames);
-                target_callback_frames
+                fallback_max_callback_frames.max(*min).min(*max)
             }
             SupportedBufferSize::Range { min, max } => {
                 fallback_max_callback_frames.max(*min).min(*max)
             }
             SupportedBufferSize::Unknown => fallback_max_callback_frames,
         };
-        let slot_samples = usize::try_from(slot_frames)
+        let maximum_callback_samples = usize::try_from(maximum_callback_frames)
             .ok()
             .and_then(|frames| frames.checked_mul(usize::from(channels)))
             .ok_or_else(|| CaptureError::BackendInit("input pool size overflow".to_owned()))?;
-        let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, slot_samples);
+        let mut frame_normalizer = CaptureFrameNormalizer::new(
+            usize::try_from(target_callback_frames).unwrap_or(usize::MAX),
+            channels,
+            sample_rate_hz,
+        );
+        let pool =
+            AudioBufferPool::new(POOL_CAPACITY_FRAMES, frame_normalizer.frame_sample_count());
         let (mut producer, mut consumer) = rtrb::RingBuffer::new(QUEUE_CAPACITY_FRAMES);
         let running = Arc::new(AtomicBool::new(true));
         let counters = CaptureObservationCounters::default();
@@ -130,9 +137,11 @@ impl MacosInputSource {
         let mut sequence_number = 0u64;
         let mut sample_timeline = None;
         let data_callback = move |data: &[f32], callback_info: &cpal::InputCallbackInfo| {
-            let frame_sequence_number = sequence_number;
-            sequence_number = sequence_number.saturating_add(1);
             callback_counters.observe_callback_buffer();
+            if data.len() > maximum_callback_samples {
+                callback_counters.observe_oversized_buffer();
+                return;
+            }
             let samples_per_channel = data.len() / usize::from(channels);
             let timeline = sample_timeline.get_or_insert_with(|| {
                 let timestamp = input_capture_timestamp(monotonic_timestamp_ns(), callback_info);
@@ -143,32 +152,35 @@ impl MacosInputSource {
             });
             let timestamp_ns =
                 timeline.advance(u64::try_from(samples_per_channel).unwrap_or(u64::MAX));
-            if data.len() > callback_pool.slot_size() {
-                callback_counters.observe_oversized_buffer();
-                return;
+            let normalized = frame_normalizer.push(data, timestamp_ns, |timestamp_ns, samples| {
+                let frame_sequence_number = sequence_number;
+                sequence_number = sequence_number.saturating_add(1);
+                let Some(mut handle) = callback_pool.acquire() else {
+                    callback_counters.observe_pool_exhaustion();
+                    return;
+                };
+                if handle.try_copy_from_slice(samples).is_err() {
+                    callback_counters.observe_oversized_buffer();
+                    return;
+                }
+                let mut frame = AudioFrame::new(
+                    StreamId(source_id.0),
+                    source_id,
+                    frame_sequence_number,
+                    timestamp_ns,
+                    channels,
+                    handle,
+                );
+                frame.sample_rate_hz = sample_rate_hz;
+                if producer.push(frame).is_err() {
+                    callback_counters.observe_dispatch_queue_full();
+                    return;
+                }
+                callback_counters.observe_enqueued_frame();
+            });
+            if !normalized {
+                callback_counters.observe_invalid_buffer();
             }
-            let Some(mut handle) = callback_pool.acquire() else {
-                callback_counters.observe_pool_exhaustion();
-                return;
-            };
-            if handle.try_copy_from_slice(data).is_err() {
-                callback_counters.observe_oversized_buffer();
-                return;
-            }
-            let mut frame = AudioFrame::new(
-                StreamId(source_id.0),
-                source_id,
-                frame_sequence_number,
-                timestamp_ns,
-                channels,
-                handle,
-            );
-            frame.sample_rate_hz = sample_rate_hz;
-            if producer.push(frame).is_err() {
-                callback_counters.observe_dispatch_queue_full();
-                return;
-            }
-            callback_counters.observe_enqueued_frame();
         };
         let error_counters = counters.clone();
         let mut runtime_failure_event =

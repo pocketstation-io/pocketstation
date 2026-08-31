@@ -79,7 +79,6 @@ impl CaptureObservationCounters {
             .fetch_add(lost_frames, Ordering::Relaxed);
     }
 
-    #[cfg(any(test, target_os = "linux", target_os = "windows"))]
     pub fn observe_invalid_buffer(&self) {
         self.values
             .invalid_buffer_total

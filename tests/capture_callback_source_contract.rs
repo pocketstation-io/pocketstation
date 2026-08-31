@@ -153,10 +153,31 @@ fn given_wasapi_packet_delivery_when_source_changes_then_bounded_worker_contract
         "WASAPI packet delivery",
         delivery,
         &[
+            "frame_normalizer.push(",
             "pool.acquire()",
-            "sample_count > dst.len()",
+            "handle.try_copy_from_slice(samples)",
             "callback(frame)",
         ],
+    );
+    assert!(
+        !delivery.contains("monotonic_timestamp_ns()"),
+        "WASAPI packet delivery must receive the native first-sample timestamp instead of stamping callback arrival"
+    );
+    for required_timestamp_boundary in [
+        "info.timestamp",
+        "qpc_position",
+        "qpc_timestamp_ns",
+        "timestamp_mapping",
+        ".to_monotonic_ns",
+    ] {
+        assert!(
+            WINDOWS_CAPTURE.contains(required_timestamp_boundary),
+            "WASAPI capture lost native timestamp boundary {required_timestamp_boundary:?}"
+        );
+    }
+    assert!(
+        WINDOWS_CAPTURE.matches("plan_packet_read(").count() >= 4,
+        "every WASAPI packet path must validate native frame counts before reading fixed scratch"
     );
 }
 
