@@ -37,9 +37,9 @@ use spa::param::audio::AudioFormat;
 
 use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::capture::{
-    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
-    CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource,
-    SourceKind, SourceState, StableSourceId,
+    initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError,
+    CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureSampleTimeline, CaptureSource, SourceKind, SourceState, StableSourceId,
 };
 
 /// Stereo application/system capture.
@@ -179,11 +179,18 @@ impl PipeWireCaptureState {
         &mut self,
         source_sample_frame: Option<u64>,
         sample_frames: u64,
+        first_sample_timestamp_ns: u64,
     ) -> Option<(u64, u32, u8)> {
         if self.format_failed {
             return None;
         }
         let negotiated_format = self.negotiated_format?;
+        if self.timeline_mode == PipeWireTimelineMode::Undecided {
+            self.sample_timeline = Some(CaptureSampleTimeline::anchored(
+                negotiated_format.sample_rate_hz,
+                first_sample_timestamp_ns,
+            ));
+        }
         let sample_timeline = self.sample_timeline.as_mut()?;
         let timestamp_ns = match (self.timeline_mode, source_sample_frame) {
             (PipeWireTimelineMode::Undecided, Some(source_sample_frame)) => {
@@ -210,13 +217,58 @@ impl PipeWireCaptureState {
     }
 }
 
-fn pipewire_source_sample_position(
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+struct PipeWireCaptureTiming {
+    source_sample_frame: Option<u64>,
+    capture_delay_ns: u64,
+}
+
+fn pipewire_capture_timing(
     stream: &pw::stream::Stream,
     sample_rate_hz: u32,
-) -> Option<u64> {
-    let stream_time = stream.time().ok()?;
+) -> PipeWireCaptureTiming {
+    let Ok(stream_time) = stream.time() else {
+        return PipeWireCaptureTiming::default();
+    };
     let stream_rate = stream_time.rate();
-    (stream_rate.num == 1 && stream_rate.denom == sample_rate_hz).then_some(stream_time.ticks())
+    let source_sample_frame = (stream_rate.num == 1 && stream_rate.denom == sample_rate_hz)
+        .then_some(stream_time.ticks());
+    let capture_delay_ns = u64::try_from(stream_time.delay())
+        .ok()
+        .and_then(|delay| pipewire_ticks_to_nanoseconds(delay, stream_rate.num, stream_rate.denom))
+        .unwrap_or(0);
+    PipeWireCaptureTiming {
+        source_sample_frame,
+        capture_delay_ns,
+    }
+}
+
+fn pipewire_ticks_to_nanoseconds(
+    ticks: u64,
+    rate_numerator: u32,
+    rate_denominator: u32,
+) -> Option<u64> {
+    if rate_numerator == 0 || rate_denominator == 0 {
+        return None;
+    }
+    let nanoseconds = u128::from(ticks)
+        .checked_mul(u128::from(rate_numerator))?
+        .checked_mul(1_000_000_000)?
+        .checked_div(u128::from(rate_denominator))?;
+    u64::try_from(nanoseconds).ok()
+}
+
+fn pipewire_first_sample_timestamp_ns(
+    callback_timestamp_ns: u64,
+    sample_frames: u64,
+    sample_rate_hz: u32,
+    capture_delay_ns: u64,
+) -> u64 {
+    let buffer_duration_ns =
+        pipewire_ticks_to_nanoseconds(sample_frames, 1, sample_rate_hz).unwrap_or(u64::MAX);
+    callback_timestamp_ns
+        .saturating_sub(buffer_duration_ns.saturating_add(capture_delay_ns))
+        .max(1)
 }
 
 fn parse_pipewire_negotiated_format(param: &Pod) -> Result<NegotiatedPipeWireFormat, &'static str> {
@@ -518,12 +570,24 @@ fn process_pipewire_audio(
         counters.observe_invalid_buffer();
         return;
     }
-    let source_sample_frame = state
+    let capture_timing = state
         .negotiated_format
-        .and_then(|format| pipewire_source_sample_position(stream, format.sample_rate_hz.get()));
+        .map(|format| pipewire_capture_timing(stream, format.sample_rate_hz.get()))
+        .unwrap_or_default();
+    let sample_frames = u64::try_from(sample_count / channel_count).unwrap_or(u64::MAX);
+    let first_sample_timestamp_ns = pipewire_first_sample_timestamp_ns(
+        monotonic_timestamp_ns(),
+        sample_frames,
+        state
+            .negotiated_format
+            .map(|format| format.sample_rate_hz.get())
+            .unwrap_or(SAMPLE_RATE_HZ),
+        capture_timing.capture_delay_ns,
+    );
     let Some((timestamp_ns, sample_rate_hz, output_channel_count)) = state.advance_sample_timeline(
-        source_sample_frame,
-        u64::try_from(sample_count / channel_count).unwrap_or(u64::MAX),
+        capture_timing.source_sample_frame,
+        sample_frames,
+        first_sample_timestamp_ns,
     ) else {
         counters.observe_invalid_buffer();
         return;
@@ -900,6 +964,7 @@ fn run_pipewire<F>(
 where
     F: FnMut(AudioFrame) + Send + 'static,
 {
+    initialize_monotonic_timestamp_domain();
     let source_id = system_mix_source_id();
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
     let (open_tx, open_rx) = mpsc::sync_channel::<Result<(), String>>(1);
@@ -1377,6 +1442,7 @@ fn run_pipewire_targeted<F>(
 where
     F: FnMut(AudioFrame) + Send + 'static,
 {
+    initialize_monotonic_timestamp_domain();
     let capture_channel_count = capture_channel_count(&mode);
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
     let (open_tx, open_rx) = mpsc::sync_channel::<Result<(), String>>(1);
@@ -2111,15 +2177,30 @@ mod tests {
             .expect("test format must negotiate");
 
         let (dropped_timestamp_ns, _, _) = state
-            .advance_sample_timeline(Some(1_000), 480)
+            .advance_sample_timeline(Some(1_000), 480, 2_000_000_000)
             .expect("dropped source buffer must still advance time");
         let (delivered_timestamp_ns, sample_rate_hz, channel_count) = state
-            .advance_sample_timeline(Some(1_480), 480)
+            .advance_sample_timeline(Some(1_480), 480, 9_000_000_000)
             .expect("next source buffer must retain cadence");
 
+        assert_eq!(dropped_timestamp_ns, 2_000_000_000);
         assert_eq!(delivered_timestamp_ns - dropped_timestamp_ns, 10_000_000);
         assert_eq!(sample_rate_hz, 48_000);
         assert_eq!(channel_count, CAPTURE_CHANNEL_COUNT);
+    }
+
+    #[test]
+    fn given_pipewire_callback_when_buffer_contains_multiple_frames_then_timestamp_starts_before_callback(
+    ) {
+        assert_eq!(
+            pipewire_first_sample_timestamp_ns(1_000_000_000, 2_048, 48_000, 5_000_000),
+            952_333_334
+        );
+        assert_eq!(
+            pipewire_ticks_to_nanoseconds(960, 1, 48_000),
+            Some(20_000_000)
+        );
+        assert_eq!(pipewire_ticks_to_nanoseconds(960, 0, 48_000), None);
     }
 
     #[test]
@@ -2133,7 +2214,9 @@ mod tests {
             }),
             Err("PipeWire negotiated an unexpected channel count")
         );
-        assert!(state.advance_sample_timeline(None, 480).is_none());
+        assert!(state
+            .advance_sample_timeline(None, 480, 2_000_000_000)
+            .is_none());
     }
 
     /// P4 no-fallback: Process(pid) on a system without PipeWire must return
