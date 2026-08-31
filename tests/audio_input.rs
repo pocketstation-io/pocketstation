@@ -73,6 +73,40 @@ fn given_application_owned_audio_when_written_through_facade_then_session_delive
 }
 
 #[test]
+fn given_application_owned_frame_size_when_polled_then_endpoint_negotiates_that_size() {
+    let session = Session::builder().sample_spec(sample_spec()).build();
+    let configuration =
+        AudioInputConfig::new(sample_spec(), 2, 4).expect("four-sample input configuration");
+    let mut input = session
+        .audio_input(configuration)
+        .expect("application audio input");
+    let polled_audio = session.polled_audio().expect("polled audio endpoint");
+    input
+        .output()
+        .send(polled_audio)
+        .expect("audio input polling route");
+
+    let mut running = session.start().expect("running audio input Session");
+    input
+        .try_write(&[0.25_f32, -0.25, 0.5, -0.5])
+        .expect("four-sample write");
+
+    let deadline = Instant::now() + Duration::from_secs(3);
+    loop {
+        if let Ok(batch) = running.try_poll_audio() {
+            let frame = batch.frame(0).expect("polled frame");
+            assert_eq!(frame.samples(), &[0.25_f32, -0.25, 0.5, -0.5]);
+            break;
+        }
+        assert!(Instant::now() < deadline, "frame was not delivered");
+        thread::yield_now();
+    }
+
+    input.close();
+    assert!(running.stop().is_success());
+}
+
+#[test]
 fn given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit() {
     let session = Session::new();
     let first = session

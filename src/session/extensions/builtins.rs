@@ -402,7 +402,7 @@ impl NodeFactory for AudioIngressFactory {
             outputs: vec![audio_port(
                 PortDirection::Output,
                 self.sample_spec,
-                self.frame_samples_per_channel,
+                Some(self.frame_samples_per_channel),
                 self.channel_layout,
             )],
             execution: ExecutionPartition::RealtimeCpu,
@@ -446,7 +446,7 @@ impl NodeDefinition for GeneratedAudioBridgeDefinition {
             inputs: vec![audio_port(
                 PortDirection::Input,
                 self.sample_spec,
-                self.frame_samples_per_channel,
+                Some(self.frame_samples_per_channel),
                 ChannelLayout::Any,
             )],
             outputs: Vec::new(),
@@ -476,14 +476,14 @@ impl RuntimeNode for SourceIngressNode {
 struct EndpointBoundaryDefinition {
     node_type_id: NodeTypeId,
     sample_spec: SampleSpec,
-    frame_samples_per_channel: usize,
+    frame_samples_per_channel: Option<usize>,
 }
 
 impl EndpointBoundaryDefinition {
     fn new(
         node_type_id: NodeTypeId,
         sample_spec: SampleSpec,
-        frame_samples_per_channel: usize,
+        frame_samples_per_channel: Option<usize>,
     ) -> Self {
         Self {
             node_type_id,
@@ -493,10 +493,23 @@ impl EndpointBoundaryDefinition {
     }
 }
 
+#[cfg(test)]
 pub(crate) fn audio_endpoint_boundary_definition(
     node_type_id: NodeTypeId,
     sample_spec: SampleSpec,
     frame_samples_per_channel: usize,
+) -> Arc<dyn NodeDefinition> {
+    audio_endpoint_boundary_definition_with_frame_samples(
+        node_type_id,
+        sample_spec,
+        Some(frame_samples_per_channel),
+    )
+}
+
+pub(crate) fn audio_endpoint_boundary_definition_with_frame_samples(
+    node_type_id: NodeTypeId,
+    sample_spec: SampleSpec,
+    frame_samples_per_channel: Option<usize>,
 ) -> Arc<dyn NodeDefinition> {
     Arc::new(EndpointBoundaryDefinition::new(
         node_type_id,
@@ -531,7 +544,7 @@ impl NodeDefinition for EndpointBoundaryDefinition {
 fn audio_port(
     direction: PortDirection,
     sample_spec: SampleSpec,
-    frame_samples_per_channel: usize,
+    frame_samples_per_channel: Option<usize>,
     channel_layout: ChannelLayout,
 ) -> PortSpec {
     PortSpec {
@@ -540,7 +553,7 @@ fn audio_port(
         signal: SignalSpec::audio(),
         media: MediaCaps::Audio(AudioCaps {
             sample_rate_hz: Some(sample_spec.sample_rate_hz),
-            frame_samples: Some(frame_samples_per_channel),
+            frame_samples: frame_samples_per_channel,
             channel_layout,
             format: sample_spec.format,
         }),

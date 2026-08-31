@@ -10,7 +10,8 @@ use crate::runtime::{SidecarHost, SidecarHostError, SidecarProcessSpec};
 
 use crate::session::compile::SessionGraphLowerer;
 use crate::session::extensions::builtins::{
-    audio_endpoint_boundary_definition, register_session_graph_nodes_with_sample_spec,
+    audio_endpoint_boundary_definition_with_frame_samples,
+    register_session_graph_nodes_with_sample_spec,
 };
 use crate::session::extensions::source::{
     source_node_definition, SourceFactory, SourceRegistrationError, SourceRegistry,
@@ -31,7 +32,6 @@ use crate::session::{
 pub struct SessionEngineBuilder {
     node_registry: NodeRegistry,
     prepare_context: PrepareContext,
-    audio_frame_duration: AudioFrameDuration,
     source_queue_capacity_frames: usize,
     start_options: SessionStartOptions,
     endpoint_registry: EndpointDriverRegistry,
@@ -70,7 +70,6 @@ impl SessionEngineBuilder {
         Ok(Self {
             node_registry,
             prepare_context,
-            audio_frame_duration,
             source_queue_capacity_frames,
             start_options,
             endpoint_registry: EndpointDriverRegistry::new(),
@@ -89,6 +88,12 @@ impl SessionEngineBuilder {
         self
     }
 
+    /// Registers an audio Endpoint that accepts the finite frame size declared
+    /// by each connected AudioBus.
+    ///
+    /// Sources keep authority over their frame cadence. The Endpoint boundary
+    /// validates the shared sample format and sample rate without rewriting an
+    /// application-owned stream to the Session's capture cadence.
     pub fn register_audio_endpoint_driver(
         &mut self,
         operator_id: OperatorId,
@@ -97,11 +102,10 @@ impl SessionEngineBuilder {
     ) -> Result<&mut Self, EndpointExtensionRegistrationError> {
         self.register_endpoint(
             operator_id,
-            audio_endpoint_boundary_definition(
+            audio_endpoint_boundary_definition_with_frame_samples(
                 node_type_id,
                 self.prepare_context.sample_spec,
-                self.audio_frame_duration
-                    .samples_per_channel(self.prepare_context.sample_spec.sample_rate_hz),
+                None,
             ),
             factory,
         )
