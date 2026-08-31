@@ -12,6 +12,8 @@
 mod authorization;
 mod capture_owner;
 mod events;
+#[cfg(any(test, feature = "native-capture"))]
+mod frame_normalizer;
 mod frame_stream;
 mod identity;
 #[cfg(feature = "internal-testing")]

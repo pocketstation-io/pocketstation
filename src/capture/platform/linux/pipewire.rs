@@ -35,6 +35,7 @@ use pw::spa;
 use pw::spa::pod::Pod;
 use spa::param::audio::AudioFormat;
 
+use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::capture::{
     CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
     CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource,
@@ -128,9 +129,7 @@ struct PipeWireCaptureState {
     open_result_sent: bool,
     format_failed: bool,
     callback_samples: [f32; PIPEWIRE_CALLBACK_MAX_SAMPLES],
-    normalized_frame: [f32; CAPTURE_FRAME_SAMPLES],
-    normalized_sample_count: usize,
-    normalized_timestamp_ns: Option<u64>,
+    frame_normalizer: CaptureFrameNormalizer,
 }
 
 impl PipeWireCaptureState {
@@ -144,9 +143,11 @@ impl PipeWireCaptureState {
             open_result_sent: false,
             format_failed: false,
             callback_samples: [0.0; PIPEWIRE_CALLBACK_MAX_SAMPLES],
-            normalized_frame: [0.0; CAPTURE_FRAME_SAMPLES],
-            normalized_sample_count: 0,
-            normalized_timestamp_ns: None,
+            frame_normalizer: CaptureFrameNormalizer::new(
+                POOL_SLOT_SAMPLES,
+                expected_channel_count,
+                SAMPLE_RATE_HZ,
+            ),
         }
     }
 
@@ -477,53 +478,6 @@ fn pipewire_f32_sample_count(
     None
 }
 
-fn normalize_pipewire_samples(
-    callback_samples: &[f32],
-    channel_count: usize,
-    callback_timestamp_ns: u64,
-    sample_rate_hz: u32,
-    normalized_frame: &mut [f32; CAPTURE_FRAME_SAMPLES],
-    normalized_sample_count: &mut usize,
-    normalized_timestamp_ns: &mut Option<u64>,
-    mut emit: impl FnMut(u64, &[f32]),
-) {
-    let target_sample_count = POOL_SLOT_SAMPLES.saturating_mul(channel_count);
-    if target_sample_count == 0 || target_sample_count > normalized_frame.len() {
-        return;
-    }
-    if *normalized_sample_count == 0 {
-        *normalized_timestamp_ns = Some(callback_timestamp_ns);
-    }
-
-    let frame_duration_ns = u64::try_from(POOL_SLOT_SAMPLES)
-        .unwrap_or(u64::MAX)
-        .saturating_mul(1_000_000_000)
-        .checked_div(u64::from(sample_rate_hz))
-        .unwrap_or(0);
-    let mut source_offset = 0usize;
-    while source_offset < callback_samples.len() {
-        let available = target_sample_count.saturating_sub(*normalized_sample_count);
-        let copy_count = available.min(callback_samples.len() - source_offset);
-        let destination_end = normalized_sample_count.saturating_add(copy_count);
-        let source_end = source_offset.saturating_add(copy_count);
-        normalized_frame[*normalized_sample_count..destination_end]
-            .copy_from_slice(&callback_samples[source_offset..source_end]);
-        *normalized_sample_count = destination_end;
-        source_offset = source_end;
-
-        if *normalized_sample_count == target_sample_count {
-            let timestamp_ns = normalized_timestamp_ns
-                .take()
-                .unwrap_or(callback_timestamp_ns);
-            emit(timestamp_ns, &normalized_frame[..target_sample_count]);
-            *normalized_sample_count = 0;
-            if source_offset < callback_samples.len() {
-                *normalized_timestamp_ns = Some(timestamp_ns.saturating_add(frame_duration_ns));
-            }
-        }
-    }
-}
-
 fn process_pipewire_audio(
     stream: &pw::stream::Stream,
     state: &mut PipeWireCaptureState,
@@ -575,14 +529,9 @@ fn process_pipewire_audio(
         return;
     };
 
-    normalize_pipewire_samples(
+    let normalized = state.frame_normalizer.push(
         &state.callback_samples[..sample_count],
-        channel_count,
         timestamp_ns,
-        sample_rate_hz,
-        &mut state.normalized_frame,
-        &mut state.normalized_sample_count,
-        &mut state.normalized_timestamp_ns,
         |frame_timestamp_ns, samples| {
             let frame_sequence = sequence.fetch_add(1, Ordering::Relaxed);
             let Some(mut handle) = acquire_capture_buffer(pool, counters) else {
@@ -604,6 +553,9 @@ fn process_pipewire_audio(
             enqueue_capture_frame(producer, frame, counters);
         },
     );
+    if !normalized {
+        counters.observe_invalid_buffer();
+    }
 }
 
 fn capture_channel_count(mode: &CaptureMode) -> u8 {
@@ -1988,59 +1940,6 @@ mod tests {
             ),
             "Meeting"
         );
-    }
-
-    #[test]
-    fn given_1024_frame_pipewire_quantums_when_normalized_then_20_ms_frames_are_contiguous() {
-        let first_callback = (0..2_048).map(|sample| sample as f32).collect::<Vec<_>>();
-        let second_callback = (2_048..4_096)
-            .map(|sample| sample as f32)
-            .collect::<Vec<_>>();
-        let mut normalized_frame = [0.0; CAPTURE_FRAME_SAMPLES];
-        let mut normalized_sample_count = 0;
-        let mut normalized_timestamp_ns = None;
-        let mut emitted = Vec::new();
-
-        normalize_pipewire_samples(
-            &first_callback,
-            2,
-            1_000_000_000,
-            SAMPLE_RATE_HZ,
-            &mut normalized_frame,
-            &mut normalized_sample_count,
-            &mut normalized_timestamp_ns,
-            |timestamp_ns, samples| emitted.push((timestamp_ns, samples.to_vec())),
-        );
-        normalize_pipewire_samples(
-            &second_callback,
-            2,
-            1_021_333_333,
-            SAMPLE_RATE_HZ,
-            &mut normalized_frame,
-            &mut normalized_sample_count,
-            &mut normalized_timestamp_ns,
-            |timestamp_ns, samples| emitted.push((timestamp_ns, samples.to_vec())),
-        );
-
-        assert_eq!(emitted.len(), 2);
-        assert_eq!(emitted[0].0, 1_000_000_000);
-        assert_eq!(emitted[1].0, 1_020_000_000);
-        let emitted_samples = emitted
-            .iter()
-            .flat_map(|(_, samples)| samples.iter().copied())
-            .collect::<Vec<_>>();
-        assert_eq!(
-            emitted_samples,
-            (0..3_840).map(|sample| sample as f32).collect::<Vec<_>>()
-        );
-        assert_eq!(normalized_sample_count, 256);
-        assert_eq!(
-            &normalized_frame[..normalized_sample_count],
-            &(3_840..4_096)
-                .map(|sample| sample as f32)
-                .collect::<Vec<_>>()
-        );
-        assert_eq!(normalized_timestamp_ns, Some(1_040_000_000));
     }
 
     #[test]

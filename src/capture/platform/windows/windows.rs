@@ -37,7 +37,9 @@ use crate::capture::platform::windows::open_lifecycle::{
     report_open, wait_for_completion, wait_for_open, CancellableWaitOutcome, OpenCancellation,
     OpenReportError, OpenWaitOutcome,
 };
-use crate::capture::platform::windows::packet_delivery::{plan_packet_read, PacketReadPlan};
+use crate::capture::platform::windows::packet_delivery::{
+    plan_packet_read, sample_buffer_capacity_bytes, PacketReadPlan,
+};
 use crate::capture::platform::windows::process_identity::ProcessInstanceFingerprint;
 use crate::capture::platform::windows::runtime_lifecycle::{
     classify_platform_status, WindowsRuntimeFailureDisposition,
@@ -46,17 +48,23 @@ use crate::frame::{
     AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_MAX_SLOTS, SAMPLE_RATE_HZ,
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
+use windows::Win32::System::Performance::{QueryPerformanceCounter, QueryPerformanceFrequency};
 
+use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::capture::{
-    monotonic_timestamp_ns, source_runtime_event_channel, CaptureError as LoopbackError,
-    CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration,
-    SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventObservations,
+    initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, source_runtime_event_channel,
+    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
+    CaptureObservationHandle, CaptureObservations, CaptureRuntimeFailure,
+    CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration, SourceKind,
+    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventObservations,
     SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
     StableSourceId,
 };
 
 const CAPTURE_CHANNEL_COUNT: u8 = 2;
+const CAPTURE_FRAME_SAMPLES_PER_CHANNEL: usize = 960;
+const CAPTURE_FRAME_SAMPLES: usize =
+    CAPTURE_FRAME_SAMPLES_PER_CHANNEL * CAPTURE_CHANNEL_COUNT as usize;
 // A delivered WASAPI frame remains backed by this pool while it crosses the
 // 16-frame platform dispatch ring and the Session's bounded capture queue
 // (32 frames by default). Eight slots could therefore exhaust before either
@@ -64,7 +72,11 @@ const CAPTURE_CHANNEL_COUNT: u8 = 2;
 // scheduling jitter. The architecture-wide fixed maximum is still bounded
 // (one MiB per 4096-sample pool) and covers both queues plus in-flight frames.
 const CAPTURE_POOL_CAPACITY_FRAMES: usize = POOL_MAX_SLOTS;
-const WASAPI_CALLBACK_MAX_SAMPLES: usize = 4096;
+const WASAPI_CALLBACK_MAX_DURATION_MS: usize = 200;
+const WASAPI_CALLBACK_MAX_FRAMES: usize =
+    SAMPLE_RATE_HZ as usize * WASAPI_CALLBACK_MAX_DURATION_MS / 1_000;
+const WASAPI_CALLBACK_MAX_SAMPLES: usize =
+    WASAPI_CALLBACK_MAX_FRAMES * CAPTURE_CHANNEL_COUNT as usize;
 
 /// Buffer duration hint (20 ms in 100-ns units).  Ignored for loopback modes.
 const BUFFER_DURATION_100NS: i64 = 200_000;
@@ -93,6 +105,53 @@ const DISPATCH_QUEUE_CAPACITY_FRAMES: usize = 24;
 const RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS: usize = 8;
 
 const _: () = assert!(CAPTURE_POOL_CAPACITY_FRAMES >= DISPATCH_QUEUE_CAPACITY_FRAMES + 2);
+
+#[derive(Debug, Clone, Copy)]
+struct WasapiTimestampMapping {
+    qpc_origin_ns: u64,
+    monotonic_origin_ns: u64,
+}
+
+impl WasapiTimestampMapping {
+    fn new() -> Option<Self> {
+        initialize_monotonic_timestamp_domain();
+        let monotonic_before_ns = monotonic_timestamp_ns();
+        let mut counter = 0i64;
+        let mut frequency_hz = 0i64;
+        // SAFETY: both output pointers are valid for the duration of each call.
+        unsafe {
+            QueryPerformanceFrequency(&mut frequency_hz).ok()?;
+            QueryPerformanceCounter(&mut counter).ok()?;
+        }
+        let monotonic_after_ns = monotonic_timestamp_ns();
+        let counter = u64::try_from(counter).ok()?;
+        let frequency_hz = u64::try_from(frequency_hz).ok()?.max(1);
+        let qpc_origin_ns = u128::from(counter)
+            .saturating_mul(1_000_000_000)
+            .checked_div(u128::from(frequency_hz))?
+            .min(u128::from(u64::MAX)) as u64;
+        let monotonic_origin_ns = monotonic_before_ns
+            .saturating_add(monotonic_after_ns.saturating_sub(monotonic_before_ns) / 2);
+        Some(Self {
+            qpc_origin_ns,
+            monotonic_origin_ns,
+        })
+    }
+
+    fn to_monotonic_ns(self, qpc_timestamp_ns: u64) -> Option<u64> {
+        let delta_ns = qpc_timestamp_ns.abs_diff(self.qpc_origin_ns);
+        let timestamp_ns = if qpc_timestamp_ns >= self.qpc_origin_ns {
+            self.monotonic_origin_ns.checked_add(delta_ns)?
+        } else {
+            self.monotonic_origin_ns.checked_sub(delta_ns)?
+        };
+        (timestamp_ns > 0).then_some(timestamp_ns)
+    }
+}
+
+fn wasapi_qpc_100ns_to_ns(qpc_position: u64) -> Option<u64> {
+    qpc_position.checked_mul(100)
+}
 
 pub struct SystemLoopbackSource {
     capture_thread: Option<std::thread::JoinHandle<()>>,
@@ -630,7 +689,7 @@ impl SystemLoopbackSource {
         let (worker_exit_tx, worker_exit_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let (mut frame_producer, mut frame_consumer) =
             rtrb::RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
-        let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, WASAPI_CALLBACK_MAX_SAMPLES);
+        let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
         let sequence_number = Arc::new(AtomicU64::new(0));
         let counters = CaptureObservationCounters::default();
         let capture_counters = counters.clone();
@@ -1103,54 +1162,58 @@ fn target_wave_format() -> WaveFormat {
 
 #[inline(always)]
 fn deliver_packet(
-    raw: &[u8],
+    callback_samples: &[f32],
+    callback_timestamp_ns: u64,
     source_id: SourceId,
     pool: &Arc<AudioBufferPool>,
     sequence_number: &Arc<AtomicU64>,
     counters: &CaptureObservationCounters,
+    frame_normalizer: &mut CaptureFrameNormalizer,
     callback: &mut (impl FnMut(AudioFrame) + Send + 'static),
 ) {
     counters.observe_callback_buffer();
-    if raw.is_empty() || !raw.len().is_multiple_of(size_of::<f32>()) {
+    if callback_samples.is_empty() {
         counters.observe_invalid_buffer();
         return;
     }
-    let sample_count = raw.len() / size_of::<f32>();
-    let mut handle = match pool.acquire() {
-        Some(h) => h,
-        None => {
-            counters.observe_pool_exhaustion();
-            return;
-        }
-    };
-    let dst = handle.as_mut_slice();
-    if sample_count > dst.len() {
-        counters.observe_oversized_buffer();
-        return;
-    }
-    // SAFETY: `raw` is a valid WASAPI buffer; 4-byte groups are f32.
-    let src_ptr = raw.as_ptr() as *const f32;
-    for (sample_index, sample) in dst.iter_mut().take(sample_count).enumerate() {
-        // SAFETY: sample_index is bounded by raw.len() / size_of::<f32>().
-        *sample = unsafe { src_ptr.add(sample_index).read_unaligned() };
-    }
-    if handle.try_set_len(sample_count).is_err() {
-        counters.observe_oversized_buffer();
-        return;
-    }
-
-    let frame_sequence_number = sequence_number.fetch_add(1, Ordering::Relaxed);
-    let timestamp_ns = monotonic_timestamp_ns();
-    let mut frame = AudioFrame::new(
-        StreamId(0),
-        source_id,
-        frame_sequence_number,
-        timestamp_ns,
-        CAPTURE_CHANNEL_COUNT,
-        handle,
+    let normalized = frame_normalizer.push(
+        callback_samples,
+        callback_timestamp_ns,
+        |timestamp_ns, samples| {
+            let frame_sequence_number = sequence_number.fetch_add(1, Ordering::Relaxed);
+            let mut handle = match pool.acquire() {
+                Some(handle) => handle,
+                None => {
+                    counters.observe_pool_exhaustion();
+                    return;
+                }
+            };
+            if handle.try_copy_from_slice(samples).is_err() {
+                counters.observe_oversized_buffer();
+                return;
+            }
+            let mut frame = AudioFrame::new(
+                StreamId(0),
+                source_id,
+                frame_sequence_number,
+                timestamp_ns,
+                CAPTURE_CHANNEL_COUNT,
+                handle,
+            );
+            frame.sample_rate_hz = SAMPLE_RATE_HZ;
+            callback(frame);
+        },
     );
-    frame.sample_rate_hz = SAMPLE_RATE_HZ;
-    callback(frame);
+    if !normalized {
+        counters.observe_invalid_buffer();
+    }
+}
+
+fn f32_samples_as_bytes_mut(samples: &mut [f32]) -> &mut [u8] {
+    let byte_count = std::mem::size_of_val(samples);
+    // SAFETY: `u8` has alignment one and the byte slice covers exactly the
+    // initialized f32 storage for the duration of this exclusive borrow.
+    unsafe { std::slice::from_raw_parts_mut(samples.as_mut_ptr().cast::<u8>(), byte_count) }
 }
 
 struct CaptureLoopState {
@@ -1330,10 +1393,19 @@ fn capture_loop(
     state: CaptureLoopState,
     mut callback: impl FnMut(AudioFrame) + Send + 'static,
 ) -> Result<(), LoopbackError> {
-    const CALLBACK_MAX_BYTES: usize = WASAPI_CALLBACK_MAX_SAMPLES * size_of::<f32>();
-    let mut raw_buf = [0u8; CALLBACK_MAX_BYTES];
+    let mut callback_samples = vec![0.0f32; WASAPI_CALLBACK_MAX_SAMPLES].into_boxed_slice();
+    let mut frame_normalizer = CaptureFrameNormalizer::new(
+        CAPTURE_FRAME_SAMPLES_PER_CHANNEL,
+        CAPTURE_CHANNEL_COUNT,
+        SAMPLE_RATE_HZ,
+    );
 
     let capture_result: Result<(), CaptureLoopFailure> = (|| {
+        let timestamp_mapping =
+            WasapiTimestampMapping::new().ok_or(CaptureLoopFailure::BackendClass {
+                operation: "initialize WASAPI QPC timestamp mapping",
+                class: "qpc-clock-unavailable",
+            })?;
         loop {
             if state.open_cancellation.is_cancelled() || state.stop_rx.try_recv().is_ok() {
                 break;
@@ -1375,8 +1447,12 @@ fn capture_loop(
                         });
                     }
                 };
-                match plan_packet_read(next, CAPTURE_CHANNEL_COUNT, size_of::<f32>(), raw_buf.len())
-                {
+                match plan_packet_read(
+                    next,
+                    CAPTURE_CHANNEL_COUNT,
+                    size_of::<f32>(),
+                    sample_buffer_capacity_bytes(&callback_samples),
+                ) {
                     PacketReadPlan::Empty => break,
                     PacketReadPlan::Read { .. } => {}
                     PacketReadPlan::Oversized { .. } => {
@@ -1387,7 +1463,9 @@ fn capture_loop(
                         });
                     }
                 }
-                match capture_client.read_from_device(&mut raw_buf) {
+                match capture_client
+                    .read_from_device(f32_samples_as_bytes_mut(&mut callback_samples))
+                {
                     Ok((frames, info)) => {
                         if frames == 0 {
                             continue;
@@ -1396,7 +1474,7 @@ fn capture_loop(
                             frames,
                             CAPTURE_CHANNEL_COUNT,
                             size_of::<f32>(),
-                            raw_buf.len(),
+                            sample_buffer_capacity_bytes(&callback_samples),
                         ) {
                             PacketReadPlan::Read { packet_bytes } => packet_bytes,
                             PacketReadPlan::Empty => continue,
@@ -1408,15 +1486,34 @@ fn capture_loop(
                                 });
                             }
                         };
+                        let sample_count = bytes / size_of::<f32>();
                         if info.flags.silent {
-                            raw_buf[..bytes].fill(0);
+                            callback_samples[..sample_count].fill(0.0);
                         }
+                        if info.flags.timestamp_error {
+                            state.counters.observe_invalid_buffer();
+                            continue;
+                        }
+                        let qpc_timestamp_ns = wasapi_qpc_100ns_to_ns(info.timestamp).ok_or(
+                            CaptureLoopFailure::BackendClass {
+                                operation: "convert WASAPI packet timestamp",
+                                class: "qpc-timestamp-out-of-range",
+                            },
+                        )?;
+                        let callback_timestamp_ns = timestamp_mapping
+                            .to_monotonic_ns(qpc_timestamp_ns)
+                            .ok_or(CaptureLoopFailure::BackendClass {
+                                operation: "map WASAPI packet timestamp",
+                                class: "qpc-timestamp-out-of-range",
+                            })?;
                         deliver_packet(
-                            &raw_buf[..bytes],
+                            &callback_samples[..sample_count],
+                            callback_timestamp_ns,
                             state.source_id,
                             &state.pool,
                             &state.sequence,
                             &state.counters,
+                            &mut frame_normalizer,
                             &mut callback,
                         );
                     }
@@ -1542,9 +1639,18 @@ fn capture_process_loopback(
     use windows::Win32::System::Threading::WaitForSingleObject;
     use windows_core::HRESULT;
 
-    const CALLBACK_MAX_BYTES: usize = WASAPI_CALLBACK_MAX_SAMPLES * size_of::<f32>();
-    let mut raw_buf = [0u8; CALLBACK_MAX_BYTES];
+    let mut callback_samples = vec![0.0f32; WASAPI_CALLBACK_MAX_SAMPLES].into_boxed_slice();
+    let mut frame_normalizer = CaptureFrameNormalizer::new(
+        CAPTURE_FRAME_SAMPLES_PER_CHANNEL,
+        CAPTURE_CHANNEL_COUNT,
+        SAMPLE_RATE_HZ,
+    );
     let capture_result: Result<(), CaptureLoopFailure> = (|| {
+        let timestamp_mapping =
+            WasapiTimestampMapping::new().ok_or(CaptureLoopFailure::BackendClass {
+                operation: "initialize WASAPI process-loopback QPC timestamp mapping",
+                class: "qpc-clock-unavailable",
+            })?;
         loop {
             if state.open_cancellation.is_cancelled() || state.stop_rx.try_recv().is_ok() {
                 break;
@@ -1596,7 +1702,7 @@ fn capture_process_loopback(
                     announced_frames,
                     CAPTURE_CHANNEL_COUNT,
                     size_of::<f32>(),
-                    raw_buf.len(),
+                    sample_buffer_capacity_bytes(&callback_samples),
                 ) {
                     PacketReadPlan::Empty => break,
                     PacketReadPlan::Read { .. } => {}
@@ -1612,6 +1718,8 @@ fn capture_process_loopback(
                 let mut data = std::ptr::null_mut();
                 let mut delivered_frames = 0;
                 let mut flags = 0;
+                let mut device_position = 0u64;
+                let mut qpc_position = 0u64;
                 // SAFETY: all out pointers are valid and capture_client owns
                 // the returned packet until ReleaseBuffer below.
                 unsafe {
@@ -1619,8 +1727,8 @@ fn capture_process_loopback(
                         &mut data,
                         &mut delivered_frames,
                         &mut flags,
-                        None,
-                        None,
+                        Some(&mut device_position),
+                        Some(&mut qpc_position),
                     )
                 }
                 .map_err(|error| CaptureLoopFailure::Windows {
@@ -1631,7 +1739,7 @@ fn capture_process_loopback(
                     delivered_frames,
                     CAPTURE_CHANNEL_COUNT,
                     size_of::<f32>(),
-                    raw_buf.len(),
+                    sample_buffer_capacity_bytes(&callback_samples),
                 );
                 let packet_bytes = match read_plan {
                     PacketReadPlan::Empty => 0,
@@ -1648,8 +1756,9 @@ fn capture_process_loopback(
                     }
                 };
                 if packet_bytes > 0 {
+                    let sample_count = packet_bytes / size_of::<f32>();
                     if flags & AUDCLNT_BUFFERFLAGS_SILENT.0 as u32 != 0 {
-                        raw_buf[..packet_bytes].fill(0);
+                        callback_samples[..sample_count].fill(0.0);
                     } else if data.is_null() {
                         // SAFETY: GetBuffer succeeded and this releases the
                         // packet before reporting the invalid pointer.
@@ -1662,7 +1771,8 @@ fn capture_process_loopback(
                         // SAFETY: WASAPI guarantees at least delivered frame
                         // count times nBlockAlign bytes until ReleaseBuffer.
                         let source = unsafe { std::slice::from_raw_parts(data, packet_bytes) };
-                        raw_buf[..packet_bytes].copy_from_slice(source);
+                        f32_samples_as_bytes_mut(&mut callback_samples)[..packet_bytes]
+                            .copy_from_slice(source);
                     }
                 }
                 // SAFETY: GetBuffer succeeded and the packet is released once.
@@ -1673,12 +1783,34 @@ fn capture_process_loopback(
                     },
                 )?;
                 if packet_bytes > 0 {
+                    let sample_count = packet_bytes / size_of::<f32>();
+                    if flags
+                        & windows::Win32::Media::Audio::AUDCLNT_BUFFERFLAGS_TIMESTAMP_ERROR.0 as u32
+                        != 0
+                    {
+                        state.counters.observe_invalid_buffer();
+                        continue;
+                    }
+                    let qpc_timestamp_ns = wasapi_qpc_100ns_to_ns(qpc_position).ok_or(
+                        CaptureLoopFailure::BackendClass {
+                            operation: "convert WASAPI process-loopback packet timestamp",
+                            class: "qpc-timestamp-out-of-range",
+                        },
+                    )?;
+                    let callback_timestamp_ns = timestamp_mapping
+                        .to_monotonic_ns(qpc_timestamp_ns)
+                        .ok_or(CaptureLoopFailure::BackendClass {
+                            operation: "map WASAPI process-loopback packet timestamp",
+                            class: "qpc-timestamp-out-of-range",
+                        })?;
                     deliver_packet(
-                        &raw_buf[..packet_bytes],
+                        &callback_samples[..sample_count],
+                        callback_timestamp_ns,
                         state.source_id,
                         &state.pool,
                         &state.sequence,
                         &state.counters,
+                        &mut frame_normalizer,
                         &mut callback,
                     );
                 }
@@ -1955,32 +2087,36 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<crate::capture::CaptureSource> {
             SourceState::Silent
         };
 
-        // Resolve process name from PID.
-        let name = match OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) {
-            Ok(handle) => {
-                let mut buf = vec![0u16; 260];
-                let mut len = buf.len() as u32;
-                let name_result = QueryFullProcessImageNameW(
-                    handle,
-                    PROCESS_NAME_WIN32,
-                    PWSTR(buf.as_mut_ptr()),
-                    &mut len,
-                );
-                let _ = CloseHandle(handle);
-                match name_result {
-                    Ok(()) => {
-                        let path = String::from_utf16_lossy(&buf[..len as usize]);
-                        std::path::Path::new(&path)
-                            .file_stem()
-                            .and_then(|s| s.to_str())
-                            .unwrap_or(&path)
-                            .to_owned()
-                    }
-                    Err(_) => format!("pid-{pid}"),
+        // Resolve the display name and the native application identity from
+        // the same process incarnation used to create the source identity.
+        let (name, application_id) =
+            match OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) {
+                Ok(handle) => {
+                    let mut buf = vec![0u16; 260];
+                    let mut len = buf.len() as u32;
+                    let application_id = query_process_application_id(handle);
+                    let name_result = QueryFullProcessImageNameW(
+                        handle,
+                        PROCESS_NAME_WIN32,
+                        PWSTR(buf.as_mut_ptr()),
+                        &mut len,
+                    );
+                    let _ = CloseHandle(handle);
+                    let name = match name_result {
+                        Ok(()) => {
+                            let path = String::from_utf16_lossy(&buf[..len as usize]);
+                            std::path::Path::new(&path)
+                                .file_stem()
+                                .and_then(|s| s.to_str())
+                                .unwrap_or(&path)
+                                .to_owned()
+                        }
+                        Err(_) => format!("pid-{pid}"),
+                    };
+                    (name, application_id)
                 }
-            }
-            Err(_) => format!("pid-{pid}"),
-        };
+                Err(_) => (format!("pid-{pid}"), None),
+            };
         match query_process_creation_time_100ns(pid) {
             Ok(creation_time_100ns)
                 if creation_time_100ns == process_instance.creation_time_100ns => {}
@@ -1995,9 +2131,7 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<crate::capture::CaptureSource> {
             ),
             name,
             process_id: Some(pid),
-            // The StableSourceId identifies this PID incarnation through its
-            // creation FILETIME; it is not an application ID across restarts.
-            app_id: None,
+            app_id: application_id,
             device_uid: None,
             state: source_state,
             sample_rate_hz: 48_000,
@@ -2006,6 +2140,38 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<crate::capture::CaptureSource> {
     }
 
     sources
+}
+
+unsafe fn query_process_application_id(
+    process: windows::Win32::Foundation::HANDLE,
+) -> Option<String> {
+    use windows::Win32::Foundation::{ERROR_INSUFFICIENT_BUFFER, ERROR_SUCCESS};
+    use windows::Win32::Storage::Packaging::Appx::GetApplicationUserModelId;
+    use windows_core::PWSTR;
+
+    let mut length_chars = 0u32;
+    // SAFETY: this first call requests only the required finite buffer size.
+    let status = unsafe {
+        GetApplicationUserModelId(process, &mut length_chars, PWSTR(std::ptr::null_mut()))
+    };
+    if status != ERROR_INSUFFICIENT_BUFFER || length_chars <= 1 {
+        return None;
+    }
+    let mut application_id = vec![0u16; usize::try_from(length_chars).ok()?];
+    // SAFETY: the buffer contains exactly the capacity requested by the first
+    // call and remains live for the complete call.
+    let status = unsafe {
+        GetApplicationUserModelId(
+            process,
+            &mut length_chars,
+            PWSTR(application_id.as_mut_ptr()),
+        )
+    };
+    if status != ERROR_SUCCESS || length_chars <= 1 {
+        return None;
+    }
+    let string_length = usize::try_from(length_chars.saturating_sub(1)).ok()?;
+    String::from_utf16(&application_id[..string_length]).ok()
 }
 
 fn run_process_loopback(

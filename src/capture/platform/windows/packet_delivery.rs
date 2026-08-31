@@ -5,6 +5,10 @@ pub(crate) enum PacketReadPlan {
     Oversized { required_bytes: Option<usize> },
 }
 
+pub(crate) fn sample_buffer_capacity_bytes(samples: &[f32]) -> usize {
+    std::mem::size_of_val(samples)
+}
+
 pub(crate) fn plan_packet_read(
     packet_frames: u32,
     channel_count: u8,
@@ -52,5 +56,12 @@ mod tests {
                 required_bytes: Some(16_392)
             }
         );
+    }
+
+    #[test]
+    fn given_boxed_sample_storage_when_measured_then_the_slice_capacity_is_returned() {
+        let samples = vec![0.0f32; 19_200].into_boxed_slice();
+
+        assert_eq!(sample_buffer_capacity_bytes(&samples), 76_800);
     }
 }
