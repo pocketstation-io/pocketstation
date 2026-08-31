@@ -2,7 +2,11 @@
 
 This page covers user-visible changes in the PocketStation 1.x release line.
 
-## 1.1.4 — Select applications consistently across desktop platforms
+## 1.1.4 — 2026-08-31
+
+Select applications consistently across desktop platforms.
+
+### Added
 
 Application capture now accepts the identifier developers already have. Pass
 an exact display name or application identifier for the common case, or use a
@@ -24,12 +28,14 @@ let session = Session::builder()
     .build();
 ```
 
+### Changed
+
 The 20 ms profile remains the default. Native backends normalize the packet
 sizes delivered by Core Audio, PipeWire, ALSA, and WASAPI into the selected
 frame duration, so application code receives the same frame size on every
 supported desktop platform.
 
-### Reliability
+### Fixed
 
 - Multistem recording starts each stem when that stem first produces media, so
   a silent generated-audio stem cannot delay application or microphone
@@ -39,7 +45,7 @@ supported desktop platform.
 - Existing recording error-code discriminants and the C/PKSS ABI remain
   compatible with 1.1.3.
 
-### Upgrade
+### Compatibility and upgrade
 
 This is a compatible 1.x update. It requires no configuration or data
 migration.
@@ -48,7 +54,9 @@ migration.
 cargo update -p pocketstation --precise 1.1.4
 ```
 
-## 1.1.3 — Interrupt generated audio without stopping capture
+## 1.1.3 — 2026-08-28
+
+Interrupt generated audio without stopping capture.
 
 Voice applications often need to stop an outdated response as soon as a person
 starts speaking again. Stopping the whole Session also stops the microphone,
@@ -97,7 +105,9 @@ This is a compatible 1.x update. It requires no configuration or data migration.
 cargo update -p pocketstation --precise 1.1.3
 ```
 
-## 1.1.2 — Use application-owned audio in a Session
+## 1.1.2 — 2026-08-23
+
+Use application-owned audio in a Session.
 
 PocketStation 1.1.2 made PCM produced by an application a normal source in the
 same Session as desktop application and microphone capture. That audio can use

@@ -1,7 +1,7 @@
 //! Verification-pass pipeline that turns a `GraphSpec` into a checked `GraphIr`.
 //! Resolution binds descriptors; ordered passes validate ids, ports, media,
 //! clock domains, realtime boundaries, and acyclicity. Lowering into a
-//! `RuntimePlan` lives in `planner::RuntimePlanner` (Wave 5).
+//! `RuntimePlan` lives in `planner::RuntimePlanner`.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -17,7 +17,7 @@ use crate::graph::spec::{
     EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef,
 };
 
-/// Canonical built-in adapter that downmixes a stereo output into a mono-only
+/// Built-in adapter that downmixes a stereo output into a mono-only
 /// input. Lives in `pocketstation-nodes`; referenced here by stable type id so
 /// the compiler can auto-insert it (cf. GStreamer `audioconvert` autoplugging).
 const MONO_DOWNMIX_ADAPTER_TYPE: &str = "transform.mono_mix";

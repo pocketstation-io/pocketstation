@@ -1,7 +1,7 @@
 //! RuntimePlan — the lowered, execution-ready shape the planner emits from a
 //! verified `GraphIr`. It carries the execution partitions, per-edge buffer
 //! sizing, fan-out/fan-in groupings, and stable metric handles the runtime
-//! (Wave 6) consumes. No node is executed here; this is the plan, not the run.
+//! consumes. No node is executed here; this is the plan, not the run.
 
 use crate::graph::partition::ExecutionPartition;
 use crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps};

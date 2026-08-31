@@ -91,8 +91,7 @@ pub enum AudioInputConfigError {
     FrameSampleCountOverflow,
 }
 
-/// Intent-first façade for feeding audio already owned by the embedding
-/// application into a Session.
+/// Feeds audio already owned by the embedding application into a Session.
 pub struct AudioInput {
     pcm: PcmSource,
 }

@@ -4,7 +4,7 @@
 //!
 //! The checked header is the unified `include/pocketstation.h`.
 //!
-//! Canonical SDK copies use the same `pocketstation.h` name.
+//! SDK copies use the same `pocketstation.h` name.
 //! Swift usage: import via module.modulemap in sdk-ios (AUDIO-001).
 //! AUDIO-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
 

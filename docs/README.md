@@ -10,6 +10,9 @@ your integration requires them.
 
 ## Develop
 
+- [Capture and route application or microphone audio](guides/capture-and-route.md)
+- [Write application-owned audio into a Session](guides/application-audio.md)
+- [Record stems and inspect delivery](guides/record-and-observe.md)
 - [Build a Connector](guides/connectors.md)
 - [Add a Source, Operator, Endpoint, or process extension](guides/extensions.md)
 
@@ -20,6 +23,8 @@ your integration requires them.
 
 ## Operate and upgrade
 
+- [Prepare macOS, Windows, or Linux](operations/platform-support.md)
+- [Troubleshoot capture, delivery, and shutdown](troubleshooting.md)
 - [Compatibility and version boundaries](compatibility/README.md)
 - [Release notes](../RELEASE_NOTES.md)
 

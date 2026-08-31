@@ -16,6 +16,6 @@ bash tools/check-api-compatibility.sh
 bash tools/check-abi-compatibility.sh
 ```
 
-The checks compare the candidate with a packaged earlier release. Do not make a
+The checks compare the current package with an earlier published release. Do not make a
 breaking change appear compatible by editing the baseline. Additive changes
 still require the matching API, ABI, or protocol version update.
