@@ -284,6 +284,7 @@ impl SessionEngineHostBuilder {
         Err(SessionEngineHostBuildError::UnsupportedPlatform)
     }
 
+    #[cfg(any(test, feature = "conformance-fixtures", feature = "internal-testing"))]
     pub fn new(
         prepare_context: crate::graph::PrepareContext,
         source_queue_capacity_frames: usize,
