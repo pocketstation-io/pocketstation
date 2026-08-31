@@ -24,7 +24,7 @@ application PCM ─────┘                        ├─ Endpoint or Con
 You need Rust 1.95 or newer. Native capture is enabled by default.
 
 ```bash
-cargo add pocketstation@1.1.3
+cargo add pocketstation@1.1.4
 ```
 
 Capture any running application with the same API on macOS, Windows, and Linux:
@@ -50,7 +50,7 @@ shutdown.
 For contracts-only tooling or documentation builds, disable native capture:
 
 ```toml
-pocketstation = { version = "1.1.3", default-features = false }
+pocketstation = { version = "1.1.4", default-features = false }
 ```
 
 ## Choose a task
