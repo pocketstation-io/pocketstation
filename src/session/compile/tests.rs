@@ -253,6 +253,7 @@ fn registries() -> (NodeRegistry, EndpointDriverRegistry) {
                 crate::session::extensions::builtins::audio_endpoint_boundary_definition(
                     NodeTypeId::from(node_type_id),
                     SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+                    crate::frame::AudioFrameDuration::default().samples_per_channel(48_000),
                 ),
             )
             .expect("audio endpoint definition");

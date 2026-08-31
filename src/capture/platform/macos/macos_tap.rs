@@ -548,6 +548,7 @@ pub struct TapLoopbackSource {
 impl TapLoopbackSource {
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
         mut callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, LoopbackError>
@@ -642,7 +643,10 @@ impl TapLoopbackSource {
         let host_time_midpoint_ns =
             host_time_before_ns.saturating_add((host_time_after_ns - host_time_before_ns) / 2);
         let host_to_process = TimelineMapping::new(host_time_midpoint_ns, process_time_ns);
-        let callback_frame_count: u32 = sample_rate_hz / 50; // 20 ms
+        let callback_frame_count =
+            u32::try_from(audio_frame_duration.samples_per_channel(sample_rate_hz))
+                .unwrap_or(u32::MAX)
+                .max(1);
         let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
         let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, buffer_capacity_samples);
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);

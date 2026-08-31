@@ -48,11 +48,17 @@ impl DesktopCaptureSource {
     where
         F: FnMut(crate::frame::AudioFrame) + Send + 'static,
     {
-        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+        Self::capture_mode_with_runtime_event_sender(
+            mode,
+            crate::frame::AudioFrameDuration::default(),
+            callback,
+            None,
+        )
     }
 
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: crate::capture::CaptureMode,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
         callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, crate::capture::CaptureError>
@@ -63,6 +69,7 @@ impl DesktopCaptureSource {
             crate::capture::CaptureMode::InputDevice(selector) => {
                 MacosInputSource::capture_with_runtime_event_sender(
                     selector,
+                    audio_frame_duration,
                     callback,
                     runtime_event_sender,
                 )
@@ -71,6 +78,7 @@ impl DesktopCaptureSource {
             }
             loopback_mode => SystemLoopbackSource::capture_mode_with_runtime_event_sender(
                 loopback_mode,
+                audio_frame_duration,
                 callback,
                 runtime_event_sender,
             )

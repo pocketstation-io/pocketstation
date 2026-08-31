@@ -26,8 +26,8 @@ use std::thread;
 use std::time::Duration;
 
 use crate::frame::{
-    AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId,
-    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
+    AudioBufferHandle, AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, SourceId,
+    StreamId, SAMPLE_RATE_HZ,
 };
 use pipewire as pw;
 use pw::properties::properties;
@@ -45,9 +45,6 @@ use crate::capture::{
 /// Stereo application/system capture.
 const CAPTURE_CHANNEL_COUNT: u8 = 2;
 const MICROPHONE_CHANNEL_COUNT: u8 = 1;
-
-/// Stereo 20 ms frame at 48 kHz = 960 mono samples * 2 channels.
-const CAPTURE_FRAME_SAMPLES: usize = POOL_SLOT_SAMPLES * CAPTURE_CHANNEL_COUNT as usize;
 
 /// Maximum interleaved sample count accepted from one PipeWire callback.
 /// PipeWire's default graph quantum limit is 8192 sample frames. The callback
@@ -133,7 +130,7 @@ struct PipeWireCaptureState {
 }
 
 impl PipeWireCaptureState {
-    fn new(expected_channel_count: u8) -> Self {
+    fn new(expected_channel_count: u8, frame_samples_per_channel: usize) -> Self {
         Self {
             expected_channel_count,
             negotiated_format: None,
@@ -144,7 +141,7 @@ impl PipeWireCaptureState {
             format_failed: false,
             callback_samples: [0.0; PIPEWIRE_CALLBACK_MAX_SAMPLES],
             frame_normalizer: CaptureFrameNormalizer::new(
-                POOL_SLOT_SAMPLES,
+                frame_samples_per_channel,
                 expected_channel_count,
                 SAMPLE_RATE_HZ,
             ),
@@ -687,11 +684,17 @@ impl DesktopCaptureSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
-        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+        Self::capture_mode_with_runtime_event_sender(
+            mode,
+            AudioFrameDuration::default(),
+            callback,
+            None,
+        )
     }
 
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
+        audio_frame_duration: AudioFrameDuration,
         callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, LoopbackError>
@@ -700,6 +703,7 @@ impl DesktopCaptureSource {
     {
         SystemLoopbackSource::capture_mode_with_runtime_event_sender(
             mode,
+            audio_frame_duration,
             callback,
             runtime_event_sender,
         )
@@ -737,11 +741,17 @@ impl SystemLoopbackSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
-        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+        Self::capture_mode_with_runtime_event_sender(
+            mode,
+            AudioFrameDuration::default(),
+            callback,
+            None,
+        )
     }
 
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
+        audio_frame_duration: AudioFrameDuration,
         callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, LoopbackError>
@@ -764,6 +774,7 @@ impl SystemLoopbackSource {
                         node.source.stable_id.source_id(),
                         node.source.stable_id.clone(),
                         mode,
+                        audio_frame_duration,
                         callback,
                         runtime_event_sender,
                     ),
@@ -786,6 +797,7 @@ impl SystemLoopbackSource {
                         stable_id.source_id(),
                         stable_id.clone(),
                         mode,
+                        audio_frame_duration,
                         callback,
                         runtime_event_sender,
                     ),
@@ -803,6 +815,7 @@ impl SystemLoopbackSource {
                         stable_id.source_id(),
                         stable_id.clone(),
                         mode,
+                        audio_frame_duration,
                         callback,
                         runtime_event_sender,
                     ),
@@ -836,6 +849,7 @@ impl SystemLoopbackSource {
                         node.source.stable_id.source_id(),
                         node.source.stable_id.clone(),
                         mode,
+                        audio_frame_duration,
                         callback,
                         runtime_event_sender,
                     ),
@@ -846,9 +860,9 @@ impl SystemLoopbackSource {
             }
             CaptureMode::SystemMix => {
                 if pipewire_available() {
-                    run_pipewire(mode, callback, runtime_event_sender)
+                    run_pipewire(mode, audio_frame_duration, callback, runtime_event_sender)
                 } else {
-                    run_alsa(callback, runtime_event_sender)
+                    run_alsa(audio_frame_duration, callback, runtime_event_sender)
                 }
             }
             CaptureMode::InputDevice(selector) => {
@@ -873,6 +887,7 @@ impl SystemLoopbackSource {
                         node.source.stable_id.source_id(),
                         node.source.stable_id.clone(),
                         mode,
+                        audio_frame_duration,
                         callback,
                         runtime_event_sender,
                     ),
@@ -958,6 +973,7 @@ fn pipewire_available() -> bool {
 
 fn run_pipewire<F>(
     _mode: CaptureMode,
+    audio_frame_duration: AudioFrameDuration,
     mut callback: F,
     runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
 ) -> Result<SystemLoopbackSource, LoopbackError>
@@ -971,7 +987,9 @@ where
     let (frame_producer, mut frame_consumer) =
         RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
 
-    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
+    let frame_samples_per_channel = audio_frame_duration.samples_per_channel(SAMPLE_RATE_HZ);
+    let frame_sample_count = frame_samples_per_channel * usize::from(CAPTURE_CHANNEL_COUNT);
+    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, frame_sample_count);
     let seq = Arc::new(AtomicU64::new(0));
     let counters = CaptureObservationCounters::default();
     let capture_counters = counters.clone();
@@ -1050,7 +1068,10 @@ where
                 }
             });
             let stream_subscription = match stream
-                .add_local_listener_with_user_data(PipeWireCaptureState::new(CAPTURE_CHANNEL_COUNT))
+                .add_local_listener_with_user_data(PipeWireCaptureState::new(
+                    CAPTURE_CHANNEL_COUNT,
+                    frame_samples_per_channel,
+                ))
                 .state_changed(move |_stream, state, _old, new| match new {
                     pw::stream::StreamState::Paused | pw::stream::StreamState::Streaming => {
                         state.connected = true;
@@ -1436,6 +1457,7 @@ fn run_pipewire_targeted<F>(
     source_id: SourceId,
     stable_id: StableSourceId,
     mode: CaptureMode,
+    audio_frame_duration: AudioFrameDuration,
     mut callback: F,
     runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
 ) -> Result<SystemLoopbackSource, LoopbackError>
@@ -1449,7 +1471,9 @@ where
     let (frame_producer, mut frame_consumer) =
         RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
 
-    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
+    let frame_samples_per_channel = audio_frame_duration.samples_per_channel(SAMPLE_RATE_HZ);
+    let frame_sample_count = frame_samples_per_channel * usize::from(capture_channel_count);
+    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, frame_sample_count);
     let seq = Arc::new(AtomicU64::new(0));
     let counters = CaptureObservationCounters::default();
     let capture_counters = counters.clone();
@@ -1526,7 +1550,10 @@ where
                 }
             });
             let stream_subscription = match stream
-                .add_local_listener_with_user_data(PipeWireCaptureState::new(capture_channel_count))
+                .add_local_listener_with_user_data(PipeWireCaptureState::new(
+                    capture_channel_count,
+                    frame_samples_per_channel,
+                ))
                 .state_changed(move |_stream, state, _old, new| match new {
                     pw::stream::StreamState::Paused | pw::stream::StreamState::Streaming => {
                         state.connected = true;
@@ -1689,6 +1716,7 @@ where
 }
 
 fn run_alsa<F>(
+    audio_frame_duration: AudioFrameDuration,
     mut callback: F,
     runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
 ) -> Result<SystemLoopbackSource, LoopbackError>
@@ -1701,7 +1729,9 @@ where
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
     let source_id = system_mix_source_id();
     let (open_tx, open_rx) = mpsc::sync_channel::<Result<(), String>>(1);
-    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
+    let frame_samples_per_channel = audio_frame_duration.samples_per_channel(SAMPLE_RATE_HZ);
+    let frame_sample_count = frame_samples_per_channel * usize::from(CAPTURE_CHANNEL_COUNT);
+    let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, frame_sample_count);
     let seq = Arc::new(AtomicU64::new(0));
     let counters = CaptureObservationCounters::default();
     let capture_counters = counters.clone();
@@ -1804,7 +1834,7 @@ where
                 }
             };
             let _ = open_tx.send(Ok(()));
-            let mut buf = vec![0f32; CAPTURE_FRAME_SAMPLES];
+            let mut buf = vec![0f32; frame_sample_count];
             let mut sample_timeline = CaptureSampleTimeline::new(negotiated_sample_rate_hz);
             let mut runtime_failure_event = runtime_event_sender.as_ref().map(|_| {
                 crate::capture::SourceRuntimeEvent::BackendFailure {
@@ -2168,7 +2198,10 @@ mod tests {
     #[test]
     fn given_negotiated_format_when_one_buffer_is_dropped_then_sample_timeline_keeps_its_duration()
     {
-        let mut state = PipeWireCaptureState::new(CAPTURE_CHANNEL_COUNT);
+        let mut state = PipeWireCaptureState::new(
+            CAPTURE_CHANNEL_COUNT,
+            AudioFrameDuration::default().samples_per_channel(SAMPLE_RATE_HZ),
+        );
         state
             .set_negotiated_format(NegotiatedPipeWireFormat {
                 sample_rate_hz: NonZeroU32::new(48_000).expect("test rate is non-zero"),
@@ -2205,7 +2238,10 @@ mod tests {
 
     #[test]
     fn given_negotiated_format_when_channel_count_changes_then_capture_fails_closed() {
-        let mut state = PipeWireCaptureState::new(MICROPHONE_CHANNEL_COUNT);
+        let mut state = PipeWireCaptureState::new(
+            MICROPHONE_CHANNEL_COUNT,
+            AudioFrameDuration::default().samples_per_channel(SAMPLE_RATE_HZ),
+        );
 
         assert_eq!(
             state.set_negotiated_format(NegotiatedPipeWireFormat {

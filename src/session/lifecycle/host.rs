@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use crate::capture::CallbackCaptureBackend;
 use crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistryError};
+use crate::frame::AudioFrameDuration;
 use crate::frame::{SampleFormat, SampleSpec};
 use crate::graph::{
     AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeTypeId, PrepareContext,
@@ -202,9 +203,24 @@ impl SessionEngineHostBuilder {
         application_backend: Arc<dyn CallbackCaptureBackend>,
         microphone_backend: Arc<dyn CallbackCaptureBackend>,
     ) -> Result<Self, SessionEngineHostBuildError> {
+        Self::with_capture_backends_and_audio_frame_duration(
+            options,
+            AudioFrameDuration::default(),
+            application_backend,
+            microphone_backend,
+        )
+    }
+
+    pub fn with_capture_backends_and_audio_frame_duration(
+        options: NativeSessionEngineHostOptions,
+        audio_frame_duration: AudioFrameDuration,
+        application_backend: Arc<dyn CallbackCaptureBackend>,
+        microphone_backend: Arc<dyn CallbackCaptureBackend>,
+    ) -> Result<Self, SessionEngineHostBuildError> {
         let prepare_context = PrepareContext::new(options.sample_spec);
-        let mut builder = Self::new(
+        let mut builder = Self::new_with_audio_frame_duration(
             prepare_context,
+            audio_frame_duration,
             options.source_queue_capacity_frames,
             options.start_options,
         )?;
@@ -223,9 +239,25 @@ impl SessionEngineHostBuilder {
     pub fn native(
         options: NativeSessionEngineHostOptions,
     ) -> Result<Self, SessionEngineHostBuildError> {
+        Self::native_with_audio_frame_duration(options, AudioFrameDuration::default())
+    }
+
+    #[cfg(all(
+        feature = "native-capture",
+        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    ))]
+    pub fn native_with_audio_frame_duration(
+        options: NativeSessionEngineHostOptions,
+        audio_frame_duration: AudioFrameDuration,
+    ) -> Result<Self, SessionEngineHostBuildError> {
         let capture_backend: Arc<dyn CallbackCaptureBackend> =
-            Arc::new(NativeDesktopCaptureBackend);
-        Self::with_capture_backends(options, Arc::clone(&capture_backend), capture_backend)
+            Arc::new(NativeDesktopCaptureBackend::new(audio_frame_duration));
+        Self::with_capture_backends_and_audio_frame_duration(
+            options,
+            audio_frame_duration,
+            Arc::clone(&capture_backend),
+            capture_backend,
+        )
     }
 
     /// Returns a typed unsupported-platform error on targets without a native
@@ -240,14 +272,40 @@ impl SessionEngineHostBuilder {
         Err(SessionEngineHostBuildError::UnsupportedPlatform)
     }
 
+    #[cfg(not(all(
+        feature = "native-capture",
+        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    )))]
+    pub fn native_with_audio_frame_duration(
+        _options: NativeSessionEngineHostOptions,
+        _audio_frame_duration: AudioFrameDuration,
+    ) -> Result<Self, SessionEngineHostBuildError> {
+        Err(SessionEngineHostBuildError::UnsupportedPlatform)
+    }
+
     pub fn new(
         prepare_context: crate::graph::PrepareContext,
         source_queue_capacity_frames: usize,
         start_options: SessionStartOptions,
     ) -> Result<Self, SessionEngineBuildError> {
+        Self::new_with_audio_frame_duration(
+            prepare_context,
+            AudioFrameDuration::default(),
+            source_queue_capacity_frames,
+            start_options,
+        )
+    }
+
+    pub fn new_with_audio_frame_duration(
+        prepare_context: crate::graph::PrepareContext,
+        audio_frame_duration: AudioFrameDuration,
+        source_queue_capacity_frames: usize,
+        start_options: SessionStartOptions,
+    ) -> Result<Self, SessionEngineBuildError> {
         Ok(Self {
-            engine_builder: SessionEngineBuilder::new(
+            engine_builder: SessionEngineBuilder::new_with_audio_frame_duration(
                 prepare_context,
+                audio_frame_duration,
                 source_queue_capacity_frames,
                 start_options,
             )?,

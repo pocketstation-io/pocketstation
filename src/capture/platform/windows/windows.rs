@@ -45,7 +45,8 @@ use crate::capture::platform::windows::runtime_lifecycle::{
     classify_platform_status, WindowsRuntimeFailureDisposition,
 };
 use crate::frame::{
-    AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_MAX_SLOTS, SAMPLE_RATE_HZ,
+    AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, SourceId, StreamId, POOL_MAX_SLOTS,
+    SAMPLE_RATE_HZ,
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 use windows::Win32::System::Performance::{QueryPerformanceCounter, QueryPerformanceFrequency};
@@ -62,9 +63,6 @@ use crate::capture::{
 };
 
 const CAPTURE_CHANNEL_COUNT: u8 = 2;
-const CAPTURE_FRAME_SAMPLES_PER_CHANNEL: usize = 960;
-const CAPTURE_FRAME_SAMPLES: usize =
-    CAPTURE_FRAME_SAMPLES_PER_CHANNEL * CAPTURE_CHANNEL_COUNT as usize;
 // A delivered WASAPI frame remains backed by this pool while it crosses the
 // 16-frame platform dispatch ring and the Session's bounded capture queue
 // (32 frames by default). Eight slots could therefore exhaust before either
@@ -176,6 +174,7 @@ impl DesktopCaptureSource {
 
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
+        audio_frame_duration: AudioFrameDuration,
         callback: F,
         runtime_event_sender: SourceRuntimeEventSender,
     ) -> Result<Self, LoopbackError>
@@ -184,6 +183,7 @@ impl DesktopCaptureSource {
     {
         SystemLoopbackSource::capture_mode_with_runtime_event_sender(
             mode,
+            audio_frame_duration,
             callback,
             runtime_event_sender,
         )
@@ -657,6 +657,7 @@ impl SystemLoopbackSource {
             source_runtime_event_channel(RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS)?;
         Self::capture_mode_with_runtime_events(
             mode,
+            AudioFrameDuration::default(),
             callback,
             runtime_event_sender,
             Some(runtime_event_receiver),
@@ -665,17 +666,25 @@ impl SystemLoopbackSource {
 
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
+        audio_frame_duration: AudioFrameDuration,
         callback: F,
         runtime_event_sender: SourceRuntimeEventSender,
     ) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
-        Self::capture_mode_with_runtime_events(mode, callback, runtime_event_sender, None)
+        Self::capture_mode_with_runtime_events(
+            mode,
+            audio_frame_duration,
+            callback,
+            runtime_event_sender,
+            None,
+        )
     }
 
     fn capture_mode_with_runtime_events<F>(
         mode: CaptureMode,
+        audio_frame_duration: AudioFrameDuration,
         callback: F,
         runtime_event_tx: SourceRuntimeEventSender,
         runtime_event_rx: Option<SourceRuntimeEventReceiver>,
@@ -689,7 +698,9 @@ impl SystemLoopbackSource {
         let (worker_exit_tx, worker_exit_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let (mut frame_producer, mut frame_consumer) =
             rtrb::RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
-        let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, CAPTURE_FRAME_SAMPLES);
+        let frame_samples_per_channel = audio_frame_duration.samples_per_channel(SAMPLE_RATE_HZ);
+        let frame_sample_count = frame_samples_per_channel * usize::from(CAPTURE_CHANNEL_COUNT);
+        let pool = AudioBufferPool::new(CAPTURE_POOL_CAPACITY_FRAMES, frame_sample_count);
         let sequence_number = Arc::new(AtomicU64::new(0));
         let counters = CaptureObservationCounters::default();
         let capture_counters = counters.clone();
@@ -734,6 +745,7 @@ impl SystemLoopbackSource {
                 let result = match resolved_mode {
                     CaptureMode::SystemMix => run_system_loopback(
                         CaptureWorkerContext {
+                            frame_samples_per_channel,
                             pool,
                             sequence: sequence_number,
                             stop_rx,
@@ -758,6 +770,7 @@ impl SystemLoopbackSource {
                             &stable_key,
                             source_id,
                             CaptureWorkerContext {
+                                frame_samples_per_channel,
                                 pool,
                                 sequence: sequence_number,
                                 stop_rx,
@@ -783,6 +796,7 @@ impl SystemLoopbackSource {
                                 &stable_id.stable_key,
                                 source_id,
                                 CaptureWorkerContext {
+                                    frame_samples_per_channel,
                                     pool,
                                     sequence: sequence_number,
                                     stop_rx,
@@ -803,6 +817,7 @@ impl SystemLoopbackSource {
                     CaptureMode::InputDevice(selector) => run_input_capture(
                         selector,
                         CaptureWorkerContext {
+                            frame_samples_per_channel,
                             pool,
                             sequence: sequence_number,
                             stop_rx,
@@ -1217,6 +1232,7 @@ fn f32_samples_as_bytes_mut(samples: &mut [f32]) -> &mut [u8] {
 }
 
 struct CaptureLoopState {
+    frame_samples_per_channel: usize,
     source_id: SourceId,
     stable_id: StableSourceId,
     pool: Arc<AudioBufferPool>,
@@ -1229,6 +1245,7 @@ struct CaptureLoopState {
 }
 
 struct CaptureWorkerContext {
+    frame_samples_per_channel: usize,
     pool: Arc<AudioBufferPool>,
     sequence: Arc<AtomicU64>,
     stop_rx: std::sync::mpsc::Receiver<()>,
@@ -1246,6 +1263,7 @@ impl CaptureWorkerContext {
         process_watch: Option<ProcessInstanceWatch>,
     ) -> CaptureLoopState {
         CaptureLoopState {
+            frame_samples_per_channel: self.frame_samples_per_channel,
             source_id,
             stable_id,
             pool: self.pool,
@@ -1395,7 +1413,7 @@ fn capture_loop(
 ) -> Result<(), LoopbackError> {
     let mut callback_samples = vec![0.0f32; WASAPI_CALLBACK_MAX_SAMPLES].into_boxed_slice();
     let mut frame_normalizer = CaptureFrameNormalizer::new(
-        CAPTURE_FRAME_SAMPLES_PER_CHANNEL,
+        state.frame_samples_per_channel,
         CAPTURE_CHANNEL_COUNT,
         SAMPLE_RATE_HZ,
     );
@@ -1641,7 +1659,7 @@ fn capture_process_loopback(
 
     let mut callback_samples = vec![0.0f32; WASAPI_CALLBACK_MAX_SAMPLES].into_boxed_slice();
     let mut frame_normalizer = CaptureFrameNormalizer::new(
-        CAPTURE_FRAME_SAMPLES_PER_CHANNEL,
+        state.frame_samples_per_channel,
         CAPTURE_CHANNEL_COUNT,
         SAMPLE_RATE_HZ,
     );

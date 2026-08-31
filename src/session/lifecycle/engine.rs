@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError};
+use crate::frame::AudioFrameDuration;
 use crate::graph::{
     AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeRegistry, NodeTypeId,
     PrepareContext,
@@ -30,6 +31,7 @@ use crate::session::{
 pub struct SessionEngineBuilder {
     node_registry: NodeRegistry,
     prepare_context: PrepareContext,
+    audio_frame_duration: AudioFrameDuration,
     source_queue_capacity_frames: usize,
     start_options: SessionStartOptions,
     endpoint_registry: EndpointDriverRegistry,
@@ -45,14 +47,30 @@ impl SessionEngineBuilder {
         source_queue_capacity_frames: usize,
         start_options: SessionStartOptions,
     ) -> Result<Self, SessionEngineBuildError> {
+        Self::new_with_audio_frame_duration(
+            prepare_context,
+            AudioFrameDuration::default(),
+            source_queue_capacity_frames,
+            start_options,
+        )
+    }
+
+    pub fn new_with_audio_frame_duration(
+        prepare_context: PrepareContext,
+        audio_frame_duration: AudioFrameDuration,
+        source_queue_capacity_frames: usize,
+        start_options: SessionStartOptions,
+    ) -> Result<Self, SessionEngineBuildError> {
         let mut node_registry = NodeRegistry::new();
         let graph_lowerers = register_session_graph_nodes_with_sample_spec(
             &mut node_registry,
             prepare_context.sample_spec,
+            audio_frame_duration,
         )?;
         Ok(Self {
             node_registry,
             prepare_context,
+            audio_frame_duration,
             source_queue_capacity_frames,
             start_options,
             endpoint_registry: EndpointDriverRegistry::new(),
@@ -79,7 +97,12 @@ impl SessionEngineBuilder {
     ) -> Result<&mut Self, EndpointExtensionRegistrationError> {
         self.register_endpoint(
             operator_id,
-            audio_endpoint_boundary_definition(node_type_id, self.prepare_context.sample_spec),
+            audio_endpoint_boundary_definition(
+                node_type_id,
+                self.prepare_context.sample_spec,
+                self.audio_frame_duration
+                    .samples_per_channel(self.prepare_context.sample_spec.sample_rate_hz),
+            ),
             factory,
         )
     }

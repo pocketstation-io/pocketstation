@@ -4,14 +4,32 @@ use crate::capture::{
 };
 
 use crate::capture::platform::windows::DesktopCaptureSource;
+use crate::frame::AudioFrameDuration;
 
 /// Windows adapter from the platform-neutral Session capture contract to the
 /// existing synchronously-opened WASAPI RAII owner.
-#[derive(Debug, Default)]
-pub struct DesktopCaptureBackend;
+#[derive(Debug)]
+pub struct DesktopCaptureBackend {
+    audio_frame_duration: AudioFrameDuration,
+}
+
+impl DesktopCaptureBackend {
+    pub(crate) const fn new(audio_frame_duration: AudioFrameDuration) -> Self {
+        Self {
+            audio_frame_duration,
+        }
+    }
+}
+
+impl Default for DesktopCaptureBackend {
+    fn default() -> Self {
+        Self::new(AudioFrameDuration::default())
+    }
+}
 
 struct PreparedDesktopCapture {
     mode: CaptureMode,
+    audio_frame_duration: AudioFrameDuration,
 }
 
 struct ActiveDesktopCapture {
@@ -20,7 +38,10 @@ struct ActiveDesktopCapture {
 
 impl CallbackCaptureBackend for DesktopCaptureBackend {
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
-        Ok(Box::new(PreparedDesktopCapture { mode }))
+        Ok(Box::new(PreparedDesktopCapture {
+            mode,
+            audio_frame_duration: self.audio_frame_duration,
+        }))
     }
 }
 
@@ -35,6 +56,7 @@ impl PreparedCaptureBackend for PreparedDesktopCapture {
         } = delivery;
         let source = DesktopCaptureSource::capture_mode_with_runtime_event_sender(
             self.mode,
+            self.audio_frame_duration,
             frame_sender.into_callback(),
             runtime_event_sender,
         )?;

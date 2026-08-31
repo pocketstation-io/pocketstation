@@ -13,13 +13,12 @@ use crate::capture::{
     InputDeviceSelector, PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
     SourceRuntimeEventSender, SourceState, StableSourceId,
 };
-use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
+use crate::frame::{AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, StreamId};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
 
 const QUEUE_CAPACITY_FRAMES: usize = 8;
 const POOL_CAPACITY_FRAMES: usize = QUEUE_CAPACITY_FRAMES + 2;
-const TARGET_FRAME_DURATION_MS: u32 = 20;
 const FALLBACK_MAX_CALLBACK_DURATION_MS: u32 = 200;
 
 fn require_microphone_permission(permission: PermissionObservation) -> Result<(), CaptureError> {
@@ -74,6 +73,7 @@ pub struct MacosInputSource {
 impl MacosInputSource {
     pub(crate) fn capture_with_runtime_event_sender<F>(
         selector: InputDeviceSelector,
+        audio_frame_duration: AudioFrameDuration,
         mut callback: F,
         runtime_event_sender: Option<SourceRuntimeEventSender>,
     ) -> Result<Self, CaptureError>
@@ -98,7 +98,10 @@ impl MacosInputSource {
             .ok_or_else(|| {
                 CaptureError::BackendInit("input device channel count is invalid".to_owned())
             })?;
-        let target_callback_frames = (sample_rate_hz / (1_000 / TARGET_FRAME_DURATION_MS)).max(1);
+        let target_callback_frames =
+            u32::try_from(audio_frame_duration.samples_per_channel(sample_rate_hz))
+                .unwrap_or(u32::MAX)
+                .max(1);
         let fallback_max_callback_frames =
             (sample_rate_hz / (1_000 / FALLBACK_MAX_CALLBACK_DURATION_MS)).max(1);
         let mut stream_config = supported_config.config();

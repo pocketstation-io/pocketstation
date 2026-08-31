@@ -138,6 +138,22 @@ mod tests {
     }
 
     #[test]
+    fn given_voice_frame_duration_when_callback_is_larger_then_ten_ms_frames_are_contiguous() {
+        let mut normalizer = CaptureFrameNormalizer::new(480, 1, 48_000);
+        let callback = [0.0; 960];
+        let mut emitted = Vec::new();
+
+        assert!(
+            normalizer.push(&callback, 3_000_000_000, |timestamp_ns, samples| {
+                emitted.push((timestamp_ns, samples.len()));
+            })
+        );
+
+        assert_eq!(emitted, vec![(3_000_000_000, 480), (3_010_000_000, 480)]);
+        assert_eq!(normalizer.pending_sample_count(), 0);
+    }
+
+    #[test]
     fn given_misaligned_stereo_callback_when_normalized_then_input_is_rejected() {
         let mut normalizer = CaptureFrameNormalizer::new(960, 2, 48_000);
 

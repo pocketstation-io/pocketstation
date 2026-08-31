@@ -5,6 +5,7 @@
 //! asynchronous signal lane.
 
 mod audio;
+mod duration;
 mod identity;
 mod lineage;
 mod output_generation;
@@ -12,6 +13,7 @@ mod platform;
 mod pool;
 
 pub use audio::*;
+pub use duration::*;
 pub use identity::*;
 pub use lineage::*;
 pub use output_generation::*;

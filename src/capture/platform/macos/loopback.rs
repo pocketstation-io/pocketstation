@@ -58,11 +58,17 @@ impl SystemLoopbackSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
-        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+        Self::capture_mode_with_runtime_event_sender(
+            mode,
+            crate::frame::AudioFrameDuration::default(),
+            callback,
+            None,
+        )
     }
 
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
         mut callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, LoopbackError>
@@ -73,6 +79,7 @@ impl SystemLoopbackSource {
         if crate::capture::platform::macos::macos_tap::tap_available() {
             return crate::capture::platform::macos::macos_tap::TapLoopbackSource::capture_mode_with_runtime_event_sender(
                 mode,
+                audio_frame_duration,
                 callback,
                 runtime_event_sender,
             )
@@ -104,7 +111,10 @@ impl SystemLoopbackSource {
             "system:mix",
         )
         .source_id();
-        let callback_frame_count: u32 = sample_rate_hz / 50; // 20 ms
+        let callback_frame_count =
+            u32::try_from(audio_frame_duration.samples_per_channel(sample_rate_hz))
+                .unwrap_or(u32::MAX)
+                .max(1);
         let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
         let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, buffer_capacity_samples);
 
