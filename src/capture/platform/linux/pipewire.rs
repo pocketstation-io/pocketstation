@@ -68,7 +68,7 @@ const PW_STOP_POLL_MS: u64 = 50;
 /// stream reached a connected state.
 const PW_OPEN_TIMEOUT: Duration = Duration::from_secs(5);
 
-/// PipeWire's canonical exact-target property. `node.target` is obsolete and
+/// PipeWire's documented exact-target property. `node.target` is obsolete and
 /// can be ignored by current WirePlumber linking policy.
 const PW_TARGET_OBJECT: &str = "target.object";
 

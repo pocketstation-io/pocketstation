@@ -51,7 +51,7 @@ pub struct EdgeSpec {
     pub id: EdgeId,
     pub from: OutputPortRef,
     pub to: InputPortRef,
-    pub requested: Option<EdgeContract>, // None = compiler negotiates from port caps (Wave 4)
+    pub requested: Option<EdgeContract>, // None = compiler negotiates from port capabilities.
 }
 
 #[derive(Debug, Clone, Default)]

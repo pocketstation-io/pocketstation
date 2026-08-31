@@ -30,11 +30,17 @@ cargo add pocketstation@1.1.4
 Capture any running application with the same API on macOS, Windows, and Linux:
 
 ```rust,no_run
-use pocketstation::{ApplicationSelector, Session, Source};
+use pocketstation::{Session, Source};
 
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
 let session = Session::new();
-session.capture(Source::application(ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
-let mut running = session.start().expect("Session failed to start");
+session
+    .capture(Source::application("Spotify"))?
+    .send(session.polled_audio()?)?;
+let mut running = session.start()?;
+# let _ = running.stop();
+# Ok(())
+# }
 ```
 
 Replace `Spotify` with the exact name or identifier of any running application.
@@ -57,8 +63,9 @@ pocketstation = { version = "1.1.4", default-features = false }
 
 | Task | Start with |
 |---|---|
-| Capture a desktop application or microphone | [`Session::capture`](https://docs.rs/pocketstation/latest/pocketstation/struct.Session.html#method.capture) |
-| Ingest PCM your application already owns | `Session::audio_input` and `PcmSource` |
+| Capture and route application or microphone audio | [Capture and route audio](docs/guides/capture-and-route.md) |
+| Ingest PCM your application already owns | [Write application audio](docs/guides/application-audio.md) |
+| Record stems and inspect delivery | [Record and observe a Session](docs/guides/record-and-observe.md) |
 | Process media or typed signals | `Operator` and named ports |
 | Publish to an external system | [`Connector` guide](docs/guides/connectors.md) |
 | Add a source, computation, or destination | [`Extension` guide](docs/guides/extensions.md) |
@@ -161,10 +168,15 @@ sudo apt install build-essential cmake pkg-config \
 ## Documentation
 
 - [Start with the Rust quickstart](docs/getting-started/rust-quickstart.md)
+- [Capture and route audio](docs/guides/capture-and-route.md)
+- [Write application-owned audio](docs/guides/application-audio.md)
+- [Record and observe a Session](docs/guides/record-and-observe.md)
 - [Develop against the current architecture](docs/architecture/overview.md)
 - [Understand signals and typed streams](docs/concepts/signals-and-streams.md)
 - [Build a Connector](docs/guides/connectors.md)
 - [Extend PocketStation](docs/guides/extensions.md)
+- [Prepare each supported platform](docs/operations/platform-support.md)
+- [Troubleshoot capture, delivery, and shutdown](docs/troubleshooting.md)
 - [Check compatibility](docs/compatibility/README.md)
 - [Read the release notes](RELEASE_NOTES.md)
 - [Read the API reference](https://docs.rs/pocketstation/latest/pocketstation/)

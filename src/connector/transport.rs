@@ -35,7 +35,7 @@ const CONFIGURATION_SECRET: u8 = 7;
 pub const CONNECTOR_CONFIGURATION_RECORD_MAJOR: u16 = 1;
 pub const CONNECTOR_CONFIGURATION_RECORD_MINOR: u16 = 0;
 
-/// Canonical typed configuration handed to a connector sidecar during its
+/// Typed configuration handed to a connector sidecar during its
 /// bounded Configure handshake. Secret classification survives the boundary;
 /// Debug output continues to redact secret values.
 #[derive(Debug, Clone, PartialEq, Eq)]

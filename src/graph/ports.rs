@@ -1,4 +1,4 @@
-//! Canonical port, media-capability, and edge contracts for the typed graph.
+//! Port, media-capability, and edge contracts for the typed graph.
 //! Negotiation rules decide which graph ports may connect and what each edge
 //! guarantees at runtime.
 

@@ -31,11 +31,17 @@ cargo add pocketstation@1.1.4
 Capture any running application with the same API on macOS, Windows, and Linux:
 
 ```rust,no_run
-use pocketstation::{ApplicationSelector, Session, Source};
+use pocketstation::{Session, Source};
 
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
 let session = Session::new();
-session.capture(Source::application(ApplicationSelector::name("Spotify"))).expect("application capture failed").send(session.polled_audio().expect("audio polling is unavailable")).expect("audio route failed");
-let mut running = session.start().expect("Session failed to start");
+session
+    .capture(Source::application("Spotify"))?
+    .send(session.polled_audio()?)?;
+let mut running = session.start()?;
+# let _ = running.stop();
+# Ok(())
+# }
 ```
 
 Replace `Spotify` with the exact display name or application identifier of a
@@ -99,6 +105,8 @@ Remove the directory passed to `--record` when you no longer need the artifacts.
 
 ## Continue developing
 
+- [Capture and route more than one source](../guides/capture-and-route.md)
+- [Record stems and inspect delivery](../guides/record-and-observe.md)
 - [Understand the Session architecture](../architecture/overview.md)
 - [Build a Connector](../guides/connectors.md)
 - [Add another extension boundary](../guides/extensions.md)

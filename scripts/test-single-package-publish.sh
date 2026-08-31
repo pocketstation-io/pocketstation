@@ -40,8 +40,13 @@ while IFS= read -r package_file; do
       docs/concepts/signals-and-streams.md | \
       docs/compatibility/README.md | \
       docs/getting-started/rust-quickstart.md | \
+      docs/guides/application-audio.md | \
+      docs/guides/capture-and-route.md | \
       docs/guides/connectors.md | \
-      docs/guides/extensions.md) ;;
+      docs/guides/extensions.md | \
+      docs/guides/record-and-observe.md | \
+      docs/operations/platform-support.md | \
+      docs/troubleshooting.md) ;;
     docs/*)
       echo "internal documentation leaked into package: ${package_file}" >&2
       exit 1
@@ -59,8 +64,13 @@ for required_path in \
   docs/concepts/signals-and-streams.md \
   docs/compatibility/README.md \
   docs/getting-started/rust-quickstart.md \
+  docs/guides/application-audio.md \
+  docs/guides/capture-and-route.md \
   docs/guides/connectors.md \
   docs/guides/extensions.md \
+  docs/guides/record-and-observe.md \
+  docs/operations/platform-support.md \
+  docs/troubleshooting.md \
   include/pocketstation.h \
   src/lib.rs; do
   if ! grep -Fx "${required_path}" <<<"${package_files}" >/dev/null; then

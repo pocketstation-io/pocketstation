@@ -93,7 +93,7 @@ fn given_through_sugar_when_frozen_then_canonical_instance_and_connection_record
         .send(endpoint(&session, "sugar"))
         .expect("derived route");
 
-    let spec = session.freeze().expect("canonical specification");
+    let spec = session.freeze().expect("compiled specification");
     assert_eq!(spec.operators().len(), 1);
     let connection = spec
         .connections()

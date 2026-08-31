@@ -222,7 +222,7 @@ impl SessionEngineBuilder {
     }
 }
 
-/// Canonical production composition path for one safe Rust Session engine.
+/// Composes one Rust Session engine from its owned runtime components.
 ///
 /// Compilation, runtime preparation, capture ownership, endpoint lifecycle,
 /// scheduling, rollback, and finalization remain implemented by their existing

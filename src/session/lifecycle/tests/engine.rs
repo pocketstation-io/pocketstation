@@ -354,7 +354,7 @@ fn given_session_plan_when_prepared_then_stem_media_is_preserved() {
                 microphone: &capture,
             },
         )
-        .expect("canonical Session start");
+        .expect("Session start");
 
     assert_eq!(control.starts_total.load(Ordering::Relaxed), 5);
     assert_eq!(control.started_before_gate_total.load(Ordering::Relaxed), 0);
@@ -487,7 +487,7 @@ fn given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lin
                 microphone: &capture,
             },
         )
-        .expect("canonical Session start");
+        .expect("Session start");
 
     let deadline = Instant::now() + Duration::from_secs(2);
     let lease = loop {

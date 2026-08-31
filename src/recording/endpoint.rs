@@ -40,7 +40,7 @@ struct MultistemRecordingReceiptState {
     result: OnceLock<RecordingOutcome>,
 }
 
-/// Canonical Session-owned multistem recorder declaration.
+/// Declares the Session-owned multistem recorder.
 ///
 /// Unlike the 0.1 compatibility coordinator, callers supply no capture
 /// identity. Session startup contributes exact endpoint, route, stem, sample,
