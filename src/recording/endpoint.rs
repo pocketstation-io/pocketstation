@@ -5,6 +5,7 @@ use std::sync::{Arc, OnceLock};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
+use super::writer::{SessionMultistemRecording, SessionRecorderStemInput};
 use crate::endpoint::{
     EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
     EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage,
@@ -12,13 +13,9 @@ use crate::endpoint::{
     EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
     SessionTimelineOrigin,
 };
-use crate::frame::{EndpointId, RouteId, SessionId, StemId};
-use crate::runtime::PlanEdgeFrame;
-use crate::timing::TimelineMapping;
-
+use crate::frame::{RouteId, SessionId, StemId};
 use crate::recording::{
-    MultistemRecording, PermissionDecision, PermissionScope, RecorderError, RecorderLineageField,
-    RecorderStemConfig, RecordingObservations, RecordingOutcome, RecordingState, StemLabel,
+    RecorderError, RecordingObservations, RecordingOutcome, RecordingState, StemLabel,
 };
 
 const SESSION_RECORDER_IDLE_WAIT_MS: u64 = 1;
@@ -205,10 +202,8 @@ impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
                 )));
             }
             prepared_stems.push(SessionPreparedStem {
-                endpoint_id: context.endpoint_id(),
                 label,
                 stem_id,
-                route_id: route_context.route_id(),
                 sample_rate_hz: sample_spec.sample_rate_hz,
                 channels: sample_spec.channels,
                 receiver,
@@ -232,10 +227,8 @@ impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
 }
 
 struct SessionPreparedStem {
-    endpoint_id: EndpointId,
     label: StemLabel,
     stem_id: StemId,
-    route_id: RouteId,
     sample_rate_hz: u32,
     channels: u8,
     receiver: EndpointAudioReceiver,
@@ -472,11 +465,6 @@ struct SessionRecorderTelemetry {
 }
 
 impl SessionRecorderTelemetry {
-    fn record_initialization_progress(&self, received_frames: u64) {
-        self.frames_received_total
-            .store(received_frames, Ordering::Release);
-    }
-
     fn update(&self, observations: EndpointDriverObservations) {
         self.frames_received_total
             .store(observations.frames_received_total, Ordering::Relaxed);
@@ -488,12 +476,6 @@ impl SessionRecorderTelemetry {
             .store(observations.discontinuities_total, Ordering::Relaxed);
         self.failures_total
             .store(observations.failures_total, Ordering::Relaxed);
-    }
-
-    fn record_initialization_failure(&self, received_frames: u64) {
-        self.frames_received_total
-            .store(received_frames, Ordering::Relaxed);
-        self.failures_total.store(1, Ordering::Relaxed);
     }
 
     fn snapshot(&self) -> EndpointDriverObservations {
@@ -533,93 +515,19 @@ fn run_session_recorder(
         thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));
     }
 
-    let mut first_frames = std::iter::repeat_with(|| None)
-        .take(stems.len())
-        .collect::<Vec<Option<PlanEdgeFrame>>>();
-    let mut received_frames = 0;
-    while first_frames.iter().any(Option::is_none) {
-        let mut made_progress = false;
-        for (stem, first_frame) in stems.iter_mut().zip(&mut first_frames) {
-            if first_frame.is_some() {
-                continue;
-            }
-            if let Some(frame) = stem.receiver.try_recv() {
-                let frame = frame.into_inner();
-                received_frames += 1;
-                telemetry.record_initialization_progress(received_frames);
-                made_progress = true;
-                if let Err(error) = validate_initial_frame(session_id, stem, &frame) {
-                    stem.receiver.mark_worker_failure();
-                    telemetry.record_initialization_failure(received_frames);
-                    return SessionRecorderWorkerOutcome::Failed {
-                        message: format!(
-                            "endpoint {:?} route {:?}: {error}",
-                            stem.endpoint_id, stem.route_id
-                        ),
-                        observations: telemetry.snapshot(),
-                    };
-                }
-                *first_frame = Some(frame);
-            }
-        }
-        if first_frames.iter().all(Option::is_some) {
-            break;
-        }
-        let requested_shutdown = shutdown_mode.load(Ordering::Acquire);
-        if requested_shutdown == RECORDER_ABORT {
-            return SessionRecorderWorkerOutcome::CancelledBeforeStart;
-        }
-        if requested_shutdown == RECORDER_DRAIN
-            && stems
-                .iter()
-                .zip(&first_frames)
-                .all(|(stem, first_frame)| first_frame.is_some() || stem.receiver.is_abandoned())
-        {
-            telemetry.record_initialization_failure(received_frames);
-            return SessionRecorderWorkerOutcome::Failed {
-                message: "recording input ended before every stem delivered authoritative lineage"
-                    .to_owned(),
-                observations: telemetry.snapshot(),
-            };
-        }
-        if !made_progress {
-            thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));
-        }
-    }
-
     let mut recorder_stems = Vec::with_capacity(stems.len());
-    for (stem, first_frame) in stems.into_iter().zip(first_frames) {
-        let Some(first_frame) = first_frame else {
-            stem.receiver.mark_worker_failure();
-            telemetry.record_initialization_failure(received_frames);
-            return SessionRecorderWorkerOutcome::Failed {
-                message: format!(
-                    "endpoint {:?} route {:?} stem {:?} is missing its authoritative first frame",
-                    stem.endpoint_id,
-                    stem.route_id,
-                    stem.label.as_str(),
-                ),
-                observations: telemetry.snapshot(),
-            };
-        };
-        let config = match derive_recorder_config(session_id, timeline_origin, &stem, &first_frame)
-        {
-            Ok(config) => config,
-            Err(error) => {
-                stem.receiver.mark_worker_failure();
-                telemetry.record_initialization_failure(received_frames);
-                return SessionRecorderWorkerOutcome::Failed {
-                    message: format!(
-                        "endpoint {:?} route {:?}: {error}",
-                        stem.endpoint_id, stem.route_id
-                    ),
-                    observations: telemetry.snapshot(),
-                };
-            }
-        };
-        recorder_stems.push((config, stem.receiver.into_inner(), first_frame));
+    for stem in stems.drain(..) {
+        recorder_stems.push(SessionRecorderStemInput {
+            session_id,
+            stem_id: stem.stem_id,
+            label: stem.label,
+            sample_rate_hz: stem.sample_rate_hz,
+            channels: stem.channels,
+            session_timeline_origin_ns: timeline_origin.monotonic_timestamp_ns(),
+            receiver: stem.receiver.into_inner(),
+        });
     }
-    let recording = match MultistemRecording::start_observed(
+    let recording = match SessionMultistemRecording::start(
         output_root,
         session_id,
         identity.group_id,
@@ -627,7 +535,9 @@ fn run_session_recorder(
     ) {
         Ok(recording) => recording,
         Err(error) => {
-            telemetry.record_initialization_failure(received_frames);
+            let mut observations = telemetry.snapshot();
+            observations.failures_total = observations.failures_total.saturating_add(1);
+            telemetry.update(observations);
             return SessionRecorderWorkerOutcome::Failed {
                 message: error.to_string(),
                 observations: telemetry.snapshot(),
@@ -655,66 +565,6 @@ fn run_session_recorder(
             }
         }
     }
-}
-
-fn validate_initial_frame(
-    session_id: SessionId,
-    stem: &SessionPreparedStem,
-    frame: &PlanEdgeFrame,
-) -> Result<(), RecorderError> {
-    let lineage = frame.lineage();
-    if lineage.session_id != session_id {
-        return Err(RecorderError::LineageMismatch {
-            label: stem.label.as_str().to_owned(),
-            field: RecorderLineageField::Session,
-            actual: lineage.session_id.0,
-            expected: session_id.0,
-        });
-    }
-    if lineage.stem_id != stem.stem_id {
-        return Err(RecorderError::LineageMismatch {
-            label: stem.label.as_str().to_owned(),
-            field: RecorderLineageField::Stem,
-            actual: lineage.stem_id.0,
-            expected: stem.stem_id.0,
-        });
-    }
-    if frame.sample_rate_hz() != stem.sample_rate_hz || frame.channels() != stem.channels {
-        return Err(RecorderError::FrameSpecMismatch {
-            label: stem.label.as_str().to_owned(),
-            actual_rate_hz: frame.sample_rate_hz(),
-            actual_channels: frame.channels(),
-            expected_rate_hz: stem.sample_rate_hz,
-            expected_channels: stem.channels,
-        });
-    }
-    Ok(())
-}
-
-fn derive_recorder_config(
-    session_id: SessionId,
-    timeline_origin: SessionTimelineOrigin,
-    stem: &SessionPreparedStem,
-    frame: &PlanEdgeFrame,
-) -> Result<RecorderStemConfig, RecorderError> {
-    validate_initial_frame(session_id, stem, frame)?;
-    let lineage = frame.lineage();
-    Ok(RecorderStemConfig {
-        session_id,
-        source_id: lineage.source_id,
-        stem_id: stem.stem_id,
-        clock_id: lineage.clock_id,
-        source_generation: lineage.source_generation,
-        permission_epoch: lineage.permission_epoch,
-        // Delivery through a running Session proves this Session grant. It
-        // does not assert an operating-system permission decision.
-        permission_scope: PermissionScope::SessionCaptureGrant,
-        permission: PermissionDecision::Allowed,
-        label: stem.label.clone(),
-        sample_rate_hz: stem.sample_rate_hz,
-        channels: stem.channels,
-        timeline_mapping: TimelineMapping::new(timeline_origin.monotonic_timestamp_ns(), 0),
-    })
 }
 
 fn prepare_failure(message: impl Into<String>) -> EndpointFailure {
