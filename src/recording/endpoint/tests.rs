@@ -7,8 +7,8 @@ use crate::endpoint::{
     OperatorId, SessionTimelineOrigin,
 };
 use crate::frame::{
-    AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, RouteId,
-    SampleFormat, SampleSpec, SourceId, StemId, StreamId,
+    AudioBufferPool, AudioFrame, ClockDomainId, EndpointId, FrameLineage, LineagedAudioFrame,
+    RouteId, SampleFormat, SampleSpec, SourceId, StemId, StreamId,
 };
 use crate::graph::compile::Compiler;
 use crate::graph::compile::RuntimePlanner;
@@ -166,13 +166,17 @@ fn session_endpoint_registry(
 }
 
 fn wait_for_received(running: &crate::endpoint::RunningEndpoint, expected_frames: u64) {
-    for _ in 0..200 {
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while Instant::now() < deadline {
         if running.observations().frames_received_total >= expected_frames {
             return;
         }
         thread::sleep(Duration::from_millis(1));
     }
-    panic!("recording endpoint did not receive {expected_frames} frames");
+    panic!(
+        "recording endpoint did not receive {expected_frames} frames: {:?}",
+        running.observations()
+    );
 }
 
 fn wait_for_failure(running: &crate::endpoint::RunningEndpoint) {
@@ -259,6 +263,88 @@ fn given_session_context_and_two_first_frames_when_recorded_then_manifest_derive
     assert_eq!(stems[1]["permission_epoch"], 5);
     assert_eq!(stems[1]["source_timeline_origin_ns"], 0);
     assert_eq!(stems[1]["session_timeline_origin_ns"], 0);
+}
+
+#[test]
+fn given_one_late_stem_when_other_stems_are_active_then_each_active_stem_records_without_loss() {
+    let temp_dir = TempDir::new().unwrap();
+    let coordinator =
+        SessionMultistemEndpointCoordinator::new(temp_dir.path(), EndpointGroupId::new(GROUP_ID));
+    let receipt = coordinator.receipt();
+    let (registry, operator_id, node_type_id) = session_endpoint_registry(coordinator);
+    let (mut router, mut receivers, source_nodes, _edge_ids) = router_with_sources(3);
+    let prepared = registry
+        .prepare_batch(
+            &operator_id,
+            &node_type_id,
+            vec![
+                session_input(
+                    receivers.remove(0),
+                    EndpointId(101),
+                    StemId(11),
+                    RouteId(21),
+                    "application",
+                    0,
+                ),
+                session_input(
+                    receivers.remove(0),
+                    EndpointId(102),
+                    StemId(12),
+                    RouteId(22),
+                    "microphone",
+                    0,
+                ),
+                session_input(
+                    receivers.remove(0),
+                    EndpointId(103),
+                    StemId(13),
+                    RouteId(23),
+                    "assistant",
+                    0,
+                ),
+            ],
+        )
+        .unwrap();
+    let (gate_controller, gate) = endpoint_start_gate();
+    let mut running = prepared.start(gate).unwrap();
+    gate_controller.open();
+
+    for sequence_number in 0..20 {
+        router.dispatch_from(
+            source_nodes[0],
+            "out",
+            lineaged_frame_with_permission(31, 11, sequence_number, 4, 0.25),
+            sequence_number.saturating_mul(20_000_000),
+        );
+        router.dispatch_from(
+            source_nodes[1],
+            "out",
+            lineaged_frame_with_permission(32, 12, sequence_number, 5, -0.5),
+            sequence_number.saturating_mul(20_000_000),
+        );
+        wait_for_received(&running, (sequence_number + 1) * 2);
+    }
+    router.dispatch_from(
+        source_nodes[2],
+        "out",
+        lineaged_frame_with_permission(33, 13, 0, 6, 0.75),
+        400_000_000,
+    );
+    wait_for_received(&running, 41);
+    running.request_stop();
+    let finalization = running.join_and_finalize();
+
+    assert!(finalization.is_success());
+    let outcome = receipt.result().expect("recording receipt must finalize");
+    assert_eq!(outcome.state, RecordingState::Complete);
+    assert_eq!(outcome.completed_stems, 3);
+    assert_eq!(outcome.stems[0].written_frames, 20);
+    assert_eq!(outcome.stems[1].written_frames, 20);
+    assert_eq!(outcome.stems[2].written_frames, 1);
+    assert!(outcome
+        .stems
+        .iter()
+        .all(|stem| stem.edge_observations.frames_dropped_total == 0));
 }
 
 #[test]

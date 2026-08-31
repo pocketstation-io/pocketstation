@@ -159,7 +159,7 @@ fn given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are
         serde_json::from_reader(File::open(outcome.session_dir.join("manifest.json")).unwrap())
             .unwrap();
     assert_eq!(manifest["state"], "complete");
-    assert_eq!(manifest["schema_version"], 1);
+    assert_eq!(manifest["schema_version"], 2);
     assert_eq!(manifest["session_id"], 42);
     assert_eq!(manifest["recording_group_id"], "recording.test.v1");
     assert_eq!(manifest["stems"][0]["first_timestamp_ns"], 10_000);

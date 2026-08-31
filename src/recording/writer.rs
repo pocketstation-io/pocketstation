@@ -9,13 +9,13 @@ use std::time::Duration;
 use super::config::{
     PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel,
 };
-use crate::frame::SessionId;
+use crate::frame::{SessionId, StemId};
 use crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver};
 use hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter};
 use serde::Serialize;
 
 pub(crate) const RECORDING_MANIFEST_FILE_NAME: &str = "manifest.json";
-pub(crate) const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 1;
+pub(crate) const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 2;
 const WORKER_IDLE_WAIT_MS: u64 = 1;
 const MAX_MANIFEST_GAPS: usize = 1_024;
 const MAX_SILENCE_GAP_NS: u64 = 3_600_000_000_000; // one hour
@@ -73,6 +73,8 @@ pub enum RecorderError {
     TooManyGaps(String),
     #[error("recorder worker '{0}' panicked")]
     WorkerPanicked(String),
+    #[error("stem '{0}' ended before delivering authoritative lineage")]
+    MissingInitialFrame(String),
     #[error("I/O error: {0}")]
     Io(#[from] std::io::Error),
     #[error("WAV error: {0}")]
@@ -145,7 +147,37 @@ pub struct MultistemRecording {
     finished: bool,
 }
 
+pub(super) struct SessionRecorderStemInput {
+    pub session_id: SessionId,
+    pub stem_id: StemId,
+    pub label: StemLabel,
+    pub sample_rate_hz: u32,
+    pub channels: u8,
+    pub session_timeline_origin_ns: u64,
+    pub receiver: PlanEdgeReceiver,
+}
+
+pub(super) struct SessionMultistemRecording {
+    session_id: SessionId,
+    group_id: crate::endpoint::EndpointGroupId,
+    session_dir: PathBuf,
+    declarations: Vec<SessionStemDeclaration>,
+    workers: Vec<SessionStemWorker>,
+    finished: bool,
+}
+
+#[derive(Clone)]
+struct SessionStemDeclaration {
+    session_id: SessionId,
+    stem_id: StemId,
+    label: StemLabel,
+    sample_rate_hz: u32,
+    channels: u8,
+    session_timeline_origin_ns: u64,
+}
+
 impl MultistemRecording {
+    #[cfg(test)]
     pub(crate) fn start_observed(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
@@ -163,6 +195,7 @@ impl MultistemRecording {
         Self::start_with_inputs(output_root, session_id, group_id, stems)
     }
 
+    #[cfg(test)]
     fn start_with_inputs(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
@@ -208,11 +241,7 @@ impl MultistemRecording {
             configs.push(config.clone());
         }
 
-        fs::create_dir_all(output_root.as_ref())?;
-        fs::create_dir(&session_dir)?;
-        fs::create_dir(session_dir.join("stems"))?;
-        fs::create_dir(session_dir.join("events"))?;
-        fs::create_dir(session_dir.join("metrics"))?;
+        prepare_recording_directory(output_root.as_ref(), &session_dir)?;
 
         write_permission_events(&session_dir, &configs)?;
         write_manifest(
@@ -351,6 +380,205 @@ impl MultistemRecording {
     }
 }
 
+impl SessionMultistemRecording {
+    pub(super) fn start(
+        output_root: impl AsRef<Path>,
+        session_id: SessionId,
+        group_id: crate::endpoint::EndpointGroupId,
+        stems: Vec<SessionRecorderStemInput>,
+    ) -> Result<Self, RecorderError> {
+        let session_dir = output_root
+            .as_ref()
+            .join(format!("session-{}", session_id.0));
+        if session_dir.exists() {
+            return Err(RecorderError::OutputExists(session_dir));
+        }
+        let mut declarations = Vec::with_capacity(stems.len());
+        for stem in &stems {
+            if stem.session_id != session_id {
+                return Err(RecorderError::SessionMismatch {
+                    label: stem.label.as_str().to_owned(),
+                    actual: stem.session_id.0,
+                    expected: session_id.0,
+                });
+            }
+            if stem.sample_rate_hz == 0 || stem.channels == 0 {
+                return Err(RecorderError::InvalidSampleSpec {
+                    label: stem.label.as_str().to_owned(),
+                    sample_rate_hz: stem.sample_rate_hz,
+                    channels: stem.channels,
+                });
+            }
+            if declarations
+                .iter()
+                .any(|existing: &SessionStemDeclaration| {
+                    existing.label == stem.label || existing.stem_id == stem.stem_id
+                })
+            {
+                return Err(RecorderError::DuplicateStemLabel(
+                    stem.label.as_str().to_owned(),
+                ));
+            }
+            declarations.push(SessionStemDeclaration {
+                session_id,
+                stem_id: stem.stem_id,
+                label: stem.label.clone(),
+                sample_rate_hz: stem.sample_rate_hz,
+                channels: stem.channels,
+                session_timeline_origin_ns: stem.session_timeline_origin_ns,
+            });
+        }
+
+        prepare_recording_directory(output_root.as_ref(), &session_dir)?;
+        write_manifest(
+            &session_dir,
+            &ManifestDocument::session_initial(session_id, &group_id, &declarations),
+        )?;
+
+        let mut workers = Vec::with_capacity(stems.len());
+        for (declaration, stem) in declarations.iter().cloned().zip(stems) {
+            match SessionStemWorker::spawn(session_dir.clone(), declaration, stem.receiver) {
+                Ok(worker) => workers.push(worker),
+                Err(error) => {
+                    for worker in &workers {
+                        worker.request_stop();
+                    }
+                    for worker in workers {
+                        let _ = worker.join();
+                    }
+                    fs::remove_dir_all(&session_dir)?;
+                    return Err(error);
+                }
+            }
+        }
+
+        Ok(Self {
+            session_id,
+            group_id,
+            session_dir,
+            declarations,
+            workers,
+            finished: false,
+        })
+    }
+
+    pub(super) fn observations(&self) -> RecordingObservations {
+        self.workers
+            .iter()
+            .map(SessionStemWorker::observations)
+            .fold(RecordingObservations::default(), |mut total, current| {
+                total.frames_received_total = total
+                    .frames_received_total
+                    .saturating_add(current.frames_received_total);
+                total.frames_written_total = total
+                    .frames_written_total
+                    .saturating_add(current.frames_written_total);
+                total.frames_rejected_total = total
+                    .frames_rejected_total
+                    .saturating_add(current.frames_rejected_total);
+                total.discontinuities_total = total
+                    .discontinuities_total
+                    .saturating_add(current.discontinuities_total);
+                total.failures_total = total.failures_total.saturating_add(current.failures_total);
+                total
+            })
+    }
+
+    pub(super) fn request_stop(&self) {
+        for worker in &self.workers {
+            worker.request_stop();
+        }
+    }
+
+    pub(super) fn finish(mut self) -> Result<RecordingOutcome, RecorderError> {
+        for worker in &self.workers {
+            worker.request_stop();
+        }
+        let outcomes = self
+            .workers
+            .drain(..)
+            .map(SessionStemWorker::join)
+            .collect::<Vec<_>>();
+
+        merge_session_discontinuity_events(&self.session_dir, &self.declarations)?;
+        write_session_destination_metrics(&self.session_dir, &outcomes)?;
+        write_session_permission_events(&self.session_dir, &outcomes)?;
+        let manifest = ManifestDocument::session_finished(
+            self.session_id,
+            &self.group_id,
+            &self.declarations,
+            &outcomes,
+        );
+        write_manifest(&self.session_dir, &manifest)?;
+        write_summary(&self.session_dir, &manifest)?;
+
+        let stems = outcomes
+            .iter()
+            .map(|outcome| RecordingStemOutcome {
+                label: outcome.worker.label.clone(),
+                written_frames: outcome
+                    .worker
+                    .report
+                    .as_ref()
+                    .map_or(0, |report| report.written_frames),
+                stale_frames: outcome
+                    .worker
+                    .report
+                    .as_ref()
+                    .map_or(0, |report| report.stale_frames),
+                gap_ranges: outcome
+                    .worker
+                    .report
+                    .as_ref()
+                    .map_or_else(Vec::new, |report| report.gap_ranges.clone()),
+                error: outcome.worker.error.clone(),
+                edge_observations: outcome.worker.observations,
+            })
+            .collect::<Vec<_>>();
+        let failed_stems = stems.iter().filter(|stem| stem.error.is_some()).count();
+        let completed_stems = stems.len().saturating_sub(failed_stems);
+        self.finished = true;
+        Ok(RecordingOutcome {
+            session_dir: self.session_dir.clone(),
+            state: if failed_stems == 0 {
+                RecordingState::Complete
+            } else {
+                RecordingState::Incomplete
+            },
+            completed_stems,
+            failed_stems,
+            stems,
+        })
+    }
+}
+
+impl Drop for SessionMultistemRecording {
+    fn drop(&mut self) {
+        if self.finished {
+            return;
+        }
+        for worker in &self.workers {
+            worker.request_stop();
+        }
+        for worker in self.workers.drain(..) {
+            let _ = worker.join();
+        }
+    }
+}
+
+fn prepare_recording_directory(
+    output_root: &Path,
+    session_dir: &Path,
+) -> Result<(), RecorderError> {
+    fs::create_dir_all(output_root)?;
+    fs::create_dir(session_dir)?;
+    fs::create_dir(session_dir.join("stems"))?;
+    fs::create_dir(session_dir.join("events"))?;
+    fs::create_dir(session_dir.join("metrics"))?;
+    Ok(())
+}
+
+#[cfg(test)]
 struct RecorderStemInput {
     config: RecorderStemConfig,
     receiver: PlanEdgeReceiver,
@@ -379,6 +607,7 @@ struct RecorderWorker {
 }
 
 impl RecorderWorker {
+    #[cfg(test)]
     fn spawn(session_dir: PathBuf, stem: RecorderStemInput) -> Result<Self, RecorderError> {
         let RecorderStemInput {
             config,
@@ -432,6 +661,188 @@ impl RecorderWorker {
     fn observations(&self) -> RecordingObservations {
         self.telemetry.snapshot()
     }
+}
+
+struct SessionStemWorker {
+    label: String,
+    stop_requested: Arc<AtomicBool>,
+    join_handle: JoinHandle<SessionStemWorkerOutcome>,
+    telemetry: Arc<RecorderWorkerTelemetry>,
+}
+
+struct SessionStemWorkerOutcome {
+    config: Option<RecorderStemConfig>,
+    worker: StemWorkerOutcome,
+}
+
+impl SessionStemWorker {
+    fn spawn(
+        session_dir: PathBuf,
+        declaration: SessionStemDeclaration,
+        receiver: PlanEdgeReceiver,
+    ) -> Result<Self, RecorderError> {
+        let label = declaration.label.as_str().to_owned();
+        let stop_requested = Arc::new(AtomicBool::new(false));
+        let worker_stop = Arc::clone(&stop_requested);
+        let telemetry = Arc::new(RecorderWorkerTelemetry::default());
+        let worker_telemetry = Arc::clone(&telemetry);
+        let worker_label = label.clone();
+        let join_handle = thread::Builder::new()
+            .name(format!("pks-recorder-{label}"))
+            .spawn(move || {
+                run_session_stem_worker(
+                    session_dir,
+                    declaration,
+                    receiver,
+                    worker_stop,
+                    worker_telemetry,
+                )
+            })?;
+        Ok(Self {
+            label: worker_label,
+            stop_requested,
+            join_handle,
+            telemetry,
+        })
+    }
+
+    fn request_stop(&self) {
+        self.stop_requested.store(true, Ordering::Release);
+        self.join_handle.thread().unpark();
+    }
+
+    fn join(self) -> SessionStemWorkerOutcome {
+        self.join_handle.join().unwrap_or_else(|_| {
+            let error = RecorderError::WorkerPanicked(self.label.clone()).to_string();
+            SessionStemWorkerOutcome {
+                config: None,
+                worker: StemWorkerOutcome {
+                    label: self.label,
+                    report: None,
+                    error: Some(error),
+                    observations: EdgeObservations {
+                        worker_failures_total: 1,
+                        ..EdgeObservations::default()
+                    },
+                },
+            }
+        })
+    }
+
+    fn observations(&self) -> RecordingObservations {
+        self.telemetry.snapshot()
+    }
+}
+
+fn run_session_stem_worker(
+    session_dir: PathBuf,
+    declaration: SessionStemDeclaration,
+    mut receiver: PlanEdgeReceiver,
+    stop_requested: Arc<AtomicBool>,
+    telemetry: Arc<RecorderWorkerTelemetry>,
+) -> SessionStemWorkerOutcome {
+    let first_frame = loop {
+        if let Some(frame) = receiver.try_recv() {
+            break frame;
+        }
+        if stop_requested.load(Ordering::Acquire) {
+            telemetry.failures_total.fetch_add(1, Ordering::Relaxed);
+            let observations = receiver.observations();
+            return SessionStemWorkerOutcome {
+                config: None,
+                worker: StemWorkerOutcome {
+                    label: declaration.label.as_str().to_owned(),
+                    report: None,
+                    error: Some(
+                        RecorderError::MissingInitialFrame(declaration.label.as_str().to_owned())
+                            .to_string(),
+                    ),
+                    observations,
+                },
+            };
+        }
+        thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
+    };
+
+    let config = match derive_session_stem_config(&declaration, &first_frame) {
+        Ok(config) => config,
+        Err(error) => {
+            telemetry.failures_total.fetch_add(1, Ordering::Relaxed);
+            receiver.mark_worker_failure();
+            return SessionStemWorkerOutcome {
+                config: None,
+                worker: StemWorkerOutcome {
+                    label: declaration.label.as_str().to_owned(),
+                    report: None,
+                    error: Some(error.to_string()),
+                    observations: receiver.observations(),
+                },
+            };
+        }
+    };
+    let worker = run_stem_worker(StemWorkerRuntime {
+        session_dir,
+        config: config.clone(),
+        receiver,
+        stop_requested,
+        telemetry,
+        initial_frame: Some(first_frame),
+    });
+    SessionStemWorkerOutcome {
+        config: Some(config),
+        worker,
+    }
+}
+
+fn derive_session_stem_config(
+    declaration: &SessionStemDeclaration,
+    frame: &PlanEdgeFrame,
+) -> Result<RecorderStemConfig, RecorderError> {
+    let lineage = frame.lineage();
+    if lineage.session_id != declaration.session_id {
+        return Err(RecorderError::LineageMismatch {
+            label: declaration.label.as_str().to_owned(),
+            field: RecorderLineageField::Session,
+            actual: lineage.session_id.0,
+            expected: declaration.session_id.0,
+        });
+    }
+    if lineage.stem_id != declaration.stem_id {
+        return Err(RecorderError::LineageMismatch {
+            label: declaration.label.as_str().to_owned(),
+            field: RecorderLineageField::Stem,
+            actual: lineage.stem_id.0,
+            expected: declaration.stem_id.0,
+        });
+    }
+    if frame.sample_rate_hz() != declaration.sample_rate_hz
+        || frame.channels() != declaration.channels
+    {
+        return Err(RecorderError::FrameSpecMismatch {
+            label: declaration.label.as_str().to_owned(),
+            actual_rate_hz: frame.sample_rate_hz(),
+            actual_channels: frame.channels(),
+            expected_rate_hz: declaration.sample_rate_hz,
+            expected_channels: declaration.channels,
+        });
+    }
+    Ok(RecorderStemConfig {
+        session_id: declaration.session_id,
+        source_id: lineage.source_id,
+        stem_id: declaration.stem_id,
+        clock_id: lineage.clock_id,
+        source_generation: lineage.source_generation,
+        permission_epoch: lineage.permission_epoch,
+        permission_scope: PermissionScope::SessionCaptureGrant,
+        permission: PermissionDecision::Allowed,
+        label: declaration.label.clone(),
+        sample_rate_hz: declaration.sample_rate_hz,
+        channels: declaration.channels,
+        timeline_mapping: crate::timing::TimelineMapping::new(
+            declaration.session_timeline_origin_ns,
+            0,
+        ),
+    })
 }
 
 #[derive(Default)]
@@ -929,6 +1340,18 @@ fn write_permission_events(
     Ok(())
 }
 
+fn write_session_permission_events(
+    session_dir: &Path,
+    outcomes: &[SessionStemWorkerOutcome],
+) -> Result<(), RecorderError> {
+    let configs = outcomes
+        .iter()
+        .filter_map(|outcome| outcome.config.as_ref())
+        .cloned()
+        .collect::<Vec<_>>();
+    write_permission_events(session_dir, &configs)
+}
+
 fn stem_event_path(session_dir: &Path, label: &StemLabel) -> PathBuf {
     session_dir
         .join("events")
@@ -944,6 +1367,28 @@ fn merge_discontinuity_events(
     )?);
     for config in configs {
         let path = stem_event_path(session_dir, &config.label);
+        if !path.exists() {
+            continue;
+        }
+        {
+            let mut input = BufReader::new(File::open(&path)?);
+            std::io::copy(&mut input, &mut output)?;
+        }
+        fs::remove_file(path)?;
+    }
+    output.flush()?;
+    Ok(())
+}
+
+fn merge_session_discontinuity_events(
+    session_dir: &Path,
+    declarations: &[SessionStemDeclaration],
+) -> Result<(), RecorderError> {
+    let mut output = BufWriter::new(File::create(
+        session_dir.join("events").join("discontinuities.jsonl"),
+    )?);
+    for declaration in declarations {
+        let path = stem_event_path(session_dir, &declaration.label);
         if !path.exists() {
             continue;
         }
@@ -1071,6 +1516,27 @@ fn write_destination_metrics(
     Ok(())
 }
 
+fn write_session_destination_metrics(
+    session_dir: &Path,
+    outcomes: &[SessionStemWorkerOutcome],
+) -> Result<(), RecorderError> {
+    let mut writer = BufWriter::new(File::create(
+        session_dir.join("metrics").join("destinations.jsonl"),
+    )?);
+    for outcome in outcomes {
+        serde_json::to_writer(
+            &mut writer,
+            &DestinationMetrics::from_observations(
+                outcome.worker.label.clone(),
+                outcome.worker.observations,
+            ),
+        )?;
+        writer.write_all(b"\n")?;
+    }
+    writer.flush()?;
+    Ok(())
+}
+
 #[derive(Serialize)]
 struct ManifestDocument {
     schema_version: u32,
@@ -1082,6 +1548,7 @@ struct ManifestDocument {
 }
 
 impl ManifestDocument {
+    #[cfg(test)]
     fn initial(
         session_id: SessionId,
         group_id: &crate::endpoint::EndpointGroupId,
@@ -1136,6 +1603,74 @@ impl ManifestDocument {
             errors,
         }
     }
+
+    fn session_initial(
+        session_id: SessionId,
+        group_id: &crate::endpoint::EndpointGroupId,
+        declarations: &[SessionStemDeclaration],
+    ) -> Self {
+        Self {
+            schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
+            session_id: session_id.0,
+            recording_group_id: group_id.as_str().to_owned(),
+            state: RecordingState::Recording,
+            stems: declarations
+                .iter()
+                .map(|declaration| {
+                    ManifestStem::pending(declaration, RecordingState::Recording, None)
+                })
+                .collect(),
+            errors: Vec::new(),
+        }
+    }
+
+    fn session_finished(
+        session_id: SessionId,
+        group_id: &crate::endpoint::EndpointGroupId,
+        declarations: &[SessionStemDeclaration],
+        outcomes: &[SessionStemWorkerOutcome],
+    ) -> Self {
+        let mut errors = Vec::new();
+        let stems = declarations
+            .iter()
+            .zip(outcomes)
+            .map(
+                |(declaration, outcome)| match (&outcome.config, &outcome.worker.report) {
+                    (Some(config), Some(report)) => ManifestStem::from_report(config, report),
+                    (Some(config), None) => {
+                        let message = outcome.worker.error.clone().unwrap_or_else(|| {
+                            "recorder worker failed without an error".to_owned()
+                        });
+                        errors.push(message.clone());
+                        ManifestStem::failed(config, message)
+                    }
+                    (None, _) => {
+                        let message = outcome.worker.error.clone().unwrap_or_else(|| {
+                            "recorder worker ended before establishing lineage".to_owned()
+                        });
+                        errors.push(message.clone());
+                        ManifestStem::pending(
+                            declaration,
+                            RecordingState::Incomplete,
+                            Some(message),
+                        )
+                    }
+                },
+            )
+            .collect();
+        Self {
+            schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
+            session_id: session_id.0,
+            recording_group_id: group_id.as_str().to_owned(),
+            state: if errors.is_empty() {
+                RecordingState::Complete
+            } else {
+                RecordingState::Incomplete
+            },
+            stems,
+            errors,
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -1143,12 +1678,12 @@ struct ManifestStem {
     label: String,
     wav_path: String,
     session_id: u64,
-    source_id: u64,
+    source_id: Option<u64>,
     stem_id: u64,
-    clock_id: u32,
-    source_generation: u32,
-    permission_epoch: u64,
-    source_timeline_origin_ns: u64,
+    clock_id: Option<u32>,
+    source_generation: Option<u32>,
+    permission_epoch: Option<u64>,
+    source_timeline_origin_ns: Option<u64>,
     session_timeline_origin_ns: u64,
     sample_rate_hz: u32,
     channels: u8,
@@ -1172,12 +1707,12 @@ impl ManifestStem {
             label: config.label.as_str().to_owned(),
             wav_path: format!("stems/{}.wav", config.label.as_str()),
             session_id: config.session_id.0,
-            source_id: config.source_id.0,
+            source_id: Some(config.source_id.0),
             stem_id: config.stem_id.0,
-            clock_id: config.clock_id.0,
-            source_generation: config.source_generation,
-            permission_epoch: config.permission_epoch,
-            source_timeline_origin_ns: config.timeline_mapping.source_origin_ns,
+            clock_id: Some(config.clock_id.0),
+            source_generation: Some(config.source_generation),
+            permission_epoch: Some(config.permission_epoch),
+            source_timeline_origin_ns: Some(config.timeline_mapping.source_origin_ns),
             session_timeline_origin_ns: config.timeline_mapping.session_origin_ns,
             sample_rate_hz: config.sample_rate_hz,
             channels: config.channels,
@@ -1213,6 +1748,39 @@ impl ManifestStem {
         let mut manifest = Self::new(config, RecordingState::Incomplete);
         manifest.error = Some(error);
         manifest
+    }
+
+    fn pending(
+        declaration: &SessionStemDeclaration,
+        state: RecordingState,
+        error: Option<String>,
+    ) -> Self {
+        Self {
+            label: declaration.label.as_str().to_owned(),
+            wav_path: format!("stems/{}.wav", declaration.label.as_str()),
+            session_id: declaration.session_id.0,
+            source_id: None,
+            stem_id: declaration.stem_id.0,
+            clock_id: None,
+            source_generation: None,
+            permission_epoch: None,
+            source_timeline_origin_ns: None,
+            session_timeline_origin_ns: declaration.session_timeline_origin_ns,
+            sample_rate_hz: declaration.sample_rate_hz,
+            channels: declaration.channels,
+            sample_format: "f32_interleaved",
+            finalization_state: state,
+            first_timestamp_ns: None,
+            final_timestamp_ns: None,
+            written_frames: 0,
+            silence_filled_samples: 0,
+            stale_frames: 0,
+            gap_ranges: Vec::new(),
+            wav_bytes: None,
+            checksum_algorithm: "fnv1a64",
+            checksum: None,
+            error,
+        }
     }
 }
 
