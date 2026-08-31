@@ -218,11 +218,15 @@ impl PipeWireCaptureState {
 struct PipeWireCaptureTiming {
     source_sample_frame: Option<u64>,
     capture_delay_ns: u64,
+    report_age_ns: u64,
+    buffer_timestamp_ns: Option<u64>,
 }
 
 fn pipewire_capture_timing(
     stream: &pw::stream::Stream,
     sample_rate_hz: u32,
+    buffer_pts_ns: Option<i64>,
+    callback_timestamp_ns: u64,
 ) -> PipeWireCaptureTiming {
     let Ok(stream_time) = stream.time() else {
         return PipeWireCaptureTiming::default();
@@ -234,10 +238,43 @@ fn pipewire_capture_timing(
         .ok()
         .and_then(|delay| pipewire_ticks_to_nanoseconds(delay, stream_rate.num, stream_rate.denom))
         .unwrap_or(0);
+    let linux_monotonic_now_ns = linux_monotonic_timestamp_ns();
+    let report_age_ns = linux_monotonic_now_ns
+        .and_then(|now_ns| pipewire_report_age_ns(stream_time.now(), now_ns))
+        .unwrap_or(0);
+    let buffer_timestamp_ns = buffer_pts_ns.and_then(|buffer_pts_ns| {
+        linux_monotonic_now_ns
+            .and_then(|now_ns| pipewire_report_age_ns(buffer_pts_ns, now_ns))
+            .map(|buffer_age_ns| callback_timestamp_ns.saturating_sub(buffer_age_ns).max(1))
+    });
     PipeWireCaptureTiming {
         source_sample_frame,
         capture_delay_ns,
+        report_age_ns,
+        buffer_timestamp_ns,
     }
+}
+
+fn linux_monotonic_timestamp_ns() -> Option<u64> {
+    let mut timestamp = libc::timespec {
+        tv_sec: 0,
+        tv_nsec: 0,
+    };
+    // SAFETY: `timestamp` points to writable storage for one `timespec` and
+    // `CLOCK_MONOTONIC` requires no caller-owned resources.
+    if unsafe { libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut timestamp) } != 0 {
+        return None;
+    }
+    let seconds = u64::try_from(timestamp.tv_sec).ok()?;
+    let nanoseconds = u64::try_from(timestamp.tv_nsec).ok()?;
+    seconds
+        .checked_mul(1_000_000_000)
+        .and_then(|value| value.checked_add(nanoseconds))
+}
+
+fn pipewire_report_age_ns(report_timestamp_ns: i64, monotonic_now_ns: u64) -> Option<u64> {
+    let report_timestamp_ns = u64::try_from(report_timestamp_ns).ok()?;
+    monotonic_now_ns.checked_sub(report_timestamp_ns)
 }
 
 fn pipewire_ticks_to_nanoseconds(
@@ -260,11 +297,16 @@ fn pipewire_first_sample_timestamp_ns(
     sample_frames: u64,
     sample_rate_hz: u32,
     capture_delay_ns: u64,
+    report_age_ns: u64,
 ) -> u64 {
     let buffer_duration_ns =
         pipewire_ticks_to_nanoseconds(sample_frames, 1, sample_rate_hz).unwrap_or(u64::MAX);
     callback_timestamp_ns
-        .saturating_sub(buffer_duration_ns.saturating_add(capture_delay_ns))
+        .saturating_sub(
+            buffer_duration_ns
+                .saturating_add(capture_delay_ns)
+                .saturating_add(report_age_ns),
+        )
         .max(1)
 }
 
@@ -544,6 +586,9 @@ fn process_pipewire_audio(
         }
     };
     counters.observe_callback_buffer();
+    let buffer_pts_ns = buffer
+        .find_meta::<spa::buffer::meta::MetaHeader>()
+        .map(spa::buffer::meta::MetaHeader::pts);
     let datas = buffer.datas_mut();
     if datas.is_empty() {
         counters.observe_invalid_buffer();
@@ -567,25 +612,50 @@ fn process_pipewire_audio(
         counters.observe_invalid_buffer();
         return;
     }
+    let callback_timestamp_ns = monotonic_timestamp_ns();
     let capture_timing = state
         .negotiated_format
-        .map(|format| pipewire_capture_timing(stream, format.sample_rate_hz.get()))
+        .map(|format| {
+            pipewire_capture_timing(
+                stream,
+                format.sample_rate_hz.get(),
+                buffer_pts_ns,
+                callback_timestamp_ns,
+            )
+        })
         .unwrap_or_default();
     let sample_frames = u64::try_from(sample_count / channel_count).unwrap_or(u64::MAX);
-    let first_sample_timestamp_ns = pipewire_first_sample_timestamp_ns(
-        monotonic_timestamp_ns(),
-        sample_frames,
-        state
-            .negotiated_format
-            .map(|format| format.sample_rate_hz.get())
-            .unwrap_or(SAMPLE_RATE_HZ),
-        capture_timing.capture_delay_ns,
-    );
-    let Some((timestamp_ns, sample_rate_hz, output_channel_count)) = state.advance_sample_timeline(
-        capture_timing.source_sample_frame,
-        sample_frames,
-        first_sample_timestamp_ns,
-    ) else {
+    let first_sample_timestamp_ns = capture_timing.buffer_timestamp_ns.unwrap_or_else(|| {
+        pipewire_first_sample_timestamp_ns(
+            callback_timestamp_ns,
+            sample_frames,
+            state
+                .negotiated_format
+                .map(|format| format.sample_rate_hz.get())
+                .unwrap_or(SAMPLE_RATE_HZ),
+            capture_timing.capture_delay_ns,
+            capture_timing.report_age_ns,
+        )
+    });
+    let capture_format = capture_timing.buffer_timestamp_ns.and_then(|timestamp_ns| {
+        (!state.format_failed)
+            .then_some(state.negotiated_format)
+            .flatten()
+            .map(|format| {
+                (
+                    timestamp_ns,
+                    format.sample_rate_hz.get(),
+                    format.channel_count,
+                )
+            })
+    });
+    let Some((timestamp_ns, sample_rate_hz, output_channel_count)) = capture_format.or_else(|| {
+        state.advance_sample_timeline(
+            capture_timing.source_sample_frame,
+            sample_frames,
+            first_sample_timestamp_ns,
+        )
+    }) else {
         counters.observe_invalid_buffer();
         return;
     };
@@ -2226,9 +2296,21 @@ mod tests {
     fn given_pipewire_callback_when_buffer_contains_multiple_frames_then_timestamp_starts_before_callback(
     ) {
         assert_eq!(
-            pipewire_first_sample_timestamp_ns(1_000_000_000, 2_048, 48_000, 5_000_000),
-            952_333_334
+            pipewire_first_sample_timestamp_ns(
+                1_000_000_000,
+                2_048,
+                48_000,
+                5_000_000,
+                300_000_000,
+            ),
+            652_333_334
         );
+        assert_eq!(
+            pipewire_report_age_ns(700_000_000, 1_000_000_000),
+            Some(300_000_000)
+        );
+        assert_eq!(pipewire_report_age_ns(1_100_000_000, 1_000_000_000), None);
+        assert_eq!(pipewire_report_age_ns(-1, 1_000_000_000), None);
         assert_eq!(
             pipewire_ticks_to_nanoseconds(960, 1, 48_000),
             Some(20_000_000)
