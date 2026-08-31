@@ -28,6 +28,7 @@ impl CaptureFrameNormalizer {
         }
     }
 
+    #[cfg(target_os = "macos")]
     pub(crate) fn frame_sample_count(&self) -> usize {
         self.samples.len()
     }
