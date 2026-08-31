@@ -604,17 +604,7 @@ fn specialize_audio_edge(
 }
 
 fn specialize_edge_media(mut input_edge: EdgeContract, media: MediaCaps) -> EdgeContract {
-    input_edge.media = match media {
-        MediaCaps::Audio(mut audio) => {
-            if audio.frame_samples.is_none() {
-                audio.frame_samples = audio
-                    .sample_rate_hz
-                    .map(|sample_rate_hz| (sample_rate_hz / 50) as usize);
-            }
-            MediaCaps::Audio(audio)
-        }
-        other => other,
-    };
+    input_edge.media = media;
     input_edge
 }
 
