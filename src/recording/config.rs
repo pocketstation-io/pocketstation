@@ -42,6 +42,7 @@ impl StemLabel {
 #[serde(rename_all = "snake_case")]
 pub enum PermissionDecision {
     Allowed,
+    #[allow(dead_code)]
     Denied,
 }
 

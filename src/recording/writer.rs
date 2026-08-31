@@ -35,6 +35,7 @@ pub enum RecorderError {
         expected: u64,
     },
     #[error("permission denied for stem '{0}'")]
+    #[allow(dead_code)]
     PermissionDenied(String),
     #[error("stem '{label}' has invalid sample spec {sample_rate_hz} Hz/{channels} ch")]
     InvalidSampleSpec {
@@ -138,6 +139,7 @@ pub struct RecordingObservations {
     pub failures_total: u64,
 }
 
+#[cfg(test)]
 pub struct MultistemRecording {
     session_id: SessionId,
     group_id: crate::endpoint::EndpointGroupId,
@@ -176,6 +178,7 @@ struct SessionStemDeclaration {
     session_timeline_origin_ns: u64,
 }
 
+#[cfg(test)]
 impl MultistemRecording {
     #[cfg(test)]
     pub(crate) fn start_observed(
@@ -585,6 +588,7 @@ struct RecorderStemInput {
     initial_frame: Option<PlanEdgeFrame>,
 }
 
+#[cfg(test)]
 impl Drop for MultistemRecording {
     fn drop(&mut self) {
         if self.finished {
@@ -599,6 +603,7 @@ impl Drop for MultistemRecording {
     }
 }
 
+#[cfg(test)]
 struct RecorderWorker {
     label: String,
     stop_requested: Arc<AtomicBool>,
@@ -606,6 +611,7 @@ struct RecorderWorker {
     telemetry: Arc<RecorderWorkerTelemetry>,
 }
 
+#[cfg(test)]
 impl RecorderWorker {
     #[cfg(test)]
     fn spawn(session_dir: PathBuf, stem: RecorderStemInput) -> Result<Self, RecorderError> {
@@ -1358,6 +1364,7 @@ fn stem_event_path(session_dir: &Path, label: &StemLabel) -> PathBuf {
         .join(format!(".discontinuities-{}.jsonl", label.as_str()))
 }
 
+#[cfg(test)]
 fn merge_discontinuity_events(
     session_dir: &Path,
     configs: &[RecorderStemConfig],
@@ -1498,6 +1505,7 @@ impl DestinationMetrics {
     }
 }
 
+#[cfg(test)]
 fn write_destination_metrics(
     session_dir: &Path,
     outcomes: &[StemWorkerOutcome],
@@ -1567,6 +1575,7 @@ impl ManifestDocument {
         }
     }
 
+    #[cfg(test)]
     fn finished(
         session_id: SessionId,
         group_id: &crate::endpoint::EndpointGroupId,

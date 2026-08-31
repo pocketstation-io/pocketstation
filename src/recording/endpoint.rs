@@ -5,6 +5,7 @@ use std::sync::{Arc, OnceLock};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
+use super::config::StemLabel;
 use super::writer::{SessionMultistemRecording, SessionRecorderStemInput};
 use crate::endpoint::{
     EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
@@ -14,9 +15,7 @@ use crate::endpoint::{
     SessionTimelineOrigin,
 };
 use crate::frame::{RouteId, SessionId, StemId};
-use crate::recording::{
-    RecorderError, RecordingObservations, RecordingOutcome, RecordingState, StemLabel,
-};
+use crate::recording::{RecorderError, RecordingObservations, RecordingOutcome, RecordingState};
 
 const SESSION_RECORDER_IDLE_WAIT_MS: u64 = 1;
 const RECORDER_RUNNING: u8 = 0;
