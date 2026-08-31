@@ -2,6 +2,52 @@
 
 This page covers user-visible changes in the PocketStation 1.x release line.
 
+## 1.1.4 — Select applications consistently across desktop platforms
+
+Application capture now accepts the identifier developers already have. Pass
+an exact display name or application identifier for the common case, or use a
+stable source identity, process ID, or process instance when the application
+needs tighter control. PocketStation resolves the selector before capture and
+fails clearly when a name is ambiguous.
+
+```rust
+let source = Source::application("Spotify");
+let application = session.capture(source)?;
+application.send(session.polled_audio()?)?;
+```
+
+For interactive voice workloads, a Session can opt into 10 ms capture frames:
+
+```rust
+let session = Session::builder()
+    .audio_frame_duration(AudioFrameDuration::Ms10)
+    .build();
+```
+
+The 20 ms profile remains the default. Native backends normalize the packet
+sizes delivered by Core Audio, PipeWire, ALSA, and WASAPI into the selected
+frame duration, so application code receives the same frame size on every
+supported desktop platform.
+
+### Reliability
+
+- Multistem recording starts each stem when that stem first produces media, so
+  a silent generated-audio stem cannot delay application or microphone
+  recording.
+- PipeWire capture timestamps retain the source presentation timeline instead
+  of using callback arrival time.
+- Existing recording error-code discriminants and the C/PKSS ABI remain
+  compatible with 1.1.3.
+
+### Upgrade
+
+This is a compatible 1.x update. It requires no configuration or data
+migration.
+
+```console
+cargo update -p pocketstation --precise 1.1.4
+```
+
 ## 1.1.3 — Interrupt generated audio without stopping capture
 
 Voice applications often need to stop an outdated response as soon as a person
