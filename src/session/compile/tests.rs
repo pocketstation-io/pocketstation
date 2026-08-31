@@ -240,6 +240,29 @@ fn endpoint_registry(connector_node_type_id: Option<&'static str>) -> EndpointDr
     endpoint_registry
 }
 
+#[test]
+fn given_endpoint_accepting_any_frame_size_when_edge_is_specialized_then_wildcard_is_preserved() {
+    let input_edge = EdgeContract::realtime_audio();
+    let endpoint_media = MediaCaps::Audio(AudioCaps {
+        sample_rate_hz: Some(48_000),
+        frame_samples: None,
+        channel_layout: ChannelLayout::Any,
+        format: SampleFormat::F32Interleaved,
+    });
+
+    let specialized = specialize_edge_media(input_edge, endpoint_media);
+
+    assert_eq!(specialized.media, endpoint_media);
+    assert!(specialized
+        .media
+        .is_compatible_with(&MediaCaps::Audio(AudioCaps {
+            sample_rate_hz: Some(48_000),
+            frame_samples: Some(480),
+            channel_layout: ChannelLayout::Stereo,
+            format: SampleFormat::F32Interleaved,
+        },)));
+}
+
 fn registries() -> (NodeRegistry, EndpointDriverRegistry) {
     let mut node_registry = NodeRegistry::new();
     register_session_graph_nodes(&mut node_registry).expect("Session structural registrations");
