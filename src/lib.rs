@@ -78,10 +78,10 @@ pub use crate::endpoint::{
     PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
 };
 pub use crate::frame::{
-    AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId,
-    FrameLineage, FrameLineageBuildError, OutputCancelResult, OutputGeneration,
-    OutputGenerationError, OutputGenerationId, RouteId, SampleFormat, SampleSpec, SessionId,
-    SourceId, StemId, StreamId,
+    AudioBufferPool, AudioFrame, AudioFrameBuildError, AudioFrameDuration, ClockDomainId,
+    ConnectorId, EndpointId, FrameLineage, FrameLineageBuildError, OutputCancelResult,
+    OutputGeneration, OutputGenerationError, OutputGenerationId, RouteId, SampleFormat, SampleSpec,
+    SessionId, SourceId, StemId, StreamId,
 };
 pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
@@ -240,6 +240,7 @@ pub struct Session {
     polled_audio_endpoint: crate::session::PolledAudioEndpointConfig,
     recording_root: Option<PathBuf>,
     sample_spec: SampleSpec,
+    audio_frame_duration: AudioFrameDuration,
     endpoint_registrations: Mutex<Vec<EndpointDriverRegistration>>,
     endpoint_extensions: Mutex<Vec<EndpointExtensionRegistration>>,
     operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,
@@ -276,6 +277,7 @@ struct SessionTraceConfiguration {
 pub struct SessionBuilder {
     recording_root: Option<PathBuf>,
     sample_spec: SampleSpec,
+    audio_frame_duration: AudioFrameDuration,
     capture_backends: Option<CaptureBackendConfiguration>,
     session_trace: Option<SessionTraceConfiguration>,
 }
@@ -285,6 +287,7 @@ impl Default for SessionBuilder {
         Self {
             recording_root: None,
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+            audio_frame_duration: AudioFrameDuration::default(),
             capture_backends: None,
             session_trace: None,
         }
@@ -304,6 +307,13 @@ impl SessionBuilder {
     #[must_use]
     pub fn sample_spec(mut self, sample_spec: SampleSpec) -> Self {
         self.sample_spec = sample_spec;
+        self
+    }
+
+    /// Selects the fixed audio cadence used by native capture and Session routes.
+    #[must_use]
+    pub fn audio_frame_duration(mut self, duration: AudioFrameDuration) -> Self {
+        self.audio_frame_duration = duration;
         self
     }
 
@@ -345,6 +355,7 @@ impl SessionBuilder {
             polled_audio_endpoint: crate::session::PolledAudioEndpointConfig::default(),
             recording_root: self.recording_root,
             sample_spec: self.sample_spec,
+            audio_frame_duration: self.audio_frame_duration,
             endpoint_registrations: Mutex::new(Vec::new()),
             endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
@@ -365,6 +376,7 @@ impl Session {
             polled_audio_endpoint: crate::session::PolledAudioEndpointConfig::default(),
             recording_root: None,
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+            audio_frame_duration: AudioFrameDuration::default(),
             endpoint_registrations: Mutex::new(Vec::new()),
             endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
@@ -641,6 +653,7 @@ impl Session {
             polled_audio_endpoint,
             recording_root,
             sample_spec,
+            audio_frame_duration,
             endpoint_registrations,
             endpoint_extensions,
             operator_registrations,
@@ -667,18 +680,24 @@ impl Session {
         let mut host_builder = match host_builder {
             Some(builder) => builder,
             None => match capture_backends {
-                Some(backends) => SessionEngineHostBuilder::with_capture_backends(
+                Some(backends) => {
+                    SessionEngineHostBuilder::with_capture_backends_and_audio_frame_duration(
+                        NativeSessionEngineHostOptions {
+                            sample_spec,
+                            ..NativeSessionEngineHostOptions::default()
+                        },
+                        audio_frame_duration,
+                        backends.application,
+                        backends.microphone,
+                    )?
+                }
+                None => SessionEngineHostBuilder::native_with_audio_frame_duration(
                     NativeSessionEngineHostOptions {
                         sample_spec,
                         ..NativeSessionEngineHostOptions::default()
                     },
-                    backends.application,
-                    backends.microphone,
+                    audio_frame_duration,
                 )?,
-                None => SessionEngineHostBuilder::native(NativeSessionEngineHostOptions {
-                    sample_spec,
-                    ..NativeSessionEngineHostOptions::default()
-                })?,
             },
         };
         let _ = host_builder.register_polled_audio_endpoint(polled_audio_endpoint)?;
@@ -777,6 +796,7 @@ impl Session {
             polled_audio_endpoint,
             recording_root,
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+            audio_frame_duration: AudioFrameDuration::default(),
             endpoint_registrations: Mutex::new(Vec::new()),
             endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),

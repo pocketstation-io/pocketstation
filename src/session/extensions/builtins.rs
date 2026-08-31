@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 #[cfg(any(test, feature = "internal-testing"))]
 use crate::frame::SampleFormat;
-use crate::frame::{AudioFrame, SampleSpec};
+use crate::frame::{AudioFrame, AudioFrameDuration, SampleSpec};
 use crate::graph::{
     AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract,
     SignalSpec,
@@ -39,6 +39,7 @@ pub fn register_session_graph_nodes(
     register_session_graph_nodes_with_sample_spec(
         registry,
         SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+        AudioFrameDuration::default(),
     )
     .map(|_| ())
 }
@@ -46,35 +47,45 @@ pub fn register_session_graph_nodes(
 pub(crate) fn register_session_graph_nodes_with_sample_spec(
     registry: &mut NodeRegistry,
     sample_spec: SampleSpec,
+    audio_frame_duration: AudioFrameDuration,
 ) -> Result<Vec<Arc<dyn SessionGraphLowerer>>, SessionGraphRegistrationError> {
+    let frame_samples_per_channel =
+        audio_frame_duration.samples_per_channel(sample_spec.sample_rate_hz);
     let factories: Vec<Arc<dyn NodeFactory>> = vec![
         Arc::new(AudioIngressFactory::new(
             APPLICATION_SOURCE_NODE_TYPE_ID,
             "Application Capture Ingress",
             sample_spec,
+            frame_samples_per_channel,
             ChannelLayout::Stereo,
         )),
         Arc::new(AudioIngressFactory::new(
             MICROPHONE_SOURCE_NODE_TYPE_ID,
             "Microphone Capture Ingress",
             sample_spec,
+            frame_samples_per_channel,
             ChannelLayout::Mono,
         )),
         Arc::new(AudioIngressFactory::new(
             EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
             "External Audio Ingress",
             sample_spec,
+            frame_samples_per_channel,
             channel_layout_for(sample_spec),
         )),
         Arc::new(AudioIngressFactory::new(
             GENERATED_AUDIO_INGRESS_NODE_TYPE_ID,
             "Generated Audio Ingress",
             sample_spec,
+            frame_samples_per_channel,
             channel_layout_for(sample_spec),
         )),
     ];
     let definitions: Vec<Arc<dyn NodeDefinition>> =
-        vec![Arc::new(GeneratedAudioBridgeDefinition { sample_spec })];
+        vec![Arc::new(GeneratedAudioBridgeDefinition {
+            sample_spec,
+            frame_samples_per_channel,
+        })];
 
     for node_type_id in factories
         .iter()
@@ -360,6 +371,7 @@ struct AudioIngressFactory {
     node_type_id: &'static str,
     display_name: &'static str,
     sample_spec: SampleSpec,
+    frame_samples_per_channel: usize,
     channel_layout: ChannelLayout,
 }
 
@@ -368,12 +380,14 @@ impl AudioIngressFactory {
         node_type_id: &'static str,
         display_name: &'static str,
         sample_spec: SampleSpec,
+        frame_samples_per_channel: usize,
         channel_layout: ChannelLayout,
     ) -> Self {
         Self {
             node_type_id,
             display_name,
             sample_spec,
+            frame_samples_per_channel,
             channel_layout,
         }
     }
@@ -388,6 +402,7 @@ impl NodeFactory for AudioIngressFactory {
             outputs: vec![audio_port(
                 PortDirection::Output,
                 self.sample_spec,
+                self.frame_samples_per_channel,
                 self.channel_layout,
             )],
             execution: ExecutionPartition::RealtimeCpu,
@@ -420,6 +435,7 @@ const fn channel_layout_for(sample_spec: SampleSpec) -> ChannelLayout {
 
 struct GeneratedAudioBridgeDefinition {
     sample_spec: SampleSpec,
+    frame_samples_per_channel: usize,
 }
 
 impl NodeDefinition for GeneratedAudioBridgeDefinition {
@@ -430,6 +446,7 @@ impl NodeDefinition for GeneratedAudioBridgeDefinition {
             inputs: vec![audio_port(
                 PortDirection::Input,
                 self.sample_spec,
+                self.frame_samples_per_channel,
                 ChannelLayout::Any,
             )],
             outputs: Vec::new(),
@@ -459,13 +476,19 @@ impl RuntimeNode for SourceIngressNode {
 struct EndpointBoundaryDefinition {
     node_type_id: NodeTypeId,
     sample_spec: SampleSpec,
+    frame_samples_per_channel: usize,
 }
 
 impl EndpointBoundaryDefinition {
-    fn new(node_type_id: NodeTypeId, sample_spec: SampleSpec) -> Self {
+    fn new(
+        node_type_id: NodeTypeId,
+        sample_spec: SampleSpec,
+        frame_samples_per_channel: usize,
+    ) -> Self {
         Self {
             node_type_id,
             sample_spec,
+            frame_samples_per_channel,
         }
     }
 }
@@ -473,8 +496,13 @@ impl EndpointBoundaryDefinition {
 pub(crate) fn audio_endpoint_boundary_definition(
     node_type_id: NodeTypeId,
     sample_spec: SampleSpec,
+    frame_samples_per_channel: usize,
 ) -> Arc<dyn NodeDefinition> {
-    Arc::new(EndpointBoundaryDefinition::new(node_type_id, sample_spec))
+    Arc::new(EndpointBoundaryDefinition::new(
+        node_type_id,
+        sample_spec,
+        frame_samples_per_channel,
+    ))
 }
 
 impl NodeDefinition for EndpointBoundaryDefinition {
@@ -485,6 +513,7 @@ impl NodeDefinition for EndpointBoundaryDefinition {
             inputs: vec![audio_port(
                 PortDirection::Input,
                 self.sample_spec,
+                self.frame_samples_per_channel,
                 ChannelLayout::Any,
             )],
             outputs: Vec::new(),
@@ -502,6 +531,7 @@ impl NodeDefinition for EndpointBoundaryDefinition {
 fn audio_port(
     direction: PortDirection,
     sample_spec: SampleSpec,
+    frame_samples_per_channel: usize,
     channel_layout: ChannelLayout,
 ) -> PortSpec {
     PortSpec {
@@ -510,7 +540,7 @@ fn audio_port(
         signal: SignalSpec::audio(),
         media: MediaCaps::Audio(AudioCaps {
             sample_rate_hz: Some(sample_spec.sample_rate_hz),
-            frame_samples: None,
+            frame_samples: Some(frame_samples_per_channel),
             channel_layout,
             format: sample_spec.format,
         }),
@@ -547,8 +577,12 @@ mod tests {
     fn given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist() {
         let mut registry = NodeRegistry::new();
 
-        let lowerers = register_session_graph_nodes_with_sample_spec(&mut registry, sample_spec())
-            .expect("registration");
+        let lowerers = register_session_graph_nodes_with_sample_spec(
+            &mut registry,
+            sample_spec(),
+            AudioFrameDuration::default(),
+        )
+        .expect("registration");
 
         let expected_node_type_ids = [
             APPLICATION_SOURCE_NODE_TYPE_ID,
@@ -572,6 +606,7 @@ mod tests {
                 APPLICATION_SOURCE_NODE_TYPE_ID,
                 "Application Capture Ingress",
                 sample_spec(),
+                AudioFrameDuration::default().samples_per_channel(48_000),
                 ChannelLayout::Stereo,
             )))
             .unwrap();
@@ -593,6 +628,7 @@ mod tests {
             APPLICATION_SOURCE_NODE_TYPE_ID,
             "Application Capture Ingress",
             sample_spec(),
+            AudioFrameDuration::default().samples_per_channel(48_000),
             ChannelLayout::Stereo,
         );
         let mut node = factory
@@ -626,6 +662,7 @@ mod tests {
             .register_definition(audio_endpoint_boundary_definition(
                 node_type_id.clone(),
                 sample_spec(),
+                AudioFrameDuration::default().samples_per_channel(48_000),
             ))
             .expect("extension definition");
 
@@ -641,6 +678,7 @@ mod tests {
             MICROPHONE_SOURCE_NODE_TYPE_ID,
             "Microphone Capture Ingress",
             sample_spec(),
+            AudioFrameDuration::default().samples_per_channel(48_000),
             ChannelLayout::Mono,
         );
 
