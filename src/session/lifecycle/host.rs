@@ -198,6 +198,7 @@ impl SessionEngineHostBuilder {
     /// Creates the standard Session host builder with caller-owned capture
     /// backends. This is the reuse seam for CLIs, tests, and platform adapters
     /// that decorate native capture without rebuilding Session semantics.
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn with_capture_backends(
         options: NativeSessionEngineHostOptions,
         application_backend: Arc<dyn CallbackCaptureBackend>,

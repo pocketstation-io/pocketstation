@@ -42,6 +42,7 @@ pub struct SessionEngineBuilder {
 }
 
 impl SessionEngineBuilder {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn new(
         prepare_context: PrepareContext,
         source_queue_capacity_frames: usize,
