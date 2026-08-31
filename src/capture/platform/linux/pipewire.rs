@@ -279,16 +279,16 @@ fn pipewire_report_age_ns(report_timestamp_ns: i64, monotonic_now_ns: u64) -> Op
 
 fn pipewire_ticks_to_nanoseconds(
     ticks: u64,
-    rate_numerator: u32,
-    rate_denominator: u32,
+    seconds_per_tick_numerator_seconds: u32,
+    seconds_per_tick_denominator_ticks: u32,
 ) -> Option<u64> {
-    if rate_numerator == 0 || rate_denominator == 0 {
+    if seconds_per_tick_numerator_seconds == 0 || seconds_per_tick_denominator_ticks == 0 {
         return None;
     }
     let nanoseconds = u128::from(ticks)
-        .checked_mul(u128::from(rate_numerator))?
+        .checked_mul(u128::from(seconds_per_tick_numerator_seconds))?
         .checked_mul(1_000_000_000)?
-        .checked_div(u128::from(rate_denominator))?;
+        .checked_div(u128::from(seconds_per_tick_denominator_ticks))?;
     u64::try_from(nanoseconds).ok()
 }
 
