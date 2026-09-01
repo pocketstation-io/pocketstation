@@ -2,7 +2,44 @@
 
 This page covers user-visible changes in the PocketStation 1.x release line.
 
-## 1.1.5 — 2026-08-31
+## 1.1.5 — 2026-09-01
+
+Send Session audio to an external system with one function or one focused Rust
+type.
+
+### Create a Connector
+
+Use `Connector::from_audio_fn` when a destination needs only one send
+operation:
+
+```rust
+let destination = session.destination(Connector::from_audio_fn(|frame| {
+    publish(frame.samples())?;
+    Ok(())
+})?)?;
+
+application.send(destination)?;
+```
+
+Implement `AudioConnector` when the provider opens and closes a connection.
+One Connector value can receive several source-aware stems through one
+lifecycle. Separate values remain independent destinations with their own
+queues, failures, and shutdown outcomes.
+
+PocketStation keeps Connector work off realtime, bounds each route, preserves
+frame lineage, and joins the provider during drain, abort, startup rollback, or
+failure. The existing manifest and driver APIs remain available for
+distributable integrations that need typed configuration, secrets, named
+inputs, readiness, and provider observations.
+
+### Operate capture safely
+
+The guides now show how to inspect permission without prompting, store a
+discovered source only for its reported persistence scope, rediscover after a
+process or device disappears, reject ambiguous application matches, and make
+fallback and provider retry policy explicit.
+
+### Fixed
 
 Repeated microphone permission checks now retain valid WinRT thread state for
 the lifetime of the calling thread. This prevents a second non-prompting query

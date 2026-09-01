@@ -146,6 +146,14 @@ Applications own operating-system consent UI and source selection. PocketStation
 reports permission, source-loss, discontinuity, saturation, lifecycle, and
 recording outcomes through typed contracts.
 
+Check permission without prompting before capture when the platform supports
+it. Store a discovered Source only for its reported persistence scope. If the
+application or device disappears, stop the current Session, discover again,
+confirm any changed selection, and start a new Session. PocketStation does not
+silently replace a Source or invent a fallback and retry policy. The
+[platform operations guide](docs/operations/platform-support.md) documents the
+typed states and recovery sequence.
+
 | Platform | Native source support | Current qualification boundary |
 |---|---|---|
 | macOS | application and microphone | physical-device evidence exists for the recorded host |
@@ -174,7 +182,7 @@ sudo apt install build-essential cmake pkg-config \
 - [Record and observe a Session](docs/guides/record-and-observe.md)
 - [Develop against the current architecture](docs/architecture/overview.md)
 - [Understand signals and typed streams](docs/concepts/signals-and-streams.md)
-- [Build a Connector](docs/guides/connectors.md)
+- [Send Session audio to an external system](docs/guides/connectors.md)
 - [Extend PocketStation](docs/guides/extensions.md)
 - [Prepare each supported platform](docs/operations/platform-support.md)
 - [Troubleshoot capture, delivery, and shutdown](docs/troubleshooting.md)

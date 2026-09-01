@@ -1,4 +1,4 @@
-# Build a connector
+# Send Session audio to an external system
 
 A Connector is an externally packaged Endpoint integration. It consumes one
 or more named Session routes and publishes them to a protocol, provider, or
@@ -9,7 +9,7 @@ application: a WebSocket publisher, a call transport, a monitoring system, or
 a provider SDK. Use an `Operator` for audio-to-text or other computation. Use a
 `Source` when the external system sends media into the Session.
 
-## Where a Connector runs
+## Choose a Connector for outbound delivery
 
 ```text
 Source or AudioInput
@@ -165,7 +165,7 @@ typed configuration, secret fields, named signal inputs, custom readiness, or
 provider-specific observations. Both forms lower to the same Endpoint and
 Session runtime.
 
-## What Core supplies
+## Rely on Core for lifecycle and delivery safety
 
 The author does not create an Endpoint lifecycle or a Session registry. The
 private adapter supplies:

@@ -13,7 +13,7 @@ your integration requires them.
 - [Capture and route application or microphone audio](guides/capture-and-route.md)
 - [Write application-owned audio into a Session](guides/application-audio.md)
 - [Record stems and inspect delivery](guides/record-and-observe.md)
-- [Build a Connector](guides/connectors.md)
+- [Send Session audio to an external system](guides/connectors.md)
 - [Add a Source, Operator, Endpoint, or process extension](guides/extensions.md)
 
 ## Understand the system

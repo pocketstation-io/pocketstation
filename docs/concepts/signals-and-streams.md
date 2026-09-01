@@ -30,6 +30,6 @@ by a universal generic envelope.
 
 ## Continue developing
 
-- [Build a Connector](../guides/connectors.md)
+- [Send Session audio to an external system](../guides/connectors.md)
 - [Add a Source, Operator, or Endpoint](../guides/extensions.md)
 - [Read the Session architecture](../architecture/overview.md)

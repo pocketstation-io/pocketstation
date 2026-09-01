@@ -108,7 +108,7 @@ Remove the directory passed to `--record` when you no longer need the artifacts.
 - [Capture and route more than one source](../guides/capture-and-route.md)
 - [Record stems and inspect delivery](../guides/record-and-observe.md)
 - [Understand the Session architecture](../architecture/overview.md)
-- [Build a Connector](../guides/connectors.md)
+- [Send Session audio to an external system](../guides/connectors.md)
 - [Add another extension boundary](../guides/extensions.md)
 
 Building this example verifies its use of the public Rust API. Running it on
