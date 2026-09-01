@@ -18,7 +18,6 @@ use super::{
     ConnectorReadinessPolicy, ResolvedConnectorConfiguration,
 };
 
-const AUDIO_CONNECTOR_NODE_ID: &str = "dev.pocketstation.local.audio_connector.v1";
 const AUDIO_CONNECTOR_GROUP_PREFIX: &str = "local-audio-connector";
 static NEXT_AUDIO_CONNECTOR_ID: AtomicU64 = AtomicU64::new(1);
 
@@ -212,6 +211,7 @@ fn provider_unavailable() -> ConnectorError {
 }
 
 fn audio_manifest(instance_id: u64) -> Result<ConnectorManifest, AudioConnectorBuildError> {
+    let local_identity = format!("dev.pocketstation.local.audio_connector.{instance_id}.v1");
     let media = MediaCaps::Audio(AudioCaps {
         sample_rate_hz: None,
         frame_samples: None,
@@ -228,7 +228,7 @@ fn audio_manifest(instance_id: u64) -> Result<ConnectorManifest, AudioConnectorB
     )
     .map_err(|_| AudioConnectorBuildError::InvalidPortContract)?;
     let node = NodeDescriptor::new(
-        NodeTypeId::from(AUDIO_CONNECTOR_NODE_ID),
+        NodeTypeId::from(local_identity.as_str()),
         "Application audio Connector",
         vec![input],
         Vec::new(),
@@ -244,9 +244,7 @@ fn audio_manifest(instance_id: u64) -> Result<ConnectorManifest, AudioConnectorB
             .map_err(|_| AudioConnectorBuildError::InvalidReadinessContract)?;
     Ok(ConnectorManifest::new(
         1,
-        OperatorId::new(format!(
-            "dev.pocketstation.local.audio_connector.{instance_id}.v1"
-        )),
+        OperatorId::new(local_identity),
         env!("CARGO_PKG_VERSION"),
         node,
         configuration,
