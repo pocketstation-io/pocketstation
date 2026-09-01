@@ -4,6 +4,87 @@ PocketStation uses the same `Session` and `Source` declarations on every
 desktop platform. Native dependencies, capture permissions, and available
 source mechanisms remain platform-specific.
 
+## Check permission without guessing
+
+`microphone_permission_observation()` reads the current authorization state
+without prompting. `Denied`, `Restricted`, and `Revoked` are actionable host
+states. `NotDetermined` means the host has not decided. `NotObservable` means
+the platform cannot provide an authoritative preflight result; it does not mean
+capture is allowed.
+
+PocketStation does not own operating-system consent UI. The host application
+must explain why capture is needed and start capture from an appropriate user
+action. Opening the Source is authoritative: a typed permission or source-open
+failure is not an empty audio stream. Restart the host application after a
+permission change when the operating system does not update the running
+process.
+
+Application capture and microphone capture use separate permissions. Request
+only the Sources the workflow needs.
+
+## Reuse a discovered source safely
+
+Discovery returns an immutable snapshot. Each `CaptureSource` includes a
+`StableSourceId`, `SourceIdentityStrength`, and
+`SelectorPersistenceScope`. Inspect the persistence scope before storing the
+selector:
+
+```rust,no_run
+use pocketstation::{discover_sources, Session, Source, SourceKind};
+
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
+let discovered = discover_sources()
+    .into_iter()
+    .find(|source| {
+        source.stable_id.kind == SourceKind::Application
+            && source.name == "Zoom"
+    })
+    .ok_or("Zoom is not running")?;
+
+println!("persistence={:?}", discovered.selector_persistence_scope());
+let session = Session::new();
+let application = session.capture(Source::application(discovered.stable_id))?;
+# let _ = application;
+# Ok(())
+# }
+```
+
+Use the scope as the storage policy:
+
+| Persistence scope | Safe reuse |
+|---|---|
+| `ApplicationIdentity` | Reopen the application identity after a normal restart, then verify discovery still resolves it. |
+| `DeviceIdentity` | Reopen the same native device while it remains installed and permitted. |
+| `PlatformIdentity` | Reuse the platform-owned identity on that platform. |
+| `ProcessLifetime` | Reuse only while that exact process is alive. Rediscover after exit. |
+| `SessionDefaultDevice` | Follow the host default for each new Session; do not treat it as a pinned device. |
+| unavailable | Do not persist the selector. Rediscover before the next Session. |
+
+A `SourceId` identifies captured lineage; it is not a portable account or
+cloud identifier. Persist the platform, source kind, stable key, and declared
+persistence scope when the application needs to remember a selection.
+
+## Recover after a source changes
+
+PocketStation does not silently switch applications or devices during a
+Session. Source disappearance and backend failure are typed Session events.
+When the event reports `ExplicitRediscoveryAndNewSession`, stop or cancel the
+current Session, discover again, let the user confirm any changed selection,
+and create a new Session. The next source generation and discontinuity remain
+visible instead of being presented as uninterrupted media.
+
+Choose fallback behavior in the application:
+
+- use an exact application identity first, then require user confirmation
+  before falling back to an exact display name;
+- use a microphone device ID when the device must stay pinned, or
+  `microphone_default()` when following the host default is intended;
+- reject ambiguous application matches instead of choosing the first result;
+- attach separate Connector values for primary and backup destinations so each
+  has its own queue, failure, and shutdown outcome; and
+- keep retry and reconnect finite. Core reports Connector recovery state but
+  does not invent a provider retry policy.
+
 ## macOS
 
 Install Rust 1.95 or newer and the Xcode command-line tools. Application audio
@@ -50,6 +131,9 @@ Before starting a Session:
 4. treat permission and source-open failures as setup failures, not empty
    audio;
 5. inspect Session events and route metrics after startup.
+
+After a source disappears, do not restart capture inside a callback or reuse a
+stale process ID. Rediscover on the control path and create a new Session.
 
 The 10 ms and 20 ms profiles describe PocketStation's normalized frame cadence.
 They do not promise end-to-end latency below that duration. Report capture,

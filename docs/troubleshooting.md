@@ -17,6 +17,23 @@ separate outcomes.
 A successful Session start does not prove that every source has delivered a
 frame. Use a finite media deadline and report a missing source separately.
 
+If the application restarted, do not reuse its old process ID. Stop the current
+Session, discover the source again, and create a new Session from the strongest
+identity returned by discovery. PocketStation does not silently switch to a
+different process or device.
+
+## Permission changes are not reflected
+
+`microphone_permission_observation()` never prompts. Treat `NotObservable` as
+unknown and let the typed Source open result decide. On macOS, restart the host
+application after changing screen-recording or microphone consent. On Windows
+and Linux, verify that the current user or service owns access to the selected
+audio session and device.
+
+Do not add an automatic system-mix or default-device fallback after a denied
+application Source. Ask the user to grant permission, select another Source,
+or stop the workflow.
+
 ## A destination misses frames
 
 Inspect the route's capacity, queue depth, delivered frames, drops, and
