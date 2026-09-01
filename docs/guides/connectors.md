@@ -4,6 +4,31 @@ A Connector is an externally packaged Endpoint integration. It consumes one
 or more named Session routes and publishes them to a protocol, provider, or
 customer boundary without adding that provider to Core.
 
+Use a Connector when audio must leave PocketStation for an existing service or
+application: a WebSocket publisher, a call transport, a monitoring system, or
+a provider SDK. Use an `Operator` for audio-to-text or other computation. Use a
+`Source` when the external system sends media into the Session.
+
+## Where a Connector runs
+
+```text
+Source or AudioInput
+        ↓
+bounded Session route, retaining source and stem identity
+        ↓
+Core-owned Connector worker
+        ↓
+provider-owned send operation
+        ↓
+external system
+```
+
+The concise API removes registration code; it does not bypass the Session.
+Every destination still uses the normal graph compiler, Endpoint start gate,
+finite route capacity, delivery observations, and joined shutdown. A slow or
+failed destination cannot make its queue unbounded and does not become a
+capture callback.
+
 ## Send audio with a function
 
 Use a function when the destination needs only one audio delivery operation:
@@ -68,6 +93,23 @@ One `Connector` value represents one destination and one lifecycle. Sending
 application and microphone stems to its declared Endpoint creates independent
 bounded routes while calling `start` and `stop` once.
 
+This is useful when one provider connection carries several named stems. Create
+two `Connector` values when the destinations need separate credentials,
+connections, failure domains, or shutdown outcomes.
+
+## Lifecycle and failure behavior
+
+| Provider operation | Meaning | Core behavior |
+|---|---|---|
+| `start()` | Open the configured destination. | Runs on the managed worker after the Session start gate. A failure is retained in the terminal outcome and calls `stop()` once. |
+| `send(frame)` | Deliver one source-aware PCM frame. | Runs off realtime through a finite route. A failure is retained as a Connector and Endpoint outcome. |
+| `stop()` | Release provider resources. | Runs once after drain, abort, startup rollback, or provider failure. |
+
+`EndpointAudioFrame` preserves the source, stream, stem, clock, sequence,
+timestamp, discontinuity, route, and output identity available at the
+destination boundary. Connector code should use those fields for protocol
+metadata and diagnostics instead of inferring identity from call order.
+
 ## Build a distributable integration
 
 Implement `ConnectorDriverFactory` to validate and acquire provider
@@ -117,6 +159,11 @@ let endpoint = relay.declare(
 The concise and advanced compiling examples are
 [`examples/connector.rs`](../../examples/connector.rs) and
 [`examples/connector_authoring.rs`](../../examples/connector_authoring.rs).
+
+Use the advanced API only when a distributable package needs portable identity,
+typed configuration, secret fields, named signal inputs, custom readiness, or
+provider-specific observations. Both forms lower to the same Endpoint and
+Session runtime.
 
 ## What Core supplies
 
