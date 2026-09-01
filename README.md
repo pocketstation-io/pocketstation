@@ -120,7 +120,8 @@ Choose the public boundary that owns the work:
 | Audio or typed source | `SourceFactory` / `SourceDriver` |
 | Processing stage | `AsyncOperatorFactory` with named ports |
 | Destination | `EndpointDriverFactory` |
-| Provider destination | `ConnectorDriverFactory` / `ConnectorDriver` |
+| Provider destination | `Connector::from_audio_fn` / `AudioConnector` |
+| Advanced provider package | `ConnectorDriverFactory` / `ConnectorDriver` |
 | Native C integration | versioned callbacks in `pocketstation.h` |
 | Trusted compiled extension | `pks_extension_library_v1` |
 | Managed process | bounded PKSS sidecar lifecycle |

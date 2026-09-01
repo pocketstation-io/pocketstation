@@ -1,3 +1,4 @@
+mod audio;
 mod configuration;
 mod error;
 mod manifest;
@@ -13,6 +14,7 @@ use std::sync::Arc;
 use crate::graph::{ConfigError, NodeConfig, NodeDefinition};
 use crate::{EndpointDescriptor, EndpointDriverFactory, EndpointHandle, Session, SessionError};
 
+pub use audio::{AudioConnector, AudioConnectorBuildError};
 pub use configuration::{
     ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationError,
     ConnectorConfigurationErrorCode, ConnectorConfigurationField,
@@ -65,6 +67,27 @@ pub struct Connector {
 }
 
 impl Connector {
+    /// Builds an application-local audio Connector from one delivery function.
+    ///
+    /// Core derives the local manifest and owns bounded delivery, route
+    /// grouping, readiness, drain or abort, and joined shutdown. Use an
+    /// explicit manifest for a distributable integration with portable
+    /// identity or typed configuration.
+    pub fn from_audio_fn<F>(send: F) -> Result<Self, AudioConnectorBuildError>
+    where
+        F: FnMut(&crate::EndpointAudioFrame) -> Result<(), ConnectorError> + Send + 'static,
+    {
+        audio::from_audio_fn(send)
+    }
+
+    /// Builds an application-local audio Connector from a reusable provider.
+    pub fn from_audio<P>(provider: P) -> Result<Self, AudioConnectorBuildError>
+    where
+        P: AudioConnector,
+    {
+        audio::from_audio(provider)
+    }
+
     pub fn new(
         manifest: ConnectorManifest,
         factory: Arc<dyn ConnectorFactory>,
@@ -201,6 +224,23 @@ impl NodeDefinition for ConnectorDefinition {
 }
 
 impl Session {
+    /// Registers a Connector and declares its default realtime-audio destination.
+    ///
+    /// This is the common path for application-local Connectors with no
+    /// declared configuration. Use [`RegisteredConnector::declare`] when an
+    /// integration has typed configuration or a custom edge contract.
+    pub fn destination(
+        &self,
+        connector: Connector,
+    ) -> Result<EndpointHandle, ConnectorDestinationError> {
+        let registered = self.register_connector(connector)?;
+        Ok(registered.declare(
+            self,
+            ConnectorConfiguration::new(),
+            crate::EdgeContract::realtime_audio(),
+        )?)
+    }
+
     pub fn register_connector(
         &self,
         connector: Connector,
@@ -219,6 +259,14 @@ impl Session {
             observations: connector.observations,
         })
     }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum ConnectorDestinationError {
+    #[error(transparent)]
+    Registration(#[from] ConnectorRegistrationError),
+    #[error(transparent)]
+    Declaration(#[from] ConnectorDeclarationError),
 }
 
 #[derive(Debug, thiserror::Error)]

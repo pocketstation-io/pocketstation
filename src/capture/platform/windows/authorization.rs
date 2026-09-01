@@ -84,7 +84,7 @@ mod tests {
     use super::microphone_permission_observation;
 
     #[test]
-    fn repeated_permission_observation_keeps_winrt_state_valid() {
+    fn given_repeated_permission_observation_when_queried_then_winrt_state_remains_valid() {
         let _first = microphone_permission_observation();
         let _second = microphone_permission_observation();
     }
