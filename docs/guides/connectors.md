@@ -4,7 +4,71 @@ A Connector is an externally packaged Endpoint integration. It consumes one
 or more named Session routes and publishes them to a protocol, provider, or
 customer boundary without adding that provider to Core.
 
-## Authoring surface
+## Send audio with a function
+
+Use a function when the destination needs only one audio delivery operation:
+
+```rust,no_run
+use pocketstation::connector::Connector;
+use pocketstation::{Session, Source};
+
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
+let session = Session::new();
+let destination = session.destination(Connector::from_audio_fn(|frame| {
+    println!(
+        "source={} samples={}",
+        frame.source_id().get(),
+        frame.samples().len()
+    );
+    Ok(())
+})?)?;
+
+let application = session.capture(Source::application("Spotify"))?;
+application.send(destination)?;
+# Ok(())
+# }
+```
+
+The function runs on Core's bounded Connector worker, never on an audio
+callback. The frame includes its source, stream, sequence, timestamp, clock,
+and discontinuity lineage.
+
+## Reuse a provider
+
+Implement `AudioConnector` when a provider opens and closes resources:
+
+```rust,no_run
+use pocketstation::connector::{AudioConnector, Connector, ConnectorError};
+use pocketstation::EndpointAudioFrame;
+
+struct Provider;
+
+impl AudioConnector for Provider {
+    fn start(&mut self) -> Result<(), ConnectorError> {
+        Ok(())
+    }
+
+    fn send(&mut self, frame: &EndpointAudioFrame) -> Result<(), ConnectorError> {
+        let _samples = frame.samples();
+        Ok(())
+    }
+
+    fn stop(&mut self) -> Result<(), ConnectorError> {
+        Ok(())
+    }
+}
+
+# fn build() -> Result<Connector, Box<dyn std::error::Error>> {
+let destination = Connector::from_audio(Provider)?;
+# Ok(destination)
+# }
+```
+
+One `Connector` value represents one destination and one lifecycle. Sending
+application and microphone stems to its declared Endpoint creates independent
+bounded routes while calling `start` and `stop` once.
+
+## Build a distributable integration
 
 Implement `ConnectorDriverFactory` to validate and acquire provider
 resources, then return one `ConnectorDriver`. Core owns bounded input polling,
@@ -50,7 +114,8 @@ let endpoint = relay.declare(
 # }
 ```
 
-The complete compiling example is
+The concise and advanced compiling examples are
+[`examples/connector.rs`](../../examples/connector.rs) and
 [`examples/connector_authoring.rs`](../../examples/connector_authoring.rs).
 
 ## What Core supplies
