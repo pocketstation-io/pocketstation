@@ -26,7 +26,7 @@ Native build requirements:
 cargo add pocketstation@1.1.5
 ```
 
-## The three-line capture path
+## Capture in three lines
 
 Capture any running application with the same API on macOS, Windows, and Linux:
 
@@ -109,7 +109,7 @@ Remove the directory passed to `--record` when you no longer need the artifacts.
 - [Record stems and inspect delivery](../guides/record-and-observe.md)
 - [Understand the Session architecture](../architecture/overview.md)
 - [Send Session audio to an external system](../guides/connectors.md)
-- [Add another extension boundary](../guides/extensions.md)
+- [Add an integration](../guides/extensions.md)
 
 Building this example verifies its use of the public Rust API. Running it on
 one computer does not establish behavior for other devices, operating systems,

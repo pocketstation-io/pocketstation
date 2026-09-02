@@ -1,6 +1,6 @@
 # Troubleshoot capture, delivery, and shutdown
 
-Start with the boundary that did not produce the expected result. Source
+Start with the component that did not produce the expected result. Source
 opening, route delivery, provider work, recording, and receiver playout have
 separate outcomes.
 

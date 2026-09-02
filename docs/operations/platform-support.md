@@ -133,7 +133,8 @@ Before starting a Session:
 5. inspect Session events and route metrics after startup.
 
 After a source disappears, do not restart capture inside a callback or reuse a
-stale process ID. Rediscover on the control path and create a new Session.
+stale process ID. Stop capture, discover the application again, and create a
+new Session.
 
 The 10 ms and 20 ms profiles describe PocketStation's normalized frame cadence.
 They do not promise end-to-end latency below that duration. Report capture,

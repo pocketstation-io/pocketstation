@@ -2,7 +2,7 @@
 
 A Connector is an externally packaged Endpoint integration. It consumes one
 or more named Session routes and publishes them to a protocol, provider, or
-customer boundary without adding that provider to Core.
+customer system without adding that provider to Core.
 
 Use a Connector when audio must leave PocketStation for an existing service or
 application: a WebSocket publisher, a call transport, a monitoring system, or
@@ -107,7 +107,7 @@ connections, failure domains, or shutdown outcomes.
 
 `EndpointAudioFrame` preserves the source, stream, stem, clock, sequence,
 timestamp, discontinuity, route, and output identity available at the
-destination boundary. Connector code should use those fields for protocol
+when Core delivers the frame. Connector code should use those fields for protocol
 metadata and diagnostics instead of inferring identity from call order.
 
 ## Build a distributable integration
@@ -209,7 +209,7 @@ fields, missing required values, wrong types, invalid defaults, and constraint
 violations fail before Session compilation.
 
 Use `ConnectorSecret` for credentials. Its `Debug` output is redacted, the
-sensitive classification survives lowering into `EndpointConfiguration` and
+sensitive classification is retained when Core creates `EndpointConfiguration` and
 `NodeConfig`, and sensitive owned strings are overwritten on destruction. A
 connector may explicitly read a secret during setup or worker execution; it
 must never copy it into errors, logs, metrics, or observations.
@@ -255,7 +255,7 @@ Core handles receiver polling and monotonic shutdown: an abort can upgrade
 drain, but a later drain cannot weaken an abort. Low-level Connector workers
 remain responsible for their own bounded loop and must follow the same rule.
 
-## Package boundary
+## Keep provider code in its package
 
 Keep provider dependencies in the Connector package, not in `pocketstation`.
 The package owns authentication, protocol framing, provider deadlines,
@@ -263,8 +263,8 @@ reconnection, and provider-specific errors. Core continues to own Session
 lifecycle, bounded routing, lineage, and Endpoint shutdown.
 
 Language SDKs can project this Connector contract when they provide a supported
-native or managed boundary. Provider callbacks remain off the realtime PCM
-path. Check the SDK documentation before depending on a language-specific
+native or managed integration. Provider callbacks never run on realtime PCM
+callbacks. Check the SDK documentation before depending on a language-specific
 authoring feature.
 
 Enable `conformance-fixtures` and execute the deterministic Session fixtures in

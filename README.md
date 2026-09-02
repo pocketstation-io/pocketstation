@@ -110,25 +110,34 @@ through the bounded reentry Bridge.
 identity comes from `SignalSpec`, lineage, named ports, and edge policy; Rust
 generic types do not cross the C ABI or sidecar protocol.
 
-## Extend the engine
+## Connect your own system
 
-Provider and customer protocols remain outside the `pocketstation` package.
-Choose the public boundary that owns the work:
+Most integrations do one of three things: bring audio into a Session, process
+audio already in a Session, or send audio to another system.
 
-| Capability | Public contract |
-|---|---|
-| Audio or typed source | `SourceFactory` / `SourceDriver` |
-| Processing stage | `AsyncOperatorFactory` with named ports |
-| Destination | `EndpointDriverFactory` |
-| Provider destination | `Connector::from_audio_fn` / `AudioConnector` |
-| Advanced provider package | `ConnectorDriverFactory` / `ConnectorDriver` |
-| Native C integration | versioned callbacks in `pocketstation.h` |
-| Trusted compiled extension | `pks_extension_library_v1` |
-| Managed process | bounded PKSS sidecar lifecycle |
+To send captured audio to an API, socket, or service, create a `Connector`. The
+function runs on a bounded worker outside the capture callback:
 
-These boundaries use the same Session compiler, lifecycle, observations,
-cancellation, and shutdown. Python, JavaScript, and provider packages must not
-create a second Session or media runtime.
+```rust,no_run
+# use pocketstation::connector::Connector;
+# fn send_to_provider(_: &[f32]) -> Result<(), pocketstation::connector::ConnectorError> { Ok(()) }
+# let session = pocketstation::Session::new();
+# let application = session.capture(pocketstation::Source::application("Spotify"))?;
+let connector = Connector::from_audio_fn(|frame| send_to_provider(frame.samples()))?;
+let destination = session.destination(connector)?;
+application.send(destination)?;
+# Ok::<(), Box<dyn std::error::Error>>(())
+```
+
+Use an `Operator` when audio is transformed into another signal, such as a
+transcript. Use a `Source` when a device, application, or external system sends
+media into the Session. Each API keeps the same source identity, bounded
+routing, observations, cancellation, and shutdown.
+
+The [Connector guide](docs/guides/connectors.md) shows function and reusable
+provider forms. The [extension guide](docs/guides/extensions.md) covers custom
+Sources, Operators, native libraries, and managed processes after the normal
+API is no longer enough.
 
 ## Resource and realtime behavior
 
@@ -154,13 +163,13 @@ silently replace a Source or invent a fallback and retry policy. The
 [platform operations guide](docs/operations/platform-support.md) documents the
 typed states and recovery sequence.
 
-| Platform | Native source support | Current qualification boundary |
+| Platform | Native source support | Verified behavior |
 |---|---|---|
 | macOS | application and microphone | physical-device evidence exists for the recorded host |
 | Windows | system, application, and microphone | automated VM evidence; physical coverage is separate |
 | Linux | PipeWire application/system and ALSA microphone | automated VM evidence; physical coverage is separate |
 
-These boundaries do not imply platform parity, WAN behavior, or a universal
+These results do not imply platform parity, WAN behavior, or a universal
 performance result. Use the evidence attached to the specific release and
 environment for those claims.
 

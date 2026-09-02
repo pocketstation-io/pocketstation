@@ -1,39 +1,60 @@
 # Extend PocketStation
 
-An extension adds capability to the existing Session engine. It declares what
-it consumes and produces, the execution partition it needs, its boundedness and
-failure policy, and its lifecycle. It does not own a second compiler, runtime,
-lineage model, or scheduler.
+Start with the direction media moves through your integration:
 
-Choose the boundary that matches the work:
+- Use a `Source` when your integration brings audio or typed events into a
+  Session.
+- Use an `Operator` when it transforms Session data, such as audio into a
+  transcript.
+- Use a `Connector` when it sends Session data to an API, transport, storage
+  system, or provider.
 
-| Need | Contract | Execution rule |
-|---|---|---|
-| New source | `SourceFactory` / `SourceDriver` | Emit only validated manifest ports through bounded ingress |
-| New computation | operator manifest/factory | Declare ports, schemas, partition, permissions, deadline, cancellation, and failure policy |
-| New destination | endpoint driver/factory | Consume a bounded route and expose lifecycle/failure observations |
-| Rust type safety | `Stream<T>` / `TypedOperator<I, O>` | Declaration-only; runtime identity remains `SignalSpec` |
-| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |
-| Trusted native dynamic library | `pks_extension_library_v1` + unsafe `Session::load_native_extension_library` | Absolute-path import, transactional registration, and code retained through callback destruction; authentication remains external |
-| Managed process | `PKSS` sidecar protocol | Bounded framed IPC outside audio callbacks |
+These are the normal extension points. They preserve source identity and use
+the Session's existing bounded routes, lifecycle, observations, cancellation,
+and shutdown.
 
-An extension must not require `internal-testing` or edits to central. It must
-not build a second graph, scheduler, recorder, lineage system, or lifecycle.
-Provider/model code, customer protocols, and business policy remain in the
-extension package or sidecar.
+For example, a destination that only needs PCM can use one function:
 
-Generated audio returns through the bounded generated-audio bridge, which
-validates format and frame size, copies into the dedicated pool, assigns
-authoritative timing/lineage, and nonblockingly enters the existing audio plan.
-It never executes a managed-language or provider callback on the capture path.
+```rust,no_run
+use pocketstation::connector::Connector;
 
-## Language boundaries
+# fn publish(_: &[f32]) -> Result<(), pocketstation::connector::ConnectorError> { Ok(()) }
+let connector = Connector::from_audio_fn(|frame| publish(frame.samples()))?;
+# Ok::<(), Box<dyn std::error::Error>>(())
+```
+
+Use [`AudioConnector`](connectors.md#reuse-a-provider) when the destination
+opens and closes a connection. Use the advanced Connector driver API only when
+a distributable provider package needs typed configuration, secret fields,
+named inputs, readiness reporting, or provider-specific observations.
+
+## Choose how the integration runs
+
+Keep the integration in a normal Rust package whenever the application can
+compile it directly. Choose another option only when deployment requires it:
+
+| Deployment requirement | Use |
+|---|---|
+| A C or C++ host supplies callbacks | Versioned Extension ABI in `pocketstation.h` |
+| The application loads a trusted native library at runtime | `pks_extension_library_v1` |
+| Provider code needs process isolation or a separately managed runtime | Bounded PKSS sidecar protocol |
+
+A native library runs with the application's privileges. A sidecar exchanges
+bounded messages with a separately managed process. Neither option creates
+another Session, graph,
+scheduler, recorder, or lineage model.
+
+Generated audio returns through the bounded generated-audio Bridge. The Bridge
+validates its format and frame size, assigns timing and lineage, and re-enters
+the existing audio plan without invoking provider code on a capture callback.
+
+## Connect another language
 
 Rust uses `Stream<T>` for local type checking. C and managed languages bind
 their native wrappers to stable `SignalSpec` and schema identifiers. The
-sidecar protocol transports those identities and bounded payloads across a
-process boundary. Rust `TypeId` and generic parameters never cross either
-boundary.
+sidecar protocol transports those identities and bounded payloads between
+processes. Rust `TypeId` and generic parameters are never exposed through the
+C API or sidecar protocol.
 
 Test an extension from the packaged crate in a clean project. A same-process or
 same-host test verifies that integration only; it does not establish behavior
@@ -66,9 +87,9 @@ for registration in loaded.registrations() {
 
 This API accepts a raw `.dylib`, `.so`, or `.dll`; it does not authenticate a
 package, verify a publisher or signature, or sandbox native code. The caller's
-deployment or package layer owns that trust decision. The path must be absolute
-and is canonicalized before loading. PocketStation does not use an ambient DLL
-or shared-library search path. Every library and registration record is
+deployment code or package installer makes that trust decision. The file
+location must be absolute and is resolved before loading. PocketStation does
+not search ambient DLL or shared-library directories. Every library and registration record is
 ABI-checked, every descriptor and port is copied, and duplicate identifiers are
 rejected before the `Session` registries change. Failure is all-or-none.
 
