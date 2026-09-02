@@ -144,8 +144,8 @@ matches.
 
 - Multistem recording now preserves the requested `Drain` or `Abort` behavior
   through finalization.
-- The default native-capture library builds on Windows through the supported
-  observation boundary.
+- The default native-capture library builds on Windows with the supported
+  observation API.
 
 ### Upgrade
 
@@ -169,7 +169,7 @@ This release also:
 - made lifecycle, timing, discontinuity, delivery, and recording observations
   available to SDK bindings;
 - allowed SDK-authored Operators to return generated PCM through the existing
-  audio reentry path;
+  audio reentry API;
 - preserved source identity when multiple stems connect to the same Operator;
   and
 - added recording metadata without changing the existing

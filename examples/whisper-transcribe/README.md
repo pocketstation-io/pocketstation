@@ -24,8 +24,8 @@ whisper.cpp project and review its license before use.
 ```bash
 cargo run -p whisper-transcribe-example -- \
   "$(command -v whisper-cli)" \
-  /path/to/ggml-tiny.en.bin \
-  /path/to/mono-16khz.wav
+  <model-file> \
+  <audio-file>
 ```
 
 The process prints the transcript returned by `whisper-cli`. CPU inference is

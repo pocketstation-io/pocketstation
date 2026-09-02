@@ -19,6 +19,19 @@ fi
 
 echo "scope: full workspace (${#rust_files[@]} Rust files)"
 
+echo "PUBLIC-DOCS: concrete developer language..."
+public_doc_vocabulary="$(
+  rg -n -i '\b(boundary|path|surface|authority|projection|lowering|flow|layer)\b' \
+    README.md RELEASE_NOTES.md docs examples \
+    --glob '*.md' --glob '*.mdx' 2>/dev/null || true
+)"
+if [ -n "${public_doc_vocabulary}" ]; then
+  echo "  FAIL: public documentation uses vague architecture shorthand:"
+  echo "${public_doc_vocabulary}"
+  exit 1
+fi
+echo "  pass"
+
 "${script_dir}/check_pks_single_engine_boundary.sh"
 
 echo "LAW-1: unit suffixes..."
