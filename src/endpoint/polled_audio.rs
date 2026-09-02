@@ -10,9 +10,8 @@ pub const POLLED_AUDIO_OPERATOR_ID: &str = "io.pocketstation.endpoint.polled-aud
 
 /// Declares application-polled audio and retains its bounded receipt.
 ///
-/// This type keeps the concrete bounded endpoint registration authority and
-/// receipt together so every language adapter consumes the same
-/// compiled Session path.
+/// This type keeps the bounded Endpoint registration and receipt together so
+/// every language adapter consumes the same compiled Session receiver.
 pub struct PolledAudioEndpoint {
     factory: Arc<PolledAudioEndpointFactory>,
     receipt: PolledAudioReceipt,

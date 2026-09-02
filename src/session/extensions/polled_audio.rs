@@ -1,7 +1,7 @@
 //! Session composition for the bounded polled-audio endpoint.
 //!
 //! The endpoint module owns the concrete driver and queue. Session owns only
-//! declaration and registration against the Endpoint contracts.
+//! declaration and registration through the Endpoint APIs.
 
 use crate::endpoint::{PolledAudioEndpoint, POLLED_AUDIO_OPERATOR_ID};
 use crate::graph::{EdgeContract, NodeTypeId};

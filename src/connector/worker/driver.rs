@@ -119,7 +119,7 @@ pub trait ConnectorDriver: Send + 'static {
     }
 }
 
-/// Prepares provider state while Core retains receiver and lifecycle authority.
+/// Prepares provider state while Core owns receivers and their lifecycle.
 pub trait ConnectorDriverFactory: Send + Sync {
     fn preparation_group(
         &self,

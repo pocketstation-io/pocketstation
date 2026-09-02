@@ -37,6 +37,8 @@ while IFS= read -r package_file; do
   case "${package_file}" in
     docs/README.md | \
       docs/architecture/overview.md | \
+      docs/concepts/delivery-and-failure.md | \
+      docs/concepts/session-lifecycle.md | \
       docs/concepts/signals-and-streams.md | \
       docs/compatibility/README.md | \
       docs/getting-started/rust-quickstart.md | \
@@ -46,6 +48,8 @@ while IFS= read -r package_file; do
       docs/guides/extensions.md | \
       docs/guides/record-and-observe.md | \
       docs/operations/platform-support.md | \
+      docs/reference/events-and-errors.md | \
+      docs/reference/public-api.md | \
       docs/troubleshooting.md) ;;
     docs/*)
       echo "internal documentation leaked into package: ${package_file}" >&2
@@ -61,6 +65,8 @@ for required_path in \
   build.rs \
   docs/README.md \
   docs/architecture/overview.md \
+  docs/concepts/delivery-and-failure.md \
+  docs/concepts/session-lifecycle.md \
   docs/concepts/signals-and-streams.md \
   docs/compatibility/README.md \
   docs/getting-started/rust-quickstart.md \
@@ -70,6 +76,8 @@ for required_path in \
   docs/guides/extensions.md \
   docs/guides/record-and-observe.md \
   docs/operations/platform-support.md \
+  docs/reference/events-and-errors.md \
+  docs/reference/public-api.md \
   docs/troubleshooting.md \
   include/pocketstation.h \
   src/lib.rs; do

@@ -106,8 +106,8 @@ connections, failure domains, or shutdown outcomes.
 | `stop()` | Release provider resources. | Runs once after drain, abort, startup rollback, or provider failure. |
 
 `EndpointAudioFrame` preserves the source, stream, stem, clock, sequence,
-timestamp, discontinuity, route, and output identity available at the
-when Core delivers the frame. Connector code should use those fields for protocol
+timestamp, discontinuity, route, and output identity available when Core
+delivers the frame. Connector code should use those fields for protocol
 metadata and diagnostics instead of inferring identity from call order.
 
 ## Build a distributable integration
@@ -162,8 +162,8 @@ The concise and advanced compiling examples are
 
 Use the advanced API only when a distributable package needs portable identity,
 typed configuration, secret fields, named signal inputs, custom readiness, or
-provider-specific observations. Both forms lower to the same Endpoint and
-Session runtime.
+provider-specific observations. Both forms use the same Endpoint and Session
+runtime.
 
 ## Rely on Core for lifecycle and delivery safety
 
@@ -194,9 +194,10 @@ escape hatch when a protocol requires a specialized off-realtime worker.
 - a finite startup-readiness deadline and probe thresholds; and
 - open capability and resource-requirement identifiers.
 
-`EdgeContract` is supplied when the connector endpoint is declared. Capacity,
-loss, backpressure, copy, and latency policy belong to that exact Graph route,
-not to a provider manifest.
+`EdgeContract` is supplied when the Connector Endpoint is declared. It records
+the accepted media plus capacity, loss, backpressure, copy, and latency
+settings for that route. Those choices belong to the route, not to the provider
+manifest.
 
 Connector API revision 1 is an Endpoint integration: it requires at least one
 input and rejects outputs. Generated audio re-enters through the existing audio

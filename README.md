@@ -70,7 +70,7 @@ pocketstation = { version = "1.1.5", default-features = false }
 | Process media or typed signals | `Operator` and named ports |
 | Publish to an external system | [`Connector` guide](docs/guides/connectors.md) |
 | Add a source, computation, or destination | [`Extension` guide](docs/guides/extensions.md) |
-| Inspect lineage and delivery behavior | [`Signals and streams`](docs/concepts/signals-and-streams.md) |
+| Inspect source identity and delivery behavior | [`Signals and streams`](docs/concepts/signals-and-streams.md) |
 
 ## How a Session handles audio
 
@@ -108,7 +108,7 @@ signals identified by schema. Generated audio returns to the normal audio plan
 through the bounded reentry Bridge.
 
 `Stream<T>` provides Rust declaration-time checking. Runtime and cross-language
-identity comes from `SignalSpec`, lineage, named ports, and edge policy; Rust
+identity comes from `SignalSpec`, lineage, named ports, and route settings; Rust
 generic types do not cross the C ABI or sidecar protocol.
 
 ## Connect your own system
@@ -190,7 +190,10 @@ sudo apt install build-essential cmake pkg-config \
 - [Capture and route audio](docs/guides/capture-and-route.md)
 - [Write application-owned audio](docs/guides/application-audio.md)
 - [Record and observe a Session](docs/guides/record-and-observe.md)
-- [Develop against the current architecture](docs/architecture/overview.md)
+- [Understand how a Session runs declared work](docs/architecture/overview.md)
+- [Set delivery behavior for each route](docs/concepts/delivery-and-failure.md)
+- [Read events, metrics, outcomes, and errors](docs/reference/events-and-errors.md)
+- [Find the Rust API for a task](docs/reference/public-api.md)
 - [Understand signals and typed streams](docs/concepts/signals-and-streams.md)
 - [Send Session audio to an external system](docs/guides/connectors.md)
 - [Extend PocketStation](docs/guides/extensions.md)

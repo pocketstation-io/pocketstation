@@ -522,7 +522,7 @@ impl NodeDefinition for EndpointBoundaryDefinition {
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
             type_id: self.node_type_id.clone(),
-            display_name: "Audio Endpoint Boundary",
+            display_name: "Audio Endpoint",
             inputs: vec![audio_port(
                 PortDirection::Input,
                 self.sample_spec,

@@ -2,7 +2,7 @@ use crate::frame::ClockDomainId;
 
 const NANOSECOND_TICKS_PER_SECOND: u64 = 1_000_000_000;
 
-/// The authority that defines timestamps carried by one clock-domain ID.
+/// The clock source that defines timestamps carried by one clock-domain ID.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClockDomainKind {
     Unspecified,
@@ -47,7 +47,7 @@ impl ClockDomainDescriptor {
 
 /// Describes the stable semantics Core can assert for a clock-domain ID.
 ///
-/// ID zero means no clock authority was declared. ID one is PocketStation's
+/// ID zero means no clock source was declared. ID one is PocketStation's
 /// process-wide monotonic nanosecond clock. Other IDs are owned by the Source
 /// or provider that introduced them; Core preserves their identity and
 /// nanosecond unit without inventing their epoch.

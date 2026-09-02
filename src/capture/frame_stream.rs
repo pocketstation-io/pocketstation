@@ -68,7 +68,7 @@ impl CaptureDeliveryStartGate {
     }
 }
 
-/// Session-owned authority that opens one capture delivery start gate.
+/// Session-owned handle that opens one capture delivery start gate.
 pub struct CaptureDeliveryStartGateController {
     gate: Arc<CaptureDeliveryStartGate>,
 }

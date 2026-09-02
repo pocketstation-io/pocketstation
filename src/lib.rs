@@ -6,10 +6,10 @@ pub mod codec;
 pub mod connector;
 mod endpoint;
 mod frame;
-/// Stable signal, port, capability, partition, and extension contracts.
+/// Stable signal, port, capability, partition, and extension APIs.
 ///
 /// Compiler IR, registries, runtime plans, and execution machinery remain
-/// private even though the contract namespace is public.
+/// private even though the graph types are public.
 pub mod graph;
 pub mod native_extension;
 mod recording;
@@ -48,7 +48,7 @@ pub use crate::capture::{
 
 /// Reads the current microphone authorization state without prompting.
 ///
-/// macOS and supported Windows hosts expose authoritative non-prompting
+/// macOS and supported Windows hosts expose conclusive non-prompting
 /// queries. Linux currently returns `NotObservable`; callers must not
 /// reinterpret that value as allowed or denied. Permission prompting remains
 /// an explicit host-application action.

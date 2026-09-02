@@ -1,6 +1,6 @@
 //! Session extension integration.
 //!
-//! Registration contracts live here; extension implementation and provider
+//! Registration APIs live here; extension implementation and provider
 //! policy remain outside the core Session lifecycle.
 
 mod audio_input;

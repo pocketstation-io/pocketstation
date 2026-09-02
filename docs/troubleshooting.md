@@ -37,9 +37,10 @@ or stop the workflow.
 ## A destination misses frames
 
 Inspect the route's capacity, queue depth, delivered frames, drops, and
-discontinuities. Every destination has its own bounded `EdgeContract`. A slow
+discontinuities. Every destination has finite delivery settings. A slow
 destination can apply pressure or lose frames according to those settings, but
-it must not grow an unbounded queue or stall unrelated routes.
+it must not grow an unbounded queue or stall unrelated routes. Advanced
+packages can inspect the complete settings through `EdgeContract`.
 
 Move model inference, network waits, and file conversion away from capture
 callbacks and realtime partitions.

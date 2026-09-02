@@ -226,9 +226,9 @@ impl NodeDefinition for ConnectorDefinition {
 impl Session {
     /// Registers a Connector and declares its default realtime-audio destination.
     ///
-    /// This is the common path for application-local Connectors with no
+    /// This is the concise API for application-local Connectors with no
     /// declared configuration. Use [`RegisteredConnector::declare`] when an
-    /// integration has typed configuration or a custom edge contract.
+    /// integration has typed configuration or custom EdgeContract settings.
     pub fn destination(
         &self,
         connector: Connector,

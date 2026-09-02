@@ -227,7 +227,7 @@ impl SessionDraft {
                 reason: "operator input port cannot be empty".to_owned(),
             });
         }
-        // The declaration layer intentionally does not reject repeated named
+        // Session declaration intentionally does not reject repeated named
         // inputs. Multiplicity belongs to the registered Operator manifest,
         // which is authoritative only during compilation. The compiler
         // rejects fan-in for `Multiplicity::One` and accepts it for

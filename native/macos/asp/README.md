@@ -1,4 +1,4 @@
-# macOS capture native boundary
+# macOS fallback capture plugin
 
 ## Ownership
 
@@ -25,9 +25,9 @@ To produce the unsigned bundle for an explicit provisioning workflow:
 cargo build --release --features macos-asp-driver-artifact
 ```
 
-## Realtime contract
+## Realtime rules
 
-`Plugin.cpp::pks_DoIOOperation` and the ring publication path are allocation,
+`Plugin.cpp::pks_DoIOOperation` and the ring write are allocation,
 lock, blocking, async, logging, and panic free. Reader allocation and native
 source discovery occur during setup, not on Core Audio callbacks. Ring
 saturation and invalid native timelines are rejected and counted explicitly.
@@ -36,9 +36,9 @@ saturation and invalid native timelines are rejected and counted explicitly.
 
 | File | Purpose |
 |------|---------|
-| `bridge.h` | Stable C boundary for the shared-memory reader |
+| `bridge.h` | Stable C API for the shared-memory reader |
 | `shm_reader.c` | Versioned single-consumer bounded ring reader |
-| `SharedRing.h` | Shared ABI and lock-free bounded publication contract |
+| `SharedRing.h` | Shared ABI and lock-free bounded publication rules |
 | `source_discovery.m` | Core Audio process-tap discovery and lifecycle |
 | `authorization.m` | Native authorization query |
 | `Plugin.cpp` | Direct AudioServerPlugin implementation; no libASPL dependency |

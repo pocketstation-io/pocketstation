@@ -188,8 +188,8 @@ impl EndpointFailure {
         }
     }
 
-    /// Attaches stable external failure details without changing Endpoint's
-    /// provider-neutral lifecycle authority.
+    /// Attaches stable external failure details without changing the
+    /// provider-neutral Endpoint lifecycle.
     #[must_use]
     pub fn with_external_details(
         mut self,
@@ -331,8 +331,8 @@ pub trait PreparedEndpointDriver: Send {
 /// Active endpoint resources owned until finalization.
 ///
 /// Implementations may own workers created by concrete endpoint packages, but
-/// this contract does not create or schedule threads. `Drop` must reclaim the
-/// same resources as the explicit stop/finalize path.
+/// this type does not create or schedule threads. `Drop` must reclaim the same
+/// resources as explicit stop and finalization.
 pub trait RunningEndpointDriver: Send {
     fn observations(&self) -> EndpointDriverObservations;
 
@@ -378,7 +378,7 @@ impl EndpointStartGate {
     }
 }
 
-/// Session-owned authority that opens one endpoint start gate.
+/// Session-owned handle that opens one Endpoint start gate.
 pub struct EndpointStartGateController {
     gate: Arc<EndpointStartGate>,
 }

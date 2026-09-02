@@ -1,4 +1,4 @@
-//! Endpoint-driver lifecycle and registry contracts.
+//! Endpoint-driver lifecycle and registry APIs.
 //!
 //! This crate owns setup-time endpoint state transitions. It does not implement
 //! connectors, relay protocols, recording algorithms, or worker threads.

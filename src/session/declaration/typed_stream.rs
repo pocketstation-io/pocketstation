@@ -10,7 +10,7 @@ use crate::session::{
 
 /// Compile-time marker supplied by an SDK or external package.
 ///
-/// `SignalSpec` remains the runtime and cross-language authority. Rust type
+/// `SignalSpec` remains the runtime and cross-language representation. Rust type
 /// identity is never serialized or exposed through the C ABI.
 pub trait StreamSignal: Send + Sync + 'static {
     fn signal_spec() -> SignalSpec;
@@ -90,7 +90,7 @@ impl<Input: StreamSignal, Output: StreamSignal> TypedOperator<Input, Output> {
 }
 
 /// Typed Rust declaration façade compiled into stable dynamic signal, schema,
-/// port, and edge contracts. This wrapper carries no frames and is not a
+/// port, and EdgeContract settings. This wrapper carries no frames and is not a
 /// generic runtime queue.
 #[derive(Clone)]
 pub struct Stream<Signal> {

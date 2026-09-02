@@ -187,7 +187,7 @@ impl ActiveCaptureBackend for DeterministicActiveCapture {
     }
 }
 
-/// Drop contract: signal-only, allocation-free, blocking-free, log-free, panic-free.
+/// Drop requirements: signal-only, allocation-free, blocking-free, log-free, panic-free.
 impl Drop for DeterministicActiveCapture {
     fn drop(&mut self) {
         self.stop_requested.store(true, Ordering::Release);
@@ -329,7 +329,7 @@ pub fn observed_connector(
     )?)
 }
 
-/// Declares and registers a deterministic native browser boundary used only
+/// Declares and registers a deterministic native browser receiver used only
 /// by cross-language conformance harnesses.
 pub fn observed_browser(
     session: &Session,
@@ -342,7 +342,7 @@ pub fn observed_browser(
 
 #[derive(Debug, thiserror::Error)]
 pub enum ObservedEndpointError {
-    #[error("invalid conformance connector contract: {0}")]
+    #[error("invalid conformance Connector declaration: {0}")]
     Contract(String),
     #[error(transparent)]
     Declaration(#[from] SessionError),
@@ -537,7 +537,7 @@ impl RunningEndpointDriver for RunningObservedEndpoint {
     }
 }
 
-/// Drop contract: signal-only, allocation-free, blocking-free, log-free,
+/// Drop requirements: signal-only, allocation-free, blocking-free, log-free,
 /// panic-free.
 impl Drop for RunningObservedEndpoint {
     fn drop(&mut self) {
@@ -548,7 +548,7 @@ impl Drop for RunningObservedEndpoint {
 
 // Cross-language conformance uses deliberately neutral vocabulary. These
 // identities are shared verbatim by Rust, C, managed SDK, and PKSS fixtures;
-// no Rust type identity is serialized at any boundary.
+// no Rust type identity is serialized into the ABI or sidecar protocol.
 pub const EXTENSION_SIGNAL_ID: &str = "org.pocketstation.conformance.signal.v1";
 pub const EXTENSION_SCHEMA_ID: &str = "urn:pocketstation:conformance:signal:v1";
 pub const EXTENSION_ROLE_ID: &str = "org.pocketstation.conformance.terminal.v1";

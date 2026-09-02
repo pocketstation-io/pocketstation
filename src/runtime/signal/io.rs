@@ -1,4 +1,4 @@
-//! Bounded operator ingress and named output contracts.
+//! Bounded Operator inputs and named outputs.
 
 #[cfg(any(test, feature = "internal-testing"))]
 use std::sync::atomic::Ordering;

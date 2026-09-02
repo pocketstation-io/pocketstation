@@ -562,8 +562,8 @@ impl AsyncOperatorWorker {
 
     /// Starts a directly-fed worker with an already negotiated signal-shaped
     /// prepare context. Session-owned graph execution uses the compiled-edge
-    /// path; this entry point exists for external harnesses that negotiate the
-    /// boundary before constructing a full Session.
+    /// API; this entry point exists for external harnesses that validate the
+    /// input before constructing a full Session.
     #[cfg(any(test, feature = "internal-testing"))]
     pub fn spawn_with_context(
         factory: Arc<dyn AsyncOperatorFactory>,

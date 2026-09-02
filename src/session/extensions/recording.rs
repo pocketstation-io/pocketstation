@@ -1,7 +1,7 @@
 //! Session composition for the multistem recording endpoint.
 //!
 //! Recording owns persistence, timeline, policy, and finalization. Session
-//! owns only declaration and registration through the generic Endpoint path.
+//! owns only declaration and registration through the generic Endpoint API.
 
 use std::path::PathBuf;
 use std::sync::Arc;

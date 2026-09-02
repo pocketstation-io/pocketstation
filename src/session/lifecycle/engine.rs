@@ -27,7 +27,7 @@ use crate::session::{
 /// Registers the components and runtime configuration for one Session.
 ///
 /// The builder owns only registration and runtime configuration. Concrete
-/// capture and endpoint implementations enter through their existing contracts
+/// capture and Endpoint implementations use their existing APIs
 /// and remain owned by their respective packages.
 pub struct SessionEngineBuilder {
     node_registry: NodeRegistry,
@@ -92,7 +92,7 @@ impl SessionEngineBuilder {
     /// Registers an audio Endpoint that accepts the finite frame size declared
     /// by each connected AudioBus.
     ///
-    /// Sources keep authority over their frame cadence. The Endpoint boundary
+    /// Sources keep control of their frame cadence. The Endpoint worker
     /// validates the shared sample format and sample rate without rewriting an
     /// application-owned stream to the Session's capture cadence.
     pub fn register_audio_endpoint_driver(
@@ -112,7 +112,7 @@ impl SessionEngineBuilder {
         )
     }
 
-    /// Atomically registers an endpoint's compiler contract and runtime driver.
+    /// Atomically registers an Endpoint declaration and runtime driver.
     ///
     /// Preflight checks both registries before either is mutated, preventing a
     /// half-registered extension from escaping setup.
@@ -167,7 +167,7 @@ impl SessionEngineBuilder {
         Ok(self)
     }
 
-    /// Registers one externally implemented source contract by stable type ID.
+    /// Registers one externally implemented Source by stable type ID.
     ///
     /// Registration validates the complete manifest and rejects duplicate IDs;
     /// a later registration can never silently replace the first factory.
@@ -226,7 +226,7 @@ impl SessionEngineBuilder {
 ///
 /// Compilation, runtime preparation, capture ownership, endpoint lifecycle,
 /// scheduling, rollback, and finalization remain implemented by their existing
-/// owners. This type only assembles those contracts in their required order.
+/// owners. This type only assembles those components in their required order.
 pub struct SessionEngine {
     node_registry: NodeRegistry,
     endpoint_registry: EndpointDriverRegistry,
@@ -335,7 +335,9 @@ pub enum EndpointExtensionRegistrationError {
     Definition(#[from] NodeRegistrationError),
     #[error(transparent)]
     Driver(#[from] EndpointDriverRegistryError),
-    #[error("endpoint node type {node_type_id} is already registered with a different contract")]
+    #[error(
+        "endpoint node type {node_type_id} is already registered with a different declaration"
+    )]
     ConflictingDefinition { node_type_id: String },
 }
 

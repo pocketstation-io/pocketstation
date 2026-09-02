@@ -2,7 +2,7 @@ use crate::recording::{RecorderError, RecordingOutcome, RecordingState};
 
 /// Stable language-neutral code for a recording failure.
 ///
-/// The string returned by [`Self::as_str`] is the compatibility contract.
+/// The string returned by [`Self::as_str`] is stable across compatible releases.
 /// Rust variant names and discriminants remain implementation details.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
