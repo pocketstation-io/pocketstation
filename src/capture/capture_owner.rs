@@ -69,13 +69,13 @@ pub struct CapturePrepareRequest {
 ///
 /// Backends send pool-backed frames through `frame_sender` and publish typed
 /// source failures through `runtime_event_sender`. Both sends are bounded and
-/// non-blocking. A backend must not retain another unbounded delivery path.
+/// non-blocking. A backend must not retain another unbounded delivery queue.
 pub struct CaptureDelivery {
     pub frame_sender: CapturedFrameSender,
     pub runtime_event_sender: SourceRuntimeEventSender,
 }
 
-/// Platform-neutral prepare/open boundary for callback-oriented capture.
+/// Platform-neutral prepare/open API for callback-oriented capture.
 ///
 /// Implementations validate and reserve setup-time resources in `prepare`.
 /// They must not report a successful open until the native callback or worker
@@ -155,7 +155,7 @@ impl PreparedCapture {
     }
 }
 
-/// Aggregate observations from one active capture ownership boundary.
+/// Aggregate observations from one active capture owner.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CaptureOwnerObservations {
     pub backend: CaptureObservations,

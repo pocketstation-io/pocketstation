@@ -53,6 +53,11 @@ impl ConnectorInputDescriptor {
         self.edge_contract
     }
 
+    /// Returns the accepted media and delivery behavior for this input route.
+    pub const fn route_settings(&self) -> crate::RouteSettings {
+        self.edge_contract
+    }
+
     pub const fn configuration(&self) -> &ResolvedConnectorConfiguration {
         &self.configuration
     }
@@ -119,7 +124,7 @@ pub trait ConnectorDriver: Send + 'static {
     }
 }
 
-/// Prepares provider state while Core retains receiver and lifecycle authority.
+/// Prepares provider state while Core owns receivers and their lifecycle.
 pub trait ConnectorDriverFactory: Send + Sync {
     fn preparation_group(
         &self,

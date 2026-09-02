@@ -18,7 +18,7 @@ pub const CONNECTOR_AUDIO_RECORD_SCHEMA: &str = "urn:pocketstation:connector:aud
 /// Adapts a bounded PocketStation sidecar process to the Connector driver SPI.
 ///
 /// Endpoint and the Core connector worker retain lifecycle and receiver
-/// authority. The sidecar host owns only its child process, bounded protocol
+/// ownership. The sidecar host owns only its child process, bounded protocol
 /// queues, handshake, and exact reaping.
 #[derive(Debug, Clone)]
 pub struct SidecarConnectorDriverFactory {

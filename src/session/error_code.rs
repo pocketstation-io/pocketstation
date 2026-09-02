@@ -3,7 +3,7 @@ use crate::session::{PolledAudioPollError, SessionError, SessionStartError, Sess
 
 /// Stable language-neutral code for a Session declaration failure.
 ///
-/// The value returned by [`Self::as_str`] is the compatibility contract.
+/// The value returned by [`Self::as_str`] is stable across compatible releases.
 /// Variant names and discriminants remain Rust implementation details.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -110,7 +110,7 @@ impl SessionStartErrorCode {
     }
 }
 
-/// Stable language-neutral code for a running-Session projection failure.
+/// Stable language-neutral code for a running-Session binding failure.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionRuntimeErrorCode {

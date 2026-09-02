@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use pocketstation::{
-    AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, EdgeContract,
+    AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, RouteSettings,
     ExecutionPartition, MediaCaps, PortDirection, PortPrepareContext, SampleFormat, SignalEnvelope,
     SignalPayload, SignalSpec, TextFormat,
 };
@@ -30,8 +30,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         channel_layout: ChannelLayout::Mono,
         format: SampleFormat::F32Interleaved,
     });
-    let input_contract = EdgeContract::realtime_audio().with_media(audio);
-    let output_contract = EdgeContract::bounded_async().with_media(MediaCaps::Text);
+    let input_contract = RouteSettings::realtime_audio().with_media(audio);
+    let output_contract = RouteSettings::bounded_async().with_media(MediaCaps::Text);
     let prepare_context = AsyncOperatorPrepareContext::new(
         ExecutionPartition::BlockingWorker,
         vec![

@@ -9,14 +9,15 @@ and `SignalEnvelope` when you need runtime or cross-language identity.
 operator manifest's selected named ports. Invalid composition fails before the
 Session starts.
 
-## Runtime contracts
+## Runtime types
 
 At runtime, the engine uses:
 
 - `SignalSpec`: class, stable custom identifier, semantic role, and schema;
 - `SignalEnvelope`: payload plus source-independent lineage and timing;
-- `EdgeContract`: bounded delivery, loss/backpressure, copy, clock, and
-  observation policy;
+- `RouteSettings`: accepted media plus one `DeliveryPolicy`;
+- `DeliveryPolicy`: bounded delivery, loss/backpressure, copy, clock, and
+  observation settings;
 - `RuntimePlan`: compiled executable topology.
 
 The core does not define customer/domain marker types. A provider package may

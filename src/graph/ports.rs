@@ -291,13 +291,13 @@ pub enum LossPolicy {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum EdgeObservabilityLevel {
+pub enum RouteObservability {
     Off,
     Counters,
     Full,
 }
 
-impl EdgeObservabilityLevel {
+impl RouteObservability {
     pub fn rank(self) -> u8 {
         match self {
             Self::Off => 0,
@@ -307,8 +307,113 @@ impl EdgeObservabilityLevel {
     }
 }
 
+/// Compatibility name for [`RouteObservability`].
+pub type EdgeObservabilityLevel = RouteObservability;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct EdgeContract {
+pub struct DeliveryPolicy {
+    clock: ClockDomain,
+    latency_budget_ms: Option<u32>,
+    jitter_budget_ms: Option<u32>,
+    backpressure: BackpressurePolicy,
+    delivery: DeliverySemantics,
+    loss: LossPolicy,
+    copy_policy: CopyPolicy,
+    observability: EdgeObservabilityLevel,
+    max_payload_bytes: Option<usize>,
+}
+
+impl DeliveryPolicy {
+    /// Keeps realtime audio moving when a destination falls behind.
+    pub const fn realtime_audio() -> Self {
+        Self {
+            clock: ClockDomain::Capture,
+            latency_budget_ms: None,
+            jitter_budget_ms: None,
+            backpressure: BackpressurePolicy::DropNewest,
+            delivery: DeliverySemantics::Ordered,
+            loss: LossPolicy::ConcealForAudio,
+            copy_policy: CopyPolicy::ShareReadOnly,
+            observability: EdgeObservabilityLevel::Counters,
+            max_payload_bytes: None,
+        }
+    }
+
+    /// Preserves ordered asynchronous messages in a finite queue.
+    pub const fn bounded_async() -> Self {
+        Self {
+            clock: ClockDomain::Inherited,
+            latency_budget_ms: None,
+            jitter_budget_ms: None,
+            backpressure: BackpressurePolicy::BoundedQueue,
+            delivery: DeliverySemantics::Ordered,
+            loss: LossPolicy::MustDeliverOrFail,
+            copy_policy: CopyPolicy::ShareReadOnly,
+            observability: EdgeObservabilityLevel::Counters,
+            max_payload_bytes: Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES),
+        }
+    }
+
+    pub const fn clock(&self) -> ClockDomain {
+        self.clock
+    }
+
+    pub const fn latency_budget_ms(&self) -> Option<u32> {
+        self.latency_budget_ms
+    }
+
+    pub const fn jitter_budget_ms(&self) -> Option<u32> {
+        self.jitter_budget_ms
+    }
+
+    pub const fn backpressure(&self) -> BackpressurePolicy {
+        self.backpressure
+    }
+
+    pub const fn delivery(&self) -> DeliverySemantics {
+        self.delivery
+    }
+
+    pub const fn loss(&self) -> LossPolicy {
+        self.loss
+    }
+
+    pub const fn copy_policy(&self) -> CopyPolicy {
+        self.copy_policy
+    }
+
+    pub const fn observability(&self) -> EdgeObservabilityLevel {
+        self.observability
+    }
+
+    pub const fn max_payload_bytes(&self) -> Option<usize> {
+        self.max_payload_bytes
+    }
+
+    pub const fn with_jitter_budget_ms(mut self, jitter_budget_ms: Option<u32>) -> Self {
+        self.jitter_budget_ms = jitter_budget_ms;
+        self
+    }
+
+    pub const fn with_backpressure(mut self, backpressure: BackpressurePolicy) -> Self {
+        self.backpressure = backpressure;
+        self
+    }
+
+    pub const fn with_copy_policy(mut self, copy_policy: CopyPolicy) -> Self {
+        self.copy_policy = copy_policy;
+        self
+    }
+
+    pub const fn with_max_payload_bytes(mut self, max_payload_bytes: usize) -> Self {
+        self.max_payload_bytes = Some(max_payload_bytes);
+        self
+    }
+}
+
+/// Selects the media accepted by a route and how that route delivers it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RouteSettings {
     pub(crate) media: MediaCaps,
     pub(crate) clock: ClockDomain,
     pub(crate) latency_budget_ms: Option<u32>,
@@ -321,7 +426,22 @@ pub struct EdgeContract {
     pub(crate) max_payload_bytes: Option<usize>,
 }
 
-impl EdgeContract {
+impl RouteSettings {
+    pub const fn new(media: MediaCaps, delivery: DeliveryPolicy) -> Self {
+        Self {
+            media,
+            clock: delivery.clock,
+            latency_budget_ms: delivery.latency_budget_ms,
+            jitter_budget_ms: delivery.jitter_budget_ms,
+            backpressure: delivery.backpressure,
+            delivery: delivery.delivery,
+            loss: delivery.loss,
+            copy_policy: delivery.copy_policy,
+            observability: delivery.observability,
+            max_payload_bytes: delivery.max_payload_bytes,
+        }
+    }
+
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
@@ -362,6 +482,20 @@ impl EdgeContract {
         self.max_payload_bytes
     }
 
+    pub const fn delivery_policy(&self) -> DeliveryPolicy {
+        DeliveryPolicy {
+            clock: self.clock,
+            latency_budget_ms: self.latency_budget_ms,
+            jitter_budget_ms: self.jitter_budget_ms,
+            backpressure: self.backpressure,
+            delivery: self.delivery,
+            loss: self.loss,
+            copy_policy: self.copy_policy,
+            observability: self.observability,
+            max_payload_bytes: self.max_payload_bytes,
+        }
+    }
+
     pub fn with_media(mut self, media: MediaCaps) -> Self {
         self.media = media;
         self
@@ -386,45 +520,42 @@ impl EdgeContract {
         self.max_payload_bytes = Some(max_payload_bytes);
         self
     }
+
+    pub const fn with_delivery_policy(mut self, delivery: DeliveryPolicy) -> Self {
+        self.clock = delivery.clock;
+        self.latency_budget_ms = delivery.latency_budget_ms;
+        self.jitter_budget_ms = delivery.jitter_budget_ms;
+        self.backpressure = delivery.backpressure;
+        self.delivery = delivery.delivery;
+        self.loss = delivery.loss;
+        self.copy_policy = delivery.copy_policy;
+        self.observability = delivery.observability;
+        self.max_payload_bytes = delivery.max_payload_bytes;
+        self
+    }
     /// Generic realtime PCM edge. Concrete sample rate, frame size, and
     /// channel layout are negotiated from connected ports.
     pub fn realtime_audio() -> Self {
-        Self {
-            media: MediaCaps::Audio(AudioCaps {
+        Self::new(
+            MediaCaps::Audio(AudioCaps {
                 sample_rate_hz: None,
                 frame_samples: None,
                 channel_layout: ChannelLayout::Any,
                 format: SampleFormat::F32Interleaved,
             }),
-            clock: ClockDomain::Capture,
-            latency_budget_ms: None,
-            jitter_budget_ms: None,
-            backpressure: BackpressurePolicy::DropNewest,
-            delivery: DeliverySemantics::Ordered,
-            loss: LossPolicy::ConcealForAudio,
-            copy_policy: CopyPolicy::ShareReadOnly,
-            observability: EdgeObservabilityLevel::Counters,
-            max_payload_bytes: None,
-        }
+            DeliveryPolicy::realtime_audio(),
+        )
     }
 
     /// Generic bounded asynchronous edge. Connected ports supply the payload
     /// representation and the envelope preserves its producer clock.
     pub fn bounded_async() -> Self {
-        Self {
-            media: MediaCaps::Any,
-            clock: ClockDomain::Inherited,
-            latency_budget_ms: None,
-            jitter_budget_ms: None,
-            backpressure: BackpressurePolicy::BoundedQueue,
-            delivery: DeliverySemantics::Ordered,
-            loss: LossPolicy::MustDeliverOrFail,
-            copy_policy: CopyPolicy::ShareReadOnly,
-            observability: EdgeObservabilityLevel::Counters,
-            max_payload_bytes: Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES),
-        }
+        Self::new(MediaCaps::Any, DeliveryPolicy::bounded_async())
     }
 }
+
+/// Compatibility name for [`RouteSettings`].
+pub type EdgeContract = RouteSettings;
 
 #[cfg(test)]
 mod tests {
@@ -550,6 +681,33 @@ mod tests {
             edge.max_payload_bytes,
             Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)
         );
+    }
+
+    #[test]
+    fn given_route_settings_when_delivery_policy_replaced_then_media_is_preserved() {
+        let media = MediaCaps::Audio(stereo_caps());
+        let delivery = DeliveryPolicy::bounded_async()
+            .with_backpressure(BackpressurePolicy::DropOldest)
+            .with_copy_policy(CopyPolicy::CopyToBranchPool)
+            .with_max_payload_bytes(4_096);
+
+        let settings = RouteSettings::realtime_audio()
+            .with_media(media)
+            .with_delivery_policy(delivery);
+
+        assert_eq!(settings.media(), media);
+        assert_eq!(settings.delivery_policy(), delivery);
+        assert_eq!(settings.backpressure(), BackpressurePolicy::DropOldest);
+        assert_eq!(settings.copy_policy(), CopyPolicy::CopyToBranchPool);
+        assert_eq!(settings.max_payload_bytes(), Some(4_096));
+    }
+
+    #[test]
+    fn given_edge_contract_name_when_used_then_it_is_route_settings() {
+        let compatibility_name = EdgeContract::realtime_audio();
+        let settings: RouteSettings = compatibility_name;
+
+        assert_eq!(settings, RouteSettings::realtime_audio());
     }
 
     #[test]

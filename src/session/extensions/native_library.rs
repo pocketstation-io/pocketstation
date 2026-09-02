@@ -24,7 +24,7 @@ impl Session {
     /// The caller must trust the selected native code and guarantee that it
     /// implements the declared PocketStation Extension ABI. Its exported
     /// function pointers, descriptors, borrowed arrays, and callback contexts
-    /// must obey the documented validity and lifetime contracts. Structural
+    /// must obey the documented validity and lifetime requirements. Structural
     /// validation cannot prove native-code memory safety or authenticity.
     pub unsafe fn load_native_extension_library(
         &self,

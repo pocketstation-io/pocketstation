@@ -197,8 +197,18 @@ impl RegisteredConnector {
             self.manifest.operator_id().clone(),
         )
         .with_configuration(configuration.into_endpoint_configuration())
-        .with_input_edge(input_edge);
+        .with_route_settings(input_edge);
         Ok(session.declaration.connector_endpoint(descriptor)?)
+    }
+
+    /// Declares one configured destination with explicit route settings.
+    pub fn declare_with_route_settings(
+        &self,
+        session: &Session,
+        configuration: ConnectorConfiguration,
+        settings: crate::RouteSettings,
+    ) -> Result<EndpointHandle, ConnectorDeclarationError> {
+        self.declare(session, configuration, settings)
     }
 }
 
@@ -226,9 +236,9 @@ impl NodeDefinition for ConnectorDefinition {
 impl Session {
     /// Registers a Connector and declares its default realtime-audio destination.
     ///
-    /// This is the common path for application-local Connectors with no
+    /// This is the concise API for application-local Connectors with no
     /// declared configuration. Use [`RegisteredConnector::declare`] when an
-    /// integration has typed configuration or a custom edge contract.
+    /// integration has typed configuration or custom [`crate::RouteSettings`].
     pub fn destination(
         &self,
         connector: Connector,
@@ -237,7 +247,7 @@ impl Session {
         Ok(registered.declare(
             self,
             ConnectorConfiguration::new(),
-            crate::EdgeContract::realtime_audio(),
+            crate::RouteSettings::realtime_audio(),
         )?)
     }
 

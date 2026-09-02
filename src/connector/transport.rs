@@ -36,7 +36,7 @@ pub const CONNECTOR_CONFIGURATION_RECORD_MAJOR: u16 = 1;
 pub const CONNECTOR_CONFIGURATION_RECORD_MINOR: u16 = 0;
 
 /// Typed configuration handed to a connector sidecar during its
-/// bounded Configure handshake. Secret classification survives the boundary;
+/// bounded Configure handshake. Secret classification remains attached;
 /// Debug output continues to redact secret values.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConnectorConfigurationRecord(ConnectorConfiguration);

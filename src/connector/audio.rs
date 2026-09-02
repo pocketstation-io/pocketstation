@@ -256,13 +256,13 @@ fn audio_manifest(instance_id: u64) -> Result<ConnectorManifest, AudioConnectorB
 pub enum AudioConnectorBuildError {
     #[error("application-local audio Connector identity space is exhausted")]
     IdentityExhausted,
-    #[error("PocketStation's audio Connector port contract is invalid")]
+    #[error("PocketStation's audio Connector port declaration is invalid")]
     InvalidPortContract,
-    #[error("PocketStation's audio Connector node contract is invalid")]
+    #[error("PocketStation's audio Connector node declaration is invalid")]
     InvalidNodeContract,
-    #[error("PocketStation's audio Connector configuration contract is invalid")]
+    #[error("PocketStation's audio Connector configuration is invalid")]
     InvalidConfigurationContract,
-    #[error("PocketStation's audio Connector readiness contract is invalid")]
+    #[error("PocketStation's audio Connector readiness configuration is invalid")]
     InvalidReadinessContract,
     #[error(transparent)]
     InvalidManifest(#[from] ConnectorManifestError),

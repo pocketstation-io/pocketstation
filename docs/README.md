@@ -19,6 +19,8 @@ your integration requires them.
 ## Understand the system
 
 - [Session architecture and ownership](architecture/overview.md)
+- [Own capture, routing, and shutdown with one Session](concepts/session-lifecycle.md)
+- [Set delivery behavior for each route](concepts/delivery-and-failure.md)
 - [Signals, streams, lineage, and runtime identity](concepts/signals-and-streams.md)
 
 ## Operate and upgrade
@@ -30,6 +32,8 @@ your integration requires them.
 
 ## Reference
 
+- [Find the Rust API for a task](reference/public-api.md)
+- [Read events, metrics, outcomes, and errors](reference/events-and-errors.md)
 - [Rust API on docs.rs](https://docs.rs/pocketstation/latest/pocketstation/)
 - [C header](../include/pocketstation.h)
 

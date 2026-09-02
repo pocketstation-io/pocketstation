@@ -1112,7 +1112,7 @@ impl StemWriteState {
         }
 
         let effective_timestamp_ns = if sequence_is_continuous {
-            // A continuous source sequence is contiguous PCM authority. Capture
+            // A continuous source sequence defines contiguous PCM. Capture
             // host timestamps routinely carry sub-frame scheduling jitter and
             // integer-nanosecond rounding; snapping them avoids fake silence,
             // overlap rejection, and an unbounded discontinuity ledger.

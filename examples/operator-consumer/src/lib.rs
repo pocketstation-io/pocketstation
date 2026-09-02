@@ -13,7 +13,8 @@ mod tests {
         EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate,
         ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId,
         Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec,
-        PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source,
+        ExecutionSafety, PreparedEndpointDriver, RunningEndpointDriver, Session, SignalSpec,
+        Source,
         TextFormat,
     };
     use whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID};
@@ -39,7 +40,7 @@ mod tests {
                 .expect("text endpoint input")],
                 Vec::new(),
                 ExecutionPartition::External,
-                SafetyContract::ExternalService,
+                ExecutionSafety::ExternalService,
                 true,
             )
             .expect("text endpoint descriptor")

@@ -1,4 +1,4 @@
-//! Typed authority connecting compiled graph nodes to Session declarations.
+//! Typed bindings from compiled graph nodes to Session declarations.
 //!
 //! Extension-owned `NodeConfig` never carries these identities. Runtime
 //! preparation consumes this table directly, so IDs are not serialized to

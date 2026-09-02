@@ -193,7 +193,15 @@ impl AsyncOperatorManifest {
         self.input_edge
     }
 
+    pub const fn input_route_settings(&self) -> crate::graph::RouteSettings {
+        self.input_edge
+    }
+
     pub const fn output_edge(&self) -> EdgeContract {
+        self.output_edge
+    }
+
+    pub const fn output_route_settings(&self) -> crate::graph::RouteSettings {
         self.output_edge
     }
 

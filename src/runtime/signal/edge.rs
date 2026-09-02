@@ -66,7 +66,7 @@ impl SignalEdgeObservationHandle {
     }
 }
 
-/// The single bounded SPSC authority for asynchronous signals.
+/// The single bounded SPSC queue for asynchronous signals.
 ///
 /// The item type expresses ownership only: callback bridges carry an owned
 /// `SignalEnvelope`, while fan-out branches carry `Arc<SignalEnvelope>`. Both

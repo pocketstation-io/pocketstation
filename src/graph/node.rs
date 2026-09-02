@@ -358,6 +358,11 @@ impl PortPrepareContext {
         self.edge_contract
     }
 
+    /// Returns the accepted media and delivery behavior for this prepared port.
+    pub const fn route_settings(&self) -> crate::graph::RouteSettings {
+        self.edge_contract
+    }
+
     pub const fn capacity_signals(&self) -> usize {
         self.capacity_signals
     }

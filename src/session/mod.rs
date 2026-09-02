@@ -92,16 +92,17 @@ pub use lifecycle::{
     NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,
     SessionEngineHostBuilder,
 };
+#[cfg(any(test, feature = "internal-testing"))]
+pub use lifecycle::{
+    RouteLatencyMeasurement, SessionEventQueueObservations, SessionRouteDropObservations,
+    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
+    SessionRouteObservationInterval,
+};
 pub use lifecycle::{
     SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent,
     SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure,
     SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage,
     SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState,
-};
-#[cfg(any(test, feature = "internal-testing"))]
-pub use lifecycle::{
-    SessionEventQueueObservations, SessionRouteDropObservations, SessionRouteLatencyBoundary,
-    SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteObservationInterval,
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use lifecycle::{
@@ -131,14 +132,15 @@ pub use crate::graph::NodeRegistrationError;
 pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorManifestError, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout,
-    ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract,
-    EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind,
-    Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy,
-    OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy,
-    OperatorPermissionPolicy, PortDirection, PortPrepareContext, PortSpec, PrepareContext,
-    SafetyContract, SchemaRef, SemanticRole, SignalClass, SignalContinuityError,
-    SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError,
-    SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
-    SignalSpecError, SignalTiming, TextFormat,
+    ClockDomain, Codec, ConfigError, CopyPolicy, DeliveryPolicy, DeliverySemantics, EdgeContract,
+    EdgeObservabilityLevel, EventFormat, ExecutionPartition, ExecutionSafety, LossPolicy,
+    MediaCaps, MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError,
+    OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
+    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext,
+    PortSpec, PrepareContext, RouteObservability, RouteSettings, SafetyContract, SchemaRef,
+    SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation,
+    SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope,
+    SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError,
+    SignalTiming, TextFormat,
 };
 pub use crate::graph::{NodeConfig as OperatorConfiguration, NodeTypeId};
