@@ -38,7 +38,7 @@ or stop the workflow.
 
 Inspect the route's capacity, queue depth, delivered frames, drops, and
 discontinuities. Every destination has its own bounded `EdgeContract`. A slow
-destination can apply pressure or lose frames according to that contract, but
+destination can apply pressure or lose frames according to those settings, but
 it must not grow an unbounded queue or stall unrelated routes.
 
 Move model inference, network waits, and file conversion away from capture

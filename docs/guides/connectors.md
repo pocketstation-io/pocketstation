@@ -262,7 +262,7 @@ The package owns authentication, protocol framing, provider deadlines,
 reconnection, and provider-specific errors. Core continues to own Session
 lifecycle, bounded routing, lineage, and Endpoint shutdown.
 
-Language SDKs can project this Connector contract when they provide a supported
+Language SDKs can expose this Connector lifecycle when they provide a supported
 native or managed integration. Provider callbacks never run on realtime PCM
 callbacks. Check the SDK documentation before depending on a language-specific
 authoring feature.

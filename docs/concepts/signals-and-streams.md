@@ -9,7 +9,7 @@ and `SignalEnvelope` when you need runtime or cross-language identity.
 operator manifest's selected named ports. Invalid composition fails before the
 Session starts.
 
-## Runtime contracts
+## Runtime types
 
 At runtime, the engine uses:
 

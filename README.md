@@ -53,7 +53,8 @@ complete program: interactive application selection, bounded frame polling,
 optional microphone and recording routes, a finite deadline, and joined
 shutdown.
 
-For contracts-only tooling or documentation builds, disable native capture:
+For tooling that only inspects PocketStation types or builds documentation,
+disable native capture:
 
 ```toml
 pocketstation = { version = "1.1.5", default-features = false }
@@ -76,7 +77,7 @@ pocketstation = { version = "1.1.5", default-features = false }
 PocketStation keeps the following information explicit as work moves between
 realtime audio and off-realtime integrations:
 
-| Contract | Available information |
+| Category | Available information |
 |---|---|
 | Provenance | source, stream, and stem identity |
 | Time | sequence, timestamp, clock, and derivation |
@@ -152,8 +153,8 @@ or returned as a typed outcome; the engine does not replace it with an
 unbounded queue.
 
 Applications own operating-system consent UI and source selection. PocketStation
-reports permission, source-loss, discontinuity, saturation, lifecycle, and
-recording outcomes through typed contracts.
+reports typed permission, source-loss, discontinuity, saturation, lifecycle,
+and recording outcomes.
 
 Check permission without prompting before capture when the platform supports
 it. Store a discovered Source only for its reported persistence scope. If the

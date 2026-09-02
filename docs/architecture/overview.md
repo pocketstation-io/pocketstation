@@ -32,7 +32,7 @@ outside that callback lane.
 
 `SignalSpec`, schemas, named ports, lineage, timing, and `EdgeContract` carry
 runtime and cross-language meaning. Rust `Stream<T>` adds declaration-time type
-checking and compiles into those stable contracts. No Rust `TypeId` or generic
+checking and compiles into those stable signal specifications. No Rust `TypeId` or generic
 type crosses the C ABI or sidecar protocol.
 
 Core owns execution primitives. Providers, customer protocols, export formats,
@@ -42,12 +42,12 @@ application policy, and business logic are external extensions.
 
 Application capture, media graphs, bounded queues, and native extension
 mechanisms are established systems primitives. PocketStation's useful role
-is their shared execution contract: a source does not lose its identity when
+is one coordinated runtime: a source does not lose its identity when
 it enters an Operator, a process extension does not invent a separate lifecycle,
 and one saturated destination does not silently redefine delivery for every
 other branch.
 
-The contract spans:
+PocketStation coordinates:
 
 ```text
 capture + source lineage + Session compilation

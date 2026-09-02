@@ -21,7 +21,7 @@ echo "scope: full workspace (${#rust_files[@]} Rust files)"
 
 echo "PUBLIC-DOCS: concrete developer language..."
 public_doc_vocabulary="$(
-  rg -n -i '\b(boundary|path|surface|authority|projection|lowering|flow|layer)\b' \
+  rg -n -i '\b(boundary|path|surface|authority|projection|lowering|flow|layer|contracts?)\b' \
     README.md RELEASE_NOTES.md docs examples \
     --glob '*.md' --glob '*.mdx' 2>/dev/null || true
 )"
