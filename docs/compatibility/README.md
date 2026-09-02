@@ -9,7 +9,7 @@ The native library also preserves the versioned C ABI and PKSS sidecar protocol.
 The repository stores their accepted layouts, symbols, and wire values in
 [`c-abi-v1.baseline`](c-abi-v1.baseline).
 
-Use the repository checks before changing a public boundary:
+Use the repository checks before changing a public API or protocol:
 
 ```bash
 bash tools/check-api-compatibility.sh

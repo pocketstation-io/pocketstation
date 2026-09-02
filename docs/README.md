@@ -25,7 +25,7 @@ your integration requires them.
 
 - [Prepare macOS, Windows, or Linux](operations/platform-support.md)
 - [Troubleshoot capture, delivery, and shutdown](troubleshooting.md)
-- [Compatibility and version boundaries](compatibility/README.md)
+- [Compatibility and versions](compatibility/README.md)
 - [Release notes](../RELEASE_NOTES.md)
 
 ## Reference

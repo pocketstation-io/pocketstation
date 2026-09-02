@@ -1,6 +1,6 @@
 # How a Session owns and routes audio
 
-Use this concept page to decide which PocketStation boundary should own new
+Use this concept page to decide which PocketStation API should own new
 work. PocketStation ships as one Cargo package and one native library. The
 public lifecycle begins at `Session`; internal modules keep one owner for each
 execution concern.
@@ -38,10 +38,10 @@ type crosses the C ABI or sidecar protocol.
 Core owns execution primitives. Providers, customer protocols, export formats,
 application policy, and business logic are external extensions.
 
-## Choose the owning boundary
+## Choose the API that owns the work
 
 Application capture, media graphs, bounded queues, and native extension
-mechanisms are established systems primitives. PocketStation's useful boundary
+mechanisms are established systems primitives. PocketStation's useful role
 is their shared execution contract: a source does not lose its identity when
 it enters an Operator, a process extension does not invent a separate lifecycle,
 and one saturated destination does not silently redefine delivery for every
@@ -54,7 +54,7 @@ capture + source lineage + Session compilation
         + bounded realtime and typed lanes
         + named composition and generated-audio reentry
         + endpoints, recording, observations, and final outcomes
-        + Rust, C, and sidecar projections
+        + Rust, C, and sidecar APIs
 ```
 
 Use the [Connector guide](../guides/connectors.md) for an outbound provider, or

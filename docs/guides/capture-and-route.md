@@ -43,7 +43,7 @@ For a selection that must survive beyond the current process, inspect
 `CaptureSource::selector_persistence_scope()` and store only identities whose
 reported scope matches the intended reuse. The
 [platform operations guide](../operations/platform-support.md#reuse-a-discovered-source-safely)
-shows the complete permission, persistence, and rediscovery path.
+shows how to handle permission, persistence, and rediscovery.
 
 ## Add the microphone only when needed
 
