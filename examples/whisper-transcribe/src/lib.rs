@@ -5,11 +5,11 @@ use std::time::Duration;
 
 use pocketstation::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
-    AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract,
+    AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy,
     ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId,
     OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
     OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    PortDirection, PortSpec, SafetyContract, SampleFormat, SemanticRole, SignalDerivation,
+    ExecutionSafety, PortDirection, PortSpec, RouteSettings, SampleFormat, SemanticRole,
     SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat,
 };
 use tempfile::TempDir;
@@ -93,10 +93,10 @@ impl WhisperOperatorFactory {
             channel_layout: ChannelLayout::Any,
             format: SampleFormat::F32Interleaved,
         });
-        let input_edge = EdgeContract::realtime_audio()
+        let input_edge = RouteSettings::realtime_audio()
             .with_media(audio)
             .with_copy_policy(CopyPolicy::CopyToBranchPool);
-        let output_edge = EdgeContract::bounded_async().with_media(MediaCaps::Text);
+        let output_edge = RouteSettings::bounded_async().with_media(MediaCaps::Text);
         let node = NodeDescriptor::new(
             NodeTypeId::from("operator.transcription.whisper-cpp"),
             "Whisper.cpp transcription",
@@ -119,7 +119,7 @@ impl WhisperOperatorFactory {
             )
             .expect("text output port")],
             ExecutionPartition::BlockingWorker,
-            SafetyContract::BlockingAllowed,
+            ExecutionSafety::BlockingAllowed,
             true,
         )
         .expect("operator node descriptor");
@@ -925,8 +925,8 @@ mod tests {
             channel_layout,
             format: sample_spec.format,
         });
-        let input_contract = EdgeContract::realtime_audio().with_media(audio);
-        let output_contract = EdgeContract::bounded_async().with_media(MediaCaps::Text);
+        let input_contract = RouteSettings::realtime_audio().with_media(audio);
+        let output_contract = RouteSettings::bounded_async().with_media(MediaCaps::Text);
         AsyncOperatorPrepareContext::new(
             ExecutionPartition::BlockingWorker,
             vec![

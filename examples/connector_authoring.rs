@@ -11,8 +11,8 @@ use pocketstation::connector::{
     ConnectorReadinessPolicy, ConnectorRetryability, ConnectorSecret,
 };
 use pocketstation::{
-    ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps,
-    Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract,
+    ApplicationSelector, AudioCaps, ChannelLayout, ExecutionPartition, ExecutionSafety, MediaCaps,
+    Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, RouteSettings,
     SampleFormat, Session, SignalSpec, Source,
 };
 
@@ -99,7 +99,7 @@ fn connector_manifest() -> Result<ConnectorManifest, Box<dyn Error>> {
         )?],
         Vec::new(),
         ExecutionPartition::AsyncWorker,
-        SafetyContract::NetworkAllowed,
+        ExecutionSafety::NetworkAllowed,
         true,
     )?;
     let configuration = ConnectorConfigurationSchema::new(
@@ -150,7 +150,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 "api_token",
                 ConnectorConfigurationValue::Secret(ConnectorSecret::new("replace-me")?),
             ),
-        EdgeContract::realtime_audio(),
+        RouteSettings::realtime_audio(),
     )?;
 
     let application = session.capture(Source::application(ApplicationSelector::name(

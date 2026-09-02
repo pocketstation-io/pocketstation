@@ -86,12 +86,13 @@ pub use crate::frame::{
 pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorManifestError, AsyncOperatorPrepareContext, AudioCaps, BackpressurePolicy,
-    BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics,
-    EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps,
-    MediaKind, Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor,
-    NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
-    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    PortDirection, PortPrepareContext, PortSpec, SafetyContract, SchemaRef, SemanticRole,
+    BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliveryPolicy,
+    DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition,
+    ExecutionSafety, LossPolicy, MediaCaps, MediaKind, Multiplicity,
+    NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId,
+    OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId,
+    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext,
+    PortSpec, RouteObservability, RouteSettings, SafetyContract, SchemaRef, SemanticRole,
     SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
     SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId,
     SignalLineage, SignalLineageError, SignalPayload, SignalSpec, SignalSpecError, SignalTiming,
@@ -116,7 +117,7 @@ pub use crate::session::extensions::{
     SourceSessionContext, SourceTypeId, SourceTypeIdError, PCM_SOURCE_TYPE_ID,
 };
 pub use crate::session::lifecycle::{
-    SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure,
+    RouteLatencyMeasurement, SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure,
     SessionDerivedRouteMetrics, SessionEvent, SessionEventKind, SessionEventQueueObservations,
     SessionEventReceive, SessionExternalSourceMetrics, SessionLifecycleState,
     SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
@@ -521,6 +522,14 @@ impl Session {
         input_edge: EdgeContract,
     ) -> Result<EndpointHandle, SessionError> {
         self.declaration.polled_audio_with_input_edge(input_edge)
+    }
+
+    /// Declares application-polled audio with explicit media and delivery settings.
+    pub fn polled_audio_with_route_settings(
+        &self,
+        settings: RouteSettings,
+    ) -> Result<EndpointHandle, SessionError> {
+        self.declaration.polled_audio_with_route_settings(settings)
     }
 
     /// Declares an external connector. Register its implementation after route

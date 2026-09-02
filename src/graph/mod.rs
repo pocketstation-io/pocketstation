@@ -34,13 +34,14 @@ pub use node::{
 pub use operator::OperatorId;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use operator::OPERATOR_ID_SYNTAX_VERSION;
-pub use partition::{ExecutionPartition, SafetyContract};
+pub use partition::{ExecutionPartition, ExecutionSafety, SafetyContract};
 #[cfg(test)]
 pub(crate) use ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES;
 pub use ports::{
-    AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliverySemantics,
-    EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind, Multiplicity,
-    PortDirection, PortSpec, MAX_ASYNC_PAYLOAD_BYTES,
+    AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliveryPolicy,
+    DeliverySemantics, EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind,
+    Multiplicity, PortDirection, PortSpec, RouteObservability, RouteSettings,
+    MAX_ASYNC_PAYLOAD_BYTES,
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use registry::NodeDefinitionRef;

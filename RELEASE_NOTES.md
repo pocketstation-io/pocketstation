@@ -2,6 +2,18 @@
 
 This page covers user-visible changes in the PocketStation 1.x release line.
 
+## Unreleased
+
+### Added
+
+Advanced integrations can now configure `RouteSettings` as accepted media plus
+a separate `DeliveryPolicy`. `ExecutionSafety`, `RouteObservability`, and
+`RouteLatencyMeasurement` name the corresponding runtime decisions directly.
+
+The existing `EdgeContract`, `SafetyContract`, `EdgeObservabilityLevel`, and
+`SessionRouteLatencyBoundary` names remain compatible throughout the 1.1.x
+series. Existing applications do not need to migrate immediately.
+
 ## 1.1.5 — 2026-09-01
 
 Send Session audio to an external system with one function or one focused Rust

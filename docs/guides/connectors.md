@@ -149,7 +149,7 @@ let relay = session.register_connector(connector)?;
 let endpoint = relay.declare(
     &session,
     ConnectorConfiguration::new(),
-    pocketstation::EdgeContract::realtime_audio(),
+    pocketstation::RouteSettings::realtime_audio(),
 )?;
 # let _ = endpoint;
 # Ok(())
@@ -194,10 +194,10 @@ escape hatch when a protocol requires a specialized off-realtime worker.
 - a finite startup-readiness deadline and probe thresholds; and
 - open capability and resource-requirement identifiers.
 
-`EdgeContract` is supplied when the Connector Endpoint is declared. It records
-the accepted media plus capacity, loss, backpressure, copy, and latency
-settings for that route. Those choices belong to the route, not to the provider
-manifest.
+`RouteSettings` is supplied when the Connector Endpoint is declared. It keeps
+accepted media separate from the `DeliveryPolicy` that controls capacity,
+loss, backpressure, copying, and latency. Those choices belong to the route,
+not to the provider manifest.
 
 Connector API revision 1 is an Endpoint integration: it requires at least one
 input and rejects outputs. Generated audio re-enters through the existing audio

@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 pub use crate::graph::OperatorId;
-use crate::graph::{EdgeContract, NodeTypeId};
+use crate::graph::{EdgeContract, NodeTypeId, RouteSettings};
 
 use crate::session::SessionError;
 
@@ -138,6 +138,12 @@ impl EndpointDescriptor {
         self
     }
 
+    /// Selects the media and delivery behavior for routes entering this Endpoint.
+    pub fn with_route_settings(mut self, settings: RouteSettings) -> Self {
+        self.input_edge = Some(settings);
+        self
+    }
+
     pub fn node_type_id(&self) -> &NodeTypeId {
         &self.node_type_id
     }
@@ -151,6 +157,11 @@ impl EndpointDescriptor {
     }
 
     pub const fn input_edge(&self) -> Option<EdgeContract> {
+        self.input_edge
+    }
+
+    /// Returns the media and delivery settings declared for this Endpoint.
+    pub const fn route_settings(&self) -> Option<RouteSettings> {
         self.input_edge
     }
 

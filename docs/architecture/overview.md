@@ -30,10 +30,11 @@ blocking, async, logging, or panic on callbacks. Typed sources, external
 operators, managed-language sidecars, model work, and endpoint I/O execute
 outside that callback lane.
 
-`SignalSpec`, schemas, named ports, lineage, timing, and `EdgeContract` carry
-runtime and cross-language meaning. Rust `Stream<T>` adds declaration-time type
-checking and compiles into those stable signal specifications. No Rust `TypeId` or generic
-type crosses the C ABI or sidecar protocol.
+`SignalSpec`, schemas, named ports, lineage, timing, `RouteSettings`, and
+`DeliveryPolicy` carry runtime and cross-language meaning. Rust `Stream<T>` adds
+declaration-time type checking and compiles into those stable signal
+specifications. No Rust `TypeId` or generic type crosses the C ABI or sidecar
+protocol.
 
 Core owns execution primitives. Providers, customer protocols, export formats,
 application policy, and business logic are external extensions.

@@ -31,12 +31,12 @@ pub use host::{
     SessionEngineHostBuilder,
 };
 pub use observations::{
-    EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics,
-    SessionEventQueueObservations, SessionExternalSourceMetrics, SessionMetricsSnapshot,
-    SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations,
-    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
-    SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics,
+    EndpointObservationStage, RouteLatencyMeasurement, SessionAudioReentryMetrics,
+    SessionDerivedRouteMetrics, SessionEventQueueObservations, SessionExternalSourceMetrics,
+    SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
+    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
+    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
+    SessionSidecarMetrics, SessionSourceMetrics,
 };
 pub(crate) use running::start_prepared_session_cancellable_with_trace;
 pub use running::RunningSession;

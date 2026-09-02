@@ -192,10 +192,21 @@ pub struct SessionRouteLatencyObservations {
     pub max_ns: u64,
 }
 
+impl SessionRouteLatencyObservations {
+    /// Returns the timestamps used to calculate this latency.
+    pub const fn measurement(self) -> RouteLatencyMeasurement {
+        self.boundary
+    }
+}
+
+/// Identifies the timestamps used to calculate route latency.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum SessionRouteLatencyBoundary {
+pub enum RouteLatencyMeasurement {
     SourceMonotonicTimestampToRouteReceive,
 }
+
+/// Compatibility name for [`RouteLatencyMeasurement`].
+pub type SessionRouteLatencyBoundary = RouteLatencyMeasurement;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionRouteLatencyUnit {
@@ -625,6 +636,10 @@ mod tests {
         assert_eq!(
             latency.boundary,
             SessionRouteLatencyBoundary::SourceMonotonicTimestampToRouteReceive
+        );
+        assert_eq!(
+            latency.measurement(),
+            RouteLatencyMeasurement::SourceMonotonicTimestampToRouteReceive
         );
         assert_eq!(latency.unit, SessionRouteLatencyUnit::Nanoseconds);
         assert_eq!(latency.samples_total, 9);

@@ -90,7 +90,7 @@ impl<Input: StreamSignal, Output: StreamSignal> TypedOperator<Input, Output> {
 }
 
 /// Typed Rust declaration façade compiled into stable dynamic signal, schema,
-/// port, and EdgeContract settings. This wrapper carries no frames and is not a
+/// port, and RouteSettings. This wrapper carries no frames and is not a
 /// generic runtime queue.
 #[derive(Clone)]
 pub struct Stream<Signal> {

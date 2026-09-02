@@ -1,10 +1,10 @@
-//! ExecutionPartition and SafetyContract — the two orthogonal axes of operator placement.
+//! Operator placement and execution safety.
 //!
 //! These are separate types because they answer different questions:
-//!   `ExecutionPartition` — WHERE does this operator run?
-//!   `SafetyContract`     — WHAT does it guarantee about its runtime behaviour?
+//!   `ExecutionPartition` — where does this operator run?
+//!   `ExecutionSafety`    — what may this operator do while it runs?
 //!
-//! The compiler enforces: `SafetyContract::RealtimeSafe` is only valid on
+//! The compiler enforces: `ExecutionSafety::RealtimeSafe` is only valid on
 //! `AudioCallback` or `RealtimeCpu` partitions.  Any edge that crosses partition
 //! boundaries gets a compiler-inserted `Bridge`; no cross-partition calls on the
 //! hot path.
@@ -20,7 +20,7 @@ pub enum ExecutionPartition {
     ///
     /// The OS calls this on a high-priority real-time thread.  Must be
     /// alloc-free, lock-free, blocking-free, and log-free (LAW 15).
-    /// Only `SafetyContract::RealtimeSafe` operators may live here.
+    /// Only `ExecutionSafety::RealtimeSafe` operators may live here.
     AudioCallback,
 
     /// Dedicated real-time processing thread.
@@ -51,7 +51,7 @@ pub enum ExecutionPartition {
 impl ExecutionPartition {
     /// Returns `true` if the partition requires strict real-time safety.
     ///
-    /// Operators in real-time partitions must satisfy `SafetyContract::RealtimeSafe`.
+    /// Operators in real-time partitions must use `ExecutionSafety::RealtimeSafe`.
     pub fn requires_realtime_safety(self) -> bool {
         matches!(self, Self::AudioCallback | Self::RealtimeCpu)
     }
@@ -73,16 +73,16 @@ impl ExecutionPartition {
     }
 }
 
-/// WHAT an operator guarantees about its runtime behaviour.
+/// States what an Operator may do while it runs.
 ///
 /// Separate from `ExecutionPartition` — an operator can declare its safety
-/// contract independently of which partition it wants to run in.  The compiler
-/// validates the combination.
+/// requirements independently of where it wants to run. The compiler validates
+/// the combination before the Session starts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum SafetyContract {
+pub enum ExecutionSafety {
     /// No heap allocation, no locking, no blocking, no logging.
     ///
-    /// The only valid contract for `AudioCallback` and `RealtimeCpu` partitions.
+    /// The only valid setting for `AudioCallback` and `RealtimeCpu` partitions.
     /// Verified by CI via the alloc-check integration test.
     RealtimeSafe,
 
@@ -99,29 +99,32 @@ pub enum SafetyContract {
     ExternalService,
 }
 
-impl SafetyContract {
-    /// Returns `true` if this contract is compatible with the given partition.
+impl ExecutionSafety {
+    /// Returns `true` if this behavior is safe on the given partition.
     ///
     /// The compiler calls this during graph validation to reject unsafe combinations
     /// before any code runs.
     pub fn is_valid_for(self, partition: ExecutionPartition) -> bool {
         match (partition, self) {
-            (ExecutionPartition::AudioCallback, SafetyContract::RealtimeSafe) => true,
+            (ExecutionPartition::AudioCallback, ExecutionSafety::RealtimeSafe) => true,
             (ExecutionPartition::AudioCallback, _) => false,
-            (ExecutionPartition::RealtimeCpu, SafetyContract::RealtimeSafe) => true,
+            (ExecutionPartition::RealtimeCpu, ExecutionSafety::RealtimeSafe) => true,
             (ExecutionPartition::RealtimeCpu, _) => false,
-            (ExecutionPartition::AsyncWorker, SafetyContract::NetworkAllowed) => true,
-            (ExecutionPartition::AsyncWorker, SafetyContract::AllocationAllowed) => true,
-            (ExecutionPartition::AsyncWorker, SafetyContract::ExternalService) => true,
+            (ExecutionPartition::AsyncWorker, ExecutionSafety::NetworkAllowed) => true,
+            (ExecutionPartition::AsyncWorker, ExecutionSafety::AllocationAllowed) => true,
+            (ExecutionPartition::AsyncWorker, ExecutionSafety::ExternalService) => true,
             (ExecutionPartition::AsyncWorker, _) => false,
-            (ExecutionPartition::BlockingWorker, SafetyContract::BlockingAllowed) => true,
-            (ExecutionPartition::BlockingWorker, SafetyContract::AllocationAllowed) => true,
+            (ExecutionPartition::BlockingWorker, ExecutionSafety::BlockingAllowed) => true,
+            (ExecutionPartition::BlockingWorker, ExecutionSafety::AllocationAllowed) => true,
             (ExecutionPartition::BlockingWorker, _) => false,
-            (ExecutionPartition::External, SafetyContract::ExternalService) => true,
+            (ExecutionPartition::External, ExecutionSafety::ExternalService) => true,
             (ExecutionPartition::External, _) => false,
         }
     }
 }
+
+/// Compatibility name for [`ExecutionSafety`].
+pub type SafetyContract = ExecutionSafety;
 
 #[cfg(test)]
 mod tests {
@@ -147,6 +150,14 @@ mod tests {
         assert!(ExecutionPartition::RealtimeCpu.rank() < ExecutionPartition::AsyncWorker.rank());
         assert!(ExecutionPartition::AsyncWorker.rank() < ExecutionPartition::BlockingWorker.rank());
         assert!(ExecutionPartition::BlockingWorker.rank() < ExecutionPartition::External.rank());
+    }
+
+    #[test]
+    fn given_safety_contract_name_when_used_then_it_is_execution_safety() {
+        let compatibility_name = SafetyContract::NetworkAllowed;
+        let safety: ExecutionSafety = compatibility_name;
+
+        assert_eq!(safety, ExecutionSafety::NetworkAllowed);
     }
 
     #[test]

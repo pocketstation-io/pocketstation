@@ -4,10 +4,9 @@ Every destination receives data through its own finite queue. A slow model,
 network connection, recorder, or application consumer can affect its route;
 it cannot silently create an unbounded backlog or stall unrelated routes.
 
-The normal APIs choose finite settings for their work. Most applications never
-construct `EdgeContract`. The type is used by advanced packages that must
-describe both the media a compiled route accepts and how that route behaves
-under pressure.
+The normal APIs choose finite settings for their work. Advanced packages use
+`RouteSettings` when they need to select the accepted media or change delivery
+behavior explicitly.
 
 ## Start with the normal APIs
 
@@ -30,7 +29,13 @@ Session outcome reports each failure.
 
 ## Understand the delivery settings
 
-`EdgeContract` combines these settings:
+`RouteSettings` contains two decisions:
+
+- `MediaCaps` describes the media accepted by the route.
+- `DeliveryPolicy` describes timing, queue pressure, loss, copying, and
+  observations.
+
+The complete settings are:
 
 | Setting | Question it answers |
 |---|---|
@@ -41,12 +46,25 @@ Session outcome reports each failure.
 | `DeliverySemantics` | Is delivery realtime best effort, ordered, or non-realtime exact delivery? |
 | `LossPolicy` | May data be dropped, concealed, or treated as terminal failure? |
 | `CopyPolicy` | May a frame be shared, moved, or copied to a branch pool? |
-| `EdgeObservabilityLevel` | Which counters and timing observations are retained? |
+| `RouteObservability` | Which counters and timing observations are retained? |
 | maximum payload bytes | What is the largest accepted typed payload? |
 
-`EdgeContract::realtime_audio()` selects nonblocking settings for callback-fed
-PCM. `EdgeContract::bounded_async()` selects a finite queue for off-realtime
+`RouteSettings::realtime_audio()` selects nonblocking delivery for callback-fed
+PCM. `RouteSettings::bounded_async()` selects a finite queue for off-realtime
 signals. Connected ports still negotiate their concrete media format.
+
+Change delivery without rebuilding the media requirements:
+
+```rust
+use pocketstation::{BackpressurePolicy, DeliveryPolicy, RouteSettings};
+
+let delivery = DeliveryPolicy::realtime_audio()
+    .with_backpressure(BackpressurePolicy::DropOldest);
+let settings = RouteSettings::realtime_audio().with_delivery_policy(delivery);
+```
+
+`EdgeContract` remains a compatibility name for `RouteSettings` throughout the
+1.1.x series.
 
 ## Choose backpressure deliberately
 

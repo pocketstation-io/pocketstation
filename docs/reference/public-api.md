@@ -40,8 +40,9 @@ ID, stable source ID, and process instance. Ambiguous names fail before capture.
 | Send to an Endpoint | `SourceOutputHandle::send` |
 | Connect to an Operator input | `SourceOutputHandle::connect` |
 
-The normal methods create finite routes. `EdgeContract` is the advanced type
-for packages that must set media and delivery behavior explicitly.
+The normal methods create finite routes. `RouteSettings` lets advanced packages
+select accepted media and apply a `DeliveryPolicy` explicitly. `EdgeContract`
+remains a 1.1.x compatibility name.
 
 ## Operators and typed signals
 

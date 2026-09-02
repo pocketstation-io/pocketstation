@@ -15,8 +15,9 @@ At runtime, the engine uses:
 
 - `SignalSpec`: class, stable custom identifier, semantic role, and schema;
 - `SignalEnvelope`: payload plus source-independent lineage and timing;
-- `EdgeContract`: bounded delivery, loss/backpressure, copy, clock, and
-  observation policy;
+- `RouteSettings`: accepted media plus one `DeliveryPolicy`;
+- `DeliveryPolicy`: bounded delivery, loss/backpressure, copy, clock, and
+  observation settings;
 - `RuntimePlan`: compiled executable topology.
 
 The core does not define customer/domain marker types. A provider package may

@@ -53,6 +53,11 @@ impl ConnectorInputDescriptor {
         self.edge_contract
     }
 
+    /// Returns the accepted media and delivery behavior for this input route.
+    pub const fn route_settings(&self) -> crate::RouteSettings {
+        self.edge_contract
+    }
+
     pub const fn configuration(&self) -> &ResolvedConnectorConfiguration {
         &self.configuration
     }
