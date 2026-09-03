@@ -6,7 +6,7 @@ use crate::capture::{
 use crate::capture::platform::linux::DesktopCaptureSource;
 use crate::frame::AudioFrameDuration;
 
-/// Linux adapter from the platform-neutral Session capture contract to the
+/// Linux adapter from the platform-neutral Session capture API to the
 /// existing PipeWire RAII owner.
 #[derive(Debug)]
 pub struct DesktopCaptureBackend {

@@ -2,7 +2,7 @@
 //! Node specifications are preserved verbatim (type id + config); nothing is discarded.
 
 use crate::graph::node::{NodeConfig, NodeTypeId};
-use crate::graph::ports::EdgeContract;
+use crate::graph::ports::RouteSettings;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct NodeId(pub(crate) u32);
@@ -51,7 +51,7 @@ pub struct EdgeSpec {
     pub id: EdgeId,
     pub from: OutputPortRef,
     pub to: InputPortRef,
-    pub requested: Option<EdgeContract>, // None = compiler negotiates from port capabilities.
+    pub requested: Option<RouteSettings>, // None = compiler negotiates from port capabilities.
 }
 
 #[derive(Debug, Clone, Default)]

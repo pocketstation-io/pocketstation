@@ -50,7 +50,7 @@ they are not reported as zero.
 `RouteLatencyMeasurement` and `SessionRouteLatencyUnit`. Compare values only
 when both definitions match. Source timestamp to route receive includes a
 different amount of work than capture callback to network send or browser
-receive. `SessionRouteLatencyBoundary` remains a 1.1.x compatibility name.
+receive.
 
 Virtual-machine scheduler spikes are correctness evidence, not host latency
 qualification. Record p50, p95, p99, maximum, sample count, operating system,

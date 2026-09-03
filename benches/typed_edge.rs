@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput};
-use pocketstation::internal::graph::{EdgeContract, EventFormat, SignalSpec};
+use pocketstation::internal::graph::{EventFormat, RouteSettings, SignalSpec};
 use pocketstation::internal::runtime::{TypedEdgeBranchSpec, TypedEdgeFanout};
 use pocketstation::{SignalEnvelope, SignalPayload};
 
@@ -10,7 +10,7 @@ fn bench_typed_edge(c: &mut Criterion) {
     group.bench_function("publish_receive_one_branch_256_bytes", |b| {
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 8,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }])
         .expect("bounded typed edge");
         b.iter(|| {
@@ -27,7 +27,7 @@ fn bench_typed_edge(c: &mut Criterion) {
     group.bench_function("publish_receive_three_branches_256_bytes", |b| {
         let branch = TypedEdgeBranchSpec {
             capacity_signals: 8,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         };
         let (mut fanout, mut receivers) =
             TypedEdgeFanout::new(&[branch, branch, branch]).expect("bounded typed fanout");

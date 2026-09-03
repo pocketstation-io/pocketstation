@@ -335,7 +335,7 @@ impl SessionCompileError {
                     actual: Some(from.clone()),
                     ..SessionCompileDiagnostic::new("compile.graph.signal_mismatch")
                 },
-                CompileError::InvalidSafetyContract { node, type_id, .. } => {
+                CompileError::InvalidExecutionSafety { node, type_id, .. } => {
                     SessionCompileDiagnostic {
                         node_index: Some(*node),
                         node_type_id: Some(type_id.clone()),
@@ -366,7 +366,7 @@ impl SessionCompileError {
                     port_name: Some(port.clone()),
                     ..SessionCompileDiagnostic::new("compile.plan.move_exclusive_fan_out")
                 },
-                PlanError::MissingEdgeContract { edge } => SessionCompileDiagnostic {
+                PlanError::MissingRouteSettings { edge } => SessionCompileDiagnostic {
                     edge_index: Some(edge.index()),
                     ..SessionCompileDiagnostic::new("compile.plan.missing_edge_contract")
                 },

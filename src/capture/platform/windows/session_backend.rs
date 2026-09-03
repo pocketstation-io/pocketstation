@@ -6,7 +6,7 @@ use crate::capture::{
 use crate::capture::platform::windows::DesktopCaptureSource;
 use crate::frame::AudioFrameDuration;
 
-/// Windows adapter from the platform-neutral Session capture contract to the
+/// Windows adapter from the platform-neutral Session capture API to the
 /// existing synchronously-opened WASAPI RAII owner.
 #[derive(Debug)]
 pub struct DesktopCaptureBackend {

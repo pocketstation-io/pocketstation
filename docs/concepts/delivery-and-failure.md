@@ -63,9 +63,6 @@ let delivery = DeliveryPolicy::realtime_audio()
 let settings = RouteSettings::realtime_audio().with_delivery_policy(delivery);
 ```
 
-`EdgeContract` remains a compatibility name for `RouteSettings` throughout the
-1.1.x series.
-
 ## Choose backpressure deliberately
 
 `DropNewest` preserves data already queued and rejects the newest item.

@@ -66,7 +66,7 @@ impl StemHandle {
             NodeTypeId::from(RECORDER_NODE_TYPE_ID),
             OperatorId::new(RECORDER_OPERATOR_ID),
         )
-        .with_input_edge(multistem_recording_edge_contract())
+        .with_route_settings(multistem_recording_route_settings())
         .with_configuration(
             EndpointConfiguration::new()
                 .with(MULTISTEM_NAME_CONFIGURATION_KEY, stem_name)
@@ -85,7 +85,7 @@ impl SourceOutputHandle {
             NodeTypeId::from(RECORDER_NODE_TYPE_ID),
             OperatorId::new(RECORDER_OPERATOR_ID),
         )
-        .with_input_edge(multistem_recording_edge_contract())
+        .with_route_settings(multistem_recording_route_settings())
         .with_configuration(
             EndpointConfiguration::new()
                 .with(MULTISTEM_NAME_CONFIGURATION_KEY, stem_name)
@@ -104,14 +104,14 @@ impl Session {
     }
 }
 
-fn multistem_recording_edge_contract() -> crate::graph::EdgeContract {
-    crate::graph::EdgeContract {
+fn multistem_recording_route_settings() -> crate::graph::RouteSettings {
+    crate::graph::RouteSettings {
         jitter_budget_ms: Some(400),
         backpressure: crate::graph::BackpressurePolicy::DropNewest,
         loss: crate::graph::LossPolicy::DropAllowed,
         copy_policy: crate::graph::CopyPolicy::CopyToBranchPool,
-        observability: crate::graph::EdgeObservabilityLevel::Full,
-        ..crate::graph::EdgeContract::realtime_audio()
+        observability: crate::graph::RouteObservability::Full,
+        ..crate::graph::RouteSettings::realtime_audio()
     }
 }
 

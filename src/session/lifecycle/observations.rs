@@ -28,7 +28,7 @@ pub struct SessionEventQueueObservations {
     pub receiver_closed_total: u64,
 }
 
-/// Authoritative point-in-time observations for the current Session boundary.
+/// Point-in-time observations for the current Session.
 ///
 /// The snapshot keeps control-event and foreign-audio queue truth together
 /// without exposing either counter owner to a language adapter.
@@ -181,7 +181,7 @@ impl SessionRouteDropObservations {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionRouteLatencyObservations {
     pub route_id: RouteId,
-    pub boundary: SessionRouteLatencyBoundary,
+    pub measurement: RouteLatencyMeasurement,
     pub unit: SessionRouteLatencyUnit,
     pub samples_total: u64,
     pub missing_or_incompatible_clock_total: u64,
@@ -195,7 +195,7 @@ pub struct SessionRouteLatencyObservations {
 impl SessionRouteLatencyObservations {
     /// Returns the timestamps used to calculate this latency.
     pub const fn measurement(self) -> RouteLatencyMeasurement {
-        self.boundary
+        self.measurement
     }
 }
 
@@ -204,9 +204,6 @@ impl SessionRouteLatencyObservations {
 pub enum RouteLatencyMeasurement {
     SourceMonotonicTimestampToRouteReceive,
 }
-
-/// Compatibility name for [`RouteLatencyMeasurement`].
-pub type SessionRouteLatencyBoundary = RouteLatencyMeasurement;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionRouteLatencyUnit {
@@ -234,7 +231,7 @@ impl SessionRouteMetrics {
     pub const fn source_to_receive_latency(self) -> SessionRouteLatencyObservations {
         SessionRouteLatencyObservations {
             route_id: self.route_id,
-            boundary: SessionRouteLatencyBoundary::SourceMonotonicTimestampToRouteReceive,
+            measurement: RouteLatencyMeasurement::SourceMonotonicTimestampToRouteReceive,
             unit: SessionRouteLatencyUnit::Nanoseconds,
             samples_total: self.edge.source_timestamp_to_receive_samples_total,
             missing_or_incompatible_clock_total: self
@@ -258,7 +255,7 @@ pub struct SessionOperatorInputMetrics {
 /// Exact boundedness and lifecycle accounting for one operator PCM output
 /// re-entering the Session audio lane.
 ///
-/// This is a Session observation contract. The bridge worker and its queue are
+/// This measurement belongs to the Session. The bridge worker and its queue are
 /// deliberately not public extension APIs.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionAudioReentryMetrics {
@@ -397,9 +394,9 @@ pub struct SessionOperatorMetrics {
     /// `worker.input_*` remains meaningful only for workers fed through the
     /// direct `AsyncOperatorInput` API. Compiled Session operators consume this
     /// plan edge, so callers must use these observations for input accounting.
-    pub input_edge: EdgeObservations,
-    /// Exact per-port input accounting. `input_edge` is the compatibility
-    /// aggregate across this slice.
+    pub input_delivery: EdgeObservations,
+    /// Exact per-port input accounting. `input_delivery` is the aggregate
+    /// across this slice.
     pub input_ports: Box<[SessionOperatorInputMetrics]>,
     pub worker: AsyncOperatorObservations,
     pub finalization_failures_total: u64,
@@ -410,31 +407,31 @@ impl SessionOperatorMetrics {
         self.input_ports.iter().find(|port| port.port_name == name)
     }
     pub const fn input_queue_capacity_frames(&self) -> u64 {
-        self.input_edge.queue_capacity_frames
+        self.input_delivery.queue_capacity_frames
     }
 
     pub const fn input_queue_depth_frames(&self) -> u64 {
-        self.input_edge.queue_depth_frames
+        self.input_delivery.queue_depth_frames
     }
 
     pub const fn input_queue_peak_frames(&self) -> u64 {
-        self.input_edge.queue_peak_frames
+        self.input_delivery.queue_peak_frames
     }
 
     pub fn input_attempted_total(&self) -> u64 {
-        self.input_edge.frames_attempted_total()
+        self.input_delivery.frames_attempted_total()
     }
 
     pub const fn input_enqueued_total(&self) -> u64 {
-        self.input_edge.frames_enqueued_total
+        self.input_delivery.frames_enqueued_total
     }
 
     pub const fn input_delivered_total(&self) -> u64 {
-        self.input_edge.frames_delivered_total
+        self.input_delivery.frames_delivered_total
     }
 
     pub const fn input_dropped_total(&self) -> u64 {
-        self.input_edge.frames_dropped_total
+        self.input_delivery.frames_dropped_total
     }
 }
 
@@ -634,8 +631,8 @@ mod tests {
         let latency = route.source_to_receive_latency();
         assert_eq!(latency.route_id, RouteId(7));
         assert_eq!(
-            latency.boundary,
-            SessionRouteLatencyBoundary::SourceMonotonicTimestampToRouteReceive
+            latency.measurement,
+            RouteLatencyMeasurement::SourceMonotonicTimestampToRouteReceive
         );
         assert_eq!(
             latency.measurement(),

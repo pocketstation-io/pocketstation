@@ -162,35 +162,35 @@ mod tests {
     use super::*;
     use crate::frame::{AudioBufferPool, ClockDomainId, SessionId, StemId, StreamId};
     use crate::graph::{
-        AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext,
-        BinaryFormat, Codec, EdgeContract, EventFormat, ExecutionPartition, MediaCaps, NodeError,
-        PortDirection, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
-        SignalId, TextFormat,
+        AsyncNode, AsyncNodeFuture, AsyncOperatorPrepareContext, BinaryFormat, Codec, EventFormat,
+        ExecutionPartition, MediaCaps, NodeError, PortDirection, PortPrepareContext, RouteSettings,
+        SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalId,
+        TextFormat,
     };
 
     fn prepare_cx() -> AsyncOperatorPrepareContext {
-        let mut contract = EdgeContract::bounded_async();
-        contract.media = MediaCaps::Control;
+        let mut route_settings = RouteSettings::bounded_async();
+        route_settings.media = MediaCaps::Control;
         AsyncOperatorPrepareContext::new(
             ExecutionPartition::AsyncWorker,
             vec![
-                AsyncOperatorEdgePrepareContext::new(
+                PortPrepareContext::new(
                     None,
                     "input",
                     PortDirection::Input,
                     SignalSpec::control(),
                     MediaCaps::Control,
-                    contract,
+                    route_settings,
                     8,
                 )
                 .unwrap(),
-                AsyncOperatorEdgePrepareContext::new(
+                PortPrepareContext::new(
                     None,
                     "output",
                     PortDirection::Output,
                     SignalSpec::control(),
                     MediaCaps::Control,
-                    contract,
+                    route_settings,
                     8,
                 )
                 .unwrap(),

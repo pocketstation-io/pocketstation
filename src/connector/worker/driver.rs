@@ -20,7 +20,7 @@ pub struct ConnectorInputDescriptor {
     port_name: String,
     signal: SignalSpec,
     media: MediaCaps,
-    edge_contract: crate::EdgeContract,
+    route_settings: crate::RouteSettings,
     configuration: ResolvedConnectorConfiguration,
 }
 
@@ -49,13 +49,9 @@ impl ConnectorInputDescriptor {
         self.media
     }
 
-    pub const fn edge_contract(&self) -> crate::EdgeContract {
-        self.edge_contract
-    }
-
     /// Returns the accepted media and delivery behavior for this input route.
     pub const fn route_settings(&self) -> crate::RouteSettings {
-        self.edge_contract
+        self.route_settings
     }
 
     pub const fn configuration(&self) -> &ResolvedConnectorConfiguration {
@@ -162,7 +158,7 @@ pub(super) fn prepare_connector_driver(
             port_name: input.port_name().to_owned(),
             signal: input.signal_spec().clone(),
             media: *input.media(),
-            edge_contract: *input.edge_contract(),
+            route_settings: *input.route_settings(),
             configuration,
         };
         let (receiver, _) = input.into_parts();

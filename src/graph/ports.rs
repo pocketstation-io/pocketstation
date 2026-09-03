@@ -1,4 +1,4 @@
-//! Port, media-capability, and edge contracts for the typed graph.
+//! Ports, media capabilities, and route settings for the typed graph.
 //! Negotiation rules decide which graph ports may connect and what each edge
 //! guarantees at runtime.
 
@@ -307,9 +307,6 @@ impl RouteObservability {
     }
 }
 
-/// Compatibility name for [`RouteObservability`].
-pub type EdgeObservabilityLevel = RouteObservability;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DeliveryPolicy {
     clock: ClockDomain,
@@ -319,7 +316,7 @@ pub struct DeliveryPolicy {
     delivery: DeliverySemantics,
     loss: LossPolicy,
     copy_policy: CopyPolicy,
-    observability: EdgeObservabilityLevel,
+    observability: RouteObservability,
     max_payload_bytes: Option<usize>,
 }
 
@@ -334,7 +331,7 @@ impl DeliveryPolicy {
             delivery: DeliverySemantics::Ordered,
             loss: LossPolicy::ConcealForAudio,
             copy_policy: CopyPolicy::ShareReadOnly,
-            observability: EdgeObservabilityLevel::Counters,
+            observability: RouteObservability::Counters,
             max_payload_bytes: None,
         }
     }
@@ -349,7 +346,7 @@ impl DeliveryPolicy {
             delivery: DeliverySemantics::Ordered,
             loss: LossPolicy::MustDeliverOrFail,
             copy_policy: CopyPolicy::ShareReadOnly,
-            observability: EdgeObservabilityLevel::Counters,
+            observability: RouteObservability::Counters,
             max_payload_bytes: Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES),
         }
     }
@@ -382,7 +379,7 @@ impl DeliveryPolicy {
         self.copy_policy
     }
 
-    pub const fn observability(&self) -> EdgeObservabilityLevel {
+    pub const fn observability(&self) -> RouteObservability {
         self.observability
     }
 
@@ -422,7 +419,7 @@ pub struct RouteSettings {
     pub(crate) delivery: DeliverySemantics,
     pub(crate) loss: LossPolicy,
     pub(crate) copy_policy: CopyPolicy,
-    pub(crate) observability: EdgeObservabilityLevel,
+    pub(crate) observability: RouteObservability,
     pub(crate) max_payload_bytes: Option<usize>,
 }
 
@@ -474,7 +471,7 @@ impl RouteSettings {
         self.copy_policy
     }
 
-    pub const fn observability(&self) -> EdgeObservabilityLevel {
+    pub const fn observability(&self) -> RouteObservability {
         self.observability
     }
 
@@ -553,9 +550,6 @@ impl RouteSettings {
         Self::new(MediaCaps::Any, DeliveryPolicy::bounded_async())
     }
 }
-
-/// Compatibility name for [`RouteSettings`].
-pub type EdgeContract = RouteSettings;
 
 #[cfg(test)]
 mod tests {
@@ -652,7 +646,7 @@ mod tests {
 
     #[test]
     fn given_realtime_audio_when_built_then_physical_caps_remain_negotiable() {
-        let edge = EdgeContract::realtime_audio();
+        let edge = RouteSettings::realtime_audio();
         assert_eq!(edge.latency_budget_ms, None);
         assert_eq!(edge.jitter_budget_ms, None);
         assert_eq!(edge.backpressure, BackpressurePolicy::DropNewest);
@@ -669,7 +663,7 @@ mod tests {
 
     #[test]
     fn given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption() {
-        let edge = EdgeContract::bounded_async();
+        let edge = RouteSettings::bounded_async();
         assert_eq!(edge.loss, LossPolicy::MustDeliverOrFail);
         assert_eq!(edge.backpressure, BackpressurePolicy::BoundedQueue);
         assert_eq!(edge.media, MediaCaps::Any);
@@ -703,17 +697,17 @@ mod tests {
     }
 
     #[test]
-    fn given_edge_contract_name_when_used_then_it_is_route_settings() {
-        let compatibility_name = EdgeContract::realtime_audio();
-        let settings: RouteSettings = compatibility_name;
+    fn given_route_settings_when_used_then_they_remain_unchanged() {
+        let route_settings = RouteSettings::realtime_audio();
+        let settings: RouteSettings = route_settings;
 
         assert_eq!(settings, RouteSettings::realtime_audio());
     }
 
     #[test]
     fn given_observability_levels_when_ranked_then_ordered_ascending() {
-        assert!(EdgeObservabilityLevel::Off.rank() < EdgeObservabilityLevel::Counters.rank());
-        assert!(EdgeObservabilityLevel::Counters.rank() < EdgeObservabilityLevel::Full.rank());
+        assert!(RouteObservability::Off.rank() < RouteObservability::Counters.rank());
+        assert!(RouteObservability::Counters.rank() < RouteObservability::Full.rank());
     }
 
     #[test]

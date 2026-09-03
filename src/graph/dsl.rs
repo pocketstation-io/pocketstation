@@ -2,7 +2,7 @@
 //! Compilation and execution consume the specification downstream.
 
 use crate::graph::node::{NodeConfig, NodeTypeId};
-use crate::graph::ports::EdgeContract;
+use crate::graph::ports::RouteSettings;
 use crate::graph::spec::{
     EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef,
 };
@@ -60,16 +60,16 @@ impl Pipeline {
         &mut self,
         from: OutputPortRef,
         to: InputPortRef,
-        contract: EdgeContract,
+        route_settings: RouteSettings,
     ) -> EdgeId {
-        self.push_edge(from, to, Some(contract))
+        self.push_edge(from, to, Some(route_settings))
     }
 
     fn push_edge(
         &mut self,
         from: OutputPortRef,
         to: InputPortRef,
-        requested: Option<EdgeContract>,
+        requested: Option<RouteSettings>,
     ) -> EdgeId {
         let id = EdgeId(self.next_edge);
         self.next_edge += 1;
@@ -133,7 +133,7 @@ mod tests {
         graph.connect_with(
             a.out("audio"),
             b.in_("audio"),
-            EdgeContract::realtime_audio(),
+            RouteSettings::realtime_audio(),
         );
 
         let spec = graph.into_spec();

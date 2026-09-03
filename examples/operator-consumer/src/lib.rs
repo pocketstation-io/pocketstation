@@ -1,4 +1,4 @@
-//! Compile boundary for an external provider and typed endpoint consumer.
+//! Compile proof for an external provider and typed Endpoint consumer.
 //!
 //! This package intentionally depends only on the public `pocketstation`
 //! façade and an example provider package.

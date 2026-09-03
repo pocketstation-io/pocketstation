@@ -5,7 +5,7 @@ use crate::frame::{AudioFrame, SampleFormat};
 use crate::graph::node::{
     ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
-use crate::graph::partition::{ExecutionPartition, SafetyContract};
+use crate::graph::partition::{ExecutionPartition, ExecutionSafety};
 use crate::graph::ports::{
     AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec,
 };
@@ -74,7 +74,7 @@ impl NodeFactory for PassthroughFactory {
             inputs: vec![any_port("in", PortDirection::Input)],
             outputs: vec![any_port("out", PortDirection::Output)],
             execution: ExecutionPartition::RealtimeCpu,
-            safety: SafetyContract::RealtimeSafe,
+            safety: ExecutionSafety::RealtimeSafe,
             stateful: false,
         }
     }
@@ -114,7 +114,7 @@ impl NodeFactory for GainFactory {
             inputs: vec![audio_port("in", PortDirection::Input)],
             outputs: vec![audio_port("out", PortDirection::Output)],
             execution: ExecutionPartition::RealtimeCpu,
-            safety: SafetyContract::RealtimeSafe,
+            safety: ExecutionSafety::RealtimeSafe,
             stateful: true,
         }
     }
@@ -173,7 +173,7 @@ impl NodeFactory for MonoMixFactory {
             inputs: vec![audio_port("in", PortDirection::Input)],
             outputs: vec![mono_audio_port("out", PortDirection::Output)],
             execution: ExecutionPartition::RealtimeCpu,
-            safety: SafetyContract::RealtimeSafe,
+            safety: ExecutionSafety::RealtimeSafe,
             stateful: false,
         }
     }

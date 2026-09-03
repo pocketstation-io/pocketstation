@@ -92,7 +92,7 @@ pub enum SignalLineageError {
 ///
 /// Derivation deliberately references the upstream typed-signal identity and
 /// timing rather than `FrameLineage`. Audio is projected into these generic
-/// contracts exactly once at the realtime-to-async boundary.
+/// records the transition exactly once when work moves from realtime to async.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SignalDerivation {
     pub(crate) upstream_lineage: SignalLineage,

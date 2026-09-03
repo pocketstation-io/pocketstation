@@ -24,7 +24,7 @@ impl OperatorId {
         &self.0
     }
 
-    /// Reports whether this value is a portable implementation contract ID.
+    /// Reports whether this value is a portable implementation ID.
     ///
     /// Portable IDs use reverse-domain ownership and an explicit final
     /// revision segment, for example `io.example.operator.transcribe.v1`.

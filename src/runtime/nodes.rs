@@ -10,10 +10,10 @@ use rtrb::{Consumer, Producer, RingBuffer};
 
 use crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId};
 use crate::graph::{
-    register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,
-    Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError,
-    NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract,
-    SignalSpec,
+    register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, ExecutionSafety,
+    MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory,
+    NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext,
+    RuntimeNode, SignalSpec,
 };
 
 pub(crate) const SYSTEM_OUTPUT_NODE_TYPE_ID: &str = "source.system_output";
@@ -91,7 +91,7 @@ impl NodeFactory for SystemOutputSourceFactory {
             inputs: Vec::new(),
             outputs: vec![audio_port("audio", PortDirection::Output)],
             execution: ExecutionPartition::RealtimeCpu,
-            safety: SafetyContract::RealtimeSafe,
+            safety: ExecutionSafety::RealtimeSafe,
             stateful: true,
         }
     }
@@ -195,7 +195,7 @@ impl NodeFactory for BridgeSinkFactory {
             inputs: vec![audio_port("in", PortDirection::Input)],
             outputs: Vec::new(),
             execution: ExecutionPartition::RealtimeCpu,
-            safety: SafetyContract::RealtimeSafe,
+            safety: ExecutionSafety::RealtimeSafe,
             stateful: true,
         }
     }

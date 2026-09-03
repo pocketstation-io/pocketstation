@@ -8,11 +8,11 @@ use crate::frame::{SampleFormat, SampleSpec};
 use crate::graph::compile::CompileError;
 use crate::graph::{
     AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy,
-    ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy,
+    ChannelLayout, ConfigError, CopyPolicy, ExecutionPartition, ExecutionSafety, LossPolicy,
     MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy,
     OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy,
-    OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec,
-    TextFormat,
+    OperatorPermissionPolicy, PortDirection, PortSpec, RouteObservability, SemanticRole,
+    SignalSpec, TextFormat,
 };
 
 use super::*;
@@ -44,10 +44,10 @@ struct CompileOnlyAsyncFactory {
 
 impl CompileOnlyAsyncFactory {
     fn new() -> Self {
-        let mut input_edge = EdgeContract::realtime_audio();
-        input_edge.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
-        let mut output_edge = EdgeContract::bounded_async();
-        output_edge.media = MediaCaps::Text;
+        let mut input_route_settings = RouteSettings::realtime_audio();
+        input_route_settings.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
+        let mut output_route_settings = RouteSettings::bounded_async();
+        output_route_settings.media = MediaCaps::Text;
         Self {
             manifest: AsyncOperatorManifest {
                 operator_id: OperatorId::new(TEST_ASYNC_OPERATOR_ID),
@@ -78,11 +78,11 @@ impl CompileOnlyAsyncFactory {
                         required: true,
                     }],
                     execution: ExecutionPartition::AsyncWorker,
-                    safety: SafetyContract::ExternalService,
+                    safety: ExecutionSafety::ExternalService,
                     stateful: true,
                 },
-                input_edge,
-                output_edge,
+                input_route_settings,
+                output_route_settings,
                 queue_capacity_frames: 32,
                 permission: OperatorPermissionPolicy {
                     network_allowed: true,
@@ -116,7 +116,7 @@ impl CompileOnlyAsyncFactory {
             multiplicity: Multiplicity::One,
             required: true,
         }];
-        factory.manifest.input_edge.media = MediaCaps::Text;
+        factory.manifest.input_route_settings.media = MediaCaps::Text;
         factory
     }
 
@@ -184,7 +184,7 @@ impl NodeDefinition for CompileOnlyTextEndpointDefinition {
             }],
             outputs: Vec::new(),
             execution: ExecutionPartition::External,
-            safety: SafetyContract::ExternalService,
+            safety: ExecutionSafety::ExternalService,
             stateful: true,
         }
     }
@@ -242,7 +242,7 @@ fn endpoint_registry(connector_node_type_id: Option<&'static str>) -> EndpointDr
 
 #[test]
 fn given_endpoint_accepting_any_frame_size_when_edge_is_specialized_then_wildcard_is_preserved() {
-    let input_edge = EdgeContract::realtime_audio();
+    let input_route_settings = RouteSettings::realtime_audio();
     let endpoint_media = MediaCaps::Audio(AudioCaps {
         sample_rate_hz: Some(48_000),
         frame_samples: None,
@@ -250,7 +250,7 @@ fn given_endpoint_accepting_any_frame_size_when_edge_is_specialized_then_wildcar
         format: SampleFormat::F32Interleaved,
     });
 
-    let specialized = specialize_edge_media(input_edge, endpoint_media);
+    let specialized = specialize_edge_media(input_route_settings, endpoint_media);
 
     assert_eq!(specialized.media, endpoint_media);
     assert!(specialized
@@ -570,12 +570,15 @@ fn given_product_spec_when_compiled_then_six_independent_edges_are_planned() {
         .collect::<Vec<_>>();
     assert_eq!(recorder_edges.len(), 2);
     for edge in recorder_edges {
-        let contract = edge.spec.requested.expect("explicit recorder contract");
-        assert_eq!(contract.jitter_budget_ms, Some(400));
-        assert_eq!(contract.backpressure, BackpressurePolicy::DropNewest);
-        assert_eq!(contract.loss, LossPolicy::DropAllowed);
-        assert_eq!(contract.copy_policy, CopyPolicy::CopyToBranchPool);
-        assert_eq!(contract.observability, EdgeObservabilityLevel::Full);
+        let route_settings = edge
+            .spec
+            .requested
+            .expect("explicit recorder route_settings");
+        assert_eq!(route_settings.jitter_budget_ms, Some(400));
+        assert_eq!(route_settings.backpressure, BackpressurePolicy::DropNewest);
+        assert_eq!(route_settings.loss, LossPolicy::DropAllowed);
+        assert_eq!(route_settings.copy_policy, CopyPolicy::CopyToBranchPool);
+        assert_eq!(route_settings.observability, RouteObservability::Full);
         assert_eq!(
             compiled
                 .runtime_plan
@@ -602,15 +605,15 @@ fn given_registered_operator_when_compiled_then_manifest_types_and_edge_policies
     assert_eq!(compiled.planned_edge_count(), 2);
     assert_eq!(
         compiled.graph_ir.edges[0]
-            .contract
-            .expect("operator input contract")
+            .route_settings
+            .expect("operator input route_settings")
             .backpressure,
         BackpressurePolicy::DropNewest
     );
     assert_eq!(compiled.graph_ir.edges[1].media, MediaCaps::Text);
     let output_contract = compiled.graph_ir.edges[1]
-        .contract
-        .expect("operator output contract");
+        .route_settings
+        .expect("operator output route_settings");
     assert_eq!(output_contract.media, MediaCaps::Text);
     assert_eq!(
         output_contract.backpressure,
@@ -724,7 +727,7 @@ fn given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_
     assert_eq!(
         prepared.operator_mappings()[0].signal_routes()[0]
             .output_branch
-            .edge_contract
+            .route_settings
             .media,
         MediaCaps::Text
     );
@@ -749,7 +752,7 @@ fn given_two_derived_destinations_when_prepared_then_independent_branch_plans_ar
     assert_ne!(routes[0].route_id(), routes[1].route_id());
     assert_ne!(routes[0].endpoint_id(), routes[1].endpoint_id());
     assert!(routes.iter().all(|route| {
-        route.output_branch.edge_contract.media == MediaCaps::Text
+        route.output_branch.route_settings.media == MediaCaps::Text
             && route.output_branch.capacity_signals > 0
     }));
 }

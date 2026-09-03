@@ -5,7 +5,7 @@ use crate::frame::StemId;
 use crate::frame::{SampleFormat, SampleSpec};
 use crate::graph::ir::GraphIr;
 use crate::graph::{ChannelLayout, MediaCaps};
-use crate::graph::{EdgeContract, NodeId, NodeRegistry, NodeTypeId, PrepareContext};
+use crate::graph::{NodeId, NodeRegistry, NodeTypeId, PrepareContext, RouteSettings};
 use crate::runtime::{
     plan_source_channel, AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanRunnerCancellation,
     PlanSourceInput, RealtimePlanExecutor, TypedEdgeBranchSpec,
@@ -256,9 +256,9 @@ fn prepare_external_sources(
                     cancellation.clone(),
                 )?;
                 source_inputs.push(input);
-                let mut edge_contract = EdgeContract::realtime_audio();
-                edge_contract.media = port.media;
-                edge_contract = edge_contract.with_max_payload_bytes(
+                let mut route_settings = RouteSettings::realtime_audio();
+                route_settings.media = port.media;
+                route_settings = route_settings.with_max_payload_bytes(
                     frame_samples
                         .saturating_mul(usize::from(channels))
                         .saturating_mul(std::mem::size_of::<f32>()),
@@ -268,7 +268,7 @@ fn prepare_external_sources(
                     stream_id: output.stream_id(),
                     branch: TypedEdgeBranchSpec {
                         capacity_signals: source_queue_capacity_frames,
-                        edge_contract,
+                        route_settings,
                     },
                     target: PreparedExternalSourceTarget::AudioIngress(
                         PreparedExternalAudioIngress {
@@ -345,7 +345,7 @@ fn prepare_external_sources(
                     stream_id: output.stream_id(),
                     branch: TypedEdgeBranchSpec {
                         capacity_signals: typed_edge.capacity_signals,
-                        edge_contract: typed_edge.contract,
+                        route_settings: typed_edge.route_settings,
                     },
                     target: PreparedExternalSourceTarget::TypedEndpoint(
                         PreparedExternalTypedRoute {
@@ -360,7 +360,7 @@ fn prepare_external_sources(
                             input_port: edge.spec.to.port.clone(),
                             signal_spec: typed_edge.signal.clone(),
                             media: typed_edge.media,
-                            edge_contract: typed_edge.contract,
+                            route_settings: typed_edge.route_settings,
                         },
                     ),
                 });
@@ -418,7 +418,7 @@ fn prepare_external_sources(
                     stream_id: output.stream_id(),
                     branch: TypedEdgeBranchSpec {
                         capacity_signals: typed_edge.capacity_signals,
-                        edge_contract: typed_edge.contract,
+                        route_settings: typed_edge.route_settings,
                     },
                     target: PreparedExternalSourceTarget::OperatorInput(
                         PreparedExternalOperatorInput {
@@ -427,7 +427,7 @@ fn prepare_external_sources(
                             edge_id: edge.spec.id,
                             signal_spec: typed_edge.signal.clone(),
                             media: typed_edge.media,
-                            edge_contract: typed_edge.contract,
+                            route_settings: typed_edge.route_settings,
                             capacity_signals: typed_edge.capacity_signals,
                         },
                     ),
@@ -631,7 +631,7 @@ fn map_worker_receivers(
                     output_port: edge.spec.from.port.clone(),
                     branch: AsyncOperatorOutputBranchSpec {
                         capacity_signals: typed_edge.capacity_signals,
-                        edge_contract: typed_edge.contract,
+                        route_settings: typed_edge.route_settings,
                     },
                     target: PreparedOperatorOutputTarget::OperatorInput {
                         operator_instance_id: *target_instance,
@@ -690,7 +690,7 @@ fn map_worker_receivers(
                     output_port: edge.spec.from.port.clone(),
                     branch: AsyncOperatorOutputBranchSpec {
                         capacity_signals: typed_edge.capacity_signals,
-                        edge_contract: typed_edge.contract,
+                        route_settings: typed_edge.route_settings,
                     },
                     target: PreparedOperatorOutputTarget::GeneratedAudio(prepared),
                 });
@@ -794,7 +794,7 @@ fn map_worker_receivers(
                 output_port: edge.spec.from.port.clone(),
                 branch: AsyncOperatorOutputBranchSpec {
                     capacity_signals: typed_edge.capacity_signals,
-                    edge_contract: typed_edge.contract,
+                    route_settings: typed_edge.route_settings,
                 },
                 target: PreparedOperatorOutputTarget::SignalEndpoint(Box::new(
                     PreparedSignalRouteMapping {
@@ -808,7 +808,7 @@ fn map_worker_receivers(
                         signal_spec,
                         output_branch: AsyncOperatorOutputBranchSpec {
                             capacity_signals: typed_edge.capacity_signals,
-                            edge_contract: typed_edge.contract,
+                            route_settings: typed_edge.route_settings,
                         },
                     },
                 )),
@@ -852,9 +852,9 @@ fn map_worker_receivers(
                     port_name: edge.spec.to.port.clone(),
                 });
             }
-            let input_edge_contract = edge
-                .contract
-                .ok_or(SessionPrepareError::MissingWorkerEdgeContract { edge_id })?;
+            let input_route_settings = edge
+                .route_settings
+                .ok_or(SessionPrepareError::MissingWorkerRouteSettings { edge_id })?;
             let input_capacity_signals = runtime_plan
                 .typed_edge(edge_id)
                 .map(|plan| plan.capacity_signals)
@@ -988,7 +988,7 @@ fn map_worker_receivers(
                     input_port: edge.spec.to.port.clone(),
                     signal_spec: input_port.signal.clone(),
                     media: edge.media,
-                    edge_contract: input_edge_contract,
+                    route_settings: input_route_settings,
                     capacity_signals: input_capacity_signals,
                     receiver,
                 });
@@ -1056,9 +1056,9 @@ fn map_worker_receivers(
                         port_name: edge.spec.to.port.clone(),
                     })?,
                 media: edge.media,
-                edge_contract: edge
-                    .contract
-                    .ok_or(SessionPrepareError::MissingWorkerEdgeContract { edge_id })?,
+                route_settings: edge
+                    .route_settings
+                    .ok_or(SessionPrepareError::MissingWorkerRouteSettings { edge_id })?,
                 origin: PreparedWorkerOrigin::SignalIngress {
                     stem_id,
                     source_id: *source_id,
@@ -1136,9 +1136,9 @@ fn map_worker_receivers(
                     port_name: edge.spec.to.port.clone(),
                 })?,
             media: edge.media,
-            edge_contract: edge
-                .contract
-                .ok_or(SessionPrepareError::MissingWorkerEdgeContract { edge_id })?,
+            route_settings: edge
+                .route_settings
+                .ok_or(SessionPrepareError::MissingWorkerRouteSettings { edge_id })?,
             origin,
         });
     }
@@ -1244,7 +1244,7 @@ fn map_worker_receivers(
                 input_port: edge.spec.to.port.clone(),
                 signal_spec: input.signal.clone(),
                 media: edge.media,
-                edge_contract: typed_edge.contract,
+                route_settings: typed_edge.route_settings,
                 capacity_signals: typed_edge.capacity_signals,
                 origin,
             });

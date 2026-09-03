@@ -508,7 +508,7 @@ impl Session {
                         endpoint.descriptor.node_type_id().clone(),
                         endpoint.descriptor.operator_id().clone(),
                         endpoint.descriptor.configuration().clone(),
-                        endpoint.descriptor.input_edge(),
+                        endpoint.descriptor.route_settings(),
                     )
                 })
                 .collect(),

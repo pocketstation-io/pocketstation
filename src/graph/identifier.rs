@@ -1,6 +1,6 @@
 //! Syntax checks for the distinct identifier categories owned by the graph.
 //!
-//! Portable contract identifiers are available to public identifier types.
+//! Portable identifiers shared by public graph types.
 //! First-party structural and configuration conventions are test-only audits;
 //! external providers retain their native identifier and configuration syntax.
 

@@ -9,7 +9,7 @@ use std::sync::Arc;
 use crate::frame::AudioFrame;
 #[cfg(any(test, feature = "internal-testing"))]
 use crate::graph::SignalEnvelope;
-use crate::graph::{EdgeContract, EdgeId, MediaCaps, SignalSpec};
+use crate::graph::{EdgeId, MediaCaps, RouteSettings, SignalSpec};
 
 #[cfg(any(test, feature = "internal-testing"))]
 use super::edge::{SignalEdgeSendError, SignalEdgeSender};
@@ -82,7 +82,7 @@ pub struct AsyncOperatorTypedInput {
     pub edge_id: Option<EdgeId>,
     pub signal_spec: SignalSpec,
     pub media: MediaCaps,
-    pub edge_contract: EdgeContract,
+    pub route_settings: RouteSettings,
     pub capacity_signals: usize,
 }
 

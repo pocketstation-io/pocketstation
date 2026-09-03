@@ -41,8 +41,7 @@ ID, stable source ID, and process instance. Ambiguous names fail before capture.
 | Connect to an Operator input | `SourceOutputHandle::connect` |
 
 The normal methods create finite routes. `RouteSettings` lets advanced packages
-select accepted media and apply a `DeliveryPolicy` explicitly. `EdgeContract`
-remains a 1.1.x compatibility name.
+select accepted media and apply a `DeliveryPolicy` explicitly.
 
 ## Operators and typed signals
 

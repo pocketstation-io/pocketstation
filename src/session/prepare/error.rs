@@ -39,8 +39,8 @@ pub enum SessionPrepareError {
     MissingWorkerTarget { edge_id: EdgeId },
     #[error("worker edge {edge_id:?} is absent from the compiled graph")]
     MissingWorkerEdge { edge_id: EdgeId },
-    #[error("worker edge {edge_id:?} has no negotiated edge contract")]
-    MissingWorkerEdgeContract { edge_id: EdgeId },
+    #[error("worker edge {edge_id:?} has no negotiated route settings")]
+    MissingWorkerRouteSettings { edge_id: EdgeId },
     #[error("worker edge {edge_id:?} has no bounded runtime capacity")]
     MissingWorkerCapacity { edge_id: EdgeId },
     #[error("audio endpoint worker edge {edge_id:?} has no concrete audio sample specification")]

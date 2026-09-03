@@ -20,9 +20,9 @@ use pocketstation::connector::{
     ConnectorInputDescriptor, ConnectorItem,
 };
 use pocketstation::{
-    AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup,
-    ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId,
-    PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec,
+    AudioCaps, ChannelLayout, EndpointPortInput, EndpointPreparationGroup, ExecutionPartition,
+    ExecutionSafety, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId,
+    PortDirection, PortSpec, RouteSettings, SampleFormat, SignalSpec,
 };
 
 #[test]
@@ -114,7 +114,7 @@ fn manifest_with_readiness(readiness: ConnectorReadinessPolicy) -> ConnectorMani
         vec![input],
         Vec::new(),
         ExecutionPartition::AsyncWorker,
-        SafetyContract::NetworkAllowed,
+        ExecutionSafety::NetworkAllowed,
         true,
     )
     .expect("connector node");
@@ -217,14 +217,14 @@ fn given_registered_connector_when_declared_then_identity_is_session_scoped() {
     );
 
     let endpoint = registered
-        .declare(&session, configuration(), EdgeContract::realtime_audio())
+        .declare(&session, configuration(), RouteSettings::realtime_audio())
         .expect("connector declaration");
     assert_eq!(endpoint.session_id(), session.id());
     assert!(endpoint.connector_id().is_some());
 
     let other = pocketstation::Session::new();
     assert!(registered
-        .declare(&other, configuration(), EdgeContract::realtime_audio())
+        .declare(&other, configuration(), RouteSettings::realtime_audio())
         .is_err());
 }
 
@@ -455,7 +455,7 @@ fn routed_fault_session(
         .declare(
             &session,
             fault_configuration(mode),
-            EdgeContract::realtime_audio(),
+            RouteSettings::realtime_audio(),
         )
         .expect("fault endpoint");
     let application = session
@@ -517,7 +517,7 @@ impl ConnectorDriverFactory for DriverFactory {
         self.control.route_edge_observed.store(
             inputs
                 .iter()
-                .all(|input| input.edge_contract().jitter_budget_ms() == Some(9)),
+                .all(|input| input.route_settings().jitter_budget_ms() == Some(9)),
             Ordering::Release,
         );
         Ok(Box::new(TestDriver {
@@ -595,7 +595,7 @@ fn given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_d
             .expect("connector driver"),
         )
         .expect("connector driver registration");
-    let edge = EdgeContract::realtime_audio().with_jitter_budget_ms(Some(9));
+    let edge = RouteSettings::realtime_audio().with_jitter_budget_ms(Some(9));
     let endpoint = registered
         .declare(&session, configuration(), edge)
         .expect("connector endpoint");
@@ -647,14 +647,14 @@ fn given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_ba
         .declare(
             &session,
             fault_configuration("normal"),
-            EdgeContract::realtime_audio(),
+            RouteSettings::realtime_audio(),
         )
         .expect("normal endpoint");
     let second = connector
         .declare(
             &session,
             fault_configuration("prepare_fail"),
-            EdgeContract::realtime_audio(),
+            RouteSettings::realtime_audio(),
         )
         .expect("failing endpoint");
     let application = session
@@ -767,7 +767,7 @@ fn given_connector_never_ready_when_startup_deadline_expires_then_failure_is_ter
         .declare(
             &session,
             fault_configuration("never_ready"),
-            EdgeContract::realtime_audio(),
+            RouteSettings::realtime_audio(),
         )
         .expect("not-ready endpoint");
     let application = session
@@ -846,7 +846,7 @@ fn given_saturated_connector_route_when_observed_then_drops_are_visible_in_sessi
         .declare(
             &session,
             fault_configuration("saturate"),
-            EdgeContract::realtime_audio(),
+            RouteSettings::realtime_audio(),
         )
         .expect("saturating endpoint");
     let application = session

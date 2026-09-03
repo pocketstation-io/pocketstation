@@ -7,7 +7,7 @@ use crate::endpoint::{
 };
 use crate::frame::{AudioFrame, RouteId, SampleFormat, SampleSpec};
 use crate::graph::{
-    AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract,
+    AudioCaps, ChannelLayout, ExecutionSafety, MediaCaps, Multiplicity, PortDirection, PortSpec,
     SignalSpec,
 };
 use crate::graph::{
@@ -124,9 +124,9 @@ fn descriptor(
         outputs,
         execution: partition,
         safety: if partition.requires_realtime_safety() {
-            SafetyContract::RealtimeSafe
+            ExecutionSafety::RealtimeSafe
         } else {
-            SafetyContract::AllocationAllowed
+            ExecutionSafety::AllocationAllowed
         },
         stateful: true,
     }

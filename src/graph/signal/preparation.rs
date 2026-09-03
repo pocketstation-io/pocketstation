@@ -1,4 +1,4 @@
-//! Signal-shaped asynchronous Operator preparation contracts.
+//! Preparation data for asynchronous Operators.
 
 use std::future::Future;
 use std::pin::Pin;
@@ -8,27 +8,18 @@ use crate::graph::{ExecutionPartition, PortDirection};
 
 pub type AsyncNodeFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
-/// Exact bounded graph edge supplied to an asynchronous Operator at prepare time.
-///
-/// This contract is signal-shaped, not audio-shaped. An audio edge carries
-/// audio `MediaCaps`; text, event, metrics, control, binary, and custom edges
-/// carry their own media and never receive a fabricated `SampleSpec`.
-/// Compatibility name for the graph-wide port preparation authority.
-/// New code should use `PortPrepareContext` directly.
-pub type AsyncOperatorEdgePrepareContext = PortPrepareContext;
-
-/// Complete graph-owned preparation contract for one asynchronous Operator.
+/// Complete graph-owned preparation data for one asynchronous Operator.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AsyncOperatorPrepareContext {
     execution_partition: ExecutionPartition,
-    inputs: Vec<AsyncOperatorEdgePrepareContext>,
-    outputs: Vec<AsyncOperatorEdgePrepareContext>,
+    inputs: Vec<PortPrepareContext>,
+    outputs: Vec<PortPrepareContext>,
 }
 
 impl AsyncOperatorPrepareContext {
     pub fn new(
         execution_partition: ExecutionPartition,
-        edges: Vec<AsyncOperatorEdgePrepareContext>,
+        edges: Vec<PortPrepareContext>,
     ) -> Result<Self, NodeError> {
         if execution_partition.requires_realtime_safety() {
             return Err(NodeError::Prepare(
@@ -59,11 +50,11 @@ impl AsyncOperatorPrepareContext {
         self.execution_partition
     }
 
-    pub fn inputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
+    pub fn inputs(&self) -> &[PortPrepareContext] {
         &self.inputs
     }
 
-    pub fn outputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
+    pub fn outputs(&self) -> &[PortPrepareContext] {
         &self.outputs
     }
 }

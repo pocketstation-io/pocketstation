@@ -29,7 +29,7 @@ pub enum AsyncOperatorWorkerError {
     #[error("async operator output role is not declared by its registered manifest")]
     UndeclaredOutputRole,
     #[error("async operator manifest has no output port at runtime")]
-    MissingOutputContract,
+    MissingOutputRoute,
     #[error("async operator input port '{port_name}' is not declared by its manifest")]
     UnknownInputPort { port_name: String },
     #[error("async operator output matches multiple declared output ports")]
@@ -48,7 +48,7 @@ pub enum AsyncOperatorWorkerError {
     Join(#[from] tokio::task::JoinError),
     #[error("compiled async input requires a lineaged exclusive plan-edge frame, received {kind}")]
     InvalidPlanInput { kind: &'static str },
-    #[error("compiled async input lineage does not match its Session stem contract")]
+    #[error("compiled async input lineage does not match its declared Session stem")]
     PlanInputLineageMismatch,
     #[error("shared audio typed input requires an exclusive generated-audio branch")]
     SharedAudioTypedInput,

@@ -1,10 +1,10 @@
 use pocketstation::{
-    ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration,
-    EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId,
-    Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
-    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal,
-    TypedOperator,
+    ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EndpointConfiguration,
+    EndpointDescriptor, ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity,
+    NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration,
+    OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy,
+    OperatorPermissionPolicy, PortDirection, PortSpec, RouteSettings, SignalSpec, Source, Stream,
+    StreamSignal, TypedOperator,
 };
 
 struct CapturedSignal;
@@ -23,8 +23,8 @@ impl StreamSignal for DerivedSignal {
 }
 
 fn manifest(id: &str) -> AsyncOperatorManifest {
-    let input_edge = EdgeContract::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
-    let output_edge = EdgeContract::bounded_async().with_media(MediaCaps::Control);
+    let input_edge = RouteSettings::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
+    let output_edge = RouteSettings::bounded_async().with_media(MediaCaps::Control);
     let node = NodeDescriptor::new(
         NodeTypeId::from("dev.pocketstation.test.typed-node.v1"),
         "typed extension conformance",
@@ -47,7 +47,7 @@ fn manifest(id: &str) -> AsyncOperatorManifest {
         )
         .expect("output port")],
         ExecutionPartition::AsyncWorker,
-        SafetyContract::AllocationAllowed,
+        ExecutionSafety::AllocationAllowed,
         false,
     )
     .expect("node descriptor");

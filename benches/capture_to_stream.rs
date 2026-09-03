@@ -13,7 +13,7 @@
 //! §11.3 target: p99 ≤ 5ms.
 //! A synthetic mean well under 5ms is necessary but not sufficient;
 //! real CoreAudio measurement requires a tap harness that does not yet exist.
-//! See `pocketstation-bench/BENCHMARK_CLAIMS.md` for the claim boundary.
+//! See `pocketstation-bench/BENCHMARK_CLAIMS.md` for the exact claim definition.
 //!
 //! Command:
 //!   cargo bench -p pocketstation --bench capture_to_stream

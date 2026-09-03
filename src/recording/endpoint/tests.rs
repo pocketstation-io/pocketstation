@@ -17,7 +17,7 @@ use crate::graph::node::{NodeConfig, PrepareContext};
 use crate::graph::register_builtins;
 use crate::graph::registry::NodeRegistry;
 use crate::graph::spec::{EdgeId, NodeId};
-use crate::graph::{EdgeContract, MediaCaps, NodeTypeId, SignalSpec};
+use crate::graph::{MediaCaps, NodeTypeId, RouteSettings, SignalSpec};
 use crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter};
 use tempfile::TempDir;
 
@@ -35,7 +35,7 @@ fn input(receiver: PlanEdgeReceiver, endpoint_id: EndpointId, label: &str) -> En
         "audio",
         SignalSpec::audio(),
         MediaCaps::Any,
-        EdgeContract::realtime_audio(),
+        RouteSettings::realtime_audio(),
         receiver,
         prepare_context,
         EndpointPrepareContext::new(
@@ -69,7 +69,7 @@ fn session_input(
         "audio",
         SignalSpec::audio(),
         MediaCaps::Any,
-        EdgeContract::realtime_audio(),
+        RouteSettings::realtime_audio(),
         receiver,
         prepare_context,
         EndpointPrepareContext::new(

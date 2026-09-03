@@ -183,7 +183,7 @@ impl RegisteredConnector {
         &self,
         session: &Session,
         configuration: ConnectorConfiguration,
-        input_edge: crate::EdgeContract,
+        input_edge: crate::RouteSettings,
     ) -> Result<EndpointHandle, ConnectorDeclarationError> {
         if session.id() != self.session_id {
             return Err(ConnectorDeclarationError::WrongSession {

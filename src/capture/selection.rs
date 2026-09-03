@@ -51,7 +51,7 @@ impl CaptureMode {
         }
     }
 
-    /// Reports the process boundary requested from the native backend.
+    /// Reports the process scope requested from the native backend.
     pub fn process_tree_scope(&self, platform: Platform) -> ProcessTreeScope {
         match self {
             Self::Process(_) | Self::ExactApplication { .. } if platform == Platform::Windows => {

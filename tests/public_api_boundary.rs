@@ -1,4 +1,4 @@
-//! Compile and source boundary for the normal (non-`internal-testing`) crate.
+//! Compile proof for the normal (non-`internal-testing`) public crate.
 
 use std::sync::Arc;
 

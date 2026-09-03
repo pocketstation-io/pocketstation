@@ -1,7 +1,6 @@
 use pocketstation::{
-    BackpressurePolicy, DeliveryPolicy, EdgeContract, EdgeObservabilityLevel, EndpointDescriptor,
-    ExecutionSafety, NodeTypeId, OperatorId, RouteLatencyMeasurement, RouteObservability,
-    RouteSettings, SafetyContract, SessionRouteLatencyBoundary, SignalClass,
+    BackpressurePolicy, DeliveryPolicy, EndpointDescriptor, NodeTypeId, OperatorId, RouteSettings,
+    SignalClass,
 };
 
 #[test]
@@ -29,22 +28,6 @@ fn given_endpoint_descriptor_when_route_settings_selected_then_they_are_readable
 }
 
 #[test]
-fn given_compatibility_names_when_used_then_they_resolve_to_the_clearer_types() {
-    let old_route_name = EdgeContract::realtime_audio();
-    let route_settings: RouteSettings = old_route_name;
-    let old_safety_name = SafetyContract::NetworkAllowed;
-    let execution_safety: ExecutionSafety = old_safety_name;
-    let old_measurement_name = SessionRouteLatencyBoundary::SourceMonotonicTimestampToRouteReceive;
-    let measurement: RouteLatencyMeasurement = old_measurement_name;
-    let old_observability_name = EdgeObservabilityLevel::Counters;
-    let route_observability: RouteObservability = old_observability_name;
-
-    assert_eq!(route_settings, RouteSettings::realtime_audio());
-    assert_eq!(execution_safety, ExecutionSafety::NetworkAllowed);
-    assert_eq!(
-        measurement,
-        RouteLatencyMeasurement::SourceMonotonicTimestampToRouteReceive
-    );
-    assert_eq!(route_observability, RouteObservability::Counters);
+fn given_root_signal_class_when_used_then_it_remains_public() {
     assert!(SignalClass::PcmAudio.is_audio());
 }

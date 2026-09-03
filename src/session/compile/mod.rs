@@ -4,8 +4,8 @@ use std::sync::Arc;
 use crate::endpoint::EndpointDriverRegistry;
 use crate::graph::compile::{Compiler, RuntimePlanner};
 use crate::graph::{
-    EdgeContract, MediaCaps, NodeConfig, NodeHandle, NodeId, NodeRegistry, NodeTypeId,
-    OutputPortRef, Pipeline,
+    MediaCaps, NodeConfig, NodeHandle, NodeId, NodeRegistry, NodeTypeId, OutputPortRef, Pipeline,
+    RouteSettings,
 };
 
 use crate::session::{
@@ -303,11 +303,11 @@ impl<'registry> SessionCompiler<'registry> {
                 .descriptor();
             let endpoint_input =
                 select_endpoint_input(&endpoint_descriptor, input_port.as_deref())?;
-            if let Some(input_edge) = endpoint.input_edge() {
+            if let Some(input_route_settings) = endpoint.route_settings() {
                 pipeline.connect_with(
                     source_node.out(AUDIO_OUTPUT_PORT),
                     endpoint_node.in_(&endpoint_input.name),
-                    specialize_audio_edge(input_edge, self.node_registry, endpoint)?,
+                    specialize_audio_edge(input_route_settings, self.node_registry, endpoint)?,
                 );
             } else {
                 pipeline.connect(
@@ -375,11 +375,11 @@ impl<'registry> SessionCompiler<'registry> {
                     origin: connection.origin().clone(),
                 },
             );
-            if let Some(input_edge) = endpoint.input_edge() {
+            if let Some(input_route_settings) = endpoint.route_settings() {
                 pipeline.connect_with(
                     source_output,
                     endpoint_node.in_(&endpoint_input.name),
-                    specialize_edge_media(input_edge, endpoint_input.media),
+                    specialize_edge_media(input_route_settings, endpoint_input.media),
                 );
             } else {
                 pipeline.connect(source_output, endpoint_node.in_(&endpoint_input.name));
@@ -469,7 +469,7 @@ impl<'registry> SessionCompiler<'registry> {
             pipeline.connect_with(
                 source_output,
                 operator.node.in_(&input_port.name),
-                operator.manifest.input_edge,
+                operator.manifest.input_route_settings,
             );
         }
 
@@ -538,7 +538,7 @@ impl<'registry> SessionCompiler<'registry> {
                     .name,
                 ),
                 endpoint_node.in_(&endpoint_input.name),
-                operator.manifest.output_edge,
+                operator.manifest.output_route_settings,
             );
         }
         Ok((pipeline.into_spec(), bindings))
@@ -586,10 +586,10 @@ fn external_source_output_ref(
 }
 
 fn specialize_audio_edge(
-    input_edge: EdgeContract,
+    input_route_settings: RouteSettings,
     node_registry: &NodeRegistry,
     endpoint: &EndpointSpec,
-) -> Result<EdgeContract, SessionCompileError> {
+) -> Result<RouteSettings, SessionCompileError> {
     let media = node_registry
         .definition(endpoint.node_type_id())
         .and_then(|definition| {
@@ -599,13 +599,16 @@ fn specialize_audio_edge(
                 .into_iter()
                 .find(|port| port.name == AUDIO_INPUT_PORT)
         })
-        .map_or(input_edge.media, |port| port.media);
-    Ok(specialize_edge_media(input_edge, media))
+        .map_or(input_route_settings.media, |port| port.media);
+    Ok(specialize_edge_media(input_route_settings, media))
 }
 
-fn specialize_edge_media(mut input_edge: EdgeContract, media: MediaCaps) -> EdgeContract {
-    input_edge.media = media;
-    input_edge
+fn specialize_edge_media(
+    mut input_route_settings: RouteSettings,
+    media: MediaCaps,
+) -> RouteSettings {
+    input_route_settings.media = media;
+    input_route_settings
 }
 
 pub(crate) struct LoweredOperator {

@@ -3,9 +3,9 @@ use std::sync::Arc;
 use crate::frame::SampleFormat;
 use crate::graph::compile::{Compiler, RuntimePlanner};
 use crate::graph::{
-    AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,
-    Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline,
-    PortDirection, PortSpec, SafetyContract, SignalSpec,
+    AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, ExecutionSafety,
+    MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId,
+    Pipeline, PortDirection, PortSpec, SignalSpec,
 };
 
 struct Definition {
@@ -64,7 +64,7 @@ fn given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_
                     typed_port("signal", PortDirection::Output),
                 ],
                 execution: ExecutionPartition::BlockingWorker,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: true,
             },
         }))
@@ -77,7 +77,7 @@ fn given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_
                 inputs: vec![audio_port("audio", PortDirection::Input)],
                 outputs: Vec::new(),
                 execution: ExecutionPartition::External,
-                safety: SafetyContract::ExternalService,
+                safety: ExecutionSafety::ExternalService,
                 stateful: true,
             },
         }))
@@ -90,7 +90,7 @@ fn given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_
                 inputs: vec![typed_port("signal", PortDirection::Input)],
                 outputs: Vec::new(),
                 execution: ExecutionPartition::External,
-                safety: SafetyContract::ExternalService,
+                safety: ExecutionSafety::ExternalService,
                 stateful: true,
             },
         }))

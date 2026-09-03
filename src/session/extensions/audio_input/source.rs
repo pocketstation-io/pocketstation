@@ -6,9 +6,8 @@ use std::time::Duration;
 
 use crate::frame::{AudioBufferPool, AudioFrame, OutputGenerationState};
 use crate::graph::{
-    AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity,
-    PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec,
-    SignalTiming,
+    AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, ExecutionSafety, MediaCaps,
+    Multiplicity, PortDirection, PortSpec, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming,
 };
 use crate::runtime::{SignalEdge, SignalEdgeReceiver};
 use crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle};
@@ -93,10 +92,8 @@ pub enum AudioInputError {
     Session(#[from] SessionError),
     #[error("audio input registration state is unavailable")]
     RegistrationStateUnavailable,
-    #[error(
-        "all audio inputs in one Session must use the same concrete sample and frame contract"
-    )]
-    IncompatibleContract,
+    #[error("all audio inputs in one Session must use the same sample format and frame size")]
+    IncompatibleFormat,
     #[error("audio input instance identity space is exhausted")]
     InstanceIdentityExhausted,
 }
@@ -185,7 +182,7 @@ impl AudioInputFactory {
                 required: true,
             }],
             ExecutionPartition::BlockingWorker,
-            SafetyContract::AllocationAllowed,
+            ExecutionSafety::AllocationAllowed,
         )?;
         Ok(Arc::new(Self {
             manifest,
@@ -202,7 +199,7 @@ impl AudioInputFactory {
         if config.sample_spec != self.sample_spec
             || config.frame_samples_per_channel != self.frame_samples_per_channel
         {
-            return Err(AudioInputError::IncompatibleContract);
+            return Err(AudioInputError::IncompatibleFormat);
         }
         let writer_id = NEXT_AUDIO_INPUT_WRITER_ID
             .fetch_update(Ordering::Relaxed, Ordering::Relaxed, |current| {

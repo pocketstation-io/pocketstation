@@ -7,10 +7,10 @@ use pocketstation::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps,
     AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig,
     AudioInputWriteErrorKind, CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout,
-    ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity,
+    ConfigError, CopyPolicy, ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity,
     NodeDescriptor, NodeError, Operator, OperatorCancellationPolicy, OperatorConfiguration,
     OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy,
-    OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, SafetyContract,
+    OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, RouteSettings,
     SampleFormat, SampleSpec, Session, SessionRecordingState, SignalDerivation, SignalEnvelope,
     SignalPayload, SignalSpec,
 };
@@ -125,7 +125,7 @@ fn given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership
         .expect_err("one compiled Session requires one concrete PCM frame contract");
     assert!(matches!(
         different_frame_size,
-        pocketstation::AudioInputError::IncompatibleContract
+        pocketstation::AudioInputError::IncompatibleFormat
     ));
     let (_, _, mut writer) = first.into_parts();
     let (_, _, second_writer) = second.into_parts();
@@ -284,13 +284,13 @@ impl PassThroughFactory {
             )
             .expect("output port")],
             ExecutionPartition::AsyncWorker,
-            SafetyContract::AllocationAllowed,
+            ExecutionSafety::AllocationAllowed,
             false,
         )
         .expect("operator node");
         let input_edge =
-            EdgeContract::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
-        let output_edge = EdgeContract::bounded_async().with_media(media);
+            RouteSettings::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
+        let output_edge = RouteSettings::bounded_async().with_media(media);
         let manifest = AsyncOperatorManifest::new(
             OperatorId::new(OPERATOR_ID),
             1,
