@@ -1,9 +1,9 @@
 //! Typed intermediate representation the compiler produces from a `GraphSpec`.
 //! Resolution attaches each node's descriptor; the verification passes fill the
-//! negotiated media, edge contracts, and topological order in place.
+//! negotiated media, route settings, and topological order in place.
 
 use crate::graph::node::NodeDescriptor;
-use crate::graph::ports::{EdgeContract, MediaCaps};
+use crate::graph::ports::{MediaCaps, RouteSettings};
 use crate::graph::spec::{EdgeSpec, NodeId, NodeSpec};
 
 #[derive(Debug, Clone)]
@@ -25,7 +25,7 @@ impl ResolvedNode {
 pub struct ResolvedEdge {
     pub spec: EdgeSpec,
     pub media: MediaCaps, // negotiated by NegotiateCapsPass; MediaCaps::Any until then
-    pub contract: Option<EdgeContract>, // None until NegotiateCapsPass records one
+    pub route_settings: Option<RouteSettings>, // None until NegotiateCapsPass records one
 }
 
 #[derive(Debug, Clone)]

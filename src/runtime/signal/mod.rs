@@ -27,4 +27,4 @@ pub use io::{
 pub use observations::AsyncOperatorObservationHandle;
 pub use observations::AsyncOperatorObservations;
 pub(crate) use operator::SessionOperatorInput;
-pub use operator::{AsyncOperatorWorker, CompiledOperatorInputContract};
+pub use operator::{AsyncOperatorWorker, CompiledOperatorInputDetails};

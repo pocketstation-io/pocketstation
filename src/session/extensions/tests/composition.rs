@@ -7,11 +7,11 @@ use crate::endpoint::{
 use crate::frame::{SampleFormat, SampleSpec};
 use crate::graph::{
     AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy,
-    BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition,
+    BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, ExecutionPartition, ExecutionSafety,
     MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId,
     OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
     OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    SafetyContract, SemanticRole, SignalSpec, TextFormat,
+    RouteSettings, SemanticRole, SignalSpec, TextFormat,
 };
 use crate::session::{
     DeviceSelector, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session,
@@ -175,7 +175,7 @@ fn source_factory() -> Arc<dyn SourceFactory> {
                 audio_port("audio", PortDirection::Output),
             ],
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         },
     })
 }
@@ -192,7 +192,7 @@ fn endpoint_descriptor(
                 inputs: vec![input],
                 outputs: Vec::new(),
                 execution: ExecutionPartition::External,
-                safety: SafetyContract::ExternalService,
+                safety: ExecutionSafety::ExternalService,
                 stateful: true,
             },
         }),
@@ -201,11 +201,11 @@ fn endpoint_descriptor(
 }
 
 fn operator_factory() -> Arc<dyn AsyncOperatorFactory> {
-    let mut input_edge = EdgeContract::bounded_async();
+    let mut input_edge = RouteSettings::bounded_async();
     input_edge.media = MediaCaps::Binary(BinaryFormat::Raw);
     input_edge.backpressure = BackpressurePolicy::DropNewest;
     input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
-    let mut output_edge = EdgeContract::bounded_async();
+    let mut output_edge = RouteSettings::bounded_async();
     output_edge.media = MediaCaps::Text;
     Arc::new(CompileOnlyOperatorFactory {
         manifest: AsyncOperatorManifest {
@@ -218,11 +218,11 @@ fn operator_factory() -> Arc<dyn AsyncOperatorFactory> {
                 inputs: vec![typed_port("signal", PortDirection::Input)],
                 outputs: vec![text_port("text", PortDirection::Output)],
                 execution: ExecutionPartition::AsyncWorker,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: true,
             },
-            input_edge,
-            output_edge,
+            input_route_settings: input_edge,
+            output_route_settings: output_edge,
             queue_capacity_frames: 8,
             permission: OperatorPermissionPolicy {
                 network_allowed: false,
@@ -477,7 +477,7 @@ fn given_source_type_conflicting_with_registered_node_when_registered_then_confl
             implementation_generation: 1,
             outputs: vec![audio_port("audio", PortDirection::Output)],
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         },
     });
 

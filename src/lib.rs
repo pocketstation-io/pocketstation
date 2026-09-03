@@ -87,16 +87,15 @@ pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorManifestError, AsyncOperatorPrepareContext, AudioCaps, BackpressurePolicy,
     BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliveryPolicy,
-    DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition,
-    ExecutionSafety, LossPolicy, MediaCaps, MediaKind, Multiplicity,
-    NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId,
-    OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId,
-    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext,
-    PortSpec, RouteObservability, RouteSettings, SafetyContract, SchemaRef, SemanticRole,
-    SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
-    SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId,
-    SignalLineage, SignalLineageError, SignalPayload, SignalSpec, SignalSpecError, SignalTiming,
-    SignalTimingError, TextFormat,
+    DeliverySemantics, EventFormat, ExecutionPartition, ExecutionSafety, LossPolicy, MediaCaps,
+    MediaKind, Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor,
+    NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
+    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
+    PortDirection, PortPrepareContext, PortSpec, RouteObservability, RouteSettings, SchemaRef,
+    SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation,
+    SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope,
+    SignalEnvelopeError, SignalId, SignalLineage, SignalLineageError, SignalPayload, SignalSpec,
+    SignalSpecError, SignalTiming, SignalTimingError, TextFormat,
 };
 pub use crate::session::declaration::{
     ApplicationSelector, ConnectionSpec, ConnectionTarget, DerivedStreamHandle, DeviceId,
@@ -121,13 +120,12 @@ pub use crate::session::lifecycle::{
     SessionDerivedRouteMetrics, SessionEvent, SessionEventKind, SessionEventQueueObservations,
     SessionEventReceive, SessionExternalSourceMetrics, SessionLifecycleState,
     SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
-    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
-    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
-    SessionSidecarMetrics, SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome,
-    SessionTerminalState, SessionTrace, SessionTraceRecord, SessionTraceRecordKind,
-    SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome,
-    SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation,
-    SessionTraceValidationError,
+    SessionRouteDropObservations, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
+    SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
+    SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
+    SessionTrace, SessionTraceRecord, SessionTraceRecordKind, SessionTraceRecorder,
+    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
+    SessionTraceTerminal, SessionTraceValidation, SessionTraceValidationError,
 };
 pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{
@@ -232,7 +230,6 @@ pub mod internal {
 use crate::session::{
     NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,
     SessionEngineHostBuilder, SessionEngineStartError, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID,
-    CONNECTOR_NODE_TYPE_ID,
 };
 
 pub struct Session {
@@ -420,7 +417,7 @@ impl Session {
         configuration: AudioInputConfig,
     ) -> Result<PcmSource, AudioInputError> {
         if configuration.sample_spec() != self.sample_spec {
-            return Err(AudioInputError::IncompatibleContract);
+            return Err(AudioInputError::IncompatibleFormat);
         }
         let mut factory_slot = self
             .audio_input_factory
@@ -516,51 +513,12 @@ impl Session {
         self.declaration.polled_audio()
     }
 
-    /// Declares application-polled audio with one explicit bounded input edge.
-    pub fn polled_audio_with_input_edge(
-        &self,
-        input_edge: EdgeContract,
-    ) -> Result<EndpointHandle, SessionError> {
-        self.declaration.polled_audio_with_input_edge(input_edge)
-    }
-
     /// Declares application-polled audio with explicit media and delivery settings.
     pub fn polled_audio_with_route_settings(
         &self,
         settings: RouteSettings,
     ) -> Result<EndpointHandle, SessionError> {
         self.declaration.polled_audio_with_route_settings(settings)
-    }
-
-    /// Declares an external connector. Register its implementation after route
-    /// identities are available with [`Self::register_connector_driver`].
-    #[deprecated(
-        since = "1.0.0",
-        note = "use pocketstation::connector::Connector and Session::register_connector"
-    )]
-    pub fn connector(
-        &self,
-        operator_id: OperatorId,
-        configuration: EndpointConfiguration,
-    ) -> Result<EndpointHandle, SessionError> {
-        self.declaration.connector(operator_id, configuration)
-    }
-
-    /// Registers the externally owned implementation for a declared connector.
-    #[deprecated(
-        since = "1.0.0",
-        note = "use pocketstation::connector::Connector and Session::register_connector"
-    )]
-    pub fn register_connector_driver(
-        &self,
-        operator_id: OperatorId,
-        factory: Arc<dyn EndpointDriverFactory>,
-    ) -> Result<(), SessionEndpointError> {
-        self.register_audio_endpoint_driver(
-            operator_id,
-            crate::session::NodeTypeId::from(CONNECTOR_NODE_TYPE_ID),
-            factory,
-        )
     }
 
     /// Declares a browser/remote receiver. Register its transport implementation

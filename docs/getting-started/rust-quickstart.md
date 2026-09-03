@@ -23,7 +23,7 @@ Native build requirements:
 ## Add PocketStation
 
 ```bash
-cargo add pocketstation@1.1.5
+cargo add pocketstation@1.1.6
 ```
 
 ## Capture in three lines
@@ -46,7 +46,7 @@ let mut running = session.start()?;
 
 Replace `Spotify` with the exact display name or application identifier of a
 running application. These lines select one application, route its audio to a
-bounded polling Endpoint, and start the Session. A complete program must poll
+polling Endpoint, and start the Session. A complete program must poll
 the frames and stop the Session; the repository quickstart below includes both.
 
 ## Run the complete quickstart

@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use crate::graph::compile::{CompileError, Compiler};
 use crate::graph::{
-    ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,
-    NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract,
+    ConfigError, ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity, NodeConfig,
+    NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec,
     SignalSpec, TextFormat,
 };
 
@@ -43,7 +43,7 @@ fn definition(type_id: &str, inputs: &[&str], outputs: &[&str]) -> Arc<dyn NodeD
             .map(|name| port(name, PortDirection::Output))
             .collect(),
         execution: ExecutionPartition::AsyncWorker,
-        safety: SafetyContract::ExternalService,
+        safety: ExecutionSafety::ExternalService,
         stateful: false,
     }))
 }

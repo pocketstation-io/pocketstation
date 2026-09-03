@@ -16,7 +16,7 @@ At runtime, the engine uses:
 - `SignalSpec`: class, stable custom identifier, semantic role, and schema;
 - `SignalEnvelope`: payload plus source-independent lineage and timing;
 - `RouteSettings`: accepted media plus one `DeliveryPolicy`;
-- `DeliveryPolicy`: bounded delivery, loss/backpressure, copy, clock, and
+- `DeliveryPolicy`: queue capacity, loss/backpressure, copy, clock, and
   observation settings;
 - `RuntimePlan`: compiled executable topology.
 

@@ -4,15 +4,27 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.6 — 2026-09-03
+
+Configure route delivery with one consistent set of names.
+
 ### Added
 
 Advanced integrations can now configure `RouteSettings` as accepted media plus
 a separate `DeliveryPolicy`. `ExecutionSafety`, `RouteObservability`, and
 `RouteLatencyMeasurement` name the corresponding runtime decisions directly.
 
-The existing `EdgeContract`, `SafetyContract`, `EdgeObservabilityLevel`, and
-`SessionRouteLatencyBoundary` names remain compatible throughout the 1.1.x
-series. Existing applications do not need to migrate immediately.
+Session operator metrics expose aggregate input delivery through
+`input_delivery`, with per-port details available in `input_ports`.
+
+### Changed
+
+Connector, Endpoint, Operator, subscription, and observation APIs now use the
+same route-settings vocabulary.
+
+```console
+cargo update -p pocketstation --precise 1.1.6
+```
 
 ## 1.1.5 — 2026-09-01
 
@@ -127,7 +139,7 @@ recording, and every unrelated route.
 PocketStation 1.1.3 adds replaceable output to application-owned audio inputs.
 An application can begin an output generation, write generated PCM to it, and
 cancel only that output. PocketStation rejects later writes for the cancelled
-generation and discards its pending frames from bounded Core delivery paths.
+generation and discards its pending frames from Core delivery queues.
 Application capture, microphone capture, recording, and unrelated output keep
 running.
 
@@ -173,7 +185,7 @@ Use application-owned audio in a Session.
 
 PocketStation 1.1.2 made PCM produced by an application a normal source in the
 same Session as desktop application and microphone capture. That audio can use
-the same bounded routing, lineage, recording, and delivery paths as captured
+the same routing, lineage, recording, and delivery behavior as captured
 audio.
 
 This release also:

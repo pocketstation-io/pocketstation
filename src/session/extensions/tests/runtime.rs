@@ -11,9 +11,9 @@ use crate::endpoint::{
 };
 use crate::frame::{AudioBufferPool, AudioFrame, ClockDomainId, SampleFormat, SampleSpec};
 use crate::graph::{
-    AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,
-    Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec,
-    PrepareContext, SafetyContract, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec,
+    AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, ExecutionSafety,
+    MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection,
+    PortSpec, PrepareContext, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec,
     SignalTiming,
 };
 use crate::session::{
@@ -165,7 +165,7 @@ impl NodeDefinition for EndpointDefinition {
             }],
             outputs: Vec::new(),
             execution: ExecutionPartition::External,
-            safety: SafetyContract::ExternalService,
+            safety: ExecutionSafety::ExternalService,
             stateful: true,
         }
     }
@@ -441,7 +441,7 @@ impl NodeDefinition for AudioEndpointDefinition {
             }],
             outputs: Vec::new(),
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
             stateful: true,
         }
     }
@@ -574,7 +574,7 @@ fn source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {
                 required: true,
             }],
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         },
         control,
         fail_at: None,
@@ -596,7 +596,7 @@ fn failing_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory>
                 required: true,
             }],
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         },
         control,
         fail_at: Some(4),
@@ -623,7 +623,7 @@ fn audio_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {
                 required: true,
             }],
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         },
         control,
     })

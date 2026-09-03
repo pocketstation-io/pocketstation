@@ -6,7 +6,7 @@ use crate::capture::{
 use crate::capture::platform::macos::DesktopCaptureSource;
 use crate::frame::AudioFrameDuration;
 
-/// macOS adapter from the platform-neutral Session capture contract to the
+/// macOS adapter from the platform-neutral Session capture API to the
 /// existing CoreAudio/input RAII owner.
 #[derive(Debug)]
 pub struct DesktopCaptureBackend {

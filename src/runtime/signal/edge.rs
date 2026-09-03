@@ -8,7 +8,7 @@ use rtrb::{Consumer, Producer, RingBuffer};
 use crate::frame::AudioFrame;
 #[cfg(any(test, feature = "internal-testing"))]
 use crate::graph::SignalPayload;
-use crate::graph::{EdgeContract, LossPolicy, SignalEnvelope, SignalEnvelopeError};
+use crate::graph::{LossPolicy, RouteSettings, SignalEnvelope, SignalEnvelopeError};
 
 /// Keeps per-branch envelope ownership in the same finite operating range as
 /// the realtime frame pools. Payload bytes have their own independent limit.
@@ -247,7 +247,7 @@ pub type TypedEdgeObservationHandle = SignalEdgeObservationHandle;
 #[derive(Debug, Clone, Copy)]
 pub struct TypedEdgeBranchSpec {
     pub capacity_signals: usize,
-    pub edge_contract: EdgeContract,
+    pub route_settings: RouteSettings,
 }
 
 struct TypedEdgeBranchSender {
@@ -279,7 +279,7 @@ impl TypedEdgeFanout {
                     maximum: MAX_TYPED_EDGE_CAPACITY_SIGNALS,
                 });
             }
-            let Some(max_payload_bytes) = specification.edge_contract.max_payload_bytes() else {
+            let Some(max_payload_bytes) = specification.route_settings.max_payload_bytes() else {
                 return Err(TypedEdgeBuildError::MissingPayloadLimit);
             };
             if max_payload_bytes == 0 {
@@ -297,7 +297,7 @@ impl TypedEdgeFanout {
             );
             branches.push(TypedEdgeBranchSender {
                 sender,
-                loss: specification.edge_contract.loss,
+                loss: specification.route_settings.loss,
                 max_payload_bytes,
             });
             receivers.push(receiver);
@@ -494,15 +494,15 @@ mod tests {
 
     #[test]
     fn given_independent_shared_branches_when_one_saturates_then_other_continues() {
-        let contract = EdgeContract::bounded_async();
+        let route_settings = RouteSettings::bounded_async();
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[
             TypedEdgeBranchSpec {
                 capacity_signals: 1,
-                edge_contract: contract,
+                route_settings,
             },
             TypedEdgeBranchSpec {
                 capacity_signals: 2,
-                edge_contract: contract,
+                route_settings,
             },
         ])
         .unwrap();
@@ -537,15 +537,15 @@ mod tests {
 
     #[test]
     fn given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout() {
-        let contract = EdgeContract::bounded_async().with_max_payload_bytes(4);
+        let route_settings = RouteSettings::bounded_async().with_max_payload_bytes(4);
         let (mut fanout, receivers) = TypedEdgeFanout::new(&[
             TypedEdgeBranchSpec {
                 capacity_signals: 1,
-                edge_contract: contract,
+                route_settings,
             },
             TypedEdgeBranchSpec {
                 capacity_signals: 2,
-                edge_contract: contract,
+                route_settings,
             },
         ])
         .unwrap();
@@ -578,7 +578,7 @@ mod tests {
     fn given_capacity_above_global_bound_when_fanout_built_then_setup_fails() {
         let result = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: MAX_TYPED_EDGE_CAPACITY_SIGNALS + 1,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }]);
 
         assert!(matches!(
@@ -594,11 +594,11 @@ mod tests {
     fn given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails() {
         let missing = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 1,
-            edge_contract: EdgeContract::realtime_audio(),
+            route_settings: RouteSettings::realtime_audio(),
         }]);
         let zero = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 1,
-            edge_contract: EdgeContract::bounded_async().with_max_payload_bytes(0),
+            route_settings: RouteSettings::bounded_async().with_max_payload_bytes(0),
         }]);
 
         assert!(matches!(
@@ -612,7 +612,7 @@ mod tests {
     fn given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails() {
         let result = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 1,
-            edge_contract: EdgeContract::bounded_async()
+            route_settings: RouteSettings::bounded_async()
                 .with_max_payload_bytes(crate::graph::MAX_ASYNC_PAYLOAD_BYTES + 1),
         }]);
 
@@ -629,7 +629,7 @@ mod tests {
     fn given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership() {
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 1,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }])
         .unwrap();
 

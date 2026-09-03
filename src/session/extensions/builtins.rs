@@ -5,7 +5,7 @@ use std::sync::Arc;
 use crate::frame::SampleFormat;
 use crate::frame::{AudioFrame, AudioFrameDuration, SampleSpec};
 use crate::graph::{
-    AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract,
+    AudioCaps, ChannelLayout, ExecutionSafety, MediaCaps, Multiplicity, PortDirection, PortSpec,
     SignalSpec,
 };
 use crate::graph::{
@@ -339,7 +339,7 @@ impl SessionGraphLowerer for OperatorAudioLowerer {
             pipeline.connect_with(
                 operator.node.out(&output.name),
                 bridge.in_(AUDIO_PORT),
-                operator.manifest.output_edge,
+                operator.manifest.output_route_settings,
             );
         }
         Ok(())
@@ -406,7 +406,7 @@ impl NodeFactory for AudioIngressFactory {
                 self.channel_layout,
             )],
             execution: ExecutionPartition::RealtimeCpu,
-            safety: SafetyContract::RealtimeSafe,
+            safety: ExecutionSafety::RealtimeSafe,
             stateful: false,
         }
     }
@@ -451,7 +451,7 @@ impl NodeDefinition for GeneratedAudioBridgeDefinition {
             )],
             outputs: Vec::new(),
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::BlockingAllowed,
+            safety: ExecutionSafety::BlockingAllowed,
             stateful: true,
         }
     }
@@ -531,7 +531,7 @@ impl NodeDefinition for EndpointBoundaryDefinition {
             )],
             outputs: Vec::new(),
             execution: ExecutionPartition::AsyncWorker,
-            safety: SafetyContract::ExternalService,
+            safety: ExecutionSafety::ExternalService,
             stateful: true,
         }
     }

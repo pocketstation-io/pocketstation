@@ -1,8 +1,8 @@
-//! Desktop capture contracts and bounded callback delivery.
+//! Desktop capture declarations and bounded callback delivery.
 //!
 //! Platform code owns OS integration, `frame_stream` owns the bounded SPSC
 //! crossing, and `capture_owner` owns non-realtime lifecycle. Public capture
-//! declarations are data contracts only.
+//! declarations contain setup data only.
 //!
 //! Every native callback follows the same permanent contract: acquire from a
 //! fixed-capacity pool, write through non-panicking fixed-slot APIs, publish

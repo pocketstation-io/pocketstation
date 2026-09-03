@@ -6,10 +6,10 @@ use std::time::Duration;
 use pocketstation::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy,
-    ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId,
-    OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
+    ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity, NodeDescriptor, NodeError,
+    NodeTypeId, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
     OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    ExecutionSafety, PortDirection, PortSpec, RouteSettings, SampleFormat, SemanticRole,
+    PortDirection, PortSpec, RouteSettings, SampleFormat, SemanticRole, SignalDerivation,
     SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat,
 };
 use tempfile::TempDir;
@@ -93,10 +93,10 @@ impl WhisperOperatorFactory {
             channel_layout: ChannelLayout::Any,
             format: SampleFormat::F32Interleaved,
         });
-        let input_edge = RouteSettings::realtime_audio()
+        let input_route_settings = RouteSettings::realtime_audio()
             .with_media(audio)
             .with_copy_policy(CopyPolicy::CopyToBranchPool);
-        let output_edge = RouteSettings::bounded_async().with_media(MediaCaps::Text);
+        let output_route_settings = RouteSettings::bounded_async().with_media(MediaCaps::Text);
         let node = NodeDescriptor::new(
             NodeTypeId::from("operator.transcription.whisper-cpp"),
             "Whisper.cpp transcription",
@@ -128,8 +128,8 @@ impl WhisperOperatorFactory {
             WHISPER_OPERATOR_REVISION,
             WHISPER_OPERATOR_GENERATION,
             node,
-            input_edge,
-            output_edge,
+            input_route_settings,
+            output_route_settings,
             32,
             OperatorPermissionPolicy {
                 network_allowed: false,
@@ -222,8 +222,8 @@ impl AsyncOperatorFactory for WhisperOperatorFactory {
             self.manifest.revision(),
             self.manifest.generation(),
             self.manifest.node().clone(),
-            self.manifest.input_edge(),
-            self.manifest.output_edge(),
+            self.manifest.input_route_settings(),
+            self.manifest.output_route_settings(),
             self.manifest.queue_capacity_frames(),
             self.manifest.permission(),
             OperatorDeadlinePolicy {

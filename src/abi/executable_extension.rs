@@ -28,10 +28,10 @@ use crate::frame::{ClockDomainId, ConnectorId};
 use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorPrepareContext, BackpressurePolicy, BinaryFormat, ConfigError, CopyPolicy,
-    EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,
+    ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,
     NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
     OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    PortDirection, PortSpec, SafetyContract, SignalDerivation, SignalEnvelope, SignalLineage,
+    PortDirection, PortSpec, RouteSettings, SignalDerivation, SignalEnvelope, SignalLineage,
     SignalPayload, SignalSpec, SignalTiming,
 };
 use crate::session::{SourceConfiguration, SourceSessionContext, SourceTypeId};
@@ -389,19 +389,19 @@ pub unsafe extern "C" fn pks_session_extension_metrics_poll(
                 .expect("bounded index from operator_count");
             output.operator_input_capacity_signals = output
                 .operator_input_capacity_signals
-                .saturating_add(operator.input_edge.queue_capacity_frames);
+                .saturating_add(operator.input_delivery.queue_capacity_frames);
             output.operator_input_depth_signals = output
                 .operator_input_depth_signals
-                .saturating_add(operator.input_edge.queue_depth_frames);
+                .saturating_add(operator.input_delivery.queue_depth_frames);
             output.operator_input_peak_signals = output
                 .operator_input_peak_signals
-                .saturating_add(operator.input_edge.queue_peak_frames);
+                .saturating_add(operator.input_delivery.queue_peak_frames);
             output.operator_input_enqueued_total = output
                 .operator_input_enqueued_total
-                .saturating_add(operator.input_edge.frames_enqueued_total);
+                .saturating_add(operator.input_delivery.frames_enqueued_total);
             output.operator_input_dropped_total = output
                 .operator_input_dropped_total
-                .saturating_add(operator.input_edge.frames_dropped_total);
+                .saturating_add(operator.input_delivery.frames_dropped_total);
             output.operator_processed_total = output
                 .operator_processed_total
                 .saturating_add(operator.worker.processed_total);
@@ -1218,7 +1218,7 @@ fn prepare_registration(
                 descriptor.generation,
                 owned_ports,
                 ExecutionPartition::BlockingWorker,
-                SafetyContract::BlockingAllowed,
+                ExecutionSafety::BlockingAllowed,
             )
             .map_err(|_| AbiExtensionError::InvalidArgument)?;
             Ok(PreparedExtensionRegistration::Source { id, manifest })
@@ -1254,16 +1254,16 @@ fn prepare_registration(
                 inputs,
                 outputs,
                 ExecutionPartition::AsyncWorker,
-                SafetyContract::AllocationAllowed,
+                ExecutionSafety::AllocationAllowed,
                 true,
             )
             .map_err(|_| AbiExtensionError::InvalidArgument)?;
-            let input_edge = EdgeContract::bounded_async()
+            let input_edge = RouteSettings::bounded_async()
                 .with_media(media)
                 .with_backpressure(BackpressurePolicy::DropNewest)
                 .with_copy_policy(CopyPolicy::CopyToBranchPool)
                 .with_max_payload_bytes(callbacks.max_payload_bytes as usize);
-            let output_edge = EdgeContract::bounded_async()
+            let output_edge = RouteSettings::bounded_async()
                 .with_media(media)
                 .with_max_payload_bytes(callbacks.max_payload_bytes as usize);
             let manifest = AsyncOperatorManifest::new(
@@ -1306,7 +1306,7 @@ fn prepare_registration(
                 owned_ports,
                 Vec::new(),
                 ExecutionPartition::External,
-                SafetyContract::ExternalService,
+                ExecutionSafety::ExternalService,
                 true,
             )
             .map_err(|_| AbiExtensionError::InvalidArgument)?;

@@ -3,8 +3,8 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use crate::graph::{
-    AudioCaps, ChannelLayout, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor,
-    NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SignalSpec,
+    AudioCaps, ChannelLayout, ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity,
+    NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SignalSpec,
 };
 use crate::{
     EndpointAudioFrame, EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId,
@@ -226,22 +226,22 @@ fn audio_manifest(instance_id: u64) -> Result<ConnectorManifest, AudioConnectorB
         Multiplicity::Many,
         true,
     )
-    .map_err(|_| AudioConnectorBuildError::InvalidPortContract)?;
+    .map_err(|_| AudioConnectorBuildError::InvalidPortDeclaration)?;
     let node = NodeDescriptor::new(
         NodeTypeId::from(local_identity.as_str()),
         "Application audio Connector",
         vec![input],
         Vec::new(),
         ExecutionPartition::AsyncWorker,
-        SafetyContract::NetworkAllowed,
+        ExecutionSafety::NetworkAllowed,
         true,
     )
-    .map_err(|_| AudioConnectorBuildError::InvalidNodeContract)?;
+    .map_err(|_| AudioConnectorBuildError::InvalidNodeDeclaration)?;
     let configuration = ConnectorConfigurationSchema::new(1, Vec::new())
-        .map_err(|_| AudioConnectorBuildError::InvalidConfigurationContract)?;
+        .map_err(|_| AudioConnectorBuildError::InvalidConfiguration)?;
     let readiness =
         ConnectorReadinessPolicy::new(Duration::from_secs(10), Duration::from_millis(100), 1, 1)
-            .map_err(|_| AudioConnectorBuildError::InvalidReadinessContract)?;
+            .map_err(|_| AudioConnectorBuildError::InvalidReadinessConfiguration)?;
     Ok(ConnectorManifest::new(
         1,
         OperatorId::new(local_identity),
@@ -257,13 +257,13 @@ pub enum AudioConnectorBuildError {
     #[error("application-local audio Connector identity space is exhausted")]
     IdentityExhausted,
     #[error("PocketStation's audio Connector port declaration is invalid")]
-    InvalidPortContract,
+    InvalidPortDeclaration,
     #[error("PocketStation's audio Connector node declaration is invalid")]
-    InvalidNodeContract,
+    InvalidNodeDeclaration,
     #[error("PocketStation's audio Connector configuration is invalid")]
-    InvalidConfigurationContract,
+    InvalidConfiguration,
     #[error("PocketStation's audio Connector readiness configuration is invalid")]
-    InvalidReadinessContract,
+    InvalidReadinessConfiguration,
     #[error(transparent)]
     InvalidManifest(#[from] ConnectorManifestError),
 }

@@ -31,7 +31,7 @@ stem does not prevent active stems from progressing. The Session manifest
 retains source, stream, stem, timing, and discontinuity information beside the
 WAV files.
 
-## Observe bounded delivery
+## Observe delivery
 
 Use `metrics_snapshot()` while the Session is running. Route metrics report
 finite capacity, queue depth, delivered frames, drops, and latency observations
@@ -43,7 +43,7 @@ acoustic measurement with a sender timestamp.
 
 ## Stop or cancel deliberately
 
-`stop()` requests a normal drain: work already accepted by bounded routes is
+`stop()` requests a normal drain: work already accepted by route queues is
 allowed to finalize. `cancel()` aborts active asynchronous Operators before the
 Session joins capture, endpoints, and recording. Calling either operation
 again returns an already-stopped disposition rather than starting another

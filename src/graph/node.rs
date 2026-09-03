@@ -4,8 +4,8 @@ use std::sync::Arc;
 
 use crate::frame::SampleSpec;
 
-use crate::graph::partition::{ExecutionPartition, SafetyContract};
-use crate::graph::ports::{EdgeContract, MediaCaps, PortDirection, PortSpec};
+use crate::graph::partition::{ExecutionPartition, ExecutionSafety};
+use crate::graph::ports::{MediaCaps, PortDirection, PortSpec, RouteSettings};
 use crate::graph::signal::SignalSpec;
 use crate::graph::EdgeId;
 
@@ -21,7 +21,7 @@ impl NodeTypeId {
     ///
     /// Version 1 keeps construction infallible for source compatibility.
     /// Node labels are lowercase and dot-separated; internal structural names
-    /// use underscores while externally owned contract labels may use hyphens.
+    /// use underscores while externally owned identifiers may use hyphens.
     pub fn is_well_formed(&self) -> bool {
         crate::graph::identifier::is_node_type_id(self.as_str())
     }
@@ -153,9 +153,7 @@ pub enum NodeError {
     Process(String),
     #[error("node process exceeded its {timeout_ms} ms deadline")]
     ProcessTimeout { timeout_ms: u32 },
-    #[error(
-        "external boundary node type '{node_type_id}' must execute through its endpoint driver"
-    )]
+    #[error("external node type '{node_type_id}' must execute through its endpoint driver")]
     ExternalBoundaryExecution { node_type_id: NodeTypeId },
     #[error(transparent)]
     Config(#[from] ConfigError),
@@ -168,7 +166,7 @@ pub struct NodeDescriptor {
     pub(crate) inputs: Vec<PortSpec>,
     pub(crate) outputs: Vec<PortSpec>,
     pub(crate) execution: ExecutionPartition,
-    pub(crate) safety: SafetyContract,
+    pub(crate) safety: ExecutionSafety,
     pub(crate) stateful: bool,
 }
 
@@ -179,7 +177,7 @@ impl NodeDescriptor {
         inputs: Vec<PortSpec>,
         outputs: Vec<PortSpec>,
         execution: ExecutionPartition,
-        safety: SafetyContract,
+        safety: ExecutionSafety,
         stateful: bool,
     ) -> Result<Self, NodeDescriptorError> {
         if type_id.as_str().trim().is_empty() {
@@ -189,7 +187,7 @@ impl NodeDescriptor {
             return Err(NodeDescriptorError::EmptyDisplayName);
         }
         if !safety.is_valid_for(execution) {
-            return Err(NodeDescriptorError::InvalidSafetyContract);
+            return Err(NodeDescriptorError::InvalidExecutionSafety);
         }
         if inputs
             .iter()
@@ -239,7 +237,7 @@ impl NodeDescriptor {
         self.execution
     }
 
-    pub const fn safety(&self) -> SafetyContract {
+    pub const fn safety(&self) -> ExecutionSafety {
         self.safety
     }
 
@@ -254,8 +252,8 @@ pub enum NodeDescriptorError {
     EmptyTypeId,
     #[error("node display name cannot be empty")]
     EmptyDisplayName,
-    #[error("node safety contract does not match its execution partition")]
-    InvalidSafetyContract,
+    #[error("node execution safety does not match its execution partition")]
+    InvalidExecutionSafety,
     #[error("node port is stored under the wrong direction")]
     PortDirectionMismatch,
     #[error("node has a duplicate named port in one direction")]
@@ -273,7 +271,7 @@ impl PrepareContext {
     }
 }
 
-/// Exact graph-owned contract for one prepared node port.
+/// Graph-owned preparation data for one node port.
 ///
 /// Realtime nodes, asynchronous operators, sources, and endpoints may wrap
 /// this value with lifecycle-specific context, but they do not redefine edge
@@ -285,7 +283,7 @@ pub struct PortPrepareContext {
     direction: PortDirection,
     signal: SignalSpec,
     media: MediaCaps,
-    edge_contract: EdgeContract,
+    route_settings: RouteSettings,
     capacity_signals: usize,
 }
 
@@ -296,7 +294,7 @@ impl PortPrepareContext {
         direction: PortDirection,
         signal: SignalSpec,
         media: MediaCaps,
-        edge_contract: EdgeContract,
+        route_settings: RouteSettings,
         capacity_signals: usize,
     ) -> Result<Self, NodeError> {
         let port_name = port_name.into();
@@ -318,7 +316,7 @@ impl PortPrepareContext {
                 "prepared port '{port_name}' has incompatible signal/media"
             )));
         }
-        if !edge_contract.media.is_compatible_with(&media) {
+        if !route_settings.media.is_compatible_with(&media) {
             return Err(NodeError::Prepare(format!(
                 "prepared port '{port_name}' has incompatible edge media"
             )));
@@ -329,7 +327,7 @@ impl PortPrepareContext {
             direction,
             signal,
             media,
-            edge_contract,
+            route_settings,
             capacity_signals,
         })
     }
@@ -354,13 +352,9 @@ impl PortPrepareContext {
         self.media
     }
 
-    pub const fn edge_contract(&self) -> EdgeContract {
-        self.edge_contract
-    }
-
     /// Returns the accepted media and delivery behavior for this prepared port.
     pub const fn route_settings(&self) -> crate::graph::RouteSettings {
-        self.edge_contract
+        self.route_settings
     }
 
     pub const fn capacity_signals(&self) -> usize {

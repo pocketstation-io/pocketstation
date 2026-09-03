@@ -41,8 +41,7 @@ ID, stable source ID, and process instance. Ambiguous names fail before capture.
 | Connect to an Operator input | `SourceOutputHandle::connect` |
 
 The normal methods create finite routes. `RouteSettings` lets advanced packages
-select accepted media and apply a `DeliveryPolicy` explicitly. `EdgeContract`
-remains a 1.1.x compatibility name.
+select accepted media and apply a `DeliveryPolicy` explicitly.
 
 ## Operators and typed signals
 
@@ -83,7 +82,7 @@ system brings data into the Session.
 | Read the terminal recording result | `RunningSession::recording_outcome` |
 | Read one metrics snapshot | `RunningSession::metrics_snapshot` |
 | Receive lifecycle events | `RunningSession::try_recv_event` |
-| Record a bounded trace | `SessionBuilder::session_trace` |
+| Record a Session trace with a fixed record capacity | `SessionBuilder::session_trace` |
 | Validate a trace | `SessionTraceValidation` |
 
 ## Native extensions and managed processes

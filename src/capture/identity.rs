@@ -135,7 +135,7 @@ impl CaptureSource {
         }
     }
 
-    /// Reports the native process boundary represented by this discovery
+    /// Reports the native process scope represented by this discovery
     /// result without making the CLI reconstruct a private capture mode.
     pub fn process_tree_scope(&self) -> Option<ProcessTreeScope> {
         match self.stable_id.kind {

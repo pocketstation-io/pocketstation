@@ -64,7 +64,7 @@ pub(crate) unsafe fn load_native_extension_library(
 
     // SAFETY: the caller selected an absolute path, it has been canonicalized,
     // and no ambient loader search is used. Executing a supplied native library
-    // remains a trusted setup-time operation by API contract.
+    // remains a trusted setup-time operation by API design.
     let library = Arc::new(unsafe { Library::new(&canonical_path) }.map_err(|error| {
         NativeExtensionLibraryError::new(
             NativeExtensionLibraryErrorCode::LibraryLoadFailed,

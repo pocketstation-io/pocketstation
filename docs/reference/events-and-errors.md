@@ -50,7 +50,7 @@ they are not reported as zero.
 `RouteLatencyMeasurement` and `SessionRouteLatencyUnit`. Compare values only
 when both definitions match. Source timestamp to route receive includes a
 different amount of work than capture callback to network send or browser
-receive. `SessionRouteLatencyBoundary` remains a 1.1.x compatibility name.
+receive.
 
 Virtual-machine scheduler spikes are correctness evidence, not host latency
 qualification. Record p50, p95, p99, maximum, sample count, operating system,
@@ -91,8 +91,8 @@ does not claim acoustic hearing when a receiver cannot report playout.
 
 ## Trace files
 
-A bounded `SessionTrace` records selected declarations, events, metrics, and
-terminal state for later diagnosis. Tracing has a finite record capacity. Check
+A `SessionTrace` records selected declarations, events, metrics, and terminal
+state for later diagnosis. Tracing stops at its configured record capacity. Check
 `SessionTraceRecorderOutcome` and `SessionTraceValidation` before relying on a
 trace as evidence.
 

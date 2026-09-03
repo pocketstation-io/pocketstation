@@ -4,10 +4,9 @@ use std::time::Duration;
 
 use crate::frame::{SessionId, SourceId, StemId};
 use crate::graph::{
-    AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorFactory, AsyncOperatorManifest,
-    AsyncOperatorPrepareContext, EdgeContract, MediaCaps, NodeConfig, NodeError,
-    OperatorCancellationPolicy, OperatorFailurePolicy, PortDirection, SignalEnvelope,
-    SignalPayload, SignalSpec,
+    AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, MediaCaps,
+    NodeConfig, NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PortDirection,
+    PortPrepareContext, RouteSettings, SignalEnvelope, SignalPayload, SignalSpec,
 };
 use crate::graph::{EdgeId, NodeId};
 use tokio::sync::Notify;
@@ -35,7 +34,7 @@ enum AsyncOperatorWorkerSource {
     Direct(SignalEdgeReceiver<SignalEnvelope>),
     Compiled {
         receiver: PlanEdgeReceiver,
-        lineage: Box<CompiledOperatorInputContract>,
+        lineage: Box<CompiledOperatorInputDetails>,
     },
     Typed {
         port_name: String,
@@ -46,31 +45,31 @@ enum AsyncOperatorWorkerSource {
 pub(crate) enum SessionOperatorInput {
     Compiled {
         receiver: PlanEdgeReceiver,
-        contract: CompiledOperatorInputContract,
+        details: CompiledOperatorInputDetails,
     },
     Typed(AsyncOperatorTypedInput),
 }
 
 impl SessionOperatorInput {
-    fn prepare_edge(&self) -> Result<AsyncOperatorEdgePrepareContext, NodeError> {
+    fn prepare_edge(&self) -> Result<PortPrepareContext, NodeError> {
         match self {
-            Self::Compiled { receiver, contract } => {
-                if receiver.edge_id() != contract.edge_id
-                    || receiver.to().node != contract.operator_node
+            Self::Compiled { receiver, details } => {
+                if receiver.edge_id() != details.edge_id
+                    || receiver.to().node != details.operator_node
                 {
                     return Err(NodeError::Prepare(
-                        "compiled async input receiver does not match its edge/node contract"
+                        "compiled async input receiver does not match its declared edge and node"
                             .to_owned(),
                     ));
                 }
                 prepare_edge(
-                    Some(contract.edge_id),
-                    &contract.input_port,
+                    Some(details.edge_id),
+                    &details.input_port,
                     PortDirection::Input,
-                    contract.signal_spec.clone(),
-                    contract.media,
-                    contract.edge_contract,
-                    contract.capacity_signals,
+                    details.signal_spec.clone(),
+                    details.media,
+                    details.route_settings,
+                    details.capacity_signals,
                 )
             }
             Self::Typed(input) => prepare_edge(
@@ -79,7 +78,7 @@ impl SessionOperatorInput {
                 PortDirection::Input,
                 input.signal_spec.clone(),
                 input.media,
-                input.edge_contract,
+                input.route_settings,
                 input.capacity_signals,
             ),
         }
@@ -87,9 +86,9 @@ impl SessionOperatorInput {
 
     fn into_source(self) -> AsyncOperatorWorkerSource {
         match self {
-            Self::Compiled { receiver, contract } => AsyncOperatorWorkerSource::Compiled {
+            Self::Compiled { receiver, details } => AsyncOperatorWorkerSource::Compiled {
                 receiver,
-                lineage: Box::new(contract),
+                lineage: Box::new(details),
             },
             Self::Typed(input) => AsyncOperatorWorkerSource::Typed {
                 port_name: input.port_name,
@@ -100,7 +99,7 @@ impl SessionOperatorInput {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct CompiledOperatorInputContract {
+pub struct CompiledOperatorInputDetails {
     pub edge_id: EdgeId,
     pub operator_node: NodeId,
     pub session_id: SessionId,
@@ -109,7 +108,7 @@ pub struct CompiledOperatorInputContract {
     pub input_port: String,
     pub signal_spec: SignalSpec,
     pub media: MediaCaps,
-    pub edge_contract: EdgeContract,
+    pub route_settings: RouteSettings,
     pub capacity_signals: usize,
 }
 
@@ -346,16 +345,16 @@ fn prepare_edge(
     direction: PortDirection,
     signal: SignalSpec,
     media: MediaCaps,
-    edge_contract: EdgeContract,
+    route_settings: RouteSettings,
     capacity_signals: usize,
-) -> Result<AsyncOperatorEdgePrepareContext, NodeError> {
-    AsyncOperatorEdgePrepareContext::new(
+) -> Result<PortPrepareContext, NodeError> {
+    PortPrepareContext::new(
         edge_id,
         port_name,
         direction,
         signal,
         media,
-        edge_contract,
+        route_settings,
         capacity_signals,
     )
 }
@@ -363,7 +362,7 @@ fn prepare_edge(
 #[cfg(any(test, feature = "internal-testing"))]
 fn simple_prepare_context(
     manifest: &AsyncOperatorManifest,
-    input: Option<&CompiledOperatorInputContract>,
+    input: Option<&CompiledOperatorInputDetails>,
     output_branch_specs: &[AsyncOperatorOutputBranchSpec],
 ) -> Result<AsyncOperatorPrepareContext, NodeError> {
     let mut input_ports = manifest.input_ports();
@@ -375,14 +374,14 @@ fn simple_prepare_context(
             "simple async operator preparation requires exactly one input port".to_owned(),
         ));
     }
-    let input_edge = match input {
+    let input_route_settings = match input {
         Some(input) => prepare_edge(
             Some(input.edge_id),
             &input.input_port,
             PortDirection::Input,
             input.signal_spec.clone(),
             input.media,
-            input.edge_contract,
+            input.route_settings,
             input.capacity_signals,
         )?,
         None => prepare_edge(
@@ -391,7 +390,7 @@ fn simple_prepare_context(
             PortDirection::Input,
             input_port.signal.clone(),
             input_port.media,
-            manifest.input_edge,
+            manifest.input_route_settings,
             manifest.queue_capacity_frames,
         )?,
     };
@@ -405,7 +404,7 @@ fn simple_prepare_context(
         ));
     }
     let mut edges = Vec::with_capacity(1 + output_branch_specs.len());
-    edges.push(input_edge);
+    edges.push(input_route_settings);
     for branch in output_branch_specs {
         edges.push(prepare_edge(
             None,
@@ -413,7 +412,7 @@ fn simple_prepare_context(
             PortDirection::Output,
             output_port.signal.clone(),
             output_port.media,
-            branch.edge_contract,
+            branch.route_settings,
             branch.capacity_signals,
         )?);
     }
@@ -436,7 +435,7 @@ fn composed_prepare_context(
             PortDirection::Input,
             input.signal_spec.clone(),
             input.media,
-            input.edge_contract,
+            input.route_settings,
             input.capacity_signals,
         )?);
     }
@@ -456,7 +455,7 @@ fn composed_prepare_context(
             PortDirection::Output,
             port.signal.clone(),
             port.media,
-            output.branch.edge_contract,
+            output.branch.route_settings,
             output.branch.capacity_signals,
         )?);
     }
@@ -490,7 +489,7 @@ fn session_composed_prepare_context(
             PortDirection::Output,
             port.signal.clone(),
             port.media,
-            output.branch.edge_contract,
+            output.branch.route_settings,
             output.branch.capacity_signals,
         )?);
     }
@@ -525,7 +524,10 @@ fn validate_prepare_context(
         })?;
         if edge.signal() != &port.signal
             || !edge.media().is_compatible_with(&port.media)
-            || !edge.edge_contract().media.is_compatible_with(&edge.media())
+            || !edge
+                .route_settings()
+                .media
+                .is_compatible_with(&edge.media())
         {
             return Err(NodeError::Prepare(format!(
                 "async operator prepare port '{}' disagrees with its manifest",
@@ -582,7 +584,7 @@ impl AsyncOperatorWorker {
                 .zip(output_branch_specs)
                 .any(|(context, branch)| {
                     context.capacity_signals() != branch.capacity_signals
-                        || context.edge_contract() != branch.edge_contract
+                        || context.route_settings() != branch.route_settings
                 })
         {
             return Err(NodeError::Prepare(
@@ -770,14 +772,15 @@ impl AsyncOperatorWorker {
         factory: Arc<dyn AsyncOperatorFactory>,
         configuration: &NodeConfig,
         input_receiver: PlanEdgeReceiver,
-        input_contract: CompiledOperatorInputContract,
+        input_details: CompiledOperatorInputDetails,
         output_branch_specs: &[AsyncOperatorOutputBranchSpec],
     ) -> Result<(Self, Vec<AsyncOperatorOutput>), AsyncOperatorWorkerError> {
-        if input_receiver.edge_id() != input_contract.edge_id
-            || input_receiver.to().node != input_contract.operator_node
+        if input_receiver.edge_id() != input_details.edge_id
+            || input_receiver.to().node != input_details.operator_node
         {
             return Err(AsyncOperatorWorkerError::Prepare(NodeError::Prepare(
-                "compiled async input receiver does not match its edge/node contract".to_owned(),
+                "compiled async input receiver does not match its declared edge and node"
+                    .to_owned(),
             )));
         }
         if output_branch_specs.is_empty()
@@ -797,7 +800,7 @@ impl AsyncOperatorWorker {
             AsyncOperatorWorkerError::Prepare(NodeError::Prepare(error.to_string()))
         })?;
         let prepare_context =
-            simple_prepare_context(&manifest, Some(&input_contract), output_branch_specs)
+            simple_prepare_context(&manifest, Some(&input_details), output_branch_specs)
                 .map_err(AsyncOperatorWorkerError::Prepare)?;
         let mut node = factory
             .create(configuration)
@@ -826,7 +829,7 @@ impl AsyncOperatorWorker {
                 node,
                 AsyncOperatorWorkerInputs::one(AsyncOperatorWorkerSource::Compiled {
                     receiver: input_receiver,
-                    lineage: Box::new(input_contract),
+                    lineage: Box::new(input_details),
                 }),
                 output_senders,
                 task_cancellation,
@@ -1186,7 +1189,7 @@ fn fan_out_outputs(
         let output_branches = output_branches
             .iter_mut()
             .find(|branches| branches.port_name == output_contract.name)
-            .ok_or(AsyncOperatorWorkerError::MissingOutputContract)?;
+            .ok_or(AsyncOperatorWorkerError::MissingOutputRoute)?;
         let derivation = envelope
             .derivation
             .as_ref()
@@ -1243,7 +1246,7 @@ fn fan_out_outputs(
                 });
             }
             Err(TypedEdgePublishError::NoBranches) => {
-                return Err(AsyncOperatorWorkerError::MissingOutputContract);
+                return Err(AsyncOperatorWorkerError::MissingOutputRoute);
             }
         }
     }
@@ -1262,10 +1265,10 @@ mod tests {
     use crate::graph::compile::{Compiler, RuntimePlanner};
     use crate::graph::{
         register_builtins, AudioCaps, BinaryFormat, ChannelLayout, ConfigError, EventFormat,
-        ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError,
-        NodeRegistry, NodeTypeId, OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy,
-        OperatorPermissionPolicy, Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole,
-        SignalDerivation, SignalLineage, SignalSpec, SignalTiming, TextFormat,
+        ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity, NodeDescriptor,
+        NodeRegistrationError, NodeRegistry, NodeTypeId, OperatorDeadlinePolicy, OperatorId,
+        OperatorOutputRolePolicy, OperatorPermissionPolicy, Pipeline, PortDirection, PortSpec,
+        SemanticRole, SignalDerivation, SignalLineage, SignalSpec, SignalTiming, TextFormat,
     };
 
     use super::*;
@@ -1505,16 +1508,16 @@ mod tests {
         timeout_ms: u32,
         failure: OperatorFailurePolicy,
     ) -> AsyncOperatorManifest {
-        let mut input_edge = crate::graph::EdgeContract::realtime_audio();
-        input_edge.media = MediaCaps::Audio(AudioCaps {
+        let mut input_route_settings = crate::graph::RouteSettings::realtime_audio();
+        input_route_settings.media = MediaCaps::Audio(AudioCaps {
             sample_rate_hz: Some(16_000),
             frame_samples: Some(160),
             channel_layout: ChannelLayout::Mono,
             format: SampleFormat::F32Interleaved,
         });
-        input_edge.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
-        let mut output_edge = crate::graph::EdgeContract::bounded_async();
-        output_edge.media = MediaCaps::Text;
+        input_route_settings.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
+        let mut output_route_settings = crate::graph::RouteSettings::bounded_async();
+        output_route_settings.media = MediaCaps::Text;
         AsyncOperatorManifest {
             operator_id: OperatorId::new(operator_id),
             revision: 1,
@@ -1529,11 +1532,11 @@ mod tests {
                     SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
                 )],
                 execution: ExecutionPartition::AsyncWorker,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: true,
             },
-            input_edge,
-            output_edge,
+            input_route_settings,
+            output_route_settings,
             queue_capacity_frames: 1,
             permission: OperatorPermissionPolicy {
                 network_allowed: false,
@@ -1601,11 +1604,11 @@ mod tests {
     }
 
     fn output_branch(capacity_signals: usize) -> AsyncOperatorOutputBranchSpec {
-        let mut edge_contract = crate::graph::EdgeContract::bounded_async();
-        edge_contract.media = MediaCaps::Text;
+        let mut route_settings = crate::graph::RouteSettings::bounded_async();
+        route_settings.media = MediaCaps::Text;
         AsyncOperatorOutputBranchSpec {
             capacity_signals,
-            edge_contract,
+            route_settings,
         }
     }
 
@@ -1614,15 +1617,15 @@ mod tests {
         receiver: TypedEdgeReceiver,
         capacity_signals: usize,
     ) -> AsyncOperatorTypedInput {
-        let mut edge_contract = crate::graph::EdgeContract::bounded_async();
-        edge_contract.media = MediaCaps::Text;
+        let mut route_settings = crate::graph::RouteSettings::bounded_async();
+        route_settings.media = MediaCaps::Text;
         AsyncOperatorTypedInput {
             port_name: port_name.to_owned(),
             receiver,
             edge_id: None,
             signal_spec: SignalSpec::text(TextFormat::Utf8),
             media: MediaCaps::Text,
-            edge_contract,
+            route_settings,
             capacity_signals,
         }
     }
@@ -1642,7 +1645,7 @@ mod tests {
             PortDirection::Input,
             SignalSpec::text(TextFormat::Utf8),
         )];
-        manifest.input_edge.media = MediaCaps::Text;
+        manifest.input_route_settings.media = MediaCaps::Text;
         Arc::new(TestFactory {
             manifest,
             behavior: factory.behavior,
@@ -1707,12 +1710,12 @@ mod tests {
         signal: SignalSpec,
         media: MediaCaps,
     ) -> AsyncOperatorManifest {
-        let mut input_edge = EdgeContract::bounded_async();
-        input_edge.media = media;
-        input_edge.backpressure = crate::graph::BackpressurePolicy::DropNewest;
-        input_edge.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
-        let mut output_edge = EdgeContract::bounded_async();
-        output_edge.media = media;
+        let mut input_route_settings = RouteSettings::bounded_async();
+        input_route_settings.media = media;
+        input_route_settings.backpressure = crate::graph::BackpressurePolicy::DropNewest;
+        input_route_settings.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
+        let mut output_route_settings = RouteSettings::bounded_async();
+        output_route_settings.media = media;
         AsyncOperatorManifest {
             operator_id: OperatorId::new(format!("operator.prepare.{index}")),
             revision: 1,
@@ -1737,11 +1740,11 @@ mod tests {
                     required: true,
                 }],
                 execution: ExecutionPartition::AsyncWorker,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: false,
             },
-            input_edge,
-            output_edge,
+            input_route_settings,
+            output_route_settings,
             queue_capacity_frames: 3,
             permission: OperatorPermissionPolicy {
                 network_allowed: false,
@@ -1778,7 +1781,7 @@ mod tests {
         for (index, (signal, media)) in cases.into_iter().enumerate() {
             let observed = Arc::new(Mutex::new(Vec::new()));
             let manifest = prepare_capture_manifest(index, signal.clone(), media);
-            let output_edge = manifest.output_edge;
+            let output_route_settings = manifest.output_route_settings;
             let (worker, _outputs) = AsyncOperatorWorker::spawn(
                 Arc::new(PrepareCaptureFactory {
                     manifest,
@@ -1787,7 +1790,7 @@ mod tests {
                 &NodeConfig::new(),
                 &[AsyncOperatorOutputBranchSpec {
                     capacity_signals: 5,
-                    edge_contract: output_edge,
+                    route_settings: output_route_settings,
                 }],
             )
             .unwrap();
@@ -1819,28 +1822,28 @@ mod tests {
         let media = MediaCaps::Text;
         let observed = Arc::new(Mutex::new(Vec::new()));
         let manifest = prepare_capture_manifest(99, signal.clone(), media);
-        let input_edge = manifest.input_edge;
-        let output_edge = manifest.output_edge;
+        let input_route_settings = manifest.input_route_settings;
+        let output_route_settings = manifest.output_route_settings;
         let context = AsyncOperatorPrepareContext::new(
             ExecutionPartition::AsyncWorker,
             vec![
-                AsyncOperatorEdgePrepareContext::new(
+                PortPrepareContext::new(
                     None,
                     "input",
                     PortDirection::Input,
                     signal.clone(),
                     media,
-                    input_edge,
+                    input_route_settings,
                     3,
                 )
                 .unwrap(),
-                AsyncOperatorEdgePrepareContext::new(
+                PortPrepareContext::new(
                     None,
                     "output",
                     PortDirection::Output,
                     signal,
                     media,
-                    output_edge,
+                    output_route_settings,
                     4,
                 )
                 .unwrap(),
@@ -1854,7 +1857,7 @@ mod tests {
             context,
             &[AsyncOperatorOutputBranchSpec {
                 capacity_signals: 5,
-                edge_contract: output_edge,
+                route_settings: output_route_settings,
             }],
         );
 
@@ -1945,8 +1948,8 @@ mod tests {
             port("partial", PortDirection::Output, nonterminal_spec()),
             port("final", PortDirection::Output, terminal_spec()),
         ];
-        manifest.input_edge.media = MediaCaps::Text;
-        manifest.output_edge.media = MediaCaps::Text;
+        manifest.input_route_settings.media = MediaCaps::Text;
+        manifest.output_route_settings.media = MediaCaps::Text;
         let factory = Arc::new(TestFactory {
             manifest,
             behavior: TestBehavior::NonterminalThenTerminal,
@@ -2231,7 +2234,7 @@ mod tests {
         graph.connect_with(
             source.out("out"),
             operator.in_("audio"),
-            operator_factory.manifest.input_edge,
+            operator_factory.manifest.input_route_settings,
         );
         let ir = Compiler::new()
             .compile(graph.into_spec(), &registry)
@@ -2267,7 +2270,7 @@ mod tests {
         assert_eq!(sent.enqueued_edges, 1);
         drop(router);
         let input_port = operator_factory.manifest.node.inputs[0].clone();
-        let input_edge_contract = operator_factory.manifest.input_edge;
+        let input_route_settings = operator_factory.manifest.input_route_settings;
         let input_capacity_signals = plan
             .memory_plan
             .edge_buffer(edge_id)
@@ -2278,7 +2281,7 @@ mod tests {
             operator_factory,
             &NodeConfig::new(),
             receiver,
-            CompiledOperatorInputContract {
+            CompiledOperatorInputDetails {
                 edge_id,
                 operator_node: operator.id(),
                 session_id: SessionId(7),
@@ -2287,7 +2290,7 @@ mod tests {
                 input_port: input_port.name,
                 signal_spec: input_port.signal,
                 media: input_port.media,
-                edge_contract: input_edge_contract,
+                route_settings: input_route_settings,
                 capacity_signals: input_capacity_signals,
             },
             &[output_branch(2)],

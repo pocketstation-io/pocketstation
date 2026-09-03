@@ -27,8 +27,7 @@ pub use spec::{
     SessionSpec, SourceInstanceId, SourceInstanceSpec, SourceOutputSpec, StreamOrigin,
 };
 #[cfg(any(test, feature = "internal-testing"))]
-#[allow(deprecated)]
-pub use spec::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION};
+pub use spec::{SessionSpecVersion, SESSION_SPEC_VERSION};
 pub use typed_stream::{Stream, StreamSignal, TypedOperator, TypedStreamError};
 
 #[cfg(test)]

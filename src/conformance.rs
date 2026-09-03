@@ -294,7 +294,7 @@ pub fn observed_connector(
         vec![input],
         Vec::new(),
         crate::ExecutionPartition::AsyncWorker,
-        crate::SafetyContract::AllocationAllowed,
+        crate::ExecutionSafety::AllocationAllowed,
         true,
     )
     .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
@@ -325,7 +325,7 @@ pub fn observed_connector(
     Ok(registered.declare(
         session,
         crate::connector::ConnectorConfiguration::new(),
-        crate::EdgeContract::realtime_audio(),
+        crate::RouteSettings::realtime_audio(),
     )?)
 }
 
@@ -826,7 +826,7 @@ impl crate::NodeDefinition for ExtensionEndpointDefinition {
             )],
             outputs: Vec::new(),
             execution: crate::ExecutionPartition::External,
-            safety: crate::SafetyContract::ExternalService,
+            safety: crate::ExecutionSafety::ExternalService,
             stateful: true,
         }
     }
@@ -1015,7 +1015,7 @@ pub fn run_extension_vector(failure_requested: bool) -> Result<ExtensionConforma
             crate::PortDirection::Output,
         )],
         crate::ExecutionPartition::BlockingWorker,
-        crate::SafetyContract::AllocationAllowed,
+        crate::ExecutionSafety::AllocationAllowed,
     )
     .map_err(|error| error.to_string())?;
     let operator_manifest = extension_operator_manifest()?;
@@ -1203,11 +1203,11 @@ fn extension_port(name: &str, direction: crate::PortDirection) -> crate::PortSpe
 }
 
 fn extension_operator_manifest() -> Result<crate::AsyncOperatorManifest, String> {
-    let mut input_edge = crate::EdgeContract::bounded_async();
+    let mut input_edge = crate::RouteSettings::bounded_async();
     input_edge.media = crate::MediaCaps::Binary(crate::BinaryFormat::Raw);
     input_edge.backpressure = crate::BackpressurePolicy::DropNewest;
     input_edge.copy_policy = crate::CopyPolicy::CopyToBranchPool;
-    let mut output_edge = crate::EdgeContract::bounded_async();
+    let mut output_edge = crate::RouteSettings::bounded_async();
     output_edge.media = crate::MediaCaps::Binary(crate::BinaryFormat::Raw);
     output_edge.copy_policy = crate::CopyPolicy::CopyToBranchPool;
     crate::AsyncOperatorManifest::new(
@@ -1226,7 +1226,7 @@ fn extension_operator_manifest() -> Result<crate::AsyncOperatorManifest, String>
                 crate::PortDirection::Output,
             )],
             execution: crate::ExecutionPartition::AsyncWorker,
-            safety: crate::SafetyContract::AllocationAllowed,
+            safety: crate::ExecutionSafety::AllocationAllowed,
             stateful: true,
         },
         input_edge,

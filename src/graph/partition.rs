@@ -123,9 +123,6 @@ impl ExecutionSafety {
     }
 }
 
-/// Compatibility name for [`ExecutionSafety`].
-pub type SafetyContract = ExecutionSafety;
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -153,9 +150,8 @@ mod tests {
     }
 
     #[test]
-    fn given_safety_contract_name_when_used_then_it_is_execution_safety() {
-        let compatibility_name = SafetyContract::NetworkAllowed;
-        let safety: ExecutionSafety = compatibility_name;
+    fn given_network_execution_safety_when_compared_then_it_is_preserved() {
+        let safety = ExecutionSafety::NetworkAllowed;
 
         assert_eq!(safety, ExecutionSafety::NetworkAllowed);
     }
@@ -174,38 +170,38 @@ mod tests {
 
     #[test]
     fn given_realtime_safe_contract_when_valid_for_audio_callback_then_true() {
-        assert!(SafetyContract::RealtimeSafe.is_valid_for(ExecutionPartition::AudioCallback));
-        assert!(SafetyContract::RealtimeSafe.is_valid_for(ExecutionPartition::RealtimeCpu));
+        assert!(ExecutionSafety::RealtimeSafe.is_valid_for(ExecutionPartition::AudioCallback));
+        assert!(ExecutionSafety::RealtimeSafe.is_valid_for(ExecutionPartition::RealtimeCpu));
     }
 
     #[test]
     fn given_allocation_allowed_contract_when_valid_for_audio_callback_then_false() {
-        assert!(!SafetyContract::AllocationAllowed.is_valid_for(ExecutionPartition::AudioCallback));
-        assert!(!SafetyContract::AllocationAllowed.is_valid_for(ExecutionPartition::RealtimeCpu));
+        assert!(!ExecutionSafety::AllocationAllowed.is_valid_for(ExecutionPartition::AudioCallback));
+        assert!(!ExecutionSafety::AllocationAllowed.is_valid_for(ExecutionPartition::RealtimeCpu));
     }
 
     #[test]
     fn given_network_allowed_contract_when_valid_for_async_worker_then_true() {
-        assert!(SafetyContract::NetworkAllowed.is_valid_for(ExecutionPartition::AsyncWorker));
+        assert!(ExecutionSafety::NetworkAllowed.is_valid_for(ExecutionPartition::AsyncWorker));
     }
 
     #[test]
     fn given_network_allowed_contract_when_valid_for_blocking_worker_then_false() {
-        assert!(!SafetyContract::NetworkAllowed.is_valid_for(ExecutionPartition::BlockingWorker));
+        assert!(!ExecutionSafety::NetworkAllowed.is_valid_for(ExecutionPartition::BlockingWorker));
     }
 
     #[test]
     fn given_external_service_contract_when_valid_for_external_partition_then_true() {
-        assert!(SafetyContract::ExternalService.is_valid_for(ExecutionPartition::External));
+        assert!(ExecutionSafety::ExternalService.is_valid_for(ExecutionPartition::External));
     }
 
     #[test]
     fn given_blocking_allowed_contract_when_valid_for_blocking_worker_then_true() {
-        assert!(SafetyContract::BlockingAllowed.is_valid_for(ExecutionPartition::BlockingWorker));
+        assert!(ExecutionSafety::BlockingAllowed.is_valid_for(ExecutionPartition::BlockingWorker));
     }
 
     #[test]
     fn given_blocking_allowed_contract_when_valid_for_async_worker_then_false() {
-        assert!(!SafetyContract::BlockingAllowed.is_valid_for(ExecutionPartition::AsyncWorker));
+        assert!(!ExecutionSafety::BlockingAllowed.is_valid_for(ExecutionPartition::AsyncWorker));
     }
 }

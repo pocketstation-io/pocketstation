@@ -331,7 +331,7 @@ fn run_bridge(
 mod tests {
     use super::*;
     use crate::frame::{SampleFormat, SAMPLE_RATE_HZ};
-    use crate::graph::{EdgeContract, SignalEnvelope};
+    use crate::graph::{RouteSettings, SignalEnvelope};
     use crate::runtime::{
         plan_source_channel, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout,
     };
@@ -343,7 +343,7 @@ mod tests {
             plan_source_channel(crate::graph::NodeId(1), 2, cancellation).expect("source channel");
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 1,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }])
         .expect("typed edge");
         let specification = GeneratedAudioBridgeSpec {
@@ -467,7 +467,7 @@ mod tests {
             plan_source_channel(crate::graph::NodeId(1), 4, cancellation).expect("source channel");
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 2,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }])
         .expect("typed edge");
         let bridge =
@@ -505,7 +505,7 @@ mod tests {
             plan_source_channel(crate::graph::NodeId(1), 1, cancellation).expect("source channel");
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 2,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }])
         .expect("typed edge");
         let bridge =

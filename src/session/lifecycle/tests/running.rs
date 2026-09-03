@@ -22,11 +22,11 @@ use crate::frame::{
 };
 use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps,
-    ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps,
+    ChannelLayout, ConfigError, CopyPolicy, ExecutionPartition, ExecutionSafety, MediaCaps,
     Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry,
     NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
     OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    RuntimeNode, SafetyContract, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage,
+    RouteSettings, RuntimeNode, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage,
     SignalPayload, SignalSpec, SignalTiming, TextFormat,
 };
 use crate::runtime::PlanEdgeFrame;
@@ -134,9 +134,9 @@ fn descriptor(node_type_id: &'static str, role: TestNodeRole) -> NodeDescriptor 
             ExecutionPartition::AsyncWorker
         },
         safety: if source {
-            SafetyContract::RealtimeSafe
+            ExecutionSafety::RealtimeSafe
         } else {
-            SafetyContract::AllocationAllowed
+            ExecutionSafety::AllocationAllowed
         },
         stateful: true,
     }
@@ -695,10 +695,10 @@ impl RunningTestAsyncFactory {
             channel_layout: ChannelLayout::Any,
             format: SampleFormat::F32Interleaved,
         });
-        let mut input_edge = EdgeContract::realtime_audio();
+        let mut input_edge = RouteSettings::realtime_audio();
         input_edge.media = audio;
         input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
-        let mut output_edge = EdgeContract::bounded_async();
+        let mut output_edge = RouteSettings::bounded_async();
         output_edge.media = MediaCaps::Text;
         Self {
             control,
@@ -726,11 +726,11 @@ impl RunningTestAsyncFactory {
                         required: true,
                     }],
                     execution: ExecutionPartition::AsyncWorker,
-                    safety: SafetyContract::AllocationAllowed,
+                    safety: ExecutionSafety::AllocationAllowed,
                     stateful: true,
                 },
-                input_edge,
-                output_edge,
+                input_route_settings: input_edge,
+                output_route_settings: output_edge,
                 queue_capacity_frames: 8,
                 permission: OperatorPermissionPolicy {
                     network_allowed: false,
@@ -904,7 +904,7 @@ impl NodeDefinition for TextEndpointDefinition {
             }],
             outputs: Vec::new(),
             execution: ExecutionPartition::External,
-            safety: SafetyContract::ExternalService,
+            safety: ExecutionSafety::ExternalService,
             stateful: true,
         }
     }
@@ -946,7 +946,7 @@ impl EndpointDriverFactory for DerivedTextEndpointFactory {
         for input in inputs {
             let contract_is_typed = !input.signal_spec().class.is_audio()
                 && input.media() == &MediaCaps::Text
-                && input.edge_contract().media == MediaCaps::Text;
+                && input.route_settings().media == MediaCaps::Text;
             let (receiver, _context) = input.into_parts();
             let EndpointReceiver::Signal(output) = receiver else {
                 return Err(EndpointFailure::new(
@@ -1577,11 +1577,11 @@ mod composed_runtime {
             output_role: &'static str,
             control: Arc<ComposedControl>,
         ) -> Self {
-            let mut input_edge = EdgeContract::bounded_async();
+            let mut input_edge = RouteSettings::bounded_async();
             input_edge.media = MediaCaps::Text;
             input_edge.backpressure = crate::graph::BackpressurePolicy::DropNewest;
             input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
-            let mut output_edge = EdgeContract::bounded_async();
+            let mut output_edge = RouteSettings::bounded_async();
             output_edge.media = MediaCaps::Text;
             let allowed = outputs
                 .iter()
@@ -1601,11 +1601,11 @@ mod composed_runtime {
                         inputs,
                         outputs,
                         execution: ExecutionPartition::AsyncWorker,
-                        safety: SafetyContract::AllocationAllowed,
+                        safety: ExecutionSafety::AllocationAllowed,
                         stateful: true,
                     },
-                    input_edge,
-                    output_edge,
+                    input_route_settings: input_edge,
+                    output_route_settings: output_edge,
                     queue_capacity_frames: 8,
                     permission: OperatorPermissionPolicy {
                         network_allowed: false,
@@ -1964,8 +1964,8 @@ mod generated_audio_reentry {
                 format: SampleFormat::F32Interleaved,
             });
             let input_edge =
-                EdgeContract::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
-            let output_edge = EdgeContract::bounded_async().with_media(media);
+                RouteSettings::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
+            let output_edge = RouteSettings::bounded_async().with_media(media);
             let node = NodeDescriptor::new(
                 NodeTypeId::from(NODE_TYPE_ID),
                 "test PCM transform",
@@ -1988,7 +1988,7 @@ mod generated_audio_reentry {
                 )
                 .expect("output port")],
                 ExecutionPartition::AsyncWorker,
-                SafetyContract::AllocationAllowed,
+                ExecutionSafety::AllocationAllowed,
                 false,
             )
             .expect("node descriptor");

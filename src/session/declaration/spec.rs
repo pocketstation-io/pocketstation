@@ -164,7 +164,7 @@ pub struct EndpointSpec {
     node_type_id: NodeTypeId,
     operator_id: OperatorId,
     configuration: EndpointConfiguration,
-    input_edge: Option<crate::graph::EdgeContract>,
+    route_settings: Option<crate::graph::RouteSettings>,
 }
 
 impl EndpointSpec {
@@ -188,8 +188,8 @@ impl EndpointSpec {
         &self.configuration
     }
 
-    pub const fn input_edge(&self) -> Option<crate::graph::EdgeContract> {
-        self.input_edge
+    pub const fn route_settings(&self) -> Option<crate::graph::RouteSettings> {
+        self.route_settings
     }
 }
 
@@ -268,10 +268,6 @@ impl ConnectionSpec {
         &self.target
     }
 }
-
-#[deprecated(note = "use OperatorInstanceSpec")]
-#[cfg(any(test, feature = "internal-testing"))]
-pub type OperatorSpec = OperatorInstanceSpec;
 
 #[derive(Debug, Clone)]
 pub struct SessionSpec {
@@ -752,7 +748,7 @@ pub(crate) fn endpoint_spec(
     node_type_id: NodeTypeId,
     operator_id: OperatorId,
     configuration: EndpointConfiguration,
-    input_edge: Option<crate::graph::EdgeContract>,
+    route_settings: Option<crate::graph::RouteSettings>,
 ) -> EndpointSpec {
     EndpointSpec {
         endpoint_id,
@@ -760,7 +756,7 @@ pub(crate) fn endpoint_spec(
         node_type_id,
         operator_id,
         configuration,
-        input_edge,
+        route_settings,
     }
 }
 
@@ -863,13 +859,6 @@ mod tests {
                 input_port: None,
             },
         ));
-
-        #[allow(deprecated)]
-        let compatibility_alias: &OperatorSpec = &spec.operators[0];
-        assert_eq!(
-            compatibility_alias.instance_id(),
-            OperatorInstanceId::new(1)
-        );
 
         assert!(matches!(
             spec.validate(),

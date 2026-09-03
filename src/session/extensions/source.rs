@@ -5,8 +5,8 @@ use std::thread::JoinHandle;
 
 use crate::frame::{SessionId, SourceId, StreamId};
 use crate::graph::{
-    ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,
-    PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope,
+    ConfigError, ExecutionPartition, ExecutionSafety, NodeConfig, NodeDefinition, NodeDescriptor,
+    NodeTypeId, PortDirection, PortSpec, SignalContinuityTracker, SignalEnvelope,
 };
 use crate::runtime::{
     TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgePublishError,
@@ -20,7 +20,7 @@ impl SourceTypeId {
     /// Creates a stable source implementation identity.
     ///
     /// Published source packages should use a reverse-domain identifier with
-    /// an explicit contract revision, for example
+    /// an explicit API revision, for example
     /// `io.example.source.device.v1`. Session instance identity belongs in
     /// `SourceInstanceId` and `SourceId`, never in this value.
     pub fn new(value: impl Into<String>) -> Result<Self, SourceTypeIdError> {
@@ -41,7 +41,7 @@ impl SourceTypeId {
             return Err(SourceTypeIdError::NonAscii);
         }
         if !crate::graph::identifier::is_portable_contract_id(&value) {
-            return Err(SourceTypeIdError::InvalidContractSyntax);
+            return Err(SourceTypeIdError::InvalidIdentifierSyntax);
         }
         if !has_source_category(&value) {
             return Err(SourceTypeIdError::MissingSourceCategory);
@@ -55,10 +55,10 @@ impl SourceTypeId {
 }
 
 fn has_source_category(value: &str) -> bool {
-    let Some((contract, _revision)) = value.rsplit_once('.') else {
+    let Some((versioned_name, _revision)) = value.rsplit_once('.') else {
         return false;
     };
-    let Some((owner, source_name)) = contract.rsplit_once(".source.") else {
+    let Some((owner, source_name)) = versioned_name.rsplit_once(".source.") else {
         return false;
     };
     owner.split('.').count() >= 2 && !source_name.is_empty()
@@ -75,10 +75,10 @@ pub enum SourceTypeIdError {
         actual_bytes: usize,
         maximum_bytes: usize,
     },
-    #[error("source type identifier must contain only ASCII contract characters")]
+    #[error("source type identifier contains unsupported characters")]
     NonAscii,
     #[error("source type identifier must use bounded reverse-domain syntax ending in vN")]
-    InvalidContractSyntax,
+    InvalidIdentifierSyntax,
     #[error("source type identifier must contain a source category and concrete source name")]
     MissingSourceCategory,
 }
@@ -115,7 +115,7 @@ pub struct SourceManifest {
     pub(crate) implementation_generation: u32,
     pub(crate) outputs: Vec<PortSpec>,
     pub(crate) execution: ExecutionPartition,
-    pub(crate) safety: SafetyContract,
+    pub(crate) safety: ExecutionSafety,
 }
 
 impl SourceManifest {
@@ -125,7 +125,7 @@ impl SourceManifest {
         implementation_generation: u32,
         outputs: Vec<PortSpec>,
         execution: ExecutionPartition,
-        safety: SafetyContract,
+        safety: ExecutionSafety,
     ) -> Result<Self, SourceManifestError> {
         let manifest = Self {
             source_type_id,
@@ -144,7 +144,7 @@ impl SourceManifest {
     }
 
     /// Additive descriptor revision within the compatibility major encoded by
-    /// the [`SourceTypeId`] suffix. A breaking source contract uses a new
+    /// the [`SourceTypeId`] suffix. A breaking source API uses a new
     /// identifier ending in the next `vN`; it does not reuse this field.
     pub const fn revision(&self) -> u32 {
         self.revision
@@ -175,7 +175,7 @@ impl SourceManifest {
         self.execution
     }
 
-    pub const fn safety(&self) -> SafetyContract {
+    pub const fn safety(&self) -> ExecutionSafety {
         self.safety
     }
 
@@ -184,7 +184,7 @@ impl SourceManifest {
             return Err(SourceManifestError::ZeroVersion);
         }
         if !self.safety.is_valid_for(self.execution) {
-            return Err(SourceManifestError::InvalidSafetyContract);
+            return Err(SourceManifestError::InvalidExecutionSafety);
         }
         if self.execution != ExecutionPartition::BlockingWorker {
             return Err(SourceManifestError::UnsupportedExecutionPartition);
@@ -622,7 +622,7 @@ fn run_source_driver(
             || emission.envelope.spec.schema != output.signal.schema
             || !output.media.supports_signal(&emission.envelope.spec)
         {
-            return Err(SourceRuntimeError::OutputContractMismatch);
+            return Err(SourceRuntimeError::OutputFormatMismatch);
         }
         if let Some(session) = session {
             let identity = session
@@ -691,8 +691,8 @@ pub enum SourceManifestError {
     InvalidSignal,
     #[error("source output SignalSpec and MediaCaps are incompatible")]
     SignalMediaMismatch,
-    #[error("source safety contract is incompatible with its execution partition")]
-    InvalidSafetyContract,
+    #[error("source execution safety is incompatible with its execution partition")]
+    InvalidExecutionSafety,
     #[error("in-process source drivers currently require the BlockingWorker partition")]
     UnsupportedExecutionPartition,
 }
@@ -766,8 +766,8 @@ pub enum SourceRuntimeError {
     UnknownOutput(String),
     #[error("source emitted unrouted output {0}")]
     UnroutedOutput(String),
-    #[error("source output does not match its manifest contract")]
-    OutputContractMismatch,
+    #[error("source output does not match its manifest")]
+    OutputFormatMismatch,
     #[error("Session-owned source output is missing signal lineage")]
     MissingSessionLineage,
     #[error("source output identity does not match the Session prepare context")]
@@ -811,7 +811,7 @@ mod tests {
             implementation_generation: 1,
             outputs,
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         }
     }
 
@@ -835,15 +835,15 @@ mod tests {
         );
         assert_eq!(
             SourceTypeId::new("io.example.source.device.v0"),
-            Err(SourceTypeIdError::InvalidContractSyntax)
+            Err(SourceTypeIdError::InvalidIdentifierSyntax)
         );
         assert_eq!(
             SourceTypeId::new("io.example.source..device.v1"),
-            Err(SourceTypeIdError::InvalidContractSyntax)
+            Err(SourceTypeIdError::InvalidIdentifierSyntax)
         );
         assert_eq!(
             SourceTypeId::new("io.example.source.device\nv1"),
-            Err(SourceTypeIdError::InvalidContractSyntax)
+            Err(SourceTypeIdError::InvalidIdentifierSyntax)
         );
         assert_eq!(
             SourceTypeId::new("io.example.operator.device.v1"),

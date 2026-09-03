@@ -1,11 +1,11 @@
 use crate::graph::signal::preparation::{AsyncNodeFuture, AsyncOperatorPrepareContext};
 use crate::graph::{
-    BackpressurePolicy, CopyPolicy, EdgeContract, ExecutionPartition, NodeConfig, NodeDescriptor,
-    NodeError, OperatorId, PortDirection, PortSpec, SafetyContract, SignalSpec,
+    BackpressurePolicy, CopyPolicy, ExecutionPartition, ExecutionSafety, NodeConfig,
+    NodeDescriptor, NodeError, OperatorId, PortDirection, PortSpec, RouteSettings, SignalSpec,
 };
 use crate::graph::{SemanticRole, SignalEnvelope};
 
-/// Async operator contract for model, connector, transport, and control-plane work.
+/// Async Operator API for models, connectors, transports, and control-plane work.
 ///
 /// `AsyncNode` is intentionally separate from `RuntimeNode`: realtime nodes process
 /// `AudioFrame` synchronously on allocation-free executors, while async nodes may
@@ -129,8 +129,8 @@ pub struct AsyncOperatorManifest {
     pub(crate) revision: u32,
     pub(crate) generation: u32,
     pub(crate) node: NodeDescriptor,
-    pub(crate) input_edge: EdgeContract,
-    pub(crate) output_edge: EdgeContract,
+    pub(crate) input_route_settings: RouteSettings,
+    pub(crate) output_route_settings: RouteSettings,
     pub(crate) queue_capacity_frames: usize,
     pub(crate) permission: OperatorPermissionPolicy,
     pub(crate) deadline: OperatorDeadlinePolicy,
@@ -146,8 +146,8 @@ impl AsyncOperatorManifest {
         revision: u32,
         generation: u32,
         node: NodeDescriptor,
-        input_edge: EdgeContract,
-        output_edge: EdgeContract,
+        input_route_settings: RouteSettings,
+        output_route_settings: RouteSettings,
         queue_capacity_frames: usize,
         permission: OperatorPermissionPolicy,
         deadline: OperatorDeadlinePolicy,
@@ -160,8 +160,8 @@ impl AsyncOperatorManifest {
             revision,
             generation,
             node,
-            input_edge,
-            output_edge,
+            input_route_settings,
+            output_route_settings,
             queue_capacity_frames,
             permission,
             deadline,
@@ -189,20 +189,12 @@ impl AsyncOperatorManifest {
         &self.node
     }
 
-    pub const fn input_edge(&self) -> EdgeContract {
-        self.input_edge
+    pub const fn input_route_settings(&self) -> RouteSettings {
+        self.input_route_settings
     }
 
-    pub const fn input_route_settings(&self) -> crate::graph::RouteSettings {
-        self.input_edge
-    }
-
-    pub const fn output_edge(&self) -> EdgeContract {
-        self.output_edge
-    }
-
-    pub const fn output_route_settings(&self) -> crate::graph::RouteSettings {
-        self.output_edge
+    pub const fn output_route_settings(&self) -> RouteSettings {
+        self.output_route_settings
     }
 
     pub const fn queue_capacity_frames(&self) -> usize {
@@ -268,11 +260,11 @@ impl AsyncOperatorManifest {
             return Err(AsyncOperatorManifestError::RealtimePartition);
         }
         if !self.node.safety.is_valid_for(self.node.execution) {
-            return Err(AsyncOperatorManifestError::InvalidSafetyContract);
+            return Err(AsyncOperatorManifestError::InvalidExecutionSafety);
         }
         if matches!(
             self.node.safety,
-            SafetyContract::NetworkAllowed | SafetyContract::ExternalService
+            ExecutionSafety::NetworkAllowed | ExecutionSafety::ExternalService
         ) && !self.permission.network_allowed
         {
             return Err(AsyncOperatorManifestError::NetworkPermissionMismatch);
@@ -291,7 +283,11 @@ impl AsyncOperatorManifest {
             if !input_port.media.supports_signal(&input_port.signal) {
                 return Err(AsyncOperatorManifestError::InputSignalMediaMismatch);
             }
-            if !self.input_edge.media.is_compatible_with(&input_port.media) {
+            if !self
+                .input_route_settings
+                .media
+                .is_compatible_with(&input_port.media)
+            {
                 return Err(AsyncOperatorManifestError::InputEdgeMediaMismatch);
             }
         }
@@ -304,20 +300,20 @@ impl AsyncOperatorManifest {
                 return Err(AsyncOperatorManifestError::OutputSignalMediaMismatch);
             }
             if !self
-                .output_edge
+                .output_route_settings
                 .media
                 .is_compatible_with(&output_port.media)
             {
                 return Err(AsyncOperatorManifestError::OutputEdgeMediaMismatch);
             }
         }
-        if self.input_edge.backpressure != BackpressurePolicy::DropNewest {
+        if self.input_route_settings.backpressure != BackpressurePolicy::DropNewest {
             return Err(AsyncOperatorManifestError::UnsupportedBackpressure);
         }
-        if self.input_edge.copy_policy != CopyPolicy::CopyToBranchPool {
+        if self.input_route_settings.copy_policy != CopyPolicy::CopyToBranchPool {
             return Err(AsyncOperatorManifestError::UnsupportedInputCopyPolicy);
         }
-        if self.output_edge.backpressure != BackpressurePolicy::BoundedQueue {
+        if self.output_route_settings.backpressure != BackpressurePolicy::BoundedQueue {
             return Err(AsyncOperatorManifestError::UnsupportedOutputBackpressure);
         }
         self.output_roles.validate()?;
@@ -339,9 +335,9 @@ pub enum AsyncOperatorManifestError {
     ZeroProcessTimeout,
     #[error("async operator cannot execute in a realtime partition")]
     RealtimePartition,
-    #[error("operator safety contract does not match its execution partition")]
-    InvalidSafetyContract,
-    #[error("operator safety contract requires network permission")]
+    #[error("operator execution safety does not match its execution partition")]
+    InvalidExecutionSafety,
+    #[error("operator execution safety requires network permission")]
     NetworkPermissionMismatch,
     #[error("operator manifest has no typed input port")]
     MissingInputPort,

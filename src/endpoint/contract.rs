@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::frame::{
     FrameLineage, OutputGenerationId, SampleFormat, SampleSpec, SourceId, StreamId,
 };
-use crate::graph::{EdgeContract, MediaCaps, PrepareContext, SignalEnvelope, SignalSpec};
+use crate::graph::{MediaCaps, PrepareContext, RouteSettings, SignalEnvelope, SignalSpec};
 use crate::runtime::{
     PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver, TypedEdgeReceiver,
 };
@@ -196,7 +196,7 @@ pub struct EndpointPortInput {
     port_name: String,
     signal: SignalSpec,
     media: MediaCaps,
-    edge_contract: EdgeContract,
+    route_settings: RouteSettings,
     receiver: EndpointReceiver,
     context: EndpointPrepareContext,
 }
@@ -206,7 +206,7 @@ impl EndpointPortInput {
         port_name: impl Into<String>,
         signal: SignalSpec,
         media: MediaCaps,
-        edge_contract: EdgeContract,
+        route_settings: RouteSettings,
         receiver: PlanEdgeReceiver,
         prepare_context: PrepareContext,
         context: EndpointPrepareContext,
@@ -215,7 +215,7 @@ impl EndpointPortInput {
             port_name: port_name.into(),
             signal,
             media,
-            edge_contract,
+            route_settings,
             receiver: EndpointReceiver::Audio {
                 receiver: EndpointAudioReceiver::new(receiver),
                 sample_spec: prepare_context.sample_spec,
@@ -228,7 +228,7 @@ impl EndpointPortInput {
         port_name: impl Into<String>,
         signal: SignalSpec,
         media: MediaCaps,
-        edge_contract: EdgeContract,
+        route_settings: RouteSettings,
         receiver: TypedEdgeReceiver,
         context: EndpointPrepareContext,
     ) -> Self {
@@ -236,7 +236,7 @@ impl EndpointPortInput {
             port_name: port_name.into(),
             signal,
             media,
-            edge_contract,
+            route_settings,
             receiver: EndpointReceiver::Signal(EndpointSignalReceiver::new(receiver)),
             context,
         }
@@ -254,13 +254,9 @@ impl EndpointPortInput {
         &self.media
     }
 
-    pub const fn edge_contract(&self) -> &EdgeContract {
-        &self.edge_contract
-    }
-
     /// Returns the accepted media and delivery behavior for this input route.
     pub const fn route_settings(&self) -> &crate::RouteSettings {
-        &self.edge_contract
+        &self.route_settings
     }
 
     pub const fn context(&self) -> &EndpointPrepareContext {

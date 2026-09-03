@@ -239,7 +239,7 @@ pub(super) fn prepare_endpoints(
                 mapping.input_port,
                 mapping.signal_spec,
                 mapping.media,
-                mapping.edge_contract,
+                mapping.route_settings,
                 mapping.receiver,
                 mapping.prepare_context,
                 context,

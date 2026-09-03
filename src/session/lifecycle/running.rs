@@ -17,7 +17,7 @@ use crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId};
 use crate::runtime::{
     AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations,
     AsyncOperatorOutput, AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncRuntimeHost,
-    CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec,
+    CompiledOperatorInputDetails, GeneratedAudioBridge, GeneratedAudioBridgeSpec,
     PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendError,
     PlanSourceSendOutcome, RealtimePlanRunner, SessionOperatorInput, SidecarHost, SidecarHostError,
     SidecarHostSnapshot, SidecarMessage,
@@ -144,7 +144,7 @@ type SignalEndpointPreparationResult = Result<
 
 struct OperatorFinalizationOutcome {
     operator_instance_id: OperatorInstanceId,
-    input_edge: crate::runtime::EdgeObservations,
+    input_delivery: crate::runtime::EdgeObservations,
     input_ports: Box<[SessionOperatorInputMetrics]>,
     observations: AsyncOperatorObservations,
     audio_reentries: Box<[SessionAudioReentryMetrics]>,
@@ -362,9 +362,9 @@ impl RunningSession {
                     });
                     SessionOperatorMetrics {
                         operator_instance_id: binding.instance_id,
-                        input_edge: finalized.map_or_else(
+                        input_delivery: finalized.map_or_else(
                             || OperatorInputObservationBinding::aggregate(&binding.input_edges),
-                            |observation| observation.input_edge,
+                            |observation| observation.input_delivery,
                         ),
                         input_ports: finalized.map_or_else(
                             || OperatorInputObservationBinding::per_port(&binding.input_edges),
@@ -388,7 +388,7 @@ impl RunningSession {
                         })
                         .map(|observation| SessionOperatorMetrics {
                             operator_instance_id: observation.operator_instance_id,
-                            input_edge: observation.input_edge,
+                            input_delivery: observation.input_delivery,
                             input_ports: observation.input_ports.clone(),
                             worker: observation.observations,
                             finalization_failures_total: observation.finalization_failures_total,
@@ -516,7 +516,7 @@ impl RunningSession {
             .iter()
             .map(|outcome| FinalOperatorObservation {
                 operator_instance_id: outcome.operator_instance_id,
-                input_edge: outcome.input_edge,
+                input_delivery: outcome.input_delivery,
                 input_ports: outcome.input_ports.clone(),
                 observations: outcome.observations,
                 finalization_failures_total: u64::from(outcome.error.is_some()),
@@ -1353,7 +1353,7 @@ fn prepare_external_source_runtimes(
                             route.input_port,
                             route.signal_spec,
                             route.media,
-                            route.edge_contract,
+                            route.route_settings,
                             receiver.receiver,
                             context,
                         )],
@@ -1390,7 +1390,7 @@ fn prepare_external_source_runtimes(
                             edge_id: Some(input.edge_id),
                             signal_spec: input.signal_spec,
                             media: input.media,
-                            edge_contract: input.edge_contract,
+                            route_settings: input.route_settings,
                             capacity_signals: input.capacity_signals,
                         },
                     });
@@ -1428,7 +1428,7 @@ fn prepare_operator_runtimes(
                     input_port,
                     signal_spec,
                     media,
-                    edge_contract,
+                    route_settings,
                     capacity_signals,
                     ..
                 } => Some((
@@ -1437,7 +1437,7 @@ fn prepare_operator_runtimes(
                         *edge_id,
                         signal_spec.clone(),
                         *media,
-                        *edge_contract,
+                        *route_settings,
                         *capacity_signals,
                     ),
                 )),
@@ -1496,7 +1496,7 @@ fn prepare_operator_runtimes(
                     input_port,
                     signal_spec,
                     media,
-                    edge_contract,
+                    route_settings,
                     capacity_signals,
                     receiver,
                 } => {
@@ -1505,7 +1505,7 @@ fn prepare_operator_runtimes(
                         observation: OperatorInputObservation::Plan(receiver.observation_handle()),
                     });
                     worker_inputs.push(SessionOperatorInput::Compiled {
-                        contract: CompiledOperatorInputContract {
+                        details: CompiledOperatorInputDetails {
                             edge_id: receiver.edge_id(),
                             operator_node: node_id,
                             session_id,
@@ -1514,7 +1514,7 @@ fn prepare_operator_runtimes(
                             input_port,
                             signal_spec,
                             media,
-                            edge_contract,
+                            route_settings,
                             capacity_signals,
                         },
                         receiver,
@@ -1525,7 +1525,7 @@ fn prepare_operator_runtimes(
                     input_port,
                     signal_spec,
                     media,
-                    edge_contract,
+                    route_settings,
                     capacity_signals,
                     origin,
                 } => {
@@ -1549,7 +1549,7 @@ fn prepare_operator_runtimes(
                     if pending.input.edge_id != Some(edge_id)
                         || pending.input.signal_spec != signal_spec
                         || pending.input.media != media
-                        || pending.input.edge_contract != edge_contract
+                        || pending.input.route_settings != route_settings
                         || pending.input.capacity_signals != capacity_signals
                     {
                         let rollback = rollback_operator_runtimes(host, prepared);
@@ -1684,7 +1684,7 @@ fn prepare_operator_runtimes(
                     operator_instance_id,
                     input_port,
                 } => {
-                    let Some((edge_id, signal_spec, media, edge_contract, capacity_signals)) =
+                    let Some((edge_id, signal_spec, media, route_settings, capacity_signals)) =
                         typed_contracts
                             .get(&(operator_instance_id, input_port.clone()))
                             .cloned()
@@ -1704,7 +1704,7 @@ fn prepare_operator_runtimes(
                             SessionStartError::OperatorPrepare {
                                 operator_instance_id,
                                 message: format!(
-                                    "compiled downstream typed input '{input_port}' has no edge contract"
+                                    "compiled downstream typed input '{input_port}' has no route settings"
                                 ),
                                 rollback_failures_total: rollback.failures_total(),
                             },
@@ -1720,7 +1720,7 @@ fn prepare_operator_runtimes(
                             edge_id: Some(edge_id),
                             signal_spec,
                             media,
-                            edge_contract,
+                            route_settings,
                             capacity_signals,
                         },
                     });
@@ -1827,8 +1827,8 @@ fn collect_and_prepare_operator_endpoint_inputs(
             input: EndpointPortInput::signal(
                 mapping.input_port,
                 mapping.signal_spec,
-                mapping.output_branch.edge_contract.media,
-                mapping.output_branch.edge_contract,
+                mapping.output_branch.route_settings.media,
+                mapping.output_branch.route_settings,
                 input.output,
                 context,
             ),
@@ -2115,7 +2115,7 @@ fn terminate_operators(
     operators
         .into_iter()
         .map(|operator| {
-            let input_edge = OperatorInputObservationBinding::aggregate(&operator.input_edges);
+            let input_delivery = OperatorInputObservationBinding::aggregate(&operator.input_edges);
             let input_ports = OperatorInputObservationBinding::per_port(&operator.input_edges);
             let result = match termination {
                 OperatorTermination::Finish => host.execute(
@@ -2152,7 +2152,7 @@ fn terminate_operators(
                 .into_boxed_slice();
             OperatorFinalizationOutcome {
                 operator_instance_id: operator.instance_id,
-                input_edge,
+                input_delivery,
                 input_ports,
                 observations: operator.observations.snapshot(),
                 audio_reentries,

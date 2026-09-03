@@ -76,7 +76,7 @@ impl AspReader {
     /// Read up to `frame_count` interleaved f32 frames into `buf`.
     /// Returns the frame count and native position of the first returned frame.
     ///
-    /// # Safety contract
+    /// # Safety
     /// `buf.len()` must be >= `frame_count * channels()`.
     pub fn read_frames(&mut self, buf: &mut [f32], frame_count: u32) -> AspReadBatch {
         let mut source_frame_position = 0u64;

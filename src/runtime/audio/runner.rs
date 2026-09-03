@@ -462,8 +462,8 @@ mod tests {
     use crate::graph::registry::{NodeFactory, NodeRegistry};
     use crate::graph::{register_builtins, PrepareContext, RuntimeNode};
     use crate::graph::{
-        AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract,
-        SignalSpec,
+        AudioCaps, ChannelLayout, ExecutionSafety, MediaCaps, Multiplicity, PortDirection,
+        PortSpec, SignalSpec,
     };
 
     use super::*;
@@ -491,7 +491,7 @@ mod tests {
                 }],
                 outputs: Vec::new(),
                 execution: ExecutionPartition::AsyncWorker,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: true,
             }
         }

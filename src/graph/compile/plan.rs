@@ -6,7 +6,7 @@
 use crate::graph::ir::GraphIr;
 use crate::graph::partition::ExecutionPartition;
 use crate::graph::plan::*;
-use crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity};
+use crate::graph::ports::{CopyPolicy, MediaCaps, Multiplicity, RouteSettings};
 use crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
 pub struct RuntimePlanner;
 
@@ -188,7 +188,7 @@ impl RuntimePlanner {
                         CopyPolicy::CopyToBranchPool
                     }
                 },
-                |contract| contract.copy_policy,
+                |route_settings| route_settings.copy_policy,
             );
             let buffer = EdgeBufferPlan {
                 edge: edge.spec.id,
@@ -220,9 +220,9 @@ impl RuntimePlanner {
             .iter()
             .filter(|edge| !Self::edge_uses_realtime_audio_lane(ir, edge))
             .map(|edge| {
-                let contract = edge
-                    .contract
-                    .ok_or(PlanError::MissingEdgeContract { edge: edge.spec.id })?;
+                let route_settings = edge
+                    .route_settings
+                    .ok_or(PlanError::MissingRouteSettings { edge: edge.spec.id })?;
                 let signal = ir
                     .node(edge.spec.from.node)
                     .and_then(|node| {
@@ -244,8 +244,8 @@ impl RuntimePlanner {
                     to: edge.spec.to.clone(),
                     signal,
                     media: edge.media,
-                    contract,
-                    capacity_signals: Self::capacity_frames(&edge.media, Some(&contract)),
+                    route_settings,
+                    capacity_signals: Self::capacity_frames(&edge.media, Some(&route_settings)),
                     metric_id,
                 })
             })
@@ -272,16 +272,17 @@ impl RuntimePlanner {
                 .is_some_and(|node| node.descriptor.execution.requires_realtime_safety())
     }
 
-    fn capacity_frames(media: &MediaCaps, requested: Option<&EdgeContract>) -> usize {
-        let Some(jitter_budget_ms) = requested.and_then(|contract| contract.jitter_budget_ms)
+    fn capacity_frames(media: &MediaCaps, requested: Option<&RouteSettings>) -> usize {
+        let Some(jitter_budget_ms) =
+            requested.and_then(|route_settings| route_settings.jitter_budget_ms)
         else {
             return EDGE_RING_CAPACITY_FRAMES;
         };
-        let sizing_media = requested.map_or(media, |contract| match &contract.media {
+        let sizing_media = requested.map_or(media, |route_settings| match &route_settings.media {
             MediaCaps::Audio(audio)
                 if audio.sample_rate_hz.is_some() && audio.frame_samples.is_some() =>
             {
-                &contract.media
+                &route_settings.media
             }
             _ => media,
         });
@@ -363,8 +364,8 @@ mod tests {
     use crate::graph::compile::Compiler;
     use crate::graph::dsl::Pipeline;
     use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext};
-    use crate::graph::partition::{ExecutionPartition, SafetyContract};
-    use crate::graph::ports::{AudioCaps, ChannelLayout, EdgeContract, PortDirection, PortSpec};
+    use crate::graph::partition::{ExecutionPartition, ExecutionSafety};
+    use crate::graph::ports::{AudioCaps, ChannelLayout, PortDirection, PortSpec, RouteSettings};
     use crate::graph::registry::{NodeFactory, NodeRegistry};
     use crate::graph::runtime_node::RuntimeNode;
 
@@ -400,9 +401,9 @@ mod tests {
             inputs,
             outputs,
             safety: if execution.requires_realtime_safety() {
-                SafetyContract::RealtimeSafe
+                ExecutionSafety::RealtimeSafe
             } else {
-                SafetyContract::ExternalService
+                ExecutionSafety::ExternalService
             },
             execution,
             stateful: false,
@@ -646,7 +647,7 @@ mod tests {
         let source = graph.add_node("source", NodeConfig::new());
         let left = graph.add_node("transform", NodeConfig::new());
         let right = graph.add_node("transform", NodeConfig::new());
-        let mut exclusive = EdgeContract::realtime_audio();
+        let mut exclusive = RouteSettings::realtime_audio();
         exclusive.copy_policy = CopyPolicy::MoveExclusive;
         graph.connect_with(source.out("audio"), left.in_("audio"), exclusive);
         graph.connect(source.out("audio"), right.in_("audio"));
@@ -739,7 +740,7 @@ mod tests {
         let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
-        let mut copy_contract = EdgeContract::realtime_audio();
+        let mut copy_contract = RouteSettings::realtime_audio();
         copy_contract.copy_policy = CopyPolicy::CopyToBranchPool;
         let edge_id = graph.connect_with(source.out("audio"), sink.in_("audio"), copy_contract);
         let ir = compile(graph, &registry);
@@ -761,16 +762,16 @@ mod tests {
         let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
-        let mut contract = EdgeContract::realtime_audio();
-        contract.media = MediaCaps::Audio(AudioCaps {
+        let mut route_settings = RouteSettings::realtime_audio();
+        route_settings.media = MediaCaps::Audio(AudioCaps {
             sample_rate_hz: Some(48_000),
             frame_samples: Some(960),
             channel_layout: ChannelLayout::Mono,
             format: SampleFormat::F32Interleaved,
         });
-        contract.jitter_budget_ms = Some(1_000);
-        contract.copy_policy = CopyPolicy::CopyToBranchPool;
-        let edge_id = graph.connect_with(source.out("audio"), sink.in_("audio"), contract);
+        route_settings.jitter_budget_ms = Some(1_000);
+        route_settings.copy_policy = CopyPolicy::CopyToBranchPool;
+        let edge_id = graph.connect_with(source.out("audio"), sink.in_("audio"), route_settings);
         let ir = compile(graph, &registry);
 
         let plan = RuntimePlanner::new().plan(&ir).unwrap();

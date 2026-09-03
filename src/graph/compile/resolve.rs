@@ -6,8 +6,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::graph::ports::{
-    BackpressurePolicy, ChannelLayout, ClockDomain, EdgeContract, MediaCaps, PortDirection,
-    PortSpec,
+    BackpressurePolicy, ChannelLayout, ClockDomain, MediaCaps, PortDirection, PortSpec,
+    RouteSettings,
 };
 
 use crate::graph::ir::{GraphIr, ResolvedEdge, ResolvedNode};
@@ -48,11 +48,11 @@ pub enum CompileError {
     #[error(
         "node {node} ({type_id}) safety {safety:?} is incompatible with partition {execution:?}"
     )]
-    InvalidSafetyContract {
+    InvalidExecutionSafety {
         node: u32,
         type_id: String,
         execution: crate::graph::partition::ExecutionPartition,
-        safety: crate::graph::partition::SafetyContract,
+        safety: crate::graph::partition::ExecutionSafety,
     },
     #[error("edge {edge}: invalid realtime boundary: {reason}")]
     InvalidRealtimeEdge { edge: u32, reason: String },
@@ -206,7 +206,7 @@ impl GraphPass for InsertAdapterNodesPass {
                     requested: None,
                 },
                 media: MediaCaps::Any,
-                contract: None,
+                route_settings: None,
             });
         }
         ir.edges.extend(added_edges);
@@ -229,9 +229,9 @@ impl GraphPass for ValidateNodeIdsPass {
     }
 }
 
-pub struct ValidateSafetyContractsPass;
+pub struct ValidateExecutionSafetyPass;
 
-impl GraphPass for ValidateSafetyContractsPass {
+impl GraphPass for ValidateExecutionSafetyPass {
     fn run(&self, ir: &mut GraphIr, _cx: &CompileContext) -> Result<(), CompileError> {
         for node in &ir.nodes {
             if !node
@@ -239,7 +239,7 @@ impl GraphPass for ValidateSafetyContractsPass {
                 .safety
                 .is_valid_for(node.descriptor.execution)
             {
-                return Err(CompileError::InvalidSafetyContract {
+                return Err(CompileError::InvalidExecutionSafety {
                     node: node.id().index(),
                     type_id: node.type_str().to_owned(),
                     execution: node.descriptor.execution,
@@ -286,8 +286,8 @@ impl GraphPass for ValidateClockDomainsPass {
         let mut seen: Vec<(InputPortRef, ClockDomain)> = Vec::new();
         for edge in &ir.edges {
             let clock = edge
-                .contract
-                .map_or(ClockDomain::Capture, |contract| contract.clock);
+                .route_settings
+                .map_or(ClockDomain::Capture, |route_settings| route_settings.clock);
             match seen.iter().find(|(port, _)| *port == edge.spec.to) {
                 Some((_, expected)) if *expected != clock => {
                     return Err(CompileError::ClockDomainMismatch {
@@ -355,25 +355,28 @@ impl GraphPass for NegotiateCapsPass {
                         to: format!("{to_media:?}"),
                     })?;
             edge.media = negotiated;
-            let mut contract = edge.spec.requested.unwrap_or_else(|| {
+            let mut route_settings = edge.spec.requested.unwrap_or_else(|| {
                 if matches!(negotiated, MediaCaps::Audio(_))
                     && from.descriptor.execution.requires_realtime_safety()
                 {
-                    EdgeContract::realtime_audio()
+                    RouteSettings::realtime_audio()
                 } else {
-                    EdgeContract::bounded_async()
+                    RouteSettings::bounded_async()
                 }
             });
-            contract.media = contract.media.negotiate(&negotiated).unwrap_or(negotiated);
-            edge.contract = Some(contract);
+            route_settings.media = route_settings
+                .media
+                .negotiate(&negotiated)
+                .unwrap_or(negotiated);
+            edge.route_settings = Some(route_settings);
         }
         Ok(())
     }
 }
 
-pub struct ValidateRealtimeBoundariesPass;
+pub struct ValidateRealtimeRoutesPass;
 
-impl GraphPass for ValidateRealtimeBoundariesPass {
+impl GraphPass for ValidateRealtimeRoutesPass {
     fn run(&self, ir: &mut GraphIr, _cx: &CompileContext) -> Result<(), CompileError> {
         for edge in &ir.edges {
             let from = find_node(&ir.nodes, edge.spec.from.node)?;
@@ -381,7 +384,8 @@ impl GraphPass for ValidateRealtimeBoundariesPass {
             let producer_async = !from.descriptor.execution.requires_realtime_safety();
             if producer_async && to.descriptor.execution.requires_realtime_safety() {
                 let non_blocking = matches!(
-                    edge.contract.map(|contract| contract.backpressure),
+                    edge.route_settings
+                        .map(|route_settings| route_settings.backpressure),
                     Some(BackpressurePolicy::DropNewest) | Some(BackpressurePolicy::DropOldest)
                 );
                 if !non_blocking {
@@ -452,10 +456,10 @@ impl Compiler {
                 Box::new(ValidateNodeIdsPass),
                 Box::new(ValidatePortsPass),
                 Box::new(InsertAdapterNodesPass),
-                Box::new(ValidateSafetyContractsPass),
+                Box::new(ValidateExecutionSafetyPass),
                 Box::new(NegotiateCapsPass),
                 Box::new(ValidateClockDomainsPass),
-                Box::new(ValidateRealtimeBoundariesPass),
+                Box::new(ValidateRealtimeRoutesPass),
                 Box::new(CycleDetectionPass),
             ],
         }
@@ -498,7 +502,7 @@ impl Compiler {
             .map(|spec| ResolvedEdge {
                 spec,
                 media: MediaCaps::Any,
-                contract: None,
+                route_settings: None,
             })
             .collect();
         Ok(GraphIr {
@@ -526,7 +530,7 @@ mod tests {
     use crate::graph::builtins::PassthroughNode;
     use crate::graph::dsl::Pipeline;
     use crate::graph::node::{ConfigError, NodeConfig, NodeTypeId, PrepareContext};
-    use crate::graph::partition::{ExecutionPartition, SafetyContract};
+    use crate::graph::partition::{ExecutionPartition, ExecutionSafety};
     use crate::graph::ports::{AudioCaps, ChannelLayout, Multiplicity};
     use crate::graph::registry::NodeFactory;
     use crate::graph::runtime_node::RuntimeNode;
@@ -578,9 +582,9 @@ mod tests {
             inputs,
             outputs,
             safety: if execution.requires_realtime_safety() {
-                SafetyContract::RealtimeSafe
+                ExecutionSafety::RealtimeSafe
             } else {
-                SafetyContract::ExternalService
+                ExecutionSafety::ExternalService
             },
             execution,
             stateful: false,
@@ -831,7 +835,7 @@ mod tests {
                 inputs: Vec::new(),
                 outputs: Vec::new(),
                 execution: ExecutionPartition::RealtimeCpu,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: false,
             }
         }
@@ -1005,16 +1009,16 @@ mod tests {
             .compile(graph.into_spec(), &registry)
             .unwrap();
         let edge = &ir.edges[0];
-        let contract = edge.contract.expect("negotiated edge contract");
+        let route_settings = edge.route_settings.expect("negotiated edge route_settings");
 
         assert_eq!(
             edge.media,
             MediaCaps::Binary(crate::graph::BinaryFormat::Raw)
         );
-        assert_eq!(contract.media(), edge.media);
-        assert_eq!(contract.clock(), ClockDomain::Inherited);
+        assert_eq!(route_settings.media(), edge.media);
+        assert_eq!(route_settings.clock(), ClockDomain::Inherited);
         assert_eq!(
-            contract.max_payload_bytes(),
+            route_settings.max_payload_bytes(),
             Some(crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)
         );
     }
@@ -1118,7 +1122,7 @@ mod tests {
             .compile(graph.into_spec(), &registry)
             .unwrap_err();
 
-        assert!(matches!(error, CompileError::InvalidSafetyContract { .. }));
+        assert!(matches!(error, CompileError::InvalidExecutionSafety { .. }));
     }
 
     #[test]
@@ -1128,9 +1132,9 @@ mod tests {
         let mut graph = Pipeline::new();
         let model = graph.add_node("model.async", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
-        let bounded = EdgeContract {
+        let bounded = RouteSettings {
             backpressure: BackpressurePolicy::BoundedQueue,
-            ..EdgeContract::realtime_audio()
+            ..RouteSettings::realtime_audio()
         };
         graph.connect_with(model.out("audio"), sink.in_("audio"), bounded);
 
@@ -1150,7 +1154,7 @@ mod tests {
         graph.connect_with(
             model.out("audio"),
             sink.in_("audio"),
-            EdgeContract::realtime_audio(), // backpressure == DropNewest
+            RouteSettings::realtime_audio(), // backpressure == DropNewest
         );
 
         assert!(Compiler::new()
@@ -1182,9 +1186,9 @@ mod tests {
         let network = graph.add_node("source", NodeConfig::new());
         let mixer = graph.add_node("mixer", NodeConfig::new());
         graph.connect(capture.out("audio"), mixer.in_("audio"));
-        let network_edge = EdgeContract {
+        let network_edge = RouteSettings {
             clock: ClockDomain::Network,
-            ..EdgeContract::realtime_audio()
+            ..RouteSettings::realtime_audio()
         };
         graph.connect_with(network.out("audio"), mixer.in_("audio"), network_edge);
 

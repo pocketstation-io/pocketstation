@@ -1,4 +1,4 @@
-//! SignalSpec — two-level typed signal contract for graph ports.
+//! SignalSpec — typed signal declarations for graph ports.
 //!
 //! Every port in the graph declares a `SignalSpec`.  The compiler validates
 //! `SignalClass` compatibility on edge connections; `SemanticRole` is advisory
@@ -190,7 +190,7 @@ impl SignalClass {
     }
 }
 
-/// Full signal contract for a single port.
+/// Complete signal declaration for one port.
 ///
 /// ```
 /// use pocketstation::{SignalSpec, TextFormat};
@@ -260,7 +260,7 @@ impl SignalSpec {
         }
     }
 
-    /// Convenience constructor for a deliberately open boundary port.
+    /// Convenience constructor for a deliberately open port.
     pub fn any() -> Self {
         Self::new(SignalClass::Any)
     }

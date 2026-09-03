@@ -1,8 +1,9 @@
-//! Stable graph-extension contracts.
+//! Stable APIs for extending the graph.
 //!
-//! This namespace exposes signal, media, port, partition, and extension
-//! contracts. Declaration builders, registries, compiler stages, IR, runtime
-//! plans, and executable nodes are private engine implementation.
+//! This namespace exposes signals, media requirements, ports, execution
+//! partitions, and extension types. Declaration builders, registries, compiler
+//! stages, intermediate data, runtime plans, and executable nodes remain
+//! private implementation.
 
 #[cfg(any(test, feature = "internal-testing"))]
 pub mod builtins;
@@ -34,24 +35,23 @@ pub use node::{
 pub use operator::OperatorId;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use operator::OPERATOR_ID_SYNTAX_VERSION;
-pub use partition::{ExecutionPartition, ExecutionSafety, SafetyContract};
+pub use partition::{ExecutionPartition, ExecutionSafety};
 #[cfg(test)]
 pub(crate) use ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES;
 pub use ports::{
     AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliveryPolicy,
-    DeliverySemantics, EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind,
-    Multiplicity, PortDirection, PortSpec, RouteObservability, RouteSettings,
-    MAX_ASYNC_PAYLOAD_BYTES,
+    DeliverySemantics, LossPolicy, MediaCaps, MediaKind, Multiplicity, PortDirection, PortSpec,
+    RouteObservability, RouteSettings, MAX_ASYNC_PAYLOAD_BYTES,
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use registry::NodeDefinitionRef;
 pub use registry::{NodeDefinition, NodeFactory, NodeRegistrationError, NodeRegistry};
 pub use runtime_node::RuntimeNode;
 pub use signal::{
-    AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext,
-    SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation,
-    SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalLineageError,
-    SignalPayload, SignalTiming, SignalTimingError,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorPrepareContext, SignalContinuityError,
+    SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError,
+    SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalLineageError, SignalPayload,
+    SignalTiming, SignalTimingError,
 };
 pub use signal::{
     AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,

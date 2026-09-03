@@ -35,7 +35,7 @@ A Session declaration may contain:
 - polled audio for application code;
 - multistem recording;
 - managed sidecars and trusted native extensions; and
-- a bounded Session trace.
+- a Session trace with a configured record capacity.
 
 Declarations are setup-time work. Capture callbacks do not register routes,
 allocate providers, or call application code.

@@ -6,8 +6,8 @@ use crate::endpoint::OperatorId;
 use crate::frame::SampleSpec;
 use crate::frame::{ConnectorId, EndpointId, RouteId, SourceId, StemId, StreamId};
 use crate::graph::{
-    AsyncOperatorFactory, EdgeContract, EdgeId, MediaCaps, NodeConfig, NodeId, NodeTypeId,
-    PrepareContext, SignalSpec,
+    AsyncOperatorFactory, EdgeId, MediaCaps, NodeConfig, NodeId, NodeTypeId, PrepareContext,
+    RouteSettings, SignalSpec,
 };
 use crate::runtime::{
     AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanSourceSender, TypedEdgeBranchSpec,
@@ -42,7 +42,7 @@ pub struct PreparedWorkerMapping {
     pub(crate) input_port: String,
     pub(crate) signal_spec: SignalSpec,
     pub(crate) media: MediaCaps,
-    pub(crate) edge_contract: EdgeContract,
+    pub(crate) route_settings: RouteSettings,
     pub(crate) origin: PreparedWorkerOrigin,
 }
 
@@ -91,7 +91,7 @@ pub(crate) struct PreparedExternalOperatorInput {
     pub(crate) edge_id: EdgeId,
     pub(crate) signal_spec: SignalSpec,
     pub(crate) media: MediaCaps,
-    pub(crate) edge_contract: EdgeContract,
+    pub(crate) route_settings: RouteSettings,
     pub(crate) capacity_signals: usize,
 }
 
@@ -125,7 +125,7 @@ pub(crate) struct PreparedExternalTypedRoute {
     pub(crate) input_port: String,
     pub(crate) signal_spec: SignalSpec,
     pub(crate) media: MediaCaps,
-    pub(crate) edge_contract: EdgeContract,
+    pub(crate) route_settings: RouteSettings,
 }
 
 pub struct PreparedSignalRouteMapping {
@@ -172,7 +172,7 @@ pub(crate) enum PreparedOperatorInputMapping {
         input_port: String,
         signal_spec: SignalSpec,
         media: MediaCaps,
-        edge_contract: EdgeContract,
+        route_settings: RouteSettings,
         capacity_signals: usize,
         receiver: PlanEdgeReceiver,
     },
@@ -181,7 +181,7 @@ pub(crate) enum PreparedOperatorInputMapping {
         input_port: String,
         signal_spec: SignalSpec,
         media: MediaCaps,
-        edge_contract: EdgeContract,
+        route_settings: RouteSettings,
         capacity_signals: usize,
         origin: PreparedTypedInputOrigin,
     },

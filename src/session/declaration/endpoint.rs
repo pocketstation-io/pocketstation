@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 pub use crate::graph::OperatorId;
-use crate::graph::{EdgeContract, NodeTypeId, RouteSettings};
+use crate::graph::{NodeTypeId, RouteSettings};
 
 use crate::session::SessionError;
 
@@ -111,7 +111,7 @@ pub struct EndpointDescriptor {
     node_type_id: NodeTypeId,
     operator_id: OperatorId,
     configuration: EndpointConfiguration,
-    input_edge: Option<EdgeContract>,
+    route_settings: Option<RouteSettings>,
 }
 
 impl EndpointDescriptor {
@@ -120,7 +120,7 @@ impl EndpointDescriptor {
             node_type_id,
             operator_id,
             configuration: EndpointConfiguration::new(),
-            input_edge: None,
+            route_settings: None,
         }
     }
 
@@ -129,18 +129,9 @@ impl EndpointDescriptor {
         self
     }
 
-    /// Declares the bounded delivery policy for routes entering this endpoint.
-    ///
-    /// Endpoint packages own this policy. The Session compiler validates and
-    /// lowers it without recognizing provider, recorder, or transport names.
-    pub fn with_input_edge(mut self, input_edge: EdgeContract) -> Self {
-        self.input_edge = Some(input_edge);
-        self
-    }
-
     /// Selects the media and delivery behavior for routes entering this Endpoint.
     pub fn with_route_settings(mut self, settings: RouteSettings) -> Self {
-        self.input_edge = Some(settings);
+        self.route_settings = Some(settings);
         self
     }
 
@@ -156,13 +147,9 @@ impl EndpointDescriptor {
         &self.configuration
     }
 
-    pub const fn input_edge(&self) -> Option<EdgeContract> {
-        self.input_edge
-    }
-
     /// Returns the media and delivery settings declared for this Endpoint.
     pub const fn route_settings(&self) -> Option<RouteSettings> {
-        self.input_edge
+        self.route_settings
     }
 
     pub(crate) fn validate(&self) -> Result<(), SessionError> {
@@ -185,8 +172,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported(
-    ) {
+    fn given_endpoint_operator_id_when_imported_from_session_then_type_is_reexported() {
         let operator_id: OperatorId = crate::graph::OperatorId::new("connector.example");
 
         assert_eq!(operator_id.as_str(), "connector.example");

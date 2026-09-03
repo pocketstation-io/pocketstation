@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use crate::graph::{
-    ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec,
-    SafetyContract, SignalSpec,
+    ConfigError, ExecutionPartition, ExecutionSafety, MediaCaps, Multiplicity, PortDirection,
+    PortSpec, SignalSpec,
 };
 use crate::session::{
     SampleFormat, SampleSpec, SessionEngineBuilder, SessionStartOptions, SourceCancellation,
@@ -75,7 +75,7 @@ fn factory(revision: u32) -> Arc<dyn SourceFactory> {
                 required: true,
             }],
             execution: ExecutionPartition::BlockingWorker,
-            safety: SafetyContract::AllocationAllowed,
+            safety: ExecutionSafety::AllocationAllowed,
         },
     })
 }

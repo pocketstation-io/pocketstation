@@ -4,7 +4,7 @@
 //! consumes. No node is executed here; this is the plan, not the run.
 
 use crate::graph::partition::ExecutionPartition;
-use crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps};
+use crate::graph::ports::{CopyPolicy, MediaCaps, RouteSettings};
 use crate::graph::signal::SignalSpec;
 use crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
 
@@ -23,8 +23,8 @@ pub enum PlanError {
     FanInOnSinglePort { node: u32, port: String },
     #[error("output port '{port}' on node {node} uses MoveExclusive in a fan-out group")]
     MoveExclusiveFanOut { node: u32, port: String },
-    #[error("compiled edge {edge:?} is missing its negotiated contract")]
-    MissingEdgeContract { edge: EdgeId },
+    #[error("compiled edge {edge:?} is missing its negotiated route settings")]
+    MissingRouteSettings { edge: EdgeId },
     #[error("compiled edge {edge:?} is missing its declared output signal")]
     MissingOutputSignal { edge: EdgeId },
 }
@@ -99,7 +99,7 @@ pub struct TypedEdgePlan {
     pub to: InputPortRef,
     pub signal: SignalSpec,
     pub media: MediaCaps,
-    pub contract: EdgeContract,
+    pub route_settings: RouteSettings,
     pub capacity_signals: usize,
     pub metric_id: EdgeMetricId,
 }

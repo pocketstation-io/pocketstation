@@ -33,8 +33,7 @@ pub use declaration::{EndpointHandle, Operator, Session, SourceOutputHandle, Ste
 #[cfg(any(test, feature = "internal-testing"))]
 pub use declaration::{OperatorInstanceSpec, StemSpec};
 #[cfg(any(test, feature = "internal-testing"))]
-#[allow(deprecated)]
-pub use declaration::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION};
+pub use declaration::{SessionSpecVersion, SESSION_SPEC_VERSION};
 #[cfg(any(test, feature = "internal-testing"))]
 pub use declaration::{Stream, StreamSignal, TypedOperator, TypedStreamError};
 pub use error::SessionError;
@@ -95,8 +94,7 @@ pub use lifecycle::{
 #[cfg(any(test, feature = "internal-testing"))]
 pub use lifecycle::{
     RouteLatencyMeasurement, SessionEventQueueObservations, SessionRouteDropObservations,
-    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
-    SessionRouteObservationInterval,
+    SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteObservationInterval,
 };
 pub use lifecycle::{
     SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent,
@@ -132,12 +130,11 @@ pub use crate::graph::NodeRegistrationError;
 pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorManifestError, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout,
-    ClockDomain, Codec, ConfigError, CopyPolicy, DeliveryPolicy, DeliverySemantics, EdgeContract,
-    EdgeObservabilityLevel, EventFormat, ExecutionPartition, ExecutionSafety, LossPolicy,
-    MediaCaps, MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError,
-    OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
-    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext,
-    PortSpec, PrepareContext, RouteObservability, RouteSettings, SafetyContract, SchemaRef,
+    ClockDomain, Codec, ConfigError, CopyPolicy, DeliveryPolicy, DeliverySemantics, EventFormat,
+    ExecutionPartition, ExecutionSafety, LossPolicy, MediaCaps, MediaKind, Multiplicity,
+    NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy,
+    OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection,
+    PortPrepareContext, PortSpec, PrepareContext, RouteObservability, RouteSettings, SchemaRef,
     SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation,
     SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope,
     SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError,

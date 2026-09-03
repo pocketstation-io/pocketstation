@@ -7,7 +7,7 @@ use crate::graph::dsl::Pipeline;
 use crate::graph::node::{NodeConfig, PrepareContext};
 use crate::graph::register_builtins;
 use crate::graph::registry::NodeRegistry;
-use crate::graph::{EdgeContract, MediaCaps, SignalSpec};
+use crate::graph::{MediaCaps, RouteSettings, SignalSpec};
 use crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter};
 
 use super::*;
@@ -199,7 +199,7 @@ fn input() -> EndpointPortInput {
         "audio",
         SignalSpec::audio(),
         MediaCaps::Any,
-        EdgeContract::realtime_audio(),
+        RouteSettings::realtime_audio(),
         receiver(),
         prepare_context,
         context(),

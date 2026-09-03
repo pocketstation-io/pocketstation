@@ -51,7 +51,7 @@ pub(super) struct FinalEndpointObservation {
 #[derive(Clone)]
 pub(super) struct FinalOperatorObservation {
     pub(super) operator_instance_id: OperatorInstanceId,
-    pub(super) input_edge: EdgeObservations,
+    pub(super) input_delivery: EdgeObservations,
     pub(super) input_ports: Box<[SessionOperatorInputMetrics]>,
     pub(super) observations: AsyncOperatorObservations,
     pub(super) finalization_failures_total: u64,

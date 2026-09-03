@@ -941,8 +941,8 @@ mod tests {
     use crate::graph::register_builtins;
     use crate::graph::registry::{NodeDefinition, NodeRegistry};
     use crate::graph::{
-        AudioCaps, ChannelLayout, ConfigError, EdgeContract, ExecutionPartition, MediaCaps,
-        Multiplicity, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract,
+        AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, ExecutionSafety, MediaCaps,
+        Multiplicity, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, RouteSettings,
         SignalSpec, TextFormat,
     };
 
@@ -1073,7 +1073,7 @@ mod tests {
                     SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
                 )],
                 execution: ExecutionPartition::AsyncWorker,
-                safety: SafetyContract::AllocationAllowed,
+                safety: ExecutionSafety::AllocationAllowed,
                 stateful: true,
             })))
             .unwrap();
@@ -1088,7 +1088,7 @@ mod tests {
                 )],
                 outputs: Vec::new(),
                 execution: ExecutionPartition::External,
-                safety: SafetyContract::ExternalService,
+                safety: ExecutionSafety::ExternalService,
                 stateful: true,
             })))
             .unwrap();
@@ -1096,9 +1096,9 @@ mod tests {
         let source = graph.add_node("passthrough", NodeConfig::new());
         let operator = graph.add_node("test.stt", NodeConfig::new());
         let sink = graph.add_node("test.text-sink", NodeConfig::new());
-        let mut input_contract = EdgeContract::realtime_audio();
+        let mut input_contract = RouteSettings::realtime_audio();
         input_contract.copy_policy = CopyPolicy::CopyToBranchPool;
-        let mut output_contract = EdgeContract::bounded_async();
+        let mut output_contract = RouteSettings::bounded_async();
         output_contract.media = MediaCaps::Text;
         graph.connect_with(source.out("out"), operator.in_("audio"), input_contract);
         graph.connect_with(operator.out("transcript"), sink.in_("in"), output_contract);
@@ -1113,7 +1113,7 @@ mod tests {
         assert_eq!(plan.memory_plan.edge_buffers.len(), 1);
         assert_eq!(plan.typed_edges.len(), 1);
         assert_eq!(plan.typed_edges[0].media, MediaCaps::Text);
-        assert_eq!(plan.typed_edges[0].contract, output_contract);
+        assert_eq!(plan.typed_edges[0].route_settings, output_contract);
     }
 
     #[test]
@@ -1597,9 +1597,9 @@ mod tests {
         let mut graph = Pipeline::new();
         let source = graph.add_node("passthrough", NodeConfig::new());
         let sink = graph.add_node("passthrough", NodeConfig::new());
-        let mut contract = EdgeContract::realtime_audio();
-        contract.copy_policy = CopyPolicy::CopyToBranchPool;
-        graph.connect_with(source.out("out"), sink.in_("in"), contract);
+        let mut settings = RouteSettings::realtime_audio();
+        settings.copy_policy = CopyPolicy::CopyToBranchPool;
+        graph.connect_with(source.out("out"), sink.in_("in"), settings);
         let ir = Compiler::new()
             .compile(graph.into_spec(), &registry)
             .unwrap();

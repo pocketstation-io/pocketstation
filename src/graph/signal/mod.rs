@@ -1,4 +1,4 @@
-//! Signal vocabulary, envelopes, lineage, and asynchronous Operator contract.
+//! Signal vocabulary, envelopes, lineage, and asynchronous Operator APIs.
 
 mod continuity;
 mod envelope;
@@ -18,9 +18,7 @@ pub use operator::{
     OperatorOutputRolePolicy, OperatorPermissionPolicy,
 };
 pub use payload::SignalPayload;
-pub use preparation::{
-    AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext,
-};
+pub use preparation::{AsyncNodeFuture, AsyncOperatorPrepareContext};
 pub use spec::{
     BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec,
     SignalSpecError, TextFormat,

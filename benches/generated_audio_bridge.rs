@@ -5,7 +5,7 @@ use pocketstation::internal::frame::{
     AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId,
     SourceId, StemId, StreamId,
 };
-use pocketstation::internal::graph::{EdgeContract, NodeId, SignalEnvelope};
+use pocketstation::internal::graph::{NodeId, RouteSettings, SignalEnvelope};
 use pocketstation::internal::runtime::{
     plan_source_channel, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerCancellation,
     TypedEdgeBranchSpec, TypedEdgeFanout,
@@ -22,7 +22,7 @@ fn bench_generated_audio_bridge(c: &mut Criterion) {
             plan_source_channel(NodeId::from_index(1), 8, cancellation).expect("source channel");
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
             capacity_signals: 8,
-            edge_contract: EdgeContract::bounded_async(),
+            route_settings: RouteSettings::bounded_async(),
         }])
         .expect("typed audio edge");
         let bridge = GeneratedAudioBridge::spawn(
