@@ -4,6 +4,16 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.7 — 2026-09-03
+
+Route metrics no longer report a queue depth above the route's configured
+capacity when producer and consumer counters are sampled concurrently. Audio
+delivery and queue storage are unchanged.
+
+```console
+cargo update -p pocketstation --precise 1.1.7
+```
+
 ## 1.1.6 — 2026-09-03
 
 Configure route delivery with one consistent set of names.

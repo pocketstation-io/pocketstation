@@ -294,12 +294,15 @@ impl EdgeTelemetry {
     }
 
     fn queue_depth_frames(&self) -> u64 {
-        self.enqueued_total.load(Ordering::Relaxed).saturating_sub(
-            self.delivered_total
-                .load(Ordering::Relaxed)
-                .saturating_add(self.shutdown_discarded_total.load(Ordering::Relaxed))
-                .saturating_add(self.discarded_output_frames_total.load(Ordering::Relaxed)),
-        )
+        self.enqueued_total
+            .load(Ordering::Relaxed)
+            .saturating_sub(
+                self.delivered_total
+                    .load(Ordering::Relaxed)
+                    .saturating_add(self.shutdown_discarded_total.load(Ordering::Relaxed))
+                    .saturating_add(self.discarded_output_frames_total.load(Ordering::Relaxed)),
+            )
+            .min(self.queue_capacity_frames)
     }
 
     fn observe_output_discard(&self) {
@@ -1527,6 +1530,22 @@ mod tests {
         assert_eq!(snapshot.frames_dropped_total, 1);
         assert_eq!(snapshot.queue_full_drops_total, 1);
         assert_eq!(snapshot.overruns_total, 1);
+    }
+
+    #[test]
+    fn given_delivery_counter_lag_when_queue_depth_is_sampled_then_capacity_is_the_maximum() {
+        // Given
+        let telemetry = EdgeTelemetry::new(8);
+        telemetry.enqueued_total.store(9, Ordering::Relaxed);
+
+        // When
+        telemetry.observe_enqueue();
+        let snapshot = telemetry.snapshot();
+
+        // Then
+        assert_eq!(snapshot.queue_capacity_frames, 8);
+        assert_eq!(snapshot.queue_depth_frames, 8);
+        assert_eq!(snapshot.queue_peak_frames, 8);
     }
 
     #[test]
