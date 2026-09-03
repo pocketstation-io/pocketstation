@@ -2,6 +2,7 @@
 
 mod abi;
 mod capture;
+#[cfg(feature = "opus-codec")]
 pub mod codec;
 pub mod connector;
 mod endpoint;
@@ -175,6 +176,7 @@ pub mod internal {
     pub mod frame {
         pub use crate::frame::*;
     }
+    #[cfg(feature = "opus-codec")]
     pub mod codec {
         pub use crate::codec::*;
     }

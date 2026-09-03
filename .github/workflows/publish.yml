@@ -118,6 +118,15 @@ jobs:
       - name: Cross-document public facade on the configured docs.rs target
         run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu
 
+      - name: Verify capture-only dependencies exclude Opus
+        run: |
+          if cargo tree --locked -e normal -p pocketstation \
+            --no-default-features --features native-capture --prefix none | \
+            grep -E '^(opus|audiopus_sys) v'; then
+            echo "capture-only builds must not include Opus" >&2
+            exit 1
+          fi
+
       - name: Compile the public quickstart
         run: cargo build --release -p pocketstation --example quickstart --locked
 
@@ -170,6 +179,9 @@ jobs:
         run: |
           ninja --version
           cargo check --release --locked -p pocketstation
+
+      - name: Link the capture-only debug library without Opus
+        run: cargo build --locked -p pocketstation --no-default-features --features native-capture
 
   publish:
     if: >-

@@ -57,7 +57,7 @@ no-default-features = true
 crate-type = ["rlib", "cdylib", "staticlib"]
 
 [features]
-default = ["native-capture"]
+default = ["native-capture", "opus-codec"]
 native-capture = [
   "dep:cpal",
   "dep:pipewire",
@@ -67,6 +67,7 @@ native-capture = [
   "dep:windows",
   "dep:windows-core",
 ]
+opus-codec = ["dep:opus"]
 conformance-fixtures = []
 internal-testing = []
 macos-asp-driver-artifact = []
@@ -78,7 +79,7 @@ thiserror = "1"
 hound = "3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-opus = "0.3"
+opus = { version = "0.3", optional = true }
 tokio = { version = "1", features = ["macros", "rt", "sync", "time"] }
 
 [dev-dependencies]
@@ -143,12 +144,12 @@ required-features = ["internal-testing"]
 [[bench]]
 name = "opus_decode"
 harness = false
-required-features = ["internal-testing"]
+required-features = ["internal-testing", "opus-codec"]
 
 [[bench]]
 name = "opus_encode"
 harness = false
-required-features = ["internal-testing"]
+required-features = ["internal-testing", "opus-codec"]
 
 [[bench]]
 name = "typed_edge"
@@ -177,7 +178,7 @@ required-features = ["internal-testing"]
 
 [[test]]
 name = "codec_hot_path_alloc"
-required-features = ["internal-testing"]
+required-features = ["internal-testing", "opus-codec"]
 
 [[test]]
 name = "capture_hot_path_alloc"
@@ -185,7 +186,11 @@ required-features = ["internal-testing"]
 
 [[test]]
 name = "codec_opus_roundtrip"
-required-features = ["internal-testing"]
+required-features = ["internal-testing", "opus-codec"]
+
+[[test]]
+name = "abi_codec_cpp_conformance"
+required-features = ["opus-codec"]
 
 [[test]]
 name = "runtime_plan_router_alloc"

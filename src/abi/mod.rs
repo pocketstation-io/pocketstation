@@ -1,3 +1,4 @@
+#[cfg(feature = "opus-codec")]
 mod codec;
 pub(crate) mod executable_extension;
 pub(crate) mod extension;
