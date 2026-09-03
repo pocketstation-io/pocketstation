@@ -82,7 +82,7 @@ system brings data into the Session.
 | Read the terminal recording result | `RunningSession::recording_outcome` |
 | Read one metrics snapshot | `RunningSession::metrics_snapshot` |
 | Receive lifecycle events | `RunningSession::try_recv_event` |
-| Record a bounded trace | `SessionBuilder::session_trace` |
+| Record a Session trace with a fixed record capacity | `SessionBuilder::session_trace` |
 | Validate a trace | `SessionTraceValidation` |
 
 ## Native extensions and managed processes

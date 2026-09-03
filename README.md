@@ -49,7 +49,7 @@ native build prerequisites remain platform-specific. No microphone opens and
 no file is written unless you request those routes.
 
 The [Rust quickstart](docs/getting-started/rust-quickstart.md) provides the
-complete program: interactive application selection, bounded frame polling,
+complete program: interactive application selection, frame polling,
 optional microphone and recording routes, a finite deadline, and joined
 shutdown.
 
@@ -98,14 +98,14 @@ source identity + immutable lineage
       └─ typed signal lane: SignalEnvelope
                 │
                 ▼
-      independent bounded routes
+      independent routes
       Operator · Endpoint · recording
 ```
 
-The audio lane uses fixed-capacity pools and bounded realtime crossings. The
-typed lane carries text, events, control data, metrics, binary data, and custom
-signals identified by schema. Generated audio returns to the normal audio plan
-through the bounded reentry Bridge.
+The audio lane uses fixed-capacity pools and queues between realtime and worker
+threads. The typed lane carries text, events, control data, metrics, binary
+data, and custom signals identified by schema. Generated audio returns to the
+normal audio plan through the generated-audio Bridge.
 
 `Stream<T>` provides Rust declaration-time checking. Runtime and cross-language
 identity comes from `SignalSpec`, lineage, named ports, and route settings; Rust
@@ -117,7 +117,7 @@ Most integrations do one of three things: bring audio into a Session, process
 audio already in a Session, or send audio to another system.
 
 To send captured audio to an API, socket, or service, create a `Connector`. The
-function runs on a bounded worker outside the capture callback:
+function runs on a worker outside the capture callback:
 
 ```rust,no_run
 # use pocketstation::connector::Connector;
@@ -132,8 +132,8 @@ application.send(destination)?;
 
 Use an `Operator` when audio is transformed into another signal, such as a
 transcript. Use a `Source` when a device, application, or external system sends
-media into the Session. Each API keeps the same source identity, bounded
-routing, observations, cancellation, and shutdown.
+media into the Session. Each API keeps the same source identity, route
+observations, cancellation, and shutdown behavior.
 
 The [Connector guide](docs/guides/connectors.md) shows function and reusable
 provider forms. The [extension guide](docs/guides/extensions.md) covers custom

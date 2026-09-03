@@ -18,13 +18,13 @@ authorized application / microphone / external source
      realtime AudioFrame lane   typed async lane
               └──────────┬──────────┘
                          ↓
-               independent bounded routes
+               independent routes
              ┌───────────┼───────────┐
              ↓           ↓           ↓
           recording   callback    endpoint/transport
 ```
 
-The realtime audio lane stays specialized: pooled ownership, bounded rings,
+The realtime audio lane stays specialized: pooled ownership, fixed-capacity rings,
 nonblocking fan-out, explicit discontinuities, and no allocation, locks,
 blocking, async, logging, or panic on callbacks. Typed sources, external
 operators, managed-language sidecars, model work, and endpoint I/O execute
@@ -41,7 +41,7 @@ application policy, and business logic are external extensions.
 
 ## Choose the API that owns the work
 
-Application capture, media graphs, bounded queues, and native extension
+Application capture, media graphs, fixed-capacity queues, and native extension
 mechanisms are established systems primitives. PocketStation's useful role
 is one coordinated runtime: a source does not lose its identity when
 it enters an Operator, a process extension does not invent a separate lifecycle,
@@ -52,7 +52,7 @@ PocketStation coordinates:
 
 ```text
 capture + source lineage + Session compilation
-        + bounded realtime and typed lanes
+        + fixed-capacity realtime and typed queues
         + named composition and generated-audio reentry
         + endpoints, recording, observations, and final outcomes
         + Rust, C, and sidecar APIs

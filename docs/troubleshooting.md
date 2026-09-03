@@ -56,8 +56,8 @@ policy.
 
 ## Generated speech continues after cancellation
 
-Core cancellation removes matching output that is still inside Core's bounded
-sender routes. It cannot recall packets already accepted by a Connector or
+Core cancellation removes matching output that is still queued in Core. It
+cannot recall packets already accepted by a Connector or
 samples buffered by a receiver. Check Connector clearing, receiver playout
 acknowledgement, and acoustic output separately before reporting an audible
 result.

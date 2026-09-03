@@ -53,7 +53,7 @@ submission succeeds or returns it in an error.
 Generated speech may become irrelevant after an interruption. Begin an owned
 output, write its frames through `try_write_for_output`, and cancel that output
 when it is no longer current. Core discards matching frames that remain in its
-bounded sender routes while microphone capture, recording, and unrelated
+sender queues while microphone capture, recording, and unrelated
 outputs continue.
 
 Cancellation cannot recall packets already sent to a transport or samples

@@ -37,8 +37,8 @@ saturation and invalid native timelines are rejected and counted explicitly.
 | File | Purpose |
 |------|---------|
 | `bridge.h` | Stable C API for the shared-memory reader |
-| `shm_reader.c` | Versioned single-consumer bounded ring reader |
-| `SharedRing.h` | Shared ABI and lock-free bounded publication rules |
+| `shm_reader.c` | Versioned reader for the fixed-capacity, single-consumer ring |
+| `SharedRing.h` | Shared ABI and lock-free ring publication rules |
 | `source_discovery.m` | Core Audio process-tap discovery and lifecycle |
 | `authorization.m` | Native authorization query |
 | `Plugin.cpp` | Direct AudioServerPlugin implementation; no libASPL dependency |

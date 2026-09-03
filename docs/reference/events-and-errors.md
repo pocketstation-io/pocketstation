@@ -91,8 +91,8 @@ does not claim acoustic hearing when a receiver cannot report playout.
 
 ## Trace files
 
-A bounded `SessionTrace` records selected declarations, events, metrics, and
-terminal state for later diagnosis. Tracing has a finite record capacity. Check
+A `SessionTrace` records selected declarations, events, metrics, and terminal
+state for later diagnosis. Tracing stops at its configured record capacity. Check
 `SessionTraceRecorderOutcome` and `SessionTraceValidation` before relying on a
 trace as evidence.
 

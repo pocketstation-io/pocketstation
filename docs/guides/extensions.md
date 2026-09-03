@@ -10,7 +10,7 @@ Start with the direction media moves through your integration:
   system, or provider.
 
 These are the normal extension points. They preserve source identity and use
-the Session's existing bounded routes, lifecycle, observations, cancellation,
+the Session's existing route queues, lifecycle, observations, cancellation,
 and shutdown.
 
 For example, a destination that only needs PCM can use one function:
@@ -37,14 +37,14 @@ compile it directly. Choose another option only when deployment requires it:
 |---|---|
 | A C or C++ host supplies callbacks | Versioned Extension ABI in `pocketstation.h` |
 | The application loads a trusted native library at runtime | `pks_extension_library_v1` |
-| Provider code needs process isolation or a separately managed runtime | Bounded PKSS sidecar protocol |
+| Provider code needs process isolation or a separately managed runtime | PKSS sidecar protocol with message-size limits |
 
 A native library runs with the application's privileges. A sidecar exchanges
-bounded messages with a separately managed process. Neither option creates
+messages up to the protocol's declared size limits with a separately managed process. Neither option creates
 another Session, graph,
 scheduler, recorder, or lineage model.
 
-Generated audio returns through the bounded generated-audio Bridge. The Bridge
+Generated audio returns through the generated-audio Bridge. The Bridge
 validates its format and frame size, assigns timing and lineage, and re-enters
 the existing audio plan without invoking provider code on a capture callback.
 
@@ -52,7 +52,7 @@ the existing audio plan without invoking provider code on a capture callback.
 
 Rust uses `Stream<T>` for local type checking. C and managed languages bind
 their native wrappers to stable `SignalSpec` and schema identifiers. The
-sidecar protocol transports those identities and bounded payloads between
+sidecar protocol transports those identities and size-limited payloads between
 processes. Rust `TypeId` and generic parameters are never exposed through the
 C API or sidecar protocol.
 
@@ -64,7 +64,7 @@ on a remote network or a different physical device.
 
 Extension ABI 1.2 adds a transport for the executable callback tables already
 accepted by Core. A trusted library exports one `pks_extension_library_v1`
-entrypoint. The entrypoint reports a bounded registration count and an acquire
+entrypoint. The entrypoint reports a registration count up to the ABI maximum and an acquire
 callback; each acquisition returns one source, operator, or endpoint
 descriptor, borrowed port records, and its callback table.
 

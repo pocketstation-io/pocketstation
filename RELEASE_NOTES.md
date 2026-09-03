@@ -139,7 +139,7 @@ recording, and every unrelated route.
 PocketStation 1.1.3 adds replaceable output to application-owned audio inputs.
 An application can begin an output generation, write generated PCM to it, and
 cancel only that output. PocketStation rejects later writes for the cancelled
-generation and discards its pending frames from bounded Core delivery paths.
+generation and discards its pending frames from Core delivery queues.
 Application capture, microphone capture, recording, and unrelated output keep
 running.
 
@@ -185,7 +185,7 @@ Use application-owned audio in a Session.
 
 PocketStation 1.1.2 made PCM produced by an application a normal source in the
 same Session as desktop application and microphone capture. That audio can use
-the same bounded routing, lineage, recording, and delivery paths as captured
+the same routing, lineage, recording, and delivery behavior as captured
 audio.
 
 This release also:

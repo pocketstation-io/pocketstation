@@ -90,8 +90,8 @@ those buffers into the selected 480-sample or 960-sample frame cadence at
 ## Fan out without coupling destinations
 
 Call `send`, `record`, or a Connector-specific publish method on the same stem.
-Every destination receives an independent bounded route. A slow destination
-reports saturation or drops according to its `RouteSettings`; it does not grow
+Every destination receives an independent route with its own queue. A slow
+destination reports saturation or drops according to its `RouteSettings`; the queue does not grow
 an unbounded queue or stop unrelated routes.
 
 Start the Session only after every route is declared. Stop it to drain accepted

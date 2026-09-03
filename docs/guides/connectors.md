@@ -14,7 +14,7 @@ a provider SDK. Use an `Operator` for audio-to-text or other computation. Use a
 ```text
 Source or AudioInput
         ↓
-bounded Session route, retaining source and stem identity
+Session route with its own delivery queue, retaining source and stem identity
         ↓
 Core-owned Connector worker
         ↓
@@ -54,7 +54,7 @@ application.send(destination)?;
 # }
 ```
 
-The function runs on Core's bounded Connector worker, never on an audio
+The function runs on Core's Connector worker, never on an audio
 callback. The frame includes its source, stream, sequence, timestamp, clock,
 and discontinuity lineage.
 
@@ -91,7 +91,7 @@ let destination = Connector::from_audio(Provider)?;
 
 One `Connector` value represents one destination and one lifecycle. Sending
 application and microphone stems to its declared Endpoint creates independent
-bounded routes while calling `start` and `stop` once.
+route queues while calling `start` and `stop` once.
 
 This is useful when one provider connection carries several named stems. Create
 two `Connector` values when the destinations need separate credentials,
@@ -113,7 +113,7 @@ metadata and diagnostics instead of inferring identity from call order.
 ## Build a distributable integration
 
 Implement `ConnectorDriverFactory` to validate and acquire provider
-resources, then return one `ConnectorDriver`. Core owns bounded input polling,
+resources, then return one `ConnectorDriver`. Core owns input polling and queue capacity,
 delivery accounting, drain/abort, and the Endpoint transaction:
 
 ```rust,no_run
@@ -178,7 +178,7 @@ private adapter supplies:
 - joined shutdown; and
 - `EndpointDriverObservations` for delivery accounting.
 
-The driver adapter consumes the bounded `EndpointPortInput` receivers. The
+The driver adapter consumes the `EndpointPortInput` receivers. The
 provider handles typed `ConnectorItem` values and returns an explicit delivered
 or dropped result. `ConnectorFactory` and `ConnectorWorker` remain the advanced
 escape hatch when a protocol requires a specialized off-realtime worker.
@@ -254,14 +254,14 @@ The connector driver must:
 
 Core handles receiver polling and monotonic shutdown: an abort can upgrade
 drain, but a later drain cannot weaken an abort. Low-level Connector workers
-remain responsible for their own bounded loop and must follow the same rule.
+must set explicit queue and iteration limits and follow the same rule.
 
 ## Keep provider code in its package
 
 Keep provider dependencies in the Connector package, not in `pocketstation`.
 The package owns authentication, protocol framing, provider deadlines,
 reconnection, and provider-specific errors. Core continues to own Session
-lifecycle, bounded routing, lineage, and Endpoint shutdown.
+lifecycle, route queues, lineage, and Endpoint shutdown.
 
 Language SDKs can expose this Connector lifecycle when they provide a supported
 native or managed integration. Provider callbacks never run on realtime PCM
