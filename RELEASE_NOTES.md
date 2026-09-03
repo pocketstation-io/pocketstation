@@ -4,11 +4,27 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.6 — 2026-09-03
+
+Configure route delivery with one consistent set of names.
+
 ### Added
 
 Advanced integrations can now configure `RouteSettings` as accepted media plus
 a separate `DeliveryPolicy`. `ExecutionSafety`, `RouteObservability`, and
 `RouteLatencyMeasurement` name the corresponding runtime decisions directly.
+
+Session operator metrics expose aggregate input delivery through
+`input_delivery`, with per-port details available in `input_ports`.
+
+### Changed
+
+Connector, Endpoint, Operator, subscription, and observation APIs now use the
+same route-settings vocabulary.
+
+```console
+cargo update -p pocketstation --precise 1.1.6
+```
 
 ## 1.1.5 — 2026-09-01
 
