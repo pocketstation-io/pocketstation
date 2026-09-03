@@ -21,12 +21,12 @@ echo "scope: full workspace (${#rust_files[@]} Rust files)"
 
 echo "PUBLIC-DOCS: concrete developer language..."
 public_doc_vocabulary="$(
-  rg -n -i '\b(boundary|path|surface|authority|projection|lowering|flow|layer|contracts?)\b' \
+  rg -n -i '\b(boundary|path|surface|authority|projection|lowering|flow|layer|bounded|contracts?)\b' \
     README.md RELEASE_NOTES.md docs examples native \
     --glob '*.md' --glob '*.mdx' 2>/dev/null || true
 )"
 if [ -n "${public_doc_vocabulary}" ]; then
-  echo "  FAIL: public documentation uses vague architecture shorthand:"
+  echo "  FAIL: public documentation uses vague shorthand instead of a concrete API, queue, limit, process, service, or request:"
   echo "${public_doc_vocabulary}"
   exit 1
 fi
