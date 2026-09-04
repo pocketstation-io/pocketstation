@@ -19,6 +19,7 @@ Source, Operator, Connector, or Endpoint.
 | Task | API |
 |---|---|
 | Select a desktop application | `Source::application` |
+| Capture the complete output mix | `Source::system_audio` |
 | Select the default microphone | `Source::microphone_default` |
 | Select an input device | `Source::device` and `DeviceSelector` |
 | Discover applications and devices | `discover_sources` |

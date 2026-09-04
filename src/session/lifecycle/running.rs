@@ -1846,7 +1846,7 @@ fn prepare_and_open_captures(
     let mut captures = Vec::with_capacity(spec.stems().len());
     for stem in spec.stems() {
         let binding = match stem.source() {
-            Source::Application(_) => backends.application,
+            Source::Application(_) | Source::SystemAudio => backends.application,
             Source::Microphone(_) => backends.microphone,
         };
         let request = CapturePrepareRequest {
@@ -1960,6 +1960,7 @@ fn capture_mode(source: &Source) -> CaptureMode {
                 stable_id: stable_id.clone(),
             }
         }
+        Source::SystemAudio => CaptureMode::SystemMix,
         Source::Microphone(DeviceSelector::Default) => {
             CaptureMode::InputDevice(InputDeviceSelector::Default)
         }
@@ -2626,6 +2627,14 @@ mod selector_tests {
                 process_id: 42,
                 stable_id,
             }
+        );
+    }
+
+    #[test]
+    fn given_system_audio_when_capture_mode_built_then_system_mix_is_selected() {
+        assert_eq!(
+            capture_mode(&Source::system_audio()),
+            CaptureMode::SystemMix
         );
     }
 }

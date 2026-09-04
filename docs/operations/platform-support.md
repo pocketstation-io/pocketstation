@@ -19,8 +19,9 @@ failure is not an empty audio stream. Restart the host application after a
 permission change when the operating system does not update the running
 process.
 
-Application capture and microphone capture use separate permissions. Request
-only the Sources the workflow needs.
+Desktop-output capture and microphone capture use separate permissions.
+Request only the Sources the workflow needs. Use `Source::application` for one
+selected application and `Source::system_audio` for the complete output mix.
 
 ## Reuse a discovered source safely
 

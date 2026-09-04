@@ -4,6 +4,25 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.9 — 2026-09-04
+
+Capture the complete desktop output mix through the same Session API used for
+selected applications and microphones:
+
+```rust
+use pocketstation::{Session, Source};
+
+let session = Session::new();
+let system_audio = session.capture(Source::system_audio())?;
+system_audio.send(session.polled_audio()?)?;
+let mut running = session.start()?;
+```
+
+Use `Source::application` when only one application should enter the Session.
+Use `Source::system_audio` when the workflow intentionally needs every sound
+playing through the computer. Both retain their own source and stem identity
+when routed, recorded, or sent to a Connector.
+
 ## 1.1.8 — 2026-09-04
 
 Applications that only use desktop capture can now leave Opus out of their

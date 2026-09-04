@@ -184,6 +184,7 @@ impl DeviceSelector {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Source {
     Application(ApplicationSelector),
+    SystemAudio,
     Microphone(DeviceSelector),
 }
 
@@ -210,6 +211,14 @@ impl Source {
         Self::Application(selector.into())
     }
 
+    /// Captures the audio playing through the host's output devices.
+    ///
+    /// This selects the complete system mix. Use [`Self::application`] when
+    /// only one running application should be captured.
+    pub const fn system_audio() -> Self {
+        Self::SystemAudio
+    }
+
     pub fn microphone(selector: DeviceSelector) -> Self {
         Self::Microphone(selector)
     }
@@ -221,6 +230,7 @@ impl Source {
     pub(crate) fn validate(&self) -> Result<(), SessionError> {
         match self {
             Self::Application(selector) => selector.validate(),
+            Self::SystemAudio => Ok(()),
             Self::Microphone(selector) => selector.validate(),
         }
     }
@@ -324,5 +334,11 @@ mod tests {
             Source::application(&stable_id),
             Source::Application(ApplicationSelector::StableId(stable_id))
         );
+    }
+
+    #[test]
+    fn given_system_audio_when_source_declared_then_no_selector_is_required() {
+        assert_eq!(Source::system_audio(), Source::SystemAudio);
+        assert!(Source::system_audio().validate().is_ok());
     }
 }

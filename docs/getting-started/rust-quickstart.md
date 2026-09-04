@@ -23,7 +23,7 @@ Native build requirements:
 ## Add PocketStation
 
 ```bash
-cargo add pocketstation@1.1.8
+cargo add pocketstation@1.1.9
 ```
 
 ## Capture in three lines
@@ -74,6 +74,12 @@ to skip the prompt:
 cargo run --release --example quickstart --locked -- --application "Spotify"
 ```
 
+To capture the complete desktop output mix instead of one application:
+
+```bash
+cargo run --release --example quickstart --locked -- --system-audio
+```
+
 To include the default microphone as a separate stem:
 
 ```bash
@@ -86,9 +92,16 @@ To record every selected stem, provide an output directory:
 cargo run --release --example quickstart --locked -- --record pocketstation-recordings
 ```
 
-Options can be combined. For example, add `--microphone --record recordings` to
-capture and record the selected application and default microphone as separate
-stems.
+To keep the Session running for a fixed interval, provide the duration in
+seconds:
+
+```bash
+cargo run --release --example quickstart --locked -- --duration 30
+```
+
+`--system-audio` and `--application` are alternatives. The microphone and
+recording options can be added to either. For example, add
+`--microphone --record recordings` to capture and record two separate stems.
 
 ## Inspect the result
 

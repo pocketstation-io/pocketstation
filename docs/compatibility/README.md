@@ -13,7 +13,7 @@ The default feature set includes desktop capture and the Opus codec. A native
 application that only captures PCM can omit the codec and its native library:
 
 ```toml
-pocketstation = { version = "1.1.8", default-features = false, features = ["native-capture"] }
+pocketstation = { version = "1.1.9", default-features = false, features = ["native-capture"] }
 ```
 
 Use the `opus-codec` feature when the application calls the Rust Opus API or

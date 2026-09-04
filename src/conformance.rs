@@ -42,6 +42,7 @@ pub const OBSERVED_CONNECTOR_OPERATOR_ID: &str = "io.pocketstation.conformance.c
 #[derive(Clone, Copy)]
 enum FixtureSource {
     Application,
+    SystemAudio,
     Microphone,
 }
 
@@ -49,6 +50,7 @@ impl FixtureSource {
     const fn stream_id(self) -> StreamId {
         match self {
             Self::Application => StreamId(101),
+            Self::SystemAudio => StreamId(151),
             Self::Microphone => StreamId(201),
         }
     }
@@ -56,6 +58,7 @@ impl FixtureSource {
     const fn source_id(self) -> SourceId {
         match self {
             Self::Application => SourceId(102),
+            Self::SystemAudio => SourceId(152),
             Self::Microphone => SourceId(202),
         }
     }
@@ -63,13 +66,14 @@ impl FixtureSource {
     const fn amplitude(self) -> f32 {
         match self {
             Self::Application => 0.25,
+            Self::SystemAudio => 0.375,
             Self::Microphone => 0.5,
         }
     }
 
     const fn channels(self) -> u8 {
         match self {
-            Self::Application => 2,
+            Self::Application | Self::SystemAudio => 2,
             Self::Microphone => 1,
         }
     }
@@ -96,8 +100,8 @@ impl CallbackCaptureBackend for DeterministicCaptureBackend {
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
         let source = match mode {
             CaptureMode::InputDevice(_) => FixtureSource::Microphone,
-            CaptureMode::SystemMix
-            | CaptureMode::Application(_)
+            CaptureMode::SystemMix => FixtureSource::SystemAudio,
+            CaptureMode::Application(_)
             | CaptureMode::Process(_)
             | CaptureMode::ExactApplication { .. }
             | CaptureMode::ExactApplicationStable { .. } => FixtureSource::Application,
