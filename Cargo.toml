@@ -1,6 +1,6 @@
 [package]
 name = "pocketstation"
-version = "1.1.9"
+version = "1.1.10"
 edition = "2021"
 rust-version = "1.95.0"
 license = "MIT OR Apache-2.0"
@@ -60,14 +60,21 @@ crate-type = ["rlib", "cdylib", "staticlib"]
 [features]
 default = ["native-capture", "opus-codec"]
 native-capture = [
-  "dep:cpal",
-  "dep:pipewire",
-  "dep:alsa",
-  "dep:libc",
+  "coreaudio-capture",
+  "wasapi-capture",
+  "pipewire-capture",
+  "alsa-fallback",
+]
+native-capture-runtime = []
+coreaudio-capture = ["native-capture-runtime", "dep:cpal"]
+wasapi-capture = [
+  "native-capture-runtime",
   "dep:wasapi",
   "dep:windows",
   "dep:windows-core",
 ]
+pipewire-capture = ["native-capture-runtime", "dep:pipewire", "dep:libc"]
+alsa-fallback = ["native-capture-runtime", "dep:alsa", "dep:libc"]
 opus-codec = ["dep:opus"]
 conformance-fixtures = []
 internal-testing = []
@@ -80,7 +87,7 @@ thiserror = "1"
 hound = "3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-opus = { version = "0.3", optional = true }
+opus = { version = "0.4", optional = true }
 tokio = { version = "1", features = ["macros", "rt", "sync", "time"] }
 
 [dev-dependencies]

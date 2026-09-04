@@ -9,11 +9,14 @@ use crate::graph::{
 };
 use crate::runtime::SidecarProcessSpec;
 
-#[cfg(all(target_os = "linux", feature = "native-capture"))]
+#[cfg(all(
+    target_os = "linux",
+    any(feature = "pipewire-capture", feature = "alsa-fallback")
+))]
 use crate::capture::platform::linux::DesktopCaptureBackend as NativeDesktopCaptureBackend;
-#[cfg(all(target_os = "macos", feature = "native-capture"))]
+#[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
 use crate::capture::platform::macos::DesktopCaptureBackend as NativeDesktopCaptureBackend;
-#[cfg(all(target_os = "windows", feature = "native-capture"))]
+#[cfg(all(target_os = "windows", feature = "wasapi-capture"))]
 use crate::capture::platform::windows::DesktopCaptureBackend as NativeDesktopCaptureBackend;
 
 use crate::session::{
@@ -233,9 +236,13 @@ impl SessionEngineHostBuilder {
 
     /// Creates the production host builder with the platform's native capture
     /// backend, leaving endpoint registration open to the owning application.
-    #[cfg(all(
-        feature = "native-capture",
-        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    #[cfg(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        )
     ))]
     pub fn native(
         options: NativeSessionEngineHostOptions,
@@ -243,9 +250,13 @@ impl SessionEngineHostBuilder {
         Self::native_with_audio_frame_duration(options, AudioFrameDuration::default())
     }
 
-    #[cfg(all(
-        feature = "native-capture",
-        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    #[cfg(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        )
     ))]
     pub fn native_with_audio_frame_duration(
         options: NativeSessionEngineHostOptions,
@@ -263,9 +274,13 @@ impl SessionEngineHostBuilder {
 
     /// Returns a typed unsupported-platform error on targets without a native
     /// PocketStation capture backend.
-    #[cfg(not(all(
-        feature = "native-capture",
-        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    #[cfg(not(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        )
     )))]
     pub fn native(
         _options: NativeSessionEngineHostOptions,
@@ -273,9 +288,13 @@ impl SessionEngineHostBuilder {
         Err(SessionEngineHostBuildError::UnsupportedPlatform)
     }
 
-    #[cfg(not(all(
-        feature = "native-capture",
-        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    #[cfg(not(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        )
     )))]
     pub fn native_with_audio_frame_duration(
         _options: NativeSessionEngineHostOptions,
@@ -438,9 +457,13 @@ pub enum SessionEngineHostBuildError {
     UnsupportedPlatform,
 }
 
-#[cfg(all(
-    feature = "native-capture",
-    any(target_os = "linux", target_os = "macos", target_os = "windows")
+#[cfg(any(
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
 ))]
 fn build_native_host(
     options: NativeSessionEngineHostOptions,
@@ -454,9 +477,13 @@ fn build_native_host(
     builder.build()
 }
 
-#[cfg(not(all(
-    feature = "native-capture",
-    any(target_os = "linux", target_os = "macos", target_os = "windows")
+#[cfg(not(any(
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
 )))]
 fn build_native_host(
     _options: NativeSessionEngineHostOptions,

@@ -115,6 +115,9 @@ jobs:
       - name: Strict workspace Clippy
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
 
+      - name: Strict PipeWire-only Clippy
+        run: cargo clippy -p pocketstation --lib --locked --no-default-features --features pipewire-capture -- -D warnings
+
       - name: Cross-document public facade on the configured docs.rs target
         run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu
 
@@ -122,7 +125,7 @@ jobs:
         run: |
           if cargo tree --locked -e normal -p pocketstation \
             --no-default-features --features native-capture --prefix none | \
-            grep -E '^(opus|audiopus_sys) v'; then
+            grep -E '^(opus|audiopus_sys|opusic-sys) v'; then
             echo "capture-only builds must not include Opus" >&2
             exit 1
           fi
@@ -164,6 +167,7 @@ jobs:
         uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
         with:
           toolchain: 1.95.0
+          components: clippy
 
       - name: Install Python 3.13
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
@@ -180,8 +184,22 @@ jobs:
           ninja --version
           cargo check --release --locked -p pocketstation
 
+      - name: Link the default debug library
+        if: runner.os == 'Windows'
+        env:
+          CMAKE_GENERATOR: Ninja
+        run: cargo build --locked -p pocketstation
+
       - name: Link the capture-only debug library without Opus
         run: cargo build --locked -p pocketstation --no-default-features --features native-capture
+
+      - name: Strict Core Audio-only Clippy
+        if: runner.os == 'macOS'
+        run: cargo clippy -p pocketstation --lib --locked --no-default-features --features coreaudio-capture -- -D warnings
+
+      - name: Strict WASAPI-only Clippy
+        if: runner.os == 'Windows'
+        run: cargo clippy -p pocketstation --lib --locked --no-default-features --features wasapi-capture -- -D warnings
 
   publish:
     if: >-

@@ -54,18 +54,18 @@ pub use crate::capture::{
 /// reinterpret that value as allowed or denied. Permission prompting remains
 /// an explicit host-application action.
 pub fn microphone_permission_observation() -> PermissionObservation {
-    #[cfg(all(target_os = "macos", feature = "native-capture"))]
+    #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
     {
         crate::capture::platform::macos::microphone_permission_observation()
     }
-    #[cfg(all(target_os = "windows", feature = "native-capture"))]
+    #[cfg(all(target_os = "windows", feature = "wasapi-capture"))]
     {
         crate::capture::platform::windows::microphone_permission_observation()
     }
-    #[cfg(not(all(
-        feature = "native-capture",
-        any(target_os = "macos", target_os = "windows")
-    )))]
+    #[cfg(not(all(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture")
+    ))))]
     {
         PermissionObservation::NotObservable
     }
@@ -155,11 +155,14 @@ pub use crate::runtime::{
 pub mod internal {
     pub mod capture {
         pub use crate::capture::*;
-        #[cfg(all(target_os = "linux", feature = "native-capture"))]
+        #[cfg(all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        ))]
         pub mod linux {
             pub use crate::capture::platform::linux::*;
         }
-        #[cfg(all(target_os = "macos", feature = "native-capture"))]
+        #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
         pub mod macos {
             pub use crate::capture::platform::macos::{
                 discover_input_sources_native, discover_sources_native, tap_available,
@@ -168,7 +171,7 @@ pub mod internal {
                 InternalSystemLoopbackSource as SystemLoopbackSource, MacosInputSource,
             };
         }
-        #[cfg(all(target_os = "windows", feature = "native-capture"))]
+        #[cfg(all(target_os = "windows", feature = "wasapi-capture"))]
         pub mod windows {
             pub use crate::capture::platform::windows::*;
         }

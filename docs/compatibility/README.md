@@ -13,11 +13,27 @@ The default feature set includes desktop capture and the Opus codec. A native
 application that only captures PCM can omit the codec and its native library:
 
 ```toml
-pocketstation = { version = "1.1.9", default-features = false, features = ["native-capture"] }
+pocketstation = { version = "1.1.10", default-features = false, features = ["native-capture"] }
 ```
 
 Use the `opus-codec` feature when the application calls the Rust Opus API or
 links the C Opus functions declared in `pocketstation.h`.
+
+An application that already owns part of the host audio stack can select one
+PocketStation driver directly. For example, a Linux application that already
+links an incompatible ALSA crate can enable only PipeWire:
+
+```toml
+pocketstation = {
+  version = "1.1.10",
+  default-features = false,
+  features = ["pipewire-capture"]
+}
+```
+
+The corresponding macOS and Windows features are `coreaudio-capture` and
+`wasapi-capture`. Use the normal `native-capture` feature when PocketStation
+should select the platform driver and include the Linux `snd-aloop` fallback.
 
 Use the repository checks before changing a public API or protocol:
 

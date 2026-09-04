@@ -12,7 +12,15 @@
 mod authorization;
 mod capture_owner;
 mod events;
-#[cfg(any(test, feature = "native-capture"))]
+#[cfg(any(
+    test,
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 mod frame_normalizer;
 mod frame_stream;
 mod identity;
@@ -25,7 +33,16 @@ mod selection;
 mod timeline;
 
 pub use authorization::*;
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 pub use capture_owner::join_capture_worker;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use capture_owner::{
@@ -50,17 +67,43 @@ pub use frame_stream::{
 pub use identity::*;
 #[cfg(feature = "internal-testing")]
 pub use lifecycle_registry::*;
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 pub use observations::CaptureObservationCounters;
 pub use observations::{CaptureObservationHandle, CaptureObservations};
 pub use query::*;
 pub use selection::*;
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
+pub use timeline::CaptureSampleTimeline;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use timeline::CaptureSampleTimelineError;
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
-pub use timeline::{
-    initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureSampleTimeline,
-};
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
+pub use timeline::{initialize_monotonic_timestamp_domain, monotonic_timestamp_ns};
 
 #[cfg(test)]
 mod tests;
