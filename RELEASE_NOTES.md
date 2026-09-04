@@ -4,6 +4,22 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.8 — 2026-09-04
+
+Applications that only use desktop capture can now leave Opus out of their
+build. This keeps the capture-only dependency set smaller and avoids linking an
+unused native codec library.
+
+The default features are unchanged and continue to include desktop capture and
+Opus. To build a PCM capture application without Opus:
+
+```toml
+pocketstation = { version = "1.1.8", default-features = false, features = ["native-capture"] }
+```
+
+PocketStation now checks this feature combination on Linux, macOS, and Windows
+before publishing a release.
+
 ## 1.1.7 — 2026-09-03
 
 Route metrics no longer report a queue depth above the route's configured

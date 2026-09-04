@@ -26,7 +26,7 @@ You need Rust 1.95 or newer and one supported desktop application producing
 audio.
 
 ```bash
-cargo add pocketstation@1.1.7
+cargo add pocketstation@1.1.8
 ```
 
 ```rust,no_run
@@ -209,7 +209,7 @@ Native prerequisites:
 Disable native capture when a tool only needs PocketStation types or docs:
 
 ```toml
-pocketstation = { version = "1.1.7", default-features = false }
+pocketstation = { version = "1.1.8", default-features = false }
 ```
 
 ## Continue from the task you have
