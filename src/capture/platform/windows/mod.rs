@@ -12,14 +12,13 @@ mod runtime_lifecycle;
 #[cfg(target_os = "windows")]
 mod session_backend;
 #[cfg(target_os = "windows")]
-mod windows;
+mod source;
 
 #[cfg(target_os = "windows")]
 pub(crate) use authorization::microphone_permission_observation;
 #[cfg(target_os = "windows")]
 pub use session_backend::DesktopCaptureBackend;
+#[cfg(any(test, feature = "internal-testing"))]
+pub use source::SystemLoopbackSource;
 #[cfg(target_os = "windows")]
-pub use windows::{
-    discover_sources_windows, DesktopCaptureSource, SystemLoopbackSource,
-    WindowsAudioThreadPriorityGuard, WASAPI_PROCESS_LOOPBACK_PERIOD_100NS,
-};
+pub use source::{discover_sources_windows, DesktopCaptureSource};

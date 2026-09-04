@@ -92,6 +92,7 @@ const PW_NODE_DONT_RECONNECT: &str = "node.dont-reconnect";
 
 /// ALSA loopback capture device (snd-aloop module, subdevice 0 of card 1).
 /// Requires: sudo modprobe snd-aloop
+#[cfg(feature = "alsa-fallback")]
 const ALSA_LOOPBACK_DEVICE: &str = "hw:Loopback,1,0";
 
 #[derive(Debug, Clone)]
@@ -755,6 +756,7 @@ pub struct DesktopCaptureSource {
 }
 
 impl DesktopCaptureSource {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -804,6 +806,7 @@ impl DesktopCaptureSource {
 
 impl SystemLoopbackSource {
     /// Start capturing the system-wide audio mix.
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -812,6 +815,7 @@ impl SystemLoopbackSource {
     }
 
     /// Start capturing in the given mode.
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -937,7 +941,17 @@ impl SystemLoopbackSource {
                 if pipewire_available() {
                     run_pipewire(mode, audio_frame_duration, callback, runtime_event_sender)
                 } else {
-                    run_alsa(audio_frame_duration, callback, runtime_event_sender)
+                    #[cfg(feature = "alsa-fallback")]
+                    {
+                        run_alsa(audio_frame_duration, callback, runtime_event_sender)
+                    }
+                    #[cfg(not(feature = "alsa-fallback"))]
+                    {
+                        Err(LoopbackError::BackendInit(
+                            "PipeWire is unavailable and the ALSA fallback is not enabled"
+                                .to_owned(),
+                        ))
+                    }
                 }
             }
             CaptureMode::InputDevice(selector) => {
@@ -1792,6 +1806,7 @@ where
     })
 }
 
+#[cfg(feature = "alsa-fallback")]
 fn run_alsa<F>(
     audio_frame_duration: AudioFrameDuration,
     mut callback: F,

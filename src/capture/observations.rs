@@ -42,12 +42,12 @@ impl CaptureObservationHandle {
 /// Setup-time cloneable handle; every observation is one relaxed atomic
 /// operation and remains allocation-free, lock-free, and log-free.
 #[derive(Clone, Debug, Default)]
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture-runtime"))]
 pub struct CaptureObservationCounters {
     values: Arc<CaptureObservationValues>,
 }
 
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture-runtime"))]
 impl CaptureObservationCounters {
     pub fn observe_callback_buffer(&self) {
         self.values
@@ -97,6 +97,11 @@ impl CaptureObservationCounters {
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[cfg(any(
+        test,
+        feature = "internal-testing",
+        all(target_os = "macos", feature = "coreaudio-capture")
+    ))]
     pub fn observe_timestamp_epoch_clamp(&self) {
         self.values
             .timestamp_epoch_clamps_total

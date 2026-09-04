@@ -2,8 +2,8 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
-baseline_ref="${PKS_API_BASELINE_REF:-pocketstation-v1.1.7}"
-expected_baseline_commit="${PKS_API_BASELINE_COMMIT:-172e2f270999b8880c98362d329117f676d666f2}"
+baseline_ref="${PKS_API_BASELINE_REF:-pocketstation-v1.1.9}"
+expected_baseline_commit="${PKS_API_BASELINE_COMMIT:-fa435235448012040a4dbd769bd2e932d84ad0f6}"
 required_tool_version="cargo-semver-checks 0.48.0"
 
 actual_baseline_commit="$(git -C "${repo_root}" rev-parse "${baseline_ref}^{commit}")"

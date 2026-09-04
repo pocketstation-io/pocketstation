@@ -53,13 +53,15 @@ use windows::Win32::System::Performance::{QueryPerformanceCounter, QueryPerforma
 
 use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::capture::{
-    initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, source_runtime_event_channel,
-    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
-    CaptureObservationHandle, CaptureObservations, CaptureRuntimeFailure,
-    CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration, SourceKind,
-    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventObservations,
-    SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
-    StableSourceId,
+    initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError,
+    CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration,
+    SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventReceiver,
+    SourceRuntimeEventSender, StableSourceId,
+};
+#[cfg(any(test, feature = "internal-testing"))]
+use crate::capture::{
+    source_runtime_event_channel, SourceRuntimeEventObservations, SourceRuntimeEventReceive,
 };
 
 const CAPTURE_CHANNEL_COUNT: u8 = 2;
@@ -100,6 +102,7 @@ const OPEN_WORKER_CANCELLATION_GRACE_DURATION: Duration = Duration::from_millis(
 // input channel and 16-frame graph ring, this remains below the source pool's
 // 64-slot ownership bound with room for callback and dispatch in-flight frames.
 const DISPATCH_QUEUE_CAPACITY_FRAMES: usize = 24;
+#[cfg(any(test, feature = "internal-testing"))]
 const RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS: usize = 8;
 
 const _: () = assert!(CAPTURE_POOL_CAPACITY_FRAMES >= DISPATCH_QUEUE_CAPACITY_FRAMES + 2);
@@ -156,6 +159,7 @@ pub struct SystemLoopbackSource {
     dispatch_thread: Option<std::thread::JoinHandle<()>>,
     stop_tx: std::sync::mpsc::SyncSender<()>,
     counters: CaptureObservationCounters,
+    #[cfg(any(test, feature = "internal-testing"))]
     runtime_event_rx: Option<SourceRuntimeEventReceiver>,
     source_id: SourceId,
 }
@@ -165,6 +169,7 @@ pub struct DesktopCaptureSource {
 }
 
 impl DesktopCaptureSource {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -202,10 +207,12 @@ impl DesktopCaptureSource {
         self.source.observation_handle()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
         self.source.try_recv_runtime_event()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn runtime_event_observations(&self) -> SourceRuntimeEventObservations {
         self.source.runtime_event_observations()
     }
@@ -642,6 +649,7 @@ fn activate_process_loopback_client(
 }
 
 impl SystemLoopbackSource {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -649,6 +657,7 @@ impl SystemLoopbackSource {
         Self::capture_mode(CaptureMode::SystemMix, callback)
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -692,6 +701,8 @@ impl SystemLoopbackSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
+        #[cfg(not(any(test, feature = "internal-testing")))]
+        let _ = runtime_event_rx;
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let (open_tx, open_rx) =
             std::sync::mpsc::sync_channel::<Result<SourceId, LoopbackError>>(1);
@@ -908,6 +919,7 @@ impl SystemLoopbackSource {
             dispatch_thread: Some(dispatch_thread),
             stop_tx,
             counters,
+            #[cfg(any(test, feature = "internal-testing"))]
             runtime_event_rx,
             source_id,
         })
@@ -925,6 +937,7 @@ impl SystemLoopbackSource {
         self.source_id
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
         self.runtime_event_rx
             .as_ref()
@@ -933,6 +946,7 @@ impl SystemLoopbackSource {
             })
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn runtime_event_observations(&self) -> SourceRuntimeEventObservations {
         self.runtime_event_rx
             .as_ref()
@@ -1179,37 +1193,34 @@ fn target_wave_format() -> WaveFormat {
 fn deliver_packet(
     callback_samples: &[f32],
     callback_timestamp_ns: u64,
-    source_id: SourceId,
-    pool: &Arc<AudioBufferPool>,
-    sequence_number: &Arc<AtomicU64>,
-    counters: &CaptureObservationCounters,
+    state: &CaptureLoopState,
     frame_normalizer: &mut CaptureFrameNormalizer,
     callback: &mut (impl FnMut(AudioFrame) + Send + 'static),
 ) {
-    counters.observe_callback_buffer();
+    state.counters.observe_callback_buffer();
     if callback_samples.is_empty() {
-        counters.observe_invalid_buffer();
+        state.counters.observe_invalid_buffer();
         return;
     }
     let normalized = frame_normalizer.push(
         callback_samples,
         callback_timestamp_ns,
         |timestamp_ns, samples| {
-            let frame_sequence_number = sequence_number.fetch_add(1, Ordering::Relaxed);
-            let mut handle = match pool.acquire() {
+            let frame_sequence_number = state.sequence.fetch_add(1, Ordering::Relaxed);
+            let mut handle = match state.pool.acquire() {
                 Some(handle) => handle,
                 None => {
-                    counters.observe_pool_exhaustion();
+                    state.counters.observe_pool_exhaustion();
                     return;
                 }
             };
             if handle.try_copy_from_slice(samples).is_err() {
-                counters.observe_oversized_buffer();
+                state.counters.observe_oversized_buffer();
                 return;
             }
             let mut frame = AudioFrame::new(
                 StreamId(0),
-                source_id,
+                state.source_id,
                 frame_sequence_number,
                 timestamp_ns,
                 CAPTURE_CHANNEL_COUNT,
@@ -1220,7 +1231,7 @@ fn deliver_packet(
         },
     );
     if !normalized {
-        counters.observe_invalid_buffer();
+        state.counters.observe_invalid_buffer();
     }
 }
 
@@ -1527,10 +1538,7 @@ fn capture_loop(
                         deliver_packet(
                             &callback_samples[..sample_count],
                             callback_timestamp_ns,
-                            state.source_id,
-                            &state.pool,
-                            &state.sequence,
-                            &state.counters,
+                            &state,
                             &mut frame_normalizer,
                             &mut callback,
                         );
@@ -1824,10 +1832,7 @@ fn capture_process_loopback(
                     deliver_packet(
                         &callback_samples[..sample_count],
                         callback_timestamp_ns,
-                        state.source_id,
-                        &state.pool,
-                        &state.sequence,
-                        &state.counters,
+                        &state,
                         &mut frame_normalizer,
                         &mut callback,
                     );

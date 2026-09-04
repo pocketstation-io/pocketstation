@@ -1,7 +1,7 @@
 fn main() {
     #[cfg(target_os = "macos")]
     {
-        if std::env::var_os("CARGO_FEATURE_NATIVE_CAPTURE").is_some() {
+        if std::env::var_os("CARGO_FEATURE_COREAUDIO_CAPTURE").is_some() {
             build_macos_capture_bridge();
         }
         if std::env::var_os("CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT").is_some() {

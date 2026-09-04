@@ -1,13 +1,30 @@
 //! Source-sample time mapped into PocketStation's monotonic clock domain.
 
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 use std::num::NonZeroU32;
 
 /// Initializes the process-wide capture timestamp domain from a setup thread.
 ///
 /// Capture backends call this before starting a realtime callback so the
 /// callback only reads the initialized monotonic origin.
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(target_os = "windows", feature = "wasapi-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 pub fn initialize_monotonic_timestamp_domain() {
     let _ = crate::timing::monotonic_timestamp_ns();
 }
@@ -27,7 +44,15 @@ pub fn monotonic_timestamp_ns() -> u64 {
 /// and advances only by represented sample count. Callers must advance it even
 /// when a captured buffer is dropped so downstream gaps remain observable.
 #[derive(Debug)]
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 pub struct CaptureSampleTimeline {
     sample_rate_hz: NonZeroU32,
     origin_timestamp_ns: Option<u64>,
@@ -37,7 +62,15 @@ pub struct CaptureSampleTimeline {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 pub enum CaptureSampleTimelineError {
     MixedAdvanceModes,
     SourcePositionOverflow,
@@ -47,7 +80,15 @@ pub enum CaptureSampleTimelineError {
     },
 }
 
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(
+    test,
+    feature = "internal-testing",
+    all(target_os = "macos", feature = "coreaudio-capture"),
+    all(
+        target_os = "linux",
+        any(feature = "pipewire-capture", feature = "alsa-fallback")
+    )
+))]
 impl CaptureSampleTimeline {
     pub fn new(sample_rate_hz: NonZeroU32) -> Self {
         Self {

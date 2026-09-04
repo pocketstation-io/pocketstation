@@ -4,6 +4,27 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.10 — 2026-09-04
+
+Windows applications can now use PocketStation's default features in debug
+builds. The Opus dependency uses the current libopus bindings, which link the
+same Microsoft C runtime as the Rust application.
+
+Applications that already own part of the host audio stack can select only the
+PocketStation driver they need:
+
+```toml
+pocketstation = {
+  version = "1.1.10",
+  default-features = false,
+  features = ["pipewire-capture"]
+}
+```
+
+The available driver features are `coreaudio-capture`, `wasapi-capture`,
+`pipewire-capture`, and `alsa-fallback`. The normal `native-capture` feature
+still enables all drivers for the current platform.
+
 ## 1.1.9 — 2026-09-04
 
 Capture the complete desktop output mix through the same Session API used for

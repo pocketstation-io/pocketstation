@@ -6,7 +6,7 @@ use crate::frame::{FrameLineage, OutputGeneration, SourceId, StreamId};
 pub const SAMPLE_RATE_HZ: u32 = 48_000;
 #[cfg(test)]
 const FRAME_DURATION_MS: u32 = 20;
-#[cfg(any(test, feature = "internal-testing", target_os = "linux"))]
+#[cfg(any(test, feature = "internal-testing"))]
 pub const POOL_SLOT_SAMPLES: usize = 960; // 20ms × 48kHz
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

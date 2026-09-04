@@ -1,12 +1,12 @@
 //! Control-plane source discovery queries used by the first-party CLI.
 
-#[cfg(feature = "native-capture")]
+#[cfg(feature = "native-capture-runtime")]
 use std::collections::HashSet;
 
-#[cfg(feature = "native-capture")]
+#[cfg(feature = "native-capture-runtime")]
 use super::StableSourceId;
 use super::{CaptureSource, SourceKind, SourceState};
-#[cfg(feature = "native-capture")]
+#[cfg(feature = "native-capture-runtime")]
 use crate::frame::Platform;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -62,20 +62,21 @@ impl SourceProvider for LocalSourceProvider {
 /// This is a control-plane capability query. It does not open a device, prompt
 /// for permission, or create a capture/runtime owner.
 pub fn application_capture_available() -> bool {
-    #[cfg(all(target_os = "macos", feature = "native-capture"))]
+    #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
     {
         super::platform::macos::tap_available()
     }
-    #[cfg(all(
-        feature = "native-capture",
-        any(target_os = "windows", target_os = "linux")
+    #[cfg(any(
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(target_os = "linux", feature = "pipewire-capture")
     ))]
     {
         true
     }
-    #[cfg(not(all(
-        feature = "native-capture",
-        any(target_os = "macos", target_os = "windows", target_os = "linux")
+    #[cfg(not(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(target_os = "linux", feature = "pipewire-capture")
     )))]
     {
         false
@@ -83,10 +84,24 @@ pub fn application_capture_available() -> bool {
 }
 
 pub fn discover_sources() -> Vec<CaptureSource> {
-    #[cfg(not(feature = "native-capture"))]
+    #[cfg(not(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        )
+    )))]
     return Vec::new();
 
-    #[cfg(feature = "native-capture")]
+    #[cfg(any(
+        all(target_os = "macos", feature = "coreaudio-capture"),
+        all(target_os = "windows", feature = "wasapi-capture"),
+        all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        )
+    ))]
     {
         #[cfg(target_os = "macos")]
         let platform = Platform::Macos;
@@ -108,16 +123,19 @@ pub fn discover_sources() -> Vec<CaptureSource> {
             channels: 2,
         }];
 
-        #[cfg(all(target_os = "macos", feature = "native-capture"))]
+        #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
         {
             sources.extend(super::platform::macos::discover_input_sources_native());
             sources.extend(super::platform::macos::discover_sources_native());
         }
 
-        #[cfg(all(target_os = "windows", feature = "native-capture"))]
+        #[cfg(all(target_os = "windows", feature = "wasapi-capture"))]
         sources.extend(super::platform::windows::discover_sources_windows());
 
-        #[cfg(all(target_os = "linux", feature = "native-capture"))]
+        #[cfg(all(
+            target_os = "linux",
+            any(feature = "pipewire-capture", feature = "alsa-fallback")
+        ))]
         sources.extend(super::platform::linux::discover_sources_linux());
 
         let mut seen = HashSet::new();

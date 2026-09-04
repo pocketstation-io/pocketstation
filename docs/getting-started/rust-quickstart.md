@@ -23,7 +23,7 @@ Native build requirements:
 ## Add PocketStation
 
 ```bash
-cargo add pocketstation@1.1.9
+cargo add pocketstation@1.1.10
 ```
 
 ## Capture in three lines
