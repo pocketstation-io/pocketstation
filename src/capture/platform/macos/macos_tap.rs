@@ -7,6 +7,7 @@
 use std::ptr::NonNull;
 use std::time::Duration;
 
+use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
 
 use crate::capture::{
@@ -648,6 +649,11 @@ impl TapLoopbackSource {
                 .unwrap_or(u32::MAX)
                 .max(1);
         let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
+        let mut frame_normalizer = CaptureFrameNormalizer::new(
+            callback_frame_count as usize,
+            channel_count,
+            sample_rate_hz,
+        );
         let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, buffer_capacity_samples);
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let counters = CaptureObservationCounters::default();
@@ -696,37 +702,41 @@ impl TapLoopbackSource {
                             }
                             break;
                         };
-                        let frame_sequence_number = sequence_num;
-                        sequence_num = sequence_num.saturating_add(1);
-                        let mut handle = match pool.acquire() {
-                            Some(h) => h,
-                            None => {
-                                capture_counters.observe_pool_exhaustion();
-                                continue;
-                            }
-                        };
-                        let dst = handle.as_mut_slice();
                         let sample_count = frame_count as usize * channel_count as usize;
-                        if sample_count > dst.len() {
+                        if sample_count > buffer.len() {
                             capture_counters.observe_oversized_buffer();
                             continue;
                         }
-                        dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
-                        if handle.try_set_len(sample_count).is_err() {
-                            capture_counters.observe_oversized_buffer();
-                            continue;
-                        }
-                        let mut frame = AudioFrame::new(
-                            StreamId(0),
-                            source_id,
-                            frame_sequence_number,
+                        let normalized = frame_normalizer.push(
+                            &buffer[..sample_count],
                             timestamp_ns,
-                            channel_count,
-                            handle,
+                            |timestamp_ns, samples| {
+                                let frame_sequence_number = sequence_num;
+                                sequence_num = sequence_num.saturating_add(1);
+                                let Some(mut handle) = pool.acquire() else {
+                                    capture_counters.observe_pool_exhaustion();
+                                    return;
+                                };
+                                if handle.try_copy_from_slice(samples).is_err() {
+                                    capture_counters.observe_oversized_buffer();
+                                    return;
+                                }
+                                let mut frame = AudioFrame::new(
+                                    StreamId(0),
+                                    source_id,
+                                    frame_sequence_number,
+                                    timestamp_ns,
+                                    channel_count,
+                                    handle,
+                                );
+                                frame.sample_rate_hz = sample_rate_hz;
+                                capture_counters.observe_enqueued_frame();
+                                callback(frame);
+                            },
                         );
-                        frame.sample_rate_hz = sample_rate_hz;
-                        capture_counters.observe_enqueued_frame();
-                        callback(frame);
+                        if !normalized {
+                            capture_counters.observe_invalid_buffer();
+                        }
                     }
                 }));
                 if let Err(payload) = worker {
