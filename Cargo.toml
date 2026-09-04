@@ -1,6 +1,6 @@
 [package]
 name = "pocketstation"
-version = "1.1.7"
+version = "1.1.8"
 edition = "2021"
 rust-version = "1.95.0"
 license = "MIT OR Apache-2.0"
@@ -39,6 +39,7 @@ include = [
   "/native/**",
   "/include/**",
   "/examples/quickstart.rs",
+  "/examples/connector.rs",
   "/examples/connector_authoring.rs",
   "/tests/**",
   "/benches/**",
