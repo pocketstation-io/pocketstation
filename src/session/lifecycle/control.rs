@@ -81,8 +81,15 @@ pub(super) fn validate_source_topology(
         .iter()
         .filter(|stem| matches!(stem.source(), Source::Microphone(_)))
         .count();
+    let system_audio_sources = prepared
+        .spec
+        .stems()
+        .iter()
+        .filter(|stem| matches!(stem.source(), Source::SystemAudio))
+        .count();
     if source_topology_has_input(
         application_sources,
+        system_audio_sources,
         microphone_sources,
         prepared.spec.source_instances().len(),
     ) {
@@ -94,10 +101,14 @@ pub(super) fn validate_source_topology(
 
 const fn source_topology_has_input(
     application_sources: usize,
+    system_audio_sources: usize,
     microphone_sources: usize,
     registered_sources: usize,
 ) -> bool {
-    application_sources > 0 || microphone_sources > 0 || registered_sources > 0
+    application_sources > 0
+        || system_audio_sources > 0
+        || microphone_sources > 0
+        || registered_sources > 0
 }
 
 /// Thread-safe cancellation request for a Session that has not reached
@@ -208,18 +219,20 @@ mod tests {
 
     #[test]
     fn given_supported_source_compositions_when_validated_then_each_is_accepted() {
-        assert!(source_topology_has_input(1, 0, 0));
-        assert!(source_topology_has_input(0, 1, 0));
-        assert!(source_topology_has_input(2, 0, 0));
-        assert!(source_topology_has_input(0, 2, 0));
-        assert!(source_topology_has_input(2, 3, 0));
-        assert!(source_topology_has_input(0, 0, 1));
-        assert!(source_topology_has_input(2, 1, 3));
+        assert!(source_topology_has_input(1, 0, 0, 0));
+        assert!(source_topology_has_input(0, 1, 0, 0));
+        assert!(source_topology_has_input(0, 0, 1, 0));
+        assert!(source_topology_has_input(2, 0, 0, 0));
+        assert!(source_topology_has_input(0, 2, 0, 0));
+        assert!(source_topology_has_input(0, 0, 2, 0));
+        assert!(source_topology_has_input(2, 3, 4, 0));
+        assert!(source_topology_has_input(0, 0, 0, 1));
+        assert!(source_topology_has_input(2, 1, 1, 3));
     }
 
     #[test]
     fn given_session_without_source_when_validated_then_topology_is_rejected() {
-        assert!(!source_topology_has_input(0, 0, 0));
+        assert!(!source_topology_has_input(0, 0, 0, 0));
     }
 }
 

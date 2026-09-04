@@ -13,12 +13,42 @@ use pocketstation::{
 fn given_public_facade_when_session_declared_then_canonical_types_are_used() {
     let require_source: fn(Source) -> Source = |source| source;
     let _ = require_source(Source::microphone_default());
+    let _ = require_source(Source::system_audio());
 
     let session_constructor = Session::new;
     let _ = session_constructor;
 
     let configured = Session::builder().recording_root("recordings").build();
     let _ = configured.id();
+}
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_system_audio_when_session_runs_then_system_mix_keeps_its_own_stem() {
+    let session = pocketstation::conformance::session().expect("canonical conformance Session");
+    let system_audio = session
+        .capture(Source::system_audio())
+        .expect("system audio stem");
+    let expected_stem_id = system_audio.id();
+    system_audio
+        .send(session.polled_audio().expect("system audio endpoint"))
+        .expect("system audio route");
+
+    let mut running = session.start().expect("running Session");
+    let deadline = Instant::now() + Duration::from_secs(5);
+    let (observed_stem_id, observed_source_id) = loop {
+        if let Ok(batch) = running.try_poll_audio() {
+            if let Some(frame) = batch.frame(0) {
+                break (frame.lineage().stem_id(), frame.lineage().source_id().get());
+            }
+        }
+        assert!(Instant::now() < deadline, "system audio frame timed out");
+        thread::sleep(Duration::from_millis(1));
+    };
+
+    assert_eq!(observed_stem_id, expected_stem_id);
+    assert_eq!(observed_source_id, 152);
+    assert!(running.stop().is_success());
 }
 
 #[test]

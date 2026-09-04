@@ -1,4 +1,4 @@
-# Capture and route application or microphone audio
+# Capture and route desktop audio
 
 Use one `Session` when the same source must feed more than one destination.
 PocketStation opens each source once, preserves its identity, and gives every
@@ -44,6 +44,28 @@ For a selection that must survive beyond the current process, inspect
 reported scope matches the intended reuse. The
 [platform operations guide](../operations/platform-support.md#reuse-a-discovered-source-safely)
 shows how to handle permission, persistence, and rediscovery.
+
+## Capture everything playing on the computer
+
+Use system audio when the workflow needs the complete output mix instead of
+one application:
+
+```rust,no_run
+use pocketstation::{Session, Source};
+
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
+let session = Session::new();
+let system_audio = session.capture(Source::system_audio())?;
+system_audio.send(session.polled_audio()?)?;
+let mut running = session.start()?;
+# let _ = running.stop();
+# Ok(())
+# }
+```
+
+System audio can include notifications, media, and other applications. Prefer
+`Source::application` when the user selected one application and unrelated
+desktop audio must remain outside the Session.
 
 ## Add the microphone only when needed
 

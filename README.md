@@ -10,9 +10,9 @@ when the application needs a second independent source.
 
 ```text
 desktop application ─┐
-microphone ──────────┼─ Session ─┬─ your Rust code
-application PCM ─────┘           ├─ Operator or Connector
-                                 └─ one recording file per stem
+system audio ────────┼─ Session ─┬─ your Rust code
+microphone ──────────┤           ├─ Operator or Connector
+application PCM ─────┘           └─ one recording file per stem
 ```
 
 PocketStation is for applications that need direct control of desktop audio:
@@ -26,7 +26,7 @@ You need Rust 1.95 or newer and one supported desktop application producing
 audio.
 
 ```bash
-cargo add pocketstation@1.1.8
+cargo add pocketstation@1.1.9
 ```
 
 ```rust,no_run
@@ -65,7 +65,7 @@ after receiving audio from every requested source. Add `--microphone` or
 
 ## Keep sources separate
 
-Application, microphone, and application-owned PCM enter a `Session` as
+Application, system, microphone, and application-owned PCM enter a `Session` as
 different stems. Every frame identifies its source, stream, stem, sequence,
 timestamp, clock, and continuity state. Sending two stems to the same provider
 does not mix them or erase where they came from.
@@ -187,7 +187,7 @@ permission states, source persistence, recovery steps, and native prerequisites.
 
 | Platform | Available sources | Published evidence |
 |---|---|---|
-| macOS | application and microphone | physical application, microphone, 10 ms capture, Relay, Chromium, and multistem recording on the recorded host |
+| macOS | system, application, and microphone | physical system, application, and microphone capture; 10 ms application and microphone capture; Relay, Chromium, and multistem recording |
 | Windows | system, application, and microphone | automated Windows 11 ARM64 VM selection and 10 ms capture; physical-device and latency qualification remain separate |
 | Linux | PipeWire application/system and ALSA microphone | automated Ubuntu selection and 10 ms capture; physical-device qualification remains separate |
 
@@ -209,7 +209,7 @@ Native prerequisites:
 Disable native capture when a tool only needs PocketStation types or docs:
 
 ```toml
-pocketstation = { version = "1.1.8", default-features = false }
+pocketstation = { version = "1.1.9", default-features = false }
 ```
 
 ## Continue from the task you have

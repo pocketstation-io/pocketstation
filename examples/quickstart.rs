@@ -8,14 +8,18 @@ use pocketstation as pks;
 
 struct Options {
     application: Option<String>,
+    system_audio: bool,
     microphone: bool,
     recording_root: Option<PathBuf>,
+    duration: Option<Duration>,
 }
 
 fn options() -> Result<Option<Options>, Box<dyn Error>> {
     let mut application = None;
+    let mut system_audio = false;
     let mut microphone = false;
     let mut recording_root = None;
+    let mut duration = None;
     let mut arguments = std::env::args().skip(1);
     while let Some(argument) = arguments.next() {
         match argument.as_str() {
@@ -26,6 +30,7 @@ fn options() -> Result<Option<Options>, Box<dyn Error>> {
                         .ok_or("--application requires a name, identifier, or process ID")?,
                 );
             }
+            "--system-audio" => system_audio = true,
             "--microphone" => microphone = true,
             "--record" => {
                 recording_root = Some(PathBuf::from(
@@ -34,20 +39,36 @@ fn options() -> Result<Option<Options>, Box<dyn Error>> {
                         .ok_or("--record requires an output directory")?,
                 ));
             }
+            "--duration" => {
+                let seconds = arguments
+                    .next()
+                    .ok_or("--duration requires a positive number of seconds")?
+                    .parse::<f64>()?;
+                if !seconds.is_finite() || seconds <= 0.0 {
+                    return Err("--duration must be a positive number of seconds".into());
+                }
+                duration = Some(Duration::from_secs_f64(seconds));
+            }
             "--help" | "-h" => {
                 println!(
                     "Usage: quickstart [--application <name-or-id>] \
-                     [--microphone] [--record <directory>]"
+                     [--system-audio] [--microphone] [--record <directory>] \
+                     [--duration <seconds>]"
                 );
                 return Ok(None);
             }
             _ => return Err(format!("unknown argument: {argument}").into()),
         }
     }
+    if system_audio && application.is_some() {
+        return Err("--system-audio and --application cannot be used together".into());
+    }
     Ok(Some(Options {
         application,
+        system_audio,
         microphone,
         recording_root,
+        duration,
     }))
 }
 
@@ -119,12 +140,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         builder = builder.recording_root(root);
     }
     let session = builder.build();
-    let application = session.capture(pks::Source::application(choose_application(
-        options.application.as_deref(),
-    )?))?;
-    application.send(session.polled_audio()?)?;
+    let primary = if options.system_audio {
+        session.capture(pks::Source::system_audio())?
+    } else {
+        session.capture(pks::Source::application(choose_application(
+            options.application.as_deref(),
+        )?))?
+    };
+    primary.send(session.polled_audio()?)?;
     if options.recording_root.is_some() {
-        application.record("application")?;
+        primary.record(if options.system_audio {
+            "system"
+        } else {
+            "application"
+        })?;
     }
 
     let expected_stems = if options.microphone {
@@ -139,10 +168,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     let mut running = session.start()?;
-    let deadline = Instant::now() + Duration::from_secs(10);
+    let deadline = Instant::now() + options.duration.unwrap_or(Duration::from_secs(10));
     let mut frames_by_stem = BTreeMap::<u64, usize>::new();
     while Instant::now() < deadline
-        && frames_by_stem.values().filter(|count| **count >= 2).count() < expected_stems
+        && (options.duration.is_some()
+            || frames_by_stem.values().filter(|count| **count >= 2).count() < expected_stems)
     {
         if let Ok(batch) = running.try_poll_audio() {
             for index in 0..batch.len() {
