@@ -72,6 +72,11 @@ const PW_OPEN_TIMEOUT: Duration = Duration::from_secs(5);
 /// can be ignored by current WirePlumber linking policy.
 const PW_TARGET_OBJECT: &str = "target.object";
 
+/// WirePlumber's stable alias for the current default output. A system-mix
+/// stream must name this target explicitly; otherwise an input stream may be
+/// linked to the default microphone even when `stream.capture.sink` is set.
+const PW_DEFAULT_AUDIO_SINK: &str = "@DEFAULT_AUDIO_SINK@";
+
 /// Exact capture must fail if the selected target disappears. Falling back to
 /// a default device would silently widen an application or device selection.
 const PW_NODE_DONT_FALLBACK: &str = "node.dont-fallback";
@@ -1091,8 +1096,9 @@ where
                 }
             };
 
-            // STREAM_CAPTURE_SINK captures the monitor port of the default sink
-            // (system-wide output mix).
+            // STREAM_CAPTURE_SINK selects monitor ports. TARGET_OBJECT keeps
+            // the stream attached to the current default output instead of
+            // allowing the session manager to choose an input source.
             let stream_props = properties! {
                 *pw::keys::NODE_NAME => "pks-system-mix-capture",
                 *pw::keys::NODE_LATENCY => PW_NODE_LATENCY,
@@ -1100,6 +1106,7 @@ where
                 *pw::keys::MEDIA_CATEGORY => "Capture",
                 *pw::keys::MEDIA_ROLE => "Music",
                 *pw::keys::STREAM_CAPTURE_SINK => "true",
+                PW_TARGET_OBJECT => PW_DEFAULT_AUDIO_SINK,
                 PW_STATE_RESTORE_PROPS => "false",
                 PW_STATE_RESTORE_TARGET => "false",
             };
