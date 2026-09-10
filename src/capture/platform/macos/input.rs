@@ -15,11 +15,32 @@ use crate::capture::{
 };
 use crate::frame::{AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, StreamId};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
+use cpal::{BufferSize, ErrorKind, SampleFormat, SupportedBufferSize};
 
 const QUEUE_CAPACITY_FRAMES: usize = 8;
 const POOL_CAPACITY_FRAMES: usize = QUEUE_CAPACITY_FRAMES + 2;
 const FALLBACK_MAX_CALLBACK_DURATION_MS: u32 = 200;
+const CPAL_ERROR_CLASS_CAPACITY: usize = 32;
+
+fn cpal_error_class(kind: ErrorKind) -> &'static str {
+    match kind {
+        ErrorKind::DeviceBusy => "cpal-device-busy",
+        ErrorKind::DeviceChanged => "cpal-device-changed",
+        ErrorKind::DeviceNotAvailable => "cpal-device-not-available",
+        ErrorKind::HostUnavailable => "cpal-host-unavailable",
+        ErrorKind::InvalidInput => "cpal-invalid-input",
+        ErrorKind::PermissionDenied => "cpal-permission-denied",
+        ErrorKind::RealtimeDenied => "cpal-realtime-denied",
+        ErrorKind::ResourceExhausted => "cpal-resource-exhausted",
+        ErrorKind::StreamInvalidated => "cpal-stream-invalidated",
+        ErrorKind::UnsupportedConfig => "cpal-unsupported-config",
+        ErrorKind::UnsupportedOperation => "cpal-unsupported-operation",
+        ErrorKind::Xrun => "cpal-xrun",
+        ErrorKind::BackendError => "cpal-backend-error",
+        ErrorKind::Other => "cpal-other",
+        _ => "cpal-unrecognized-error",
+    }
+}
 
 fn require_microphone_permission(permission: PermissionObservation) -> Result<(), CaptureError> {
     match permission {
@@ -186,21 +207,30 @@ impl MacosInputSource {
             }
         };
         let error_counters = counters.clone();
-        let mut runtime_failure_event =
-            runtime_event_sender
-                .as_ref()
-                .map(|_| SourceRuntimeEvent::BackendFailure {
-                    stable_id,
-                    generation: SourceGeneration::INITIAL,
-                    failure: CaptureRuntimeFailure {
-                        operation: "macOS input stream callback",
-                        error_class: CaptureRuntimeFailureClass::BackendClass {
-                            class: "cpal-stream-error".to_owned(),
-                        },
-                    },
-                });
-        let error_callback = move |_error: cpal::Error| {
+        let mut runtime_failure_event = runtime_event_sender.as_ref().map(|_| {
+            let mut class = String::with_capacity(CPAL_ERROR_CLASS_CAPACITY);
+            class.push_str("cpal-unrecognized-error");
+            SourceRuntimeEvent::BackendFailure {
+                stable_id,
+                generation: SourceGeneration::INITIAL,
+                failure: CaptureRuntimeFailure {
+                    operation: "macOS input stream callback",
+                    error_class: CaptureRuntimeFailureClass::BackendClass { class },
+                },
+            }
+        });
+        let error_callback = move |error: cpal::Error| {
             error_counters.observe_stream_error();
+            if let Some(SourceRuntimeEvent::BackendFailure { failure, .. }) =
+                runtime_failure_event.as_mut()
+            {
+                let CaptureRuntimeFailureClass::BackendClass { class } = &mut failure.error_class
+                else {
+                    return;
+                };
+                class.clear();
+                class.push_str(cpal_error_class(error.kind()));
+            }
             if let (Some(sender), Some(event)) =
                 (runtime_event_sender.as_ref(), runtime_failure_event.take())
             {
@@ -371,6 +401,35 @@ fn capture_backend_error(context: &str, error: impl std::fmt::Display) -> Captur
 mod tests {
     use super::*;
     use cpal::{InputCallbackInfo, InputStreamTimestamp, StreamInstant};
+
+    #[test]
+    fn given_cpal_error_kinds_when_classified_then_names_fit_preallocated_storage() {
+        let cases = [
+            (ErrorKind::DeviceBusy, "cpal-device-busy"),
+            (ErrorKind::DeviceChanged, "cpal-device-changed"),
+            (ErrorKind::DeviceNotAvailable, "cpal-device-not-available"),
+            (ErrorKind::HostUnavailable, "cpal-host-unavailable"),
+            (ErrorKind::InvalidInput, "cpal-invalid-input"),
+            (ErrorKind::PermissionDenied, "cpal-permission-denied"),
+            (ErrorKind::RealtimeDenied, "cpal-realtime-denied"),
+            (ErrorKind::ResourceExhausted, "cpal-resource-exhausted"),
+            (ErrorKind::StreamInvalidated, "cpal-stream-invalidated"),
+            (ErrorKind::UnsupportedConfig, "cpal-unsupported-config"),
+            (
+                ErrorKind::UnsupportedOperation,
+                "cpal-unsupported-operation",
+            ),
+            (ErrorKind::Xrun, "cpal-xrun"),
+            (ErrorKind::BackendError, "cpal-backend-error"),
+            (ErrorKind::Other, "cpal-other"),
+        ];
+
+        for (kind, expected) in cases {
+            assert_eq!(cpal_error_class(kind), expected);
+            assert!(expected.len() <= CPAL_ERROR_CLASS_CAPACITY);
+        }
+        assert!("cpal-unrecognized-error".len() <= CPAL_ERROR_CLASS_CAPACITY);
+    }
 
     #[test]
     fn given_capture_before_callback_when_mapped_then_process_timestamp_preserves_delay() {
