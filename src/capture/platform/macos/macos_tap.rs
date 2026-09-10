@@ -5,7 +5,7 @@
 //! changes, HAL plugin installation, or Screen Recording permission.
 
 use std::ptr::NonNull;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
@@ -44,6 +44,7 @@ struct ApplicationCaptureSelection {
 
 extern "C" {
     fn pks_process_tap_available() -> i32;
+    fn pks_process_start_time_ns(process_id: i32) -> u64;
     fn pks_discover_sources(out: *mut RawSourceInfo, max_count: i32) -> i32;
     fn pks_create_process_tap(
         pids: *const i32,
@@ -408,21 +409,59 @@ fn capture_exact_application_open_audit(
         })
 }
 
-fn verify_exact_application_open_audit(
-    expected: &ExactApplicationOpenAudit,
-) -> Result<(), LoopbackError> {
-    let observed = exact_application_open_audit(
-        &discover_sources_native_with_audit(),
-        expected.process_id,
-        &expected.stable_id,
-    );
-    if observed.as_ref() == Some(expected) {
-        Ok(())
-    } else {
-        Err(LoopbackError::SourceUnavailable {
-            stable_key: expected.stable_id.stable_key.clone(),
+fn capture_application_open_audits(
+    selection: &ApplicationCaptureSelection,
+) -> Result<Vec<ExactApplicationOpenAudit>, LoopbackError> {
+    let sources = discover_sources_native_with_audit();
+    selection
+        .process_ids
+        .iter()
+        .map(|process_id| {
+            u32::try_from(*process_id)
+                .ok()
+                .and_then(|process_id| {
+                    exact_application_open_audit(&sources, process_id, &selection.stable_id)
+                })
+                .ok_or_else(|| LoopbackError::SourceUnavailable {
+                    stable_key: selection.stable_id.stable_key.clone(),
+                })
         })
+        .collect()
+}
+
+fn selected_application_is_running_with(
+    audits: &[ExactApplicationOpenAudit],
+    mut process_start_time: impl FnMut(u32) -> u64,
+) -> bool {
+    audits.is_empty()
+        || audits
+            .iter()
+            .any(|audit| process_start_time(audit.process_id) == audit.process_start_time_ns)
+}
+
+fn selected_application_is_running(audits: &[ExactApplicationOpenAudit]) -> bool {
+    selected_application_is_running_with(audits, |process_id| {
+        let Ok(process_id) = i32::try_from(process_id) else {
+            return 0;
+        };
+        // SAFETY: this control-thread query borrows no memory and returns zero
+        // when the selected process instance no longer exists.
+        unsafe { pks_process_start_time_ns(process_id) }
+    })
+}
+
+fn verify_application_open_audits(
+    audits: &[ExactApplicationOpenAudit],
+) -> Result<(), LoopbackError> {
+    if selected_application_is_running(audits) {
+        return Ok(());
     }
+    Err(LoopbackError::SourceUnavailable {
+        stable_key: audits
+            .first()
+            .map(|audit| audit.stable_id.stable_key.clone())
+            .unwrap_or_else(|| "selected-application".to_owned()),
+    })
 }
 
 // SAFETY:
@@ -537,6 +576,7 @@ impl Drop for ProcessTap {
 // consumes 20 ms frames. Keep bounded ownership for a full downstream burst;
 // empty pool slots add memory headroom, not playout latency.
 const POOL_CAPACITY_FRAMES: usize = 32;
+const PROCESS_LIFETIME_POLL_INTERVAL: Duration = Duration::from_millis(100);
 
 /// Captures system audio via CoreAudio process tap (macOS 14.2+).
 pub struct TapLoopbackSource {
@@ -562,41 +602,36 @@ impl TapLoopbackSource {
             ));
         }
 
-        let exact_application_open_audit = match &mode {
-            CaptureMode::Process(process_id) => {
-                Some(capture_application_open_audit_for_process(*process_id)?)
+        let (mut tap, stable_id, application_open_audits) = match &mode {
+            CaptureMode::SystemMix => (ProcessTap::global()?, stable_source_id(&mode)?, Vec::new()),
+            CaptureMode::Process(pid) => {
+                let audit = capture_application_open_audit_for_process(*pid)?;
+                let stable_id = audit.stable_id.clone();
+                (
+                    ProcessTap::for_pids(&[*pid as i32])?,
+                    stable_id,
+                    vec![audit],
+                )
             }
             CaptureMode::ExactApplication {
                 process_id,
                 stable_id,
-            } => Some(capture_exact_application_open_audit(
-                *process_id,
-                stable_id,
-            )?),
-            _ => None,
-        };
-
-        let (mut tap, stable_id) = match &mode {
-            CaptureMode::SystemMix => (ProcessTap::global()?, stable_source_id(&mode)?),
-            CaptureMode::Process(pid) => {
-                let stable_id = exact_application_open_audit
-                    .as_ref()
-                    .map(|audit| audit.stable_id.clone())
-                    .ok_or_else(|| LoopbackError::SourceUnavailable {
-                        stable_key: format!("pid:{pid}"),
-                    })?;
-                (ProcessTap::for_pids(&[*pid as i32])?, stable_id)
+            } => {
+                let audit = capture_exact_application_open_audit(*process_id, stable_id)?;
+                (
+                    ProcessTap::for_pids(&[*process_id as i32])?,
+                    stable_id.clone(),
+                    vec![audit],
+                )
             }
-            CaptureMode::ExactApplication { process_id, .. } => (
-                ProcessTap::for_pids(&[*process_id as i32])?,
-                stable_source_id(&mode)?,
-            ),
             CaptureMode::ExactApplicationStable { stable_id } => {
                 let sources = discover_sources_native();
                 let selected = select_stable_application_capture(&sources, stable_id)?;
+                let audits = capture_application_open_audits(&selected)?;
                 (
                     ProcessTap::for_pids(&selected.process_ids)?,
                     selected.stable_id,
+                    audits,
                 )
             }
             CaptureMode::Application(application) => {
@@ -610,9 +645,11 @@ impl TapLoopbackSource {
                         selected.process_ids
                     );
                 }
+                let audits = capture_application_open_audits(&selected)?;
                 (
                     ProcessTap::for_pids(&selected.process_ids)?,
                     selected.stable_id,
+                    audits,
                 )
             }
             CaptureMode::InputDevice(_) => {
@@ -621,9 +658,7 @@ impl TapLoopbackSource {
         };
 
         tap.start()?;
-        if let Some(expected) = exact_application_open_audit.as_ref() {
-            verify_exact_application_open_audit(expected)?;
-        }
+        verify_application_open_audits(&application_open_audits)?;
 
         let sample_rate_hz = tap.sample_rate_hz();
         if sample_rate_hz == 0 {
@@ -661,6 +696,7 @@ impl TapLoopbackSource {
 
         let source_id = stable_id.source_id();
         let failure_counters = counters.clone();
+        let runtime_stable_id = stable_id.clone();
 
         let thread = std::thread::Builder::new()
             .name("pks-tap-reader".into())
@@ -669,9 +705,31 @@ impl TapLoopbackSource {
                     let mut sequence_num: u64 = 0;
                     let mut buffer = vec![0.0f32; buffer_capacity_samples];
                     let mut observed_drop_count = tap.drop_count();
+                    let mut next_process_lifetime_check =
+                        Instant::now() + PROCESS_LIFETIME_POLL_INTERVAL;
                     loop {
                         if stop_rx.try_recv().is_ok() {
                             break;
+                        }
+                        if Instant::now() >= next_process_lifetime_check {
+                            if !selected_application_is_running(&application_open_audits) {
+                                if let Some(sender) = runtime_event_sender.as_ref() {
+                                    let _ = sender.try_send(
+                                        crate::capture::SourceRuntimeEvent::SourceUnavailable {
+                                            stable_id: runtime_stable_id.clone(),
+                                            generation: crate::capture::SourceGeneration::INITIAL,
+                                            recovery_requirement: crate::capture::SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession,
+                                            failure: crate::capture::CaptureRuntimeFailure {
+                                                operation: "observe selected application lifetime",
+                                                error_class: crate::capture::CaptureRuntimeFailureClass::SourceInstanceExited,
+                                            },
+                                        },
+                                    );
+                                }
+                                break;
+                            }
+                            next_process_lifetime_check =
+                                Instant::now() + PROCESS_LIFETIME_POLL_INTERVAL;
                         }
                         let batch = tap.read_frames(&mut buffer, callback_frame_count);
                         let frame_count = batch.frame_count;
@@ -744,7 +802,7 @@ impl TapLoopbackSource {
                     if let Some(sender) = runtime_event_sender.as_ref() {
                         let _ = crate::capture::publish_backend_failure(
                             sender,
-                            stable_id,
+                            runtime_stable_id,
                             crate::capture::SourceGeneration::INITIAL,
                             "macOS tap reader",
                             crate::capture::CaptureRuntimeFailureClass::BackendClass {
@@ -802,9 +860,10 @@ impl Drop for TapLoopbackSource {
 mod tests {
     use super::{
         application_open_audit_for_process, exact_application_open_audit, process_timestamp_ns,
-        select_application_capture, select_stable_application_capture, source_host_timestamp_ns,
-        stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit,
-        ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
+        select_application_capture, select_stable_application_capture,
+        selected_application_is_running_with, source_host_timestamp_ns, stable_source_id,
+        tap_error, AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch,
+        CORE_AUDIO_PERMISSION_DENIED_STATUS,
     };
     use crate::capture::{
         CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId,
@@ -1061,5 +1120,49 @@ mod tests {
         let sources = vec![audited_application(selected.clone(), 42, 0)];
 
         assert_eq!(exact_application_open_audit(&sources, 42, &selected), None);
+    }
+
+    #[test]
+    fn given_one_selected_process_still_running_when_checked_then_application_remains_available() {
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::Application, "com.acme.meeting");
+        let audits = vec![
+            ExactApplicationOpenAudit {
+                process_id: 42,
+                stable_id: stable_id.clone(),
+                process_start_time_ns: 100,
+            },
+            ExactApplicationOpenAudit {
+                process_id: 43,
+                stable_id,
+                process_start_time_ns: 200,
+            },
+        ];
+
+        assert!(selected_application_is_running_with(
+            &audits,
+            |process_id| {
+                if process_id == 43 {
+                    200
+                } else {
+                    0
+                }
+            }
+        ));
+    }
+
+    #[test]
+    fn given_selected_pid_reused_after_exit_when_checked_then_application_is_unavailable() {
+        let audits = vec![ExactApplicationOpenAudit {
+            process_id: 42,
+            stable_id: StableSourceId::new(
+                Platform::Macos,
+                SourceKind::Application,
+                "com.acme.meeting",
+            ),
+            process_start_time_ns: 100,
+        }];
+
+        assert!(!selected_application_is_running_with(&audits, |_| 200));
     }
 }

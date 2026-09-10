@@ -22,7 +22,8 @@
 
 #include "source_discovery.h"
 
-static uint64_t pks_process_start_time_ns(pid_t pid) {
+uint64_t pks_process_start_time_ns(int32_t process_id) {
+    pid_t pid = (pid_t)process_id;
     struct proc_bsdinfo info;
     int bytes = proc_pidinfo(
         pid,

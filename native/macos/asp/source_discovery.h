@@ -32,6 +32,11 @@ typedef struct {
 // Returns 1 if the process tap API is available (macOS 14.2+), 0 otherwise.
 int pks_process_tap_available(void);
 
+// Returns the process start time for one live PID, or zero after that process
+// instance exits. Call only from a control or reader thread, never an audio
+// callback.
+uint64_t pks_process_start_time_ns(int32_t process_id);
+
 // Enumerate live audio source processes. Returns count written (≤ max).
 int pks_discover_sources(PksCaptureSourceInfo *out, int max);
 
