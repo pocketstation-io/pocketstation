@@ -52,7 +52,12 @@ extern "C" {
         out_status: *mut i32,
         out_stage: *mut u8,
     ) -> *mut std::ffi::c_void;
-    fn pks_tap_start(tap: *mut std::ffi::c_void, out_status: *mut i32, out_stage: *mut u8) -> i32;
+    fn pks_tap_start(
+        tap: *mut std::ffi::c_void,
+        frame_duration_ms: u16,
+        out_status: *mut i32,
+        out_stage: *mut u8,
+    ) -> i32;
     fn pks_destroy_process_tap(tap: *mut std::ffi::c_void);
     fn pks_tap_read_frames_timed(
         tap: *mut std::ffi::c_void,
@@ -64,6 +69,11 @@ extern "C" {
     ) -> u32;
     fn pks_tap_current_host_time_ns() -> u64;
     fn pks_tap_drop_count(tap: *const std::ffi::c_void) -> u64;
+    fn pks_tap_io_buffer_before_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_requested_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_applied_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_min_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_max_frames(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_channels(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_level(tap: *const std::ffi::c_void) -> f32;
@@ -264,6 +274,15 @@ fn cstr_to_opt(buf: &[u8]) -> Option<String> {
 }
 
 struct ProcessTap(NonNull<std::ffi::c_void>);
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ProcessTapIoBuffer {
+    before_frames: u32,
+    requested_frames: u32,
+    applied_frames: u32,
+    minimum_frames: u32,
+    maximum_frames: u32,
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct ProcessTapReadBatch {
@@ -494,15 +513,39 @@ impl ProcessTap {
             .ok_or_else(|| tap_error(status_code, stage_code))
     }
 
-    fn start(&mut self) -> Result<(), LoopbackError> {
+    fn start(
+        &mut self,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+    ) -> Result<(), LoopbackError> {
         let mut status_code = 0;
         let mut stage_code = 0;
         // SAFETY: self owns a live tap handle and both out-pointers live through
         // this call.
-        if unsafe { pks_tap_start(self.0.as_ptr(), &mut status_code, &mut stage_code) } == 0 {
+        if unsafe {
+            pks_tap_start(
+                self.0.as_ptr(),
+                audio_frame_duration.milliseconds(),
+                &mut status_code,
+                &mut stage_code,
+            )
+        } == 0
+        {
             Ok(())
         } else {
             Err(tap_error(status_code, stage_code))
+        }
+    }
+
+    fn io_buffer(&self) -> ProcessTapIoBuffer {
+        // SAFETY: self owns a live tap handle for the duration of these reads.
+        unsafe {
+            ProcessTapIoBuffer {
+                before_frames: pks_tap_io_buffer_before_frames(self.0.as_ptr()),
+                requested_frames: pks_tap_io_buffer_requested_frames(self.0.as_ptr()),
+                applied_frames: pks_tap_io_buffer_applied_frames(self.0.as_ptr()),
+                minimum_frames: pks_tap_io_buffer_min_frames(self.0.as_ptr()),
+                maximum_frames: pks_tap_io_buffer_max_frames(self.0.as_ptr()),
+            }
         }
     }
 
@@ -657,7 +700,7 @@ impl TapLoopbackSource {
             }
         };
 
-        tap.start()?;
+        tap.start(audio_frame_duration)?;
         verify_application_open_audits(&application_open_audits)?;
 
         let sample_rate_hz = tap.sample_rate_hz();
@@ -667,6 +710,17 @@ impl TapLoopbackSource {
             ));
         }
         let channel_count = tap.channel_count() as u8;
+        if std::env::var_os("PKS_TAP_DIAG").is_some() {
+            let io_buffer = tap.io_buffer();
+            eprintln!(
+                "tap_diag: io_buffer_before_frames={} io_buffer_requested_frames={} io_buffer_applied_frames={} io_buffer_min_frames={} io_buffer_max_frames={}",
+                io_buffer.before_frames,
+                io_buffer.requested_frames,
+                io_buffer.applied_frames,
+                io_buffer.minimum_frames,
+                io_buffer.maximum_frames,
+            );
+        }
         initialize_monotonic_timestamp_domain();
         let host_time_before_ns = ProcessTap::current_host_time_ns();
         let process_time_ns = monotonic_timestamp_ns();
