@@ -83,6 +83,13 @@ impl CaptureFrameNormalizer {
         true
     }
 
+    /// Discards an incomplete frame after the native stream reports a gap.
+    /// The next callback establishes a new timestamp anchor.
+    pub(crate) fn reset(&mut self) {
+        self.sample_count = 0;
+        self.next_timestamp_ns = None;
+    }
+
     #[cfg(test)]
     fn pending_sample_count(&self) -> usize {
         self.sample_count
@@ -159,6 +166,23 @@ mod tests {
         let mut normalizer = CaptureFrameNormalizer::new(960, 2, 48_000);
 
         assert!(!normalizer.push(&[0.0; 3], 1, |_, _| {}));
+        assert_eq!(normalizer.pending_sample_count(), 0);
+    }
+
+    #[test]
+    fn given_partial_audio_when_reset_then_next_callback_starts_a_new_frame() {
+        let mut normalizer = CaptureFrameNormalizer::new(480, 1, 48_000);
+        let mut emitted = Vec::new();
+
+        assert!(normalizer.push(&[0.0; 320], 1_000_000_000, |_, _| {}));
+        normalizer.reset();
+        assert!(
+            normalizer.push(&[0.0; 480], 2_000_000_000, |timestamp_ns, samples| {
+                emitted.push((timestamp_ns, samples.len()));
+            })
+        );
+
+        assert_eq!(emitted, vec![(2_000_000_000, 480)]);
         assert_eq!(normalizer.pending_sample_count(), 0);
     }
 }

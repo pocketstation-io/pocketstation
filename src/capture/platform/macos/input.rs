@@ -15,7 +15,7 @@ use crate::capture::{
 };
 use crate::frame::{AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, StreamId};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{BufferSize, ErrorKind, SampleFormat, SupportedBufferSize};
+use cpal::{ErrorKind, SampleFormat, SupportedBufferSize};
 
 const QUEUE_CAPACITY_FRAMES: usize = 8;
 const POOL_CAPACITY_FRAMES: usize = QUEUE_CAPACITY_FRAMES + 2;
@@ -40,6 +40,17 @@ fn cpal_error_class(kind: ErrorKind) -> &'static str {
         ErrorKind::Other => "cpal-other",
         _ => "cpal-unrecognized-error",
     }
+}
+
+fn cpal_stream_continues(kind: ErrorKind) -> bool {
+    matches!(
+        kind,
+        ErrorKind::DeviceChanged | ErrorKind::RealtimeDenied | ErrorKind::Xrun
+    )
+}
+
+fn cpal_stream_has_discontinuity(kind: ErrorKind) -> bool {
+    matches!(kind, ErrorKind::DeviceChanged | ErrorKind::Xrun)
 }
 
 fn require_microphone_permission(permission: PermissionObservation) -> Result<(), CaptureError> {
@@ -125,14 +136,8 @@ impl MacosInputSource {
                 .max(1);
         let fallback_max_callback_frames =
             (sample_rate_hz / (1_000 / FALLBACK_MAX_CALLBACK_DURATION_MS)).max(1);
-        let mut stream_config = supported_config.config();
+        let stream_config = supported_config.config();
         let maximum_callback_frames = match supported_config.buffer_size() {
-            SupportedBufferSize::Range { min, max }
-                if target_callback_frames >= *min && target_callback_frames <= *max =>
-            {
-                stream_config.buffer_size = BufferSize::Fixed(target_callback_frames);
-                fallback_max_callback_frames.max(*min).min(*max)
-            }
             SupportedBufferSize::Range { min, max } => {
                 fallback_max_callback_frames.max(*min).min(*max)
             }
@@ -158,6 +163,8 @@ impl MacosInputSource {
         let source_id = stable_id.source_id();
         let callback_pool = Arc::clone(&pool);
         let callback_counters = counters.clone();
+        let callback_discontinuity_pending = Arc::new(AtomicBool::new(false));
+        let error_discontinuity_pending = Arc::clone(&callback_discontinuity_pending);
         let mut sequence_number = 0u64;
         let mut sample_timeline = None;
         let data_callback = move |data: &[f32], callback_info: &cpal::InputCallbackInfo| {
@@ -165,6 +172,11 @@ impl MacosInputSource {
             if data.len() > maximum_callback_samples {
                 callback_counters.observe_oversized_buffer();
                 return;
+            }
+            if callback_discontinuity_pending.swap(false, Ordering::AcqRel) {
+                frame_normalizer.reset();
+                sample_timeline = None;
+                sequence_number = sequence_number.saturating_add(1);
             }
             let samples_per_channel = data.len() / usize::from(channels);
             let timeline = sample_timeline.get_or_insert_with(|| {
@@ -221,6 +233,13 @@ impl MacosInputSource {
         });
         let error_callback = move |error: cpal::Error| {
             error_counters.observe_stream_error();
+            let error_kind = error.kind();
+            if cpal_stream_has_discontinuity(error_kind) {
+                error_discontinuity_pending.store(true, Ordering::Release);
+            }
+            if cpal_stream_continues(error_kind) {
+                return;
+            }
             if let Some(SourceRuntimeEvent::BackendFailure { failure, .. }) =
                 runtime_failure_event.as_mut()
             {
@@ -229,7 +248,7 @@ impl MacosInputSource {
                     return;
                 };
                 class.clear();
-                class.push_str(cpal_error_class(error.kind()));
+                class.push_str(cpal_error_class(error_kind));
             }
             if let (Some(sender), Some(event)) =
                 (runtime_event_sender.as_ref(), runtime_failure_event.take())
@@ -429,6 +448,18 @@ mod tests {
             assert!(expected.len() <= CPAL_ERROR_CLASS_CAPACITY);
         }
         assert!("cpal-unrecognized-error".len() <= CPAL_ERROR_CLASS_CAPACITY);
+    }
+
+    #[test]
+    fn given_nonfatal_cpal_notifications_when_classified_then_stream_stays_active() {
+        assert!(cpal_stream_continues(ErrorKind::DeviceChanged));
+        assert!(cpal_stream_continues(ErrorKind::RealtimeDenied));
+        assert!(cpal_stream_continues(ErrorKind::Xrun));
+        assert!(cpal_stream_has_discontinuity(ErrorKind::DeviceChanged));
+        assert!(!cpal_stream_has_discontinuity(ErrorKind::RealtimeDenied));
+        assert!(cpal_stream_has_discontinuity(ErrorKind::Xrun));
+        assert!(!cpal_stream_continues(ErrorKind::DeviceNotAvailable));
+        assert!(!cpal_stream_continues(ErrorKind::StreamInvalidated));
     }
 
     #[test]
