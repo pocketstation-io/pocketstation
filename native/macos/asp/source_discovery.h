@@ -59,9 +59,10 @@ typedef enum PksTapOperationStage {
 PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
                                             int32_t *out_status, uint8_t *out_stage);
 
-// Start capturing. The requested frame duration is used to prefer a matching
-// aggregate-device IO size when CoreAudio supports it. Returns 0 on success.
-int pks_tap_start(PksProcessTapHandle *tap, uint16_t frame_duration_ms,
+// Start capturing. The requested native IO duration is used to prefer a
+// matching aggregate-device size when CoreAudio supports it. Returns 0 on
+// success.
+int pks_tap_start(PksProcessTapHandle *tap, uint16_t requested_io_duration_ms,
                   int32_t *out_status, uint8_t *out_stage);
 
 // Destroy handle and release all CoreAudio resources.
@@ -81,6 +82,10 @@ uint32_t pks_tap_io_buffer_requested_frames(const PksProcessTapHandle *tap);
 uint32_t pks_tap_io_buffer_applied_frames(const PksProcessTapHandle *tap);
 uint32_t pks_tap_io_buffer_min_frames(const PksProcessTapHandle *tap);
 uint32_t pks_tap_io_buffer_max_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_input_device_latency_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_input_safety_offset_frames(const PksProcessTapHandle *tap);
+uint8_t pks_tap_input_safety_offset_settable(const PksProcessTapHandle *tap);
+uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap);
 
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap);
 uint32_t pks_tap_channels(const PksProcessTapHandle *tap);

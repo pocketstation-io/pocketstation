@@ -74,6 +74,10 @@ extern "C" {
     fn pks_tap_io_buffer_applied_frames(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_io_buffer_min_frames(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_io_buffer_max_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_input_device_latency_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_input_safety_offset_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_input_safety_offset_settable(tap: *const std::ffi::c_void) -> u8;
+    fn pks_tap_input_stream_latency_frames(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_channels(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_level(tap: *const std::ffi::c_void) -> f32;
@@ -282,6 +286,10 @@ struct ProcessTapIoBuffer {
     applied_frames: u32,
     minimum_frames: u32,
     maximum_frames: u32,
+    input_device_latency_frames: u32,
+    input_safety_offset_frames: u32,
+    input_safety_offset_settable: bool,
+    input_stream_latency_frames: u32,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -311,6 +319,15 @@ fn process_timestamp_ns(
     host_to_process: TimelineMapping,
 ) -> Option<u64> {
     host_to_process.normalize_timestamp_ns(source_host_timestamp_ns(batch, sample_rate_hz)?)
+}
+
+const fn process_tap_io_duration_ms(audio_frame_duration: crate::frame::AudioFrameDuration) -> u16 {
+    // Keep the native callback at no more than 10 ms. Twenty-millisecond
+    // product frames then comprise exactly two native batches instead of
+    // straddling the aggregate device's 512-frame default callback cadence.
+    match audio_frame_duration {
+        crate::frame::AudioFrameDuration::Ms10 | crate::frame::AudioFrameDuration::Ms20 => 10,
+    }
 }
 
 const CORE_AUDIO_PERMISSION_DENIED_STATUS: i32 = i32::from_be_bytes(*b"!hog");
@@ -524,7 +541,7 @@ impl ProcessTap {
         if unsafe {
             pks_tap_start(
                 self.0.as_ptr(),
-                audio_frame_duration.milliseconds(),
+                process_tap_io_duration_ms(audio_frame_duration),
                 &mut status_code,
                 &mut stage_code,
             )
@@ -545,6 +562,11 @@ impl ProcessTap {
                 applied_frames: pks_tap_io_buffer_applied_frames(self.0.as_ptr()),
                 minimum_frames: pks_tap_io_buffer_min_frames(self.0.as_ptr()),
                 maximum_frames: pks_tap_io_buffer_max_frames(self.0.as_ptr()),
+                input_device_latency_frames: pks_tap_input_device_latency_frames(self.0.as_ptr()),
+                input_safety_offset_frames: pks_tap_input_safety_offset_frames(self.0.as_ptr()),
+                input_safety_offset_settable: pks_tap_input_safety_offset_settable(self.0.as_ptr())
+                    != 0,
+                input_stream_latency_frames: pks_tap_input_stream_latency_frames(self.0.as_ptr()),
             }
         }
     }
@@ -713,12 +735,16 @@ impl TapLoopbackSource {
         if std::env::var_os("PKS_TAP_DIAG").is_some() {
             let io_buffer = tap.io_buffer();
             eprintln!(
-                "tap_diag: io_buffer_before_frames={} io_buffer_requested_frames={} io_buffer_applied_frames={} io_buffer_min_frames={} io_buffer_max_frames={}",
+                "tap_diag: io_buffer_before_frames={} io_buffer_requested_frames={} io_buffer_applied_frames={} io_buffer_min_frames={} io_buffer_max_frames={} input_device_latency_frames={} input_safety_offset_frames={} input_safety_offset_settable={} input_stream_latency_frames={}",
                 io_buffer.before_frames,
                 io_buffer.requested_frames,
                 io_buffer.applied_frames,
                 io_buffer.minimum_frames,
                 io_buffer.maximum_frames,
+                io_buffer.input_device_latency_frames,
+                io_buffer.input_safety_offset_frames,
+                io_buffer.input_safety_offset_settable,
+                io_buffer.input_stream_latency_frames,
             );
         }
         initialize_monotonic_timestamp_domain();
@@ -913,11 +939,11 @@ impl Drop for TapLoopbackSource {
 #[cfg(test)]
 mod tests {
     use super::{
-        application_open_audit_for_process, exact_application_open_audit, process_timestamp_ns,
-        select_application_capture, select_stable_application_capture,
-        selected_application_is_running_with, source_host_timestamp_ns, stable_source_id,
-        tap_error, AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch,
-        CORE_AUDIO_PERMISSION_DENIED_STATUS,
+        application_open_audit_for_process, exact_application_open_audit,
+        process_tap_io_duration_ms, process_timestamp_ns, select_application_capture,
+        select_stable_application_capture, selected_application_is_running_with,
+        source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource,
+        ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
     };
     use crate::capture::{
         CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId,
@@ -966,6 +992,18 @@ mod tests {
             CaptureError::PermissionDenied {
                 operation: "creating the CoreAudio process tap"
             }
+        );
+    }
+
+    #[test]
+    fn given_supported_product_cadence_when_opening_tap_then_native_io_is_at_most_ten_ms() {
+        assert_eq!(
+            process_tap_io_duration_ms(crate::frame::AudioFrameDuration::Ms10),
+            10
+        );
+        assert_eq!(
+            process_tap_io_duration_ms(crate::frame::AudioFrameDuration::Ms20),
+            10
         );
     }
 
