@@ -38,7 +38,8 @@ use crate::session::lifecycle::operator_inputs::{
 use crate::session::lifecycle::rollback::StartupRollback;
 use crate::session::lifecycle::telemetry::{
     DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation,
-    IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding,
+    IndexedSessionMetrics, RouteObservationBinding, SourceActivityObservationHandle,
+    SourceObservationBinding,
 };
 use crate::session::prepare::{
     PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping,
@@ -51,15 +52,17 @@ use crate::session::{
     SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage,
     SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics,
-    SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle,
-    Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime,
-    SourceRuntimeObservationHandle, SourceSessionContext,
+    SessionSourceActivityObservations, SessionSourceFailure, SessionSourceMetrics,
+    SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec,
+    SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle,
+    SourceSessionContext,
 };
 
 struct RuntimeSource {
     stem_id: StemId,
     capture: crate::capture::CaptureOwner,
     sender: crate::runtime::PlanSourceSender,
+    activity: SourceActivityObservationHandle,
 }
 
 struct OpenedCapture {
@@ -334,6 +337,15 @@ impl RunningSession {
             .collect::<Vec<_>>()
             .into_boxed_slice();
         (sources, routes)
+    }
+
+    pub(crate) fn source_activity_observations(&self) -> Box<[SessionSourceActivityObservations]> {
+        let observed_at_ns = crate::timing::monotonic_timestamp_ns();
+        self.source_observations
+            .iter()
+            .map(|binding| binding.activity.observations(observed_at_ns))
+            .collect::<Vec<_>>()
+            .into_boxed_slice()
     }
 
     pub(crate) fn indexed_metrics_full(&self) -> IndexedSessionMetrics {
@@ -847,15 +859,23 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         ));
     }
 
+    let source_activity_observations = captures
+        .iter()
+        .map(|_| {
+            SourceActivityObservationHandle::new(session_timeline_origin.monotonic_timestamp_ns())
+        })
+        .collect::<Vec<_>>();
     let source_observations = captures
         .iter()
         .zip(source_ingress_observations)
-        .map(|(capture, (stem_id, ingress))| {
+        .zip(source_activity_observations.iter())
+        .map(|((capture, (stem_id, ingress)), activity)| {
             debug_assert_eq!(capture.stem_id, stem_id);
             SourceObservationBinding {
                 stem_id: capture.stem_id,
                 capture: capture.owner.observation_receipt(),
                 ingress,
+                activity: activity.clone(),
             }
         })
         .collect::<Vec<_>>();
@@ -880,10 +900,12 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
     let runtime_sources = captures
         .into_iter()
         .zip(source_mappings)
-        .map(|(capture, mapping)| RuntimeSource {
+        .zip(source_activity_observations)
+        .map(|((capture, mapping), activity)| RuntimeSource {
             stem_id: mapping.stem_id,
             capture: capture.owner,
             sender: mapping.sender,
+            activity,
         })
         .collect::<Vec<_>>();
     let stop_requested = Arc::new(AtomicBool::new(false));
@@ -1980,7 +2002,14 @@ fn run_runtime_worker(
 ) -> RuntimeWorkerOutcome {
     let mut sources = sources
         .into_iter()
-        .map(|source| (source.stem_id, Some(source.capture), source.sender))
+        .map(|source| {
+            (
+                source.stem_id,
+                Some(source.capture),
+                source.sender,
+                source.activity,
+            )
+        })
         .collect::<Vec<_>>();
     let mut captures = Vec::with_capacity(sources.len());
     let mut runtime_events_total = 0u64;
@@ -1990,7 +2019,7 @@ fn run_runtime_worker(
     let mut source_failures = Vec::new();
     while !stop_requested.load(Ordering::Acquire) {
         let mut work_observed = false;
-        for (stem_id, capture, sender) in &mut sources {
+        for (stem_id, capture, sender, activity) in &mut sources {
             let Some(active_capture) = capture.as_mut() else {
                 continue;
             };
@@ -1998,6 +2027,7 @@ fn run_runtime_worker(
                 match active_capture.try_next_lineaged_frame() {
                     Ok(Some(frame)) => {
                         work_observed = true;
+                        activity.observe_frame(crate::timing::monotonic_timestamp_ns());
                         if let PlanSourceSendOutcome::Rejected { error, frame } =
                             sender.try_send(frame)
                         {
@@ -2049,7 +2079,7 @@ fn run_runtime_worker(
     captures.extend(
         sources
             .into_iter()
-            .filter_map(|(stem_id, capture, _sender)| {
+            .filter_map(|(stem_id, capture, _sender, _activity)| {
                 capture.map(|capture| (stem_id, capture.stop_and_join()))
             }),
     );

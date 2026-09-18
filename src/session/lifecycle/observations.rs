@@ -1,4 +1,5 @@
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::Duration;
 
 use crate::capture::CaptureOwnerObservations;
 use crate::endpoint::EndpointDriverObservations;
@@ -37,26 +38,34 @@ pub struct SessionMetricsSnapshot {
     event_queue: SessionEventQueueObservations,
     polled_audio: PolledAudioObservations,
     sources: Box<[SessionSourceMetrics]>,
+    source_activity: Box<[SessionSourceActivityObservations]>,
     external_sources: Box<[SessionExternalSourceMetrics]>,
     routes: Box<[SessionRouteMetrics]>,
     operators: Box<[SessionOperatorMetrics]>,
     derived_routes: Box<[SessionDerivedRouteMetrics]>,
 }
 
+pub(crate) struct SessionSourceMetricSnapshots {
+    pub(crate) metrics: Box<[SessionSourceMetrics]>,
+    pub(crate) activity: Box<[SessionSourceActivityObservations]>,
+}
+
 impl SessionMetricsSnapshot {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         event_queue: SessionEventQueueObservations,
         polled_audio: PolledAudioObservations,
-        sources: Box<[SessionSourceMetrics]>,
+        sources: SessionSourceMetricSnapshots,
         external_sources: Box<[SessionExternalSourceMetrics]>,
         routes: Box<[SessionRouteMetrics]>,
         operators: Box<[SessionOperatorMetrics]>,
         derived_routes: Box<[SessionDerivedRouteMetrics]>,
     ) -> Self {
+        let SessionSourceMetricSnapshots { metrics, activity } = sources;
         Self {
             event_queue,
             polled_audio,
-            sources,
+            sources: metrics,
+            source_activity: activity,
             external_sources,
             routes,
             operators,
@@ -78,6 +87,20 @@ impl SessionMetricsSnapshot {
 
     pub fn source(&self, index: usize) -> Option<&SessionSourceMetrics> {
         self.sources.get(index)
+    }
+
+    /// Returns the raw frame-delivery activity for the built-in Source at
+    /// `index`.
+    ///
+    /// Activity entries use the same stable declaration order as [`Self::source`].
+    /// They are separate from [`SessionSourceMetrics`] so the existing public
+    /// metrics record remains source-compatible.
+    pub fn source_activity(&self, index: usize) -> Option<&SessionSourceActivityObservations> {
+        self.source_activity.get(index)
+    }
+
+    pub fn source_activity_count(&self) -> usize {
+        self.source_activity.len()
     }
 
     pub fn external_source_count(&self) -> usize {
@@ -118,6 +141,128 @@ pub struct SessionSourceMetrics {
     pub stem_id: StemId,
     pub capture: CaptureOwnerObservations,
     pub ingress: PlanSourceInputObservations,
+}
+
+/// Raw process-clock activity observed after a built-in Source frame leaves
+/// the capture queue and reaches the canonical Session runtime.
+///
+/// These values report delivery activity, not audible sound or speech. A frame
+/// containing digital silence still counts as a received frame. Timestamps use
+/// PocketStation's process-monotonic nanosecond domain.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceActivityObservations {
+    pub session_started_at_ns: u64,
+    pub observed_at_ns: u64,
+    pub first_frame_received_at_ns: Option<u64>,
+    pub latest_frame_received_at_ns: Option<u64>,
+    pub frames_received_total: u64,
+}
+
+impl SessionSourceActivityObservations {
+    /// Evaluates delivery activity using the caller's workflow-specific
+    /// startup and stall deadlines.
+    ///
+    /// This method does not inspect sample energy, infer permission state,
+    /// replace a Source, or restart capture.
+    pub fn evaluate(self, policy: SessionSourceActivityPolicy) -> SessionSourceActivityEvaluation {
+        let session_age_ns = self
+            .observed_at_ns
+            .saturating_sub(self.session_started_at_ns);
+        match self.latest_frame_received_at_ns {
+            None if session_age_ns >= policy.first_frame_timeout_ns => {
+                SessionSourceActivityEvaluation {
+                    state: SessionSourceActivityState::FirstFrameTimedOut,
+                    session_age_ns,
+                    latest_frame_age_ns: None,
+                }
+            }
+            None => SessionSourceActivityEvaluation {
+                state: SessionSourceActivityState::AwaitingFirstFrame,
+                session_age_ns,
+                latest_frame_age_ns: None,
+            },
+            Some(latest_frame_received_at_ns) => {
+                let latest_frame_age_ns = self
+                    .observed_at_ns
+                    .saturating_sub(latest_frame_received_at_ns);
+                let state = if latest_frame_age_ns >= policy.stall_timeout_ns {
+                    SessionSourceActivityState::Stalled
+                } else {
+                    SessionSourceActivityState::Active
+                };
+                SessionSourceActivityEvaluation {
+                    state,
+                    session_age_ns,
+                    latest_frame_age_ns: Some(latest_frame_age_ns),
+                }
+            }
+        }
+    }
+}
+
+/// Caller-owned deadlines for evaluating Source delivery activity.
+///
+/// Core intentionally has no universal first-frame or stall threshold: an
+/// interactive dictation control and a long-running meeting recorder have
+/// different budgets.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceActivityPolicy {
+    first_frame_timeout_ns: u64,
+    stall_timeout_ns: u64,
+}
+
+impl SessionSourceActivityPolicy {
+    pub fn new(
+        first_frame_timeout: Duration,
+        stall_timeout: Duration,
+    ) -> Result<Self, SessionSourceActivityPolicyError> {
+        let first_frame_timeout_ns = duration_ns(first_frame_timeout)
+            .ok_or(SessionSourceActivityPolicyError::InvalidFirstFrameTimeout)?;
+        let stall_timeout_ns = duration_ns(stall_timeout)
+            .ok_or(SessionSourceActivityPolicyError::InvalidStallTimeout)?;
+        Ok(Self {
+            first_frame_timeout_ns,
+            stall_timeout_ns,
+        })
+    }
+
+    pub const fn first_frame_timeout_ns(self) -> u64 {
+        self.first_frame_timeout_ns
+    }
+
+    pub const fn stall_timeout_ns(self) -> u64 {
+        self.stall_timeout_ns
+    }
+}
+
+fn duration_ns(duration: Duration) -> Option<u64> {
+    if duration.is_zero() {
+        return None;
+    }
+    u64::try_from(duration.as_nanos()).ok()
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, thiserror::Error)]
+pub enum SessionSourceActivityPolicyError {
+    #[error("first-frame timeout must be finite, non-zero, and representable in nanoseconds")]
+    InvalidFirstFrameTimeout,
+    #[error("stall timeout must be finite, non-zero, and representable in nanoseconds")]
+    InvalidStallTimeout,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum SessionSourceActivityState {
+    AwaitingFirstFrame,
+    Active,
+    FirstFrameTimedOut,
+    Stalled,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceActivityEvaluation {
+    pub state: SessionSourceActivityState,
+    pub session_age_ns: u64,
+    pub latest_frame_age_ns: Option<u64>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -582,6 +727,78 @@ impl SessionEventQueueCounters {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn given_source_activity_when_evaluated_then_first_frame_and_stall_states_are_distinct() {
+        let policy =
+            SessionSourceActivityPolicy::new(Duration::from_nanos(100), Duration::from_nanos(20))
+                .expect("finite non-zero activity policy");
+        let awaiting = SessionSourceActivityObservations {
+            session_started_at_ns: 100,
+            observed_at_ns: 199,
+            first_frame_received_at_ns: None,
+            latest_frame_received_at_ns: None,
+            frames_received_total: 0,
+        }
+        .evaluate(policy);
+        assert_eq!(
+            awaiting.state,
+            SessionSourceActivityState::AwaitingFirstFrame
+        );
+        assert_eq!(awaiting.session_age_ns, 99);
+        assert_eq!(awaiting.latest_frame_age_ns, None);
+
+        let timed_out = SessionSourceActivityObservations {
+            observed_at_ns: 200,
+            ..SessionSourceActivityObservations {
+                session_started_at_ns: 100,
+                observed_at_ns: 0,
+                first_frame_received_at_ns: None,
+                latest_frame_received_at_ns: None,
+                frames_received_total: 0,
+            }
+        }
+        .evaluate(policy);
+        assert_eq!(
+            timed_out.state,
+            SessionSourceActivityState::FirstFrameTimedOut
+        );
+
+        let active_observations = SessionSourceActivityObservations {
+            session_started_at_ns: 100,
+            observed_at_ns: 209,
+            first_frame_received_at_ns: Some(150),
+            latest_frame_received_at_ns: Some(190),
+            frames_received_total: 3,
+        };
+        let active = active_observations.evaluate(policy);
+        assert_eq!(active.state, SessionSourceActivityState::Active);
+        assert_eq!(active.latest_frame_age_ns, Some(19));
+
+        let stalled = SessionSourceActivityObservations {
+            observed_at_ns: 210,
+            ..active_observations
+        }
+        .evaluate(policy);
+        assert_eq!(stalled.state, SessionSourceActivityState::Stalled);
+        assert_eq!(stalled.latest_frame_age_ns, Some(20));
+    }
+
+    #[test]
+    fn given_zero_or_unrepresentable_activity_deadline_when_constructed_then_policy_is_rejected() {
+        assert_eq!(
+            SessionSourceActivityPolicy::new(Duration::ZERO, Duration::from_secs(1)),
+            Err(SessionSourceActivityPolicyError::InvalidFirstFrameTimeout)
+        );
+        assert_eq!(
+            SessionSourceActivityPolicy::new(Duration::from_secs(1), Duration::ZERO),
+            Err(SessionSourceActivityPolicyError::InvalidStallTimeout)
+        );
+        assert_eq!(
+            SessionSourceActivityPolicy::new(Duration::MAX, Duration::from_secs(1)),
+            Err(SessionSourceActivityPolicyError::InvalidFirstFrameTimeout)
+        );
+    }
 
     #[test]
     fn given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons() {

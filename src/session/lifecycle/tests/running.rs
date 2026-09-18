@@ -1444,6 +1444,7 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
         "both post-start source frames must reach all three destinations"
     );
     let (sources, routes) = running.indexed_metrics();
+    let source_activity = running.source_activity_observations();
     let outcome = running.stop();
 
     assert!(outcome.is_success());
@@ -1459,6 +1460,20 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
             && source.ingress.frames_rejected_full_total == 0
             && source.ingress.frames_rejected_cancelled_total == 0
             && source.ingress.frames_discarded_total == 0
+    }));
+    assert_eq!(source_activity.len(), 2);
+    assert!(source_activity.iter().all(|activity| {
+        activity.frames_received_total == 1
+            && activity.first_frame_received_at_ns.is_some()
+            && activity.first_frame_received_at_ns == activity.latest_frame_received_at_ns
+            && activity.session_started_at_ns
+                <= activity
+                    .first_frame_received_at_ns
+                    .expect("a received frame has a first-frame timestamp")
+            && activity
+                .latest_frame_received_at_ns
+                .expect("a received frame has a latest-frame timestamp")
+                <= activity.observed_at_ns
     }));
     assert!(
         routes

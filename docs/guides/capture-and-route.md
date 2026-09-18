@@ -127,5 +127,18 @@ events. After shutdown, inspect the stop result and any recording outcome.
 Treat a successful start as lifecycle readiness, not proof that every source
 has produced audio.
 
+For each built-in Source, `SessionMetricsSnapshot::source_activity(index)`
+reports when the Session started, when the first and latest frames reached the
+Session runtime, when the snapshot was taken, and how many frames were
+observed. Its index matches `SessionMetricsSnapshot::source(index)`. Evaluate
+that raw activity with `SessionSourceActivityPolicy`, using deadlines justified
+by your workflow. The result distinguishes `AwaitingFirstFrame`, `Active`,
+`FirstFrameTimedOut`, and `Stalled` without restarting or replacing the Source.
+
+Activity is not signal energy. A frame of digital silence is still an active
+frame. If the product must distinguish silence from a dead or misrouted source,
+add an `Operator` with a fixed-capacity input queue that computes signal-energy
+observations, and keep its thresholds outside the capture callback.
+
 Continue with [recording and observations](record-and-observe.md), or prepare
 the host using the [platform guide](../operations/platform-support.md).

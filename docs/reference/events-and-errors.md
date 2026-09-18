@@ -31,7 +31,7 @@ media was dropped; inspect route metrics separately.
 
 `SessionMetricsSnapshot` groups the current measurements for:
 
-- Sources and source-owned delivery;
+- Sources, source-owned delivery, and first/latest frame activity;
 - routes and route latency;
 - Operators and their named inputs;
 - Connectors and Endpoints;
@@ -43,6 +43,12 @@ media was dropped; inspect route metrics separately.
 Counters are cumulative unless their type states otherwise. Durations include
 their unit in the field or enum. Unavailable measurements remain unavailable;
 they are not reported as zero.
+
+`SessionSourceActivityObservations` uses the process-monotonic nanosecond
+domain. It reports raw receipt activity after capture dequeue. Use
+`SessionSourceActivityPolicy` to apply separate caller-owned first-frame and
+stall deadlines. The resulting activity state does not classify sample energy,
+permission, route correctness, or recovery.
 
 ## Route latency
 

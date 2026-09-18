@@ -85,7 +85,10 @@ pub use lifecycle::{
 pub use lifecycle::{
     EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics,
     SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics,
-    SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceMetrics,
+    SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics,
+    SessionSourceActivityEvaluation, SessionSourceActivityObservations,
+    SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
+    SessionSourceMetrics,
 };
 pub use lifecycle::{
     NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,

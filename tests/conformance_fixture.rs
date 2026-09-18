@@ -49,6 +49,17 @@ fn given_fixture_session_when_started_then_two_stems_cross_canonical_engine() {
     assert!(metrics.source(0).is_some());
     assert!(metrics.source(1).is_some());
     assert!(metrics.source(2).is_none());
+    assert_eq!(metrics.source_activity_count(), metrics.source_count());
+    for index in 0..metrics.source_count() {
+        let activity = metrics
+            .source_activity(index)
+            .expect("every built-in Source has aligned activity observations");
+        assert!(activity.frames_received_total > 0);
+        assert!(activity.first_frame_received_at_ns.is_some());
+        assert!(activity.latest_frame_received_at_ns.is_some());
+        assert!(activity.session_started_at_ns <= activity.observed_at_ns);
+    }
+    assert!(metrics.source_activity(metrics.source_count()).is_none());
     let first = running.stop();
     let second = running.stop();
     assert_eq!(first.disposition(), SessionStopDisposition::Stopped);

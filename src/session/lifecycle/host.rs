@@ -9,6 +9,8 @@ use crate::graph::{
 };
 use crate::runtime::SidecarProcessSpec;
 
+use super::observations::SessionSourceMetricSnapshots;
+
 #[cfg(all(
     target_os = "linux",
     any(feature = "pipewire-capture", feature = "alsa-fallback")
@@ -147,10 +149,15 @@ impl SessionEngineHost {
                 },
                 RunningSession::indexed_metrics_full,
             );
+        let source_activity =
+            running_session.map_or_else(Box::default, RunningSession::source_activity_observations);
         Some(SessionMetricsSnapshot::new(
             events.observations(),
             polled_audio,
-            sources,
+            SessionSourceMetricSnapshots {
+                metrics: sources,
+                activity: source_activity,
+            },
             external_sources,
             routes,
             operators,
