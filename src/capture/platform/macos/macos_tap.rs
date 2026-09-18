@@ -642,6 +642,7 @@ impl Drop for ProcessTap {
 // empty pool slots add memory headroom, not playout latency.
 const POOL_CAPACITY_FRAMES: usize = 32;
 const PROCESS_LIFETIME_POLL_INTERVAL: Duration = Duration::from_millis(100);
+const EMPTY_RING_POLL_INTERVAL: Duration = Duration::from_micros(500);
 
 /// Captures system audio via CoreAudio process tap (macOS 14.2+).
 pub struct TapLoopbackSource {
@@ -819,7 +820,7 @@ impl TapLoopbackSource {
                         );
                         observed_drop_count = drop_count;
                         if frame_count == 0 {
-                            std::thread::sleep(Duration::from_millis(1));
+                            std::thread::sleep(EMPTY_RING_POLL_INTERVAL);
                             continue;
                         }
                         capture_counters.observe_callback_buffer();
