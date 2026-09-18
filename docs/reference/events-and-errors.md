@@ -50,6 +50,11 @@ domain. It reports raw receipt activity after capture dequeue. Use
 stall deadlines. The resulting activity state does not classify sample energy,
 permission, route correctness, or recovery.
 
+The C ABI exposes the raw record as `PksSessionSourceActivity` through
+`pks_session_source_activity_at`. It is indexed in the same declaration order
+as `pks_session_source_metrics_at`. The existing `PksSessionSourceMetrics`
+record remains 176 bytes; activity is not appended to it.
+
 ## Route latency
 
 `SessionRouteLatencyObservations` identifies what was measured with

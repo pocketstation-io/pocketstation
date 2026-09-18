@@ -134,6 +134,9 @@ observed. Its index matches `SessionMetricsSnapshot::source(index)`. Evaluate
 that raw activity with `SessionSourceActivityPolicy`, using deadlines justified
 by your workflow. The result distinguishes `AwaitingFirstFrame`, `Active`,
 `FirstFrameTimedOut`, and `Stalled` without restarting or replacing the Source.
+C hosts obtain the same raw values with
+`pks_session_source_activity_at`; `frames_received_total == 0` means the first
+and latest frame timestamps are unavailable and encoded as zero.
 
 Activity is not signal energy. A frame of digital silence is still an active
 frame. If the product must distinguish silence from a dead or misrouted source,

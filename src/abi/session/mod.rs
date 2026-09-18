@@ -8,8 +8,9 @@ mod runtime;
 pub use abi::{
     PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch, PksSessionAudioFrame,
     PksSessionEndpointObservationStage, PksSessionEngineConfig, PksSessionEvent, PksSessionHandle,
-    PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSourceMetrics, PksSessionStatus,
-    PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR,
+    PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSourceActivity,
+    PksSessionSourceMetrics, PksSessionStatus, PksSessionStatusCode, PksSessionUtf8,
+    PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR,
 };
 #[cfg(test)]
 use abi::{PksSessionLifecycleState, PksSessionSampleFormat};
@@ -509,6 +510,45 @@ pub unsafe extern "C" fn pks_session_source_metrics_at(
 }
 
 #[unsafe(no_mangle)]
+/// Copies raw delivery activity for one built-in Source by stable Session
+/// declaration index.
+///
+/// # Safety
+///
+/// `output_activity` must address one writable, aligned source activity
+/// record.
+pub unsafe extern "C" fn pks_session_source_activity_at(
+    engine: PksSessionHandle,
+    session: PksSessionHandle,
+    source_index: u32,
+    output_activity: *mut PksSessionSourceActivity,
+) -> PksSessionStatus {
+    abi_call(|| {
+        guard_pointer_alignment(output_activity.cast_const())?;
+        let metrics = runtime_state().with_engine(engine, |runtime| runtime.metrics(session))?;
+        let index = source_index as usize;
+        let source = metrics.source(index).ok_or(AbiError::IndexOutOfRange)?;
+        let activity = metrics
+            .source_activity(index)
+            .ok_or(AbiError::IndexOutOfRange)?;
+        let record = PksSessionSourceActivity {
+            struct_size_bytes: size_of::<PksSessionSourceActivity>() as u32,
+            abi_major: PKS_SESSION_ABI_MAJOR,
+            abi_minor: PKS_SESSION_ABI_MINOR,
+            stem_id: source.stem_id.0,
+            session_started_at_ns: activity.session_started_at_ns,
+            observed_at_ns: activity.observed_at_ns,
+            first_frame_received_at_ns: activity.first_frame_received_at_ns.unwrap_or(0),
+            latest_frame_received_at_ns: activity.latest_frame_received_at_ns.unwrap_or(0),
+            frames_received_total: activity.frames_received_total,
+        };
+        // SAFETY: This export forwards the documented caller contract.
+        unsafe { write_record(output_activity, record) }?;
+        Ok(PksSessionStatus::ok())
+    })
+}
+
+#[unsafe(no_mangle)]
 /// Copies one route observation record by stable Session declaration index.
 ///
 /// # Safety
@@ -685,13 +725,13 @@ mod tests {
         pks_session_compile, pks_session_create_app_mic, pks_session_destroy,
         pks_session_engine_create, pks_session_engine_destroy, pks_session_engine_is_live,
         pks_session_get_state, pks_session_metrics_poll, pks_session_route_metrics_at,
-        pks_session_route_metrics_count, pks_session_source_metrics_at,
-        pks_session_source_metrics_count, pks_session_start, pks_session_stop, runtime_state,
-        PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch,
-        PksSessionAudioFrame, PksSessionEngineConfig, PksSessionHandle, PksSessionLifecycleState,
-        PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSampleFormat,
-        PksSessionSourceMetrics, PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR,
-        PKS_SESSION_ABI_MINOR,
+        pks_session_route_metrics_count, pks_session_source_activity_at,
+        pks_session_source_metrics_at, pks_session_source_metrics_count, pks_session_start,
+        pks_session_stop, runtime_state, PksSessionAbiVersion, PksSessionAppMicDeclaration,
+        PksSessionAudioBatch, PksSessionAudioFrame, PksSessionEngineConfig, PksSessionHandle,
+        PksSessionLifecycleState, PksSessionMetricsSnapshot, PksSessionRouteMetrics,
+        PksSessionSampleFormat, PksSessionSourceActivity, PksSessionSourceMetrics,
+        PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR,
     };
 
     struct DeliveringCaptureBackend;
@@ -1022,6 +1062,7 @@ mod tests {
         assert_eq!(size_of::<super::PksSessionEvent>(), 64);
         assert_eq!(size_of::<PksSessionMetricsSnapshot>(), 160);
         assert_eq!(size_of::<PksSessionSourceMetrics>(), 176);
+        assert_eq!(size_of::<PksSessionSourceActivity>(), 56);
         assert_eq!(size_of::<PksSessionRouteMetrics>(), 352);
         assert_eq!(size_of::<PksSessionAudioBatch>(), 40);
         assert_eq!(size_of::<PksSessionAudioFrame>(), 144);
@@ -1029,6 +1070,11 @@ mod tests {
         assert_eq!(
             offset_of!(PksSessionMetricsSnapshot, event_capacity_count),
             16
+        );
+        assert_eq!(offset_of!(PksSessionSourceActivity, stem_id), 8);
+        assert_eq!(
+            offset_of!(PksSessionSourceActivity, first_frame_received_at_ns),
+            32
         );
         assert_eq!(offset_of!(PksSessionAudioBatch, handle), 16);
         assert_eq!(offset_of!(PksSessionAudioFrame, session_id), 24);
@@ -1125,16 +1171,24 @@ mod tests {
         // initialization for every field before the ABI overwrites the record.
         let mut source_metrics = unsafe { std::mem::zeroed::<PksSessionSourceMetrics>() };
         // SAFETY: See the preceding record initialization invariant.
+        let mut source_activity = unsafe { std::mem::zeroed::<PksSessionSourceActivity>() };
+        // SAFETY: See the preceding record initialization invariant.
         let mut route_metrics = unsafe { std::mem::zeroed::<PksSessionRouteMetrics>() };
         // SAFETY: The test supplies valid writable indexed metric records.
         let source_metrics_status =
             unsafe { pks_session_source_metrics_at(engine, session, 0, &mut source_metrics) };
+        // SAFETY: The test supplies a valid writable indexed activity record.
+        let source_activity_status =
+            unsafe { pks_session_source_activity_at(engine, session, 0, &mut source_activity) };
         // SAFETY: The test supplies valid writable indexed metric records.
         let route_metrics_status =
             unsafe { pks_session_route_metrics_at(engine, session, 0, &mut route_metrics) };
         // SAFETY: The output pointer is valid; index two is beyond two sources.
         let source_out_of_range =
             unsafe { pks_session_source_metrics_at(engine, session, 2, &mut source_metrics) };
+        // SAFETY: The output pointer is valid; index two is beyond two sources.
+        let source_activity_out_of_range =
+            unsafe { pks_session_source_activity_at(engine, session, 2, &mut source_activity) };
         let stop = pks_session_stop(engine, session);
         // SAFETY: Final indexed observations remain readable while Session lives.
         let final_route_metrics =
@@ -1182,11 +1236,26 @@ mod tests {
         assert_eq!(route_metrics_count, 2);
         assert_eq!(source_metrics_status.code, PksSessionStatusCode::Ok as u32);
         assert_ne!(source_metrics.stem_id, 0);
+        assert_eq!(source_activity_status.code, PksSessionStatusCode::Ok as u32);
+        assert_eq!(source_activity.stem_id, source_metrics.stem_id);
+        assert!(source_activity.frames_received_total > 0);
+        assert!(
+            source_activity.session_started_at_ns <= source_activity.first_frame_received_at_ns
+        );
+        assert!(
+            source_activity.first_frame_received_at_ns
+                <= source_activity.latest_frame_received_at_ns
+        );
+        assert!(source_activity.latest_frame_received_at_ns <= source_activity.observed_at_ns);
         assert_eq!(route_metrics_status.code, PksSessionStatusCode::Ok as u32);
         assert_ne!(route_metrics.route_id, 0);
         assert_ne!(route_metrics.endpoint_id, 0);
         assert_eq!(
             source_out_of_range.code,
+            PksSessionStatusCode::IndexOutOfRange as u32
+        );
+        assert_eq!(
+            source_activity_out_of_range.code,
             PksSessionStatusCode::IndexOutOfRange as u32
         );
         assert_eq!(stop.code, PksSessionStatusCode::Ok as u32);

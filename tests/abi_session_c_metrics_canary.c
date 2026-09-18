@@ -4,12 +4,22 @@
 
 #define PKS_SESSION_ABI_1_0_MINOR 0u
 #define PKS_SESSION_ABI_1_0_METRICS_SIZE_BYTES 160u
+#define PKS_SESSION_ABI_1_0_SOURCE_METRICS_SIZE_BYTES 176u
 #define PKS_SESSION_ABI_1_0_CANARY UINT64_C(0x57A11C0DEC0FFEE1)
+
+PksSessionStatus pks_session_conformance_engine_create(
+    const PksSessionEngineConfig *config,
+    PksSessionHandle *output_engine);
 
 typedef struct {
   PksSessionMetricsSnapshot metrics;
   uint64_t tail_canary;
 } PksSessionAbi10MetricsCanary;
+
+typedef struct {
+  PksSessionSourceMetrics metrics;
+  uint64_t tail_canary;
+} PksSessionAbi10SourceMetricsCanary;
 
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
 _Static_assert(sizeof(PksSessionMetricsSnapshot) ==
@@ -18,6 +28,12 @@ _Static_assert(sizeof(PksSessionMetricsSnapshot) ==
 _Static_assert(offsetof(PksSessionAbi10MetricsCanary, tail_canary) ==
                    PKS_SESSION_ABI_1_0_METRICS_SIZE_BYTES,
                "canary must immediately follow the ABI 1.0 record");
+_Static_assert(sizeof(PksSessionSourceMetrics) ==
+                   PKS_SESSION_ABI_1_0_SOURCE_METRICS_SIZE_BYTES,
+               "new symbols changed the ABI 1.0 source metrics record");
+_Static_assert(offsetof(PksSessionAbi10SourceMetricsCanary, tail_canary) ==
+                   PKS_SESSION_ABI_1_0_SOURCE_METRICS_SIZE_BYTES,
+               "source canary must immediately follow the ABI 1.0 record");
 #endif
 
 int main(void) {
@@ -50,8 +66,13 @@ int main(void) {
       .metrics = {0},
       .tail_canary = PKS_SESSION_ABI_1_0_CANARY,
   };
+  PksSessionAbi10SourceMetricsCanary source_output = {
+      .metrics = {0},
+      .tail_canary = PKS_SESSION_ABI_1_0_CANARY,
+  };
 
-  PksSessionStatus status = pks_session_engine_create(&config, &engine);
+  PksSessionStatus status =
+      pks_session_conformance_engine_create(&config, &engine);
   if (status.code != PKS_SESSION_STATUS_OK) {
     return 1;
   }
@@ -64,7 +85,7 @@ int main(void) {
     return 3;
   }
   status = pks_session_start(engine, session);
-  if (status.code != PKS_SESSION_STATUS_BACKEND_FAILURE) {
+  if (status.code != PKS_SESSION_STATUS_OK) {
     return 4;
   }
   status = pks_session_metrics_poll(engine, session, &output.metrics);
@@ -75,6 +96,18 @@ int main(void) {
           PKS_SESSION_ABI_1_0_METRICS_SIZE_BYTES ||
       output.tail_canary != PKS_SESSION_ABI_1_0_CANARY) {
     return 6;
+  }
+  status =
+      pks_session_source_metrics_at(engine, session, 0u, &source_output.metrics);
+  if (status.code != PKS_SESSION_STATUS_OK ||
+      source_output.metrics.struct_size_bytes !=
+          PKS_SESSION_ABI_1_0_SOURCE_METRICS_SIZE_BYTES ||
+      source_output.tail_canary != PKS_SESSION_ABI_1_0_CANARY) {
+    return 9;
+  }
+  status = pks_session_stop(engine, session);
+  if (status.code != PKS_SESSION_STATUS_OK) {
+    return 10;
   }
   status = pks_session_destroy(engine, session);
   if (status.code != PKS_SESSION_STATUS_OK) {

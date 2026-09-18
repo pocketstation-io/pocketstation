@@ -386,6 +386,23 @@ typedef struct {
   uint64_t ingress_frames_discarded_total;
 } PksSessionSourceMetrics;
 
+/*
+ * Raw built-in Source delivery activity in process-monotonic nanoseconds.
+ * The first/latest timestamps are zero while frames_received_total is zero.
+ * Callers own timeout thresholds and recovery decisions.
+ */
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  uint64_t stem_id;
+  uint64_t session_started_at_ns;
+  uint64_t observed_at_ns;
+  uint64_t first_frame_received_at_ns;
+  uint64_t latest_frame_received_at_ns;
+  uint64_t frames_received_total;
+} PksSessionSourceActivity;
+
 typedef struct {
   uint32_t struct_size_bytes;
   uint16_t abi_major;
@@ -553,6 +570,11 @@ PksSessionStatus pks_session_source_metrics_at(
     PksSessionHandle session,
     uint32_t source_index,
     PksSessionSourceMetrics *output_metrics);
+PksSessionStatus pks_session_source_activity_at(
+    PksSessionHandle engine,
+    PksSessionHandle session,
+    uint32_t source_index,
+    PksSessionSourceActivity *output_activity);
 PksSessionStatus pks_session_route_metrics_at(
     PksSessionHandle engine,
     PksSessionHandle session,

@@ -15,6 +15,8 @@ _Static_assert(sizeof(PksSessionMetricsSnapshot) == 160,
                "PksSessionMetricsSnapshot size");
 _Static_assert(sizeof(PksSessionSourceMetrics) == 176,
                "PksSessionSourceMetrics size");
+_Static_assert(sizeof(PksSessionSourceActivity) == 56,
+               "PksSessionSourceActivity size");
 _Static_assert(sizeof(PksSessionRouteMetrics) == 352,
                "PksSessionRouteMetrics size");
 _Static_assert(sizeof(PksSessionAudioBatch) == 40,
@@ -25,6 +27,11 @@ _Static_assert(offsetof(PksSessionEvent, session_id) == 24,
                "PksSessionEvent session_id offset");
 _Static_assert(offsetof(PksSessionMetricsSnapshot, event_capacity_count) == 16,
                "PksSessionMetricsSnapshot first counter offset");
+_Static_assert(offsetof(PksSessionSourceActivity, stem_id) == 8,
+               "PksSessionSourceActivity stem_id offset");
+_Static_assert(offsetof(PksSessionSourceActivity, first_frame_received_at_ns) ==
+                   32,
+               "PksSessionSourceActivity first-frame offset");
 _Static_assert(offsetof(PksSessionAudioBatch, handle) == 16,
                "PksSessionAudioBatch handle offset");
 _Static_assert(offsetof(PksSessionAudioFrame, session_id) == 24,
@@ -78,6 +85,7 @@ int pks_session_c_header_conformance(void) {
   uint32_t source_metrics_count = UINT32_MAX;
   uint32_t route_metrics_count = UINT32_MAX;
   PksSessionSourceMetrics source_metrics = {0};
+  PksSessionSourceActivity source_activity = {0};
   PksSessionAudioBatch batch = {0};
   PksSessionLifecycleState state = PKS_SESSION_LIFECYCLE_FAILED;
 
@@ -160,6 +168,11 @@ int pks_session_c_header_conformance(void) {
       pks_session_source_metrics_at(engine, session, 0u, &source_metrics);
   if (status.code != PKS_SESSION_STATUS_INDEX_OUT_OF_RANGE) {
     return 104;
+  }
+  status =
+      pks_session_source_activity_at(engine, session, 0u, &source_activity);
+  if (status.code != PKS_SESSION_STATUS_INDEX_OUT_OF_RANGE) {
+    return 107;
   }
   status = pks_session_audio_poll(engine, session, &batch);
   if (status.code != PKS_SESSION_STATUS_INVALID_LIFECYCLE_STATE) {
