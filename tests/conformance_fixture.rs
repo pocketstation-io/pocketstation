@@ -5,8 +5,9 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 use pocketstation::{
-    conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation,
-    SessionStartErrorKind, SessionStopDisposition, Source,
+    conformance, ApplicationSelector, CaptureNativeFormat, CaptureSampleRepresentation,
+    SessionEventReceive, SessionStartCancellation, SessionStartErrorKind, SessionStopDisposition,
+    Source,
 };
 
 fn artifact_root(test_name: &str) -> PathBuf {
@@ -50,6 +51,7 @@ fn given_fixture_session_when_started_then_two_stems_cross_canonical_engine() {
     assert!(metrics.source(1).is_some());
     assert!(metrics.source(2).is_none());
     assert_eq!(metrics.source_activity_count(), metrics.source_count());
+    assert_eq!(metrics.source_native_format_count(), metrics.source_count());
     for index in 0..metrics.source_count() {
         let activity = metrics
             .source_activity(index)
@@ -58,7 +60,37 @@ fn given_fixture_session_when_started_then_two_stems_cross_canonical_engine() {
         assert!(activity.first_frame_received_at_ns.is_some());
         assert!(activity.latest_frame_received_at_ns.is_some());
         assert!(activity.session_started_at_ns <= activity.observed_at_ns);
+        let native_format = metrics
+            .source_native_format(index)
+            .expect("every built-in Source has aligned native-format observations")
+            .opened_native_format
+            .expect("the deterministic capture fixture reports its opened format");
+        assert_eq!(native_format.sample_rate_hz, 48_000);
+        assert_eq!(
+            native_format.sample_representation,
+            CaptureSampleRepresentation::Float32
+        );
     }
+    assert_eq!(
+        metrics
+            .source_native_format(0)
+            .and_then(|observation| observation.opened_native_format),
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 48_000,
+            channel_count: 2,
+            sample_representation: CaptureSampleRepresentation::Float32,
+        })
+    );
+    assert_eq!(
+        metrics
+            .source_native_format(1)
+            .and_then(|observation| observation.opened_native_format),
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 48_000,
+            channel_count: 1,
+            sample_representation: CaptureSampleRepresentation::Float32,
+        })
+    );
     assert!(metrics.source_activity(metrics.source_count()).is_none());
     let first = running.stop();
     let second = running.stop();

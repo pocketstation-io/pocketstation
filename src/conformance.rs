@@ -10,7 +10,8 @@ use std::{path::PathBuf, thread};
 
 use crate::capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend,
+    CaptureNativeFormat, CaptureObservationHandle, CaptureObservations,
+    CaptureSampleRepresentation, CapturedFrameDelivery, PreparedCaptureBackend,
 };
 use crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use crate::graph::PrepareContext;
@@ -94,6 +95,7 @@ struct DeterministicActiveCapture {
     stop_requested: Arc<AtomicBool>,
     worker: Option<std::thread::JoinHandle<()>>,
     source_id: SourceId,
+    native_format: CaptureNativeFormat,
 }
 
 impl CallbackCaptureBackend for DeterministicCaptureBackend {
@@ -161,6 +163,11 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
             stop_requested,
             worker: Some(worker),
             source_id: source.source_id(),
+            native_format: CaptureNativeFormat {
+                sample_rate_hz: 48_000,
+                channel_count: u16::from(source.channels()),
+                sample_representation: CaptureSampleRepresentation::Float32,
+            },
         }))
     }
 }
@@ -168,6 +175,10 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
 impl ActiveCaptureBackend for DeterministicActiveCapture {
     fn source_id(&self) -> SourceId {
         self.source_id
+    }
+
+    fn native_format(&self) -> Option<CaptureNativeFormat> {
+        Some(self.native_format)
     }
 
     fn observation_handle(&self) -> CaptureObservationHandle {
