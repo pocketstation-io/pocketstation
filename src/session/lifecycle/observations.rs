@@ -209,7 +209,9 @@ pub struct SessionSourceNativeFormatObservation {
 /// Control-path accounting for explicit physical-source replacement.
 ///
 /// A replacement attempt never implies automatic fallback. The host chooses
-/// the exact device and calls the replacement operation deliberately.
+/// the microphone selector and calls the replacement operation deliberately.
+/// Selecting the current default is therefore an explicit host policy; the
+/// resulting physical `SourceId` and continuity values remain observable.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionSourceReplacementObservations {
     pub stem_id: StemId,
