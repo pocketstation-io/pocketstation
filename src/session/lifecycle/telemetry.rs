@@ -1,7 +1,7 @@
 //! Runtime observation bindings and finalized Session-level snapshots.
 
 use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use crate::capture::CaptureObservationReceipt;
 use crate::endpoint::EndpointDriverObservations;
@@ -305,10 +305,150 @@ fn saturating_add_atomic(value: &AtomicU64, increment: u64) {
 
 pub(super) struct SourceObservationBinding {
     pub(super) stem_id: StemId,
-    pub(super) capture: CaptureObservationReceipt,
+    pub(super) capture: SourceCaptureObservationHandle,
     pub(super) ingress: PlanSourceObservationHandle,
     pub(super) activity: SourceActivityObservationHandle,
     pub(super) signal: SourceSignalObservationHandle,
+}
+
+struct SourceCaptureObservationState {
+    current: Option<CaptureObservationReceipt>,
+    attempts_total: u64,
+    completed_total: u64,
+    failed_before_attach_total: u64,
+    response_timeouts_total: u64,
+    attached_source_id: Option<crate::frame::SourceId>,
+    source_generation: u32,
+    discontinuity_epoch: u64,
+    latest_completed_at_ns: Option<u64>,
+}
+
+/// Control-path indirection for the currently attached physical capture.
+/// Replacement writes occur only on the Session runtime worker; metric reads
+/// occur on caller control threads. Native callbacks never touch this lock.
+#[derive(Clone)]
+pub(super) struct SourceCaptureObservationHandle {
+    state: Arc<Mutex<SourceCaptureObservationState>>,
+}
+
+impl SourceCaptureObservationHandle {
+    pub(super) fn new(
+        current: CaptureObservationReceipt,
+        metadata: crate::capture::CaptureOpenMetadata,
+    ) -> Self {
+        Self {
+            state: Arc::new(Mutex::new(SourceCaptureObservationState {
+                current: Some(current),
+                attempts_total: 0,
+                completed_total: 0,
+                failed_before_attach_total: 0,
+                response_timeouts_total: 0,
+                attached_source_id: Some(metadata.source_id),
+                source_generation: metadata.source_generation.0,
+                discontinuity_epoch: metadata.discontinuity_epoch,
+                latest_completed_at_ns: None,
+            })),
+        }
+    }
+
+    pub(super) fn observe_attempt(&self) {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        state.attempts_total = state.attempts_total.saturating_add(1);
+    }
+
+    pub(super) fn observe_failed_before_attach(&self) {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        state.failed_before_attach_total = state.failed_before_attach_total.saturating_add(1);
+    }
+
+    pub(super) fn observe_response_timeout(&self) {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        state.response_timeouts_total = state.response_timeouts_total.saturating_add(1);
+    }
+
+    pub(super) fn replace(
+        &self,
+        current: CaptureObservationReceipt,
+        metadata: crate::capture::CaptureOpenMetadata,
+        completed_at_ns: u64,
+    ) {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        state.current = Some(current);
+        state.completed_total = state.completed_total.saturating_add(1);
+        state.attached_source_id = Some(metadata.source_id);
+        state.source_generation = metadata.source_generation.0;
+        state.discontinuity_epoch = metadata.discontinuity_epoch;
+        state.latest_completed_at_ns = Some(completed_at_ns);
+    }
+
+    pub(super) fn detach(
+        &self,
+        source_generation: crate::capture::SourceGeneration,
+        discontinuity_epoch: u64,
+    ) {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        state.current = None;
+        state.attached_source_id = None;
+        state.source_generation = source_generation.0;
+        state.discontinuity_epoch = discontinuity_epoch;
+    }
+
+    pub(super) fn observations(&self) -> crate::capture::CaptureOwnerObservations {
+        self.state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .current
+            .as_ref()
+            .map_or_else(
+                crate::capture::CaptureOwnerObservations::default,
+                |current| current.observations(),
+            )
+    }
+
+    pub(super) fn opened_native_format(&self) -> Option<crate::capture::CaptureNativeFormat> {
+        self.state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .current
+            .as_ref()
+            .and_then(CaptureObservationReceipt::opened_native_format)
+    }
+
+    pub(super) fn replacement_observations(
+        &self,
+        stem_id: StemId,
+    ) -> super::observations::SessionSourceReplacementObservations {
+        let state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        super::observations::SessionSourceReplacementObservations {
+            stem_id,
+            attempts_total: state.attempts_total,
+            completed_total: state.completed_total,
+            failed_before_attach_total: state.failed_before_attach_total,
+            response_timeouts_total: state.response_timeouts_total,
+            attached_source_id: state.attached_source_id,
+            source_generation: state.source_generation,
+            discontinuity_epoch: state.discontinuity_epoch,
+            latest_completed_at_ns: state.latest_completed_at_ns,
+        }
+    }
 }
 
 pub(super) struct RouteObservationBinding {

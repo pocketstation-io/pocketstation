@@ -6,9 +6,9 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use crate::capture::{CallbackCaptureBackend, CaptureError};
+use crate::capture::{CallbackCaptureBackend, CaptureError, CaptureNativeFormat};
 use crate::endpoint::{EndpointPrepareError, EndpointStartFailure};
-use crate::frame::{EndpointId, StemId};
+use crate::frame::{EndpointId, SourceId, StemId};
 use crate::runtime::PlanRunnerError;
 use crate::session::{
     OperatorInstanceId, PreparedSession, SessionEventReceiver, SessionRollbackFailure, Source,
@@ -27,6 +27,52 @@ pub struct SessionStartOptions {
     pub runtime_idle_poll_ms: u64,
     pub runtime_ready_timeout_ms: u64,
     pub session_event_capacity_events: usize,
+}
+
+/// Result of one explicit built-in microphone replacement inside a running
+/// Session. The logical stem and every compiled route remain unchanged while
+/// physical source lineage advances.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SessionSourceReplacement {
+    pub stem_id: StemId,
+    pub previous_source_id: SourceId,
+    pub source_id: SourceId,
+    pub source_generation: u32,
+    pub discontinuity_epoch: u64,
+    pub opened_native_format: Option<CaptureNativeFormat>,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SessionSourceReplacementError {
+    #[error("source replacement requires a running Session")]
+    SessionNotRunning,
+    #[error("Session has no built-in source for stem {stem_id:?}")]
+    UnknownStem { stem_id: StemId },
+    #[error("stem {stem_id:?} is not a microphone source")]
+    NotMicrophone { stem_id: StemId },
+    #[error("replacement microphone preparation failed: {source}")]
+    Prepare {
+        #[source]
+        source: CaptureError,
+    },
+    #[error("replacement microphone open failed: {source}")]
+    Open {
+        #[source]
+        source: CaptureError,
+    },
+    #[error("microphone reopen failed after the prior capture detached: {source}")]
+    Reopen {
+        #[source]
+        source: CaptureError,
+    },
+    #[error("Session replacement control queue is full")]
+    ControlQueueFull,
+    #[error("Session runtime stopped before source replacement completed")]
+    RuntimeStopped,
+    #[error(
+        "Session source replacement did not report completion inside {timeout_ms} ms; inspect replacement observations because the runtime may complete it later"
+    )]
+    ResponseTimedOut { timeout_ms: u64 },
 }
 
 impl Default for SessionStartOptions {

@@ -13,8 +13,9 @@ mod telemetry;
 mod trace;
 
 pub use control::{
-    CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure,
-    SessionStartOptions, SessionStopOutcome,
+    CaptureBackendSet, SessionSourceReplacement, SessionSourceReplacementError,
+    SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions,
+    SessionStopOutcome,
 };
 pub use engine::{
     EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError,
@@ -38,7 +39,8 @@ pub use observations::{
     SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
     SessionSourceActivityEvaluation, SessionSourceActivityObservations,
     SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
-    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionSourceSignalEvaluation,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation,
+    SessionSourceReplacementObservations, SessionSourceSignalEvaluation,
     SessionSourceSignalObservations, SessionSourceSignalPolicy, SessionSourceSignalPolicyError,
     SessionSourceSignalState,
 };

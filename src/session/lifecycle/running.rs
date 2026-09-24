@@ -39,7 +39,7 @@ use crate::session::lifecycle::rollback::StartupRollback;
 use crate::session::lifecycle::telemetry::{
     DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation,
     IndexedSessionMetrics, RouteObservationBinding, SourceActivityObservationHandle,
-    SourceObservationBinding, SourceSignalObservationHandle,
+    SourceCaptureObservationHandle, SourceObservationBinding, SourceSignalObservationHandle,
 };
 use crate::session::prepare::{
     PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping,
@@ -53,22 +53,48 @@ use crate::session::{
     SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics,
     SessionSourceActivityObservations, SessionSourceFailure, SessionSourceMetrics,
-    SessionSourceNativeFormatObservation, SessionSourceSignalObservations, SessionTerminalOutcome,
+    SessionSourceNativeFormatObservation, SessionSourceReplacement, SessionSourceReplacementError,
+    SessionSourceReplacementObservations, SessionSourceSignalObservations, SessionTerminalOutcome,
     SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity,
     SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext,
 };
 
 struct RuntimeSource {
     stem_id: StemId,
+    source: Source,
     capture: crate::capture::CaptureOwner,
     sender: crate::runtime::PlanSourceSender,
     activity: SourceActivityObservationHandle,
     signal: SourceSignalObservationHandle,
+    capture_observations: SourceCaptureObservationHandle,
 }
 
 struct OpenedCapture {
     stem_id: StemId,
+    source: Source,
     owner: crate::capture::CaptureOwner,
+}
+
+struct ReplaceCaptureCommand {
+    stem_id: StemId,
+    capture: crate::capture::CaptureOwner,
+    response: std::sync::mpsc::SyncSender<Result<SessionSourceReplacement, CaptureError>>,
+}
+
+struct DetachCaptureCommand {
+    stem_id: StemId,
+    response: std::sync::mpsc::SyncSender<Result<DetachedCaptureContinuity, CaptureError>>,
+}
+
+enum SourceControlCommand {
+    Attach(ReplaceCaptureCommand),
+    Detach(DetachCaptureCommand),
+}
+
+#[derive(Clone, Copy)]
+struct DetachedCaptureContinuity {
+    source_generation: crate::capture::SourceGeneration,
+    discontinuity_epoch: u64,
 }
 
 struct RuntimeWorkerStart {
@@ -77,6 +103,19 @@ struct RuntimeWorkerStart {
     options: SessionStartOptions,
     session_id: SessionId,
     event_sender: SessionEventSender,
+}
+
+struct RuntimeSourceState {
+    stem_id: StemId,
+    source: Source,
+    capture: Option<crate::capture::CaptureOwner>,
+    active_source_id: crate::frame::SourceId,
+    sender: crate::runtime::PlanSourceSender,
+    activity: SourceActivityObservationHandle,
+    signal: SourceSignalObservationHandle,
+    capture_observations: SourceCaptureObservationHandle,
+    replacement_generation: crate::capture::SourceGeneration,
+    replacement_discontinuity_epoch: u64,
 }
 
 #[derive(Debug)]
@@ -179,6 +218,11 @@ pub struct RunningSession {
     state: SessionLifecycleState,
     stop_requested: Arc<AtomicBool>,
     runtime_worker: Option<JoinHandle<Option<RuntimeWorkerOutcome>>>,
+    replacement_sender: std::sync::mpsc::SyncSender<SourceControlCommand>,
+    replacement_targets: Vec<(StemId, Source)>,
+    replacement_frame_capacity_frames: usize,
+    replacement_runtime_event_capacity_events: usize,
+    replacement_response_timeout_ms: u64,
     async_runtime_host: Option<AsyncRuntimeHost>,
     operators: Vec<RunningOperatorBinding>,
     endpoints: Vec<RunningEndpointBinding>,
@@ -210,6 +254,190 @@ impl RunningSession {
 
     pub fn take_event_receiver(&mut self) -> Option<SessionEventReceiver> {
         self.event_receiver.take()
+    }
+
+    pub(crate) fn replace_microphone_source(
+        &mut self,
+        stem_id: StemId,
+        selector: DeviceSelector,
+        backend: &dyn crate::capture::CallbackCaptureBackend,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        if self.state != SessionLifecycleState::Running || self.stop_outcome.is_some() {
+            return Err(SessionSourceReplacementError::SessionNotRunning);
+        }
+        let observation = self.replacement_observation(stem_id)?;
+        observation.observe_attempt();
+        let request = CapturePrepareRequest {
+            mode: capture_mode(&Source::Microphone(selector)),
+            lineage_seed: CaptureLineageSeed::new(self.session_id, stem_id),
+            frame_capacity_frames: self.replacement_frame_capacity_frames,
+            runtime_event_capacity_events: self.replacement_runtime_event_capacity_events,
+        };
+        let prepared = match prepare_capture_with_start_gate(
+            backend,
+            request,
+            CaptureDeliveryStartGate::opened(),
+        ) {
+            Ok(prepared) => prepared,
+            Err(source) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::Prepare { source });
+            }
+        };
+        let capture = match prepared.open() {
+            Ok(capture) => capture,
+            Err(source) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::Open { source });
+            }
+        };
+        self.attach_replacement(stem_id, capture, &observation)
+    }
+
+    /// Stops the current microphone before opening the exact host-selected
+    /// device again. Use this only when the native route must be torn down to
+    /// reacquire it; a failed open leaves the microphone stem detached while
+    /// unrelated sources and routes remain running.
+    pub(crate) fn reopen_microphone_source(
+        &mut self,
+        stem_id: StemId,
+        selector: DeviceSelector,
+        backend: &dyn crate::capture::CallbackCaptureBackend,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        if self.state != SessionLifecycleState::Running || self.stop_outcome.is_some() {
+            return Err(SessionSourceReplacementError::SessionNotRunning);
+        }
+        let observation = self.replacement_observation(stem_id)?;
+        observation.observe_attempt();
+        let request = CapturePrepareRequest {
+            mode: capture_mode(&Source::Microphone(selector)),
+            lineage_seed: CaptureLineageSeed::new(self.session_id, stem_id),
+            frame_capacity_frames: self.replacement_frame_capacity_frames,
+            runtime_event_capacity_events: self.replacement_runtime_event_capacity_events,
+        };
+        let prepared = match prepare_capture_with_start_gate(
+            backend,
+            request,
+            CaptureDeliveryStartGate::opened(),
+        ) {
+            Ok(prepared) => prepared,
+            Err(source) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::Prepare { source });
+            }
+        };
+        let (response, receiver) = std::sync::mpsc::sync_channel(1);
+        match self
+            .replacement_sender
+            .try_send(SourceControlCommand::Detach(DetachCaptureCommand {
+                stem_id,
+                response,
+            })) {
+            Ok(()) => {}
+            Err(std::sync::mpsc::TrySendError::Full(_)) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::ControlQueueFull);
+            }
+            Err(std::sync::mpsc::TrySendError::Disconnected(_)) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::RuntimeStopped);
+            }
+        }
+        let continuity = match receiver
+            .recv_timeout(Duration::from_millis(self.replacement_response_timeout_ms))
+        {
+            Ok(Ok(continuity)) => continuity,
+            Ok(Err(source)) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::Open { source });
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                observation.observe_response_timeout();
+                return Err(SessionSourceReplacementError::ResponseTimedOut {
+                    timeout_ms: self.replacement_response_timeout_ms,
+                });
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::RuntimeStopped);
+            }
+        };
+        let capture = match prepared
+            .open_with_continuity(continuity.source_generation, continuity.discontinuity_epoch)
+        {
+            Ok(capture) => capture,
+            Err(source) => {
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::Reopen { source });
+            }
+        };
+        self.attach_replacement(stem_id, capture, &observation)
+    }
+
+    fn replacement_observation(
+        &self,
+        stem_id: StemId,
+    ) -> Result<SourceCaptureObservationHandle, SessionSourceReplacementError> {
+        let source = self
+            .replacement_targets
+            .iter()
+            .find_map(|(candidate_stem_id, source)| {
+                (*candidate_stem_id == stem_id).then_some(source)
+            })
+            .ok_or(SessionSourceReplacementError::UnknownStem { stem_id })?;
+        if !matches!(source, Source::Microphone(_)) {
+            return Err(SessionSourceReplacementError::NotMicrophone { stem_id });
+        }
+        self.source_observations
+            .iter()
+            .find(|binding| binding.stem_id == stem_id)
+            .map(|binding| binding.capture.clone())
+            .ok_or(SessionSourceReplacementError::UnknownStem { stem_id })
+    }
+
+    fn attach_replacement(
+        &self,
+        stem_id: StemId,
+        capture: crate::capture::CaptureOwner,
+        observation: &SourceCaptureObservationHandle,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        let (response, receiver) = std::sync::mpsc::sync_channel(1);
+        match self
+            .replacement_sender
+            .try_send(SourceControlCommand::Attach(ReplaceCaptureCommand {
+                stem_id,
+                capture,
+                response,
+            })) {
+            Ok(()) => {}
+            Err(std::sync::mpsc::TrySendError::Full(command)) => {
+                if let SourceControlCommand::Attach(command) = command {
+                    let _ = command.capture.stop_and_join();
+                }
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::ControlQueueFull);
+            }
+            Err(std::sync::mpsc::TrySendError::Disconnected(command)) => {
+                if let SourceControlCommand::Attach(command) = command {
+                    let _ = command.capture.stop_and_join();
+                }
+                observation.observe_failed_before_attach();
+                return Err(SessionSourceReplacementError::RuntimeStopped);
+            }
+        }
+        match receiver.recv_timeout(Duration::from_millis(self.replacement_response_timeout_ms)) {
+            Ok(Ok(replacement)) => Ok(replacement),
+            Ok(Err(source)) => Err(SessionSourceReplacementError::Open { source }),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+                observation.observe_response_timeout();
+                Err(SessionSourceReplacementError::ResponseTimedOut {
+                    timeout_ms: self.replacement_response_timeout_ms,
+                })
+            }
+            Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+                Err(SessionSourceReplacementError::RuntimeStopped)
+            }
+        }
     }
 
     pub fn operator_metrics(&self) -> Box<[SessionOperatorMetrics]> {
@@ -367,6 +595,16 @@ impl RunningSession {
                 stem_id: binding.stem_id,
                 opened_native_format: binding.capture.opened_native_format(),
             })
+            .collect::<Vec<_>>()
+            .into_boxed_slice()
+    }
+
+    pub(crate) fn source_replacement_observations(
+        &self,
+    ) -> Box<[SessionSourceReplacementObservations]> {
+        self.source_observations
+            .iter()
+            .map(|binding| binding.capture.replacement_observations(binding.stem_id))
             .collect::<Vec<_>>()
             .into_boxed_slice()
     }
@@ -892,21 +1130,33 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         .iter()
         .map(|_| SourceSignalObservationHandle::default())
         .collect::<Vec<_>>();
+    let source_capture_observations = captures
+        .iter()
+        .map(|capture| {
+            SourceCaptureObservationHandle::new(
+                capture.owner.observation_receipt(),
+                capture.owner.open_metadata(),
+            )
+        })
+        .collect::<Vec<_>>();
     let source_observations = captures
         .iter()
         .zip(source_ingress_observations)
         .zip(source_activity_observations.iter())
         .zip(source_signal_observations.iter())
-        .map(|(((capture, (stem_id, ingress)), activity), signal)| {
-            debug_assert_eq!(capture.stem_id, stem_id);
-            SourceObservationBinding {
-                stem_id: capture.stem_id,
-                capture: capture.owner.observation_receipt(),
-                ingress,
-                activity: activity.clone(),
-                signal: signal.clone(),
-            }
-        })
+        .zip(source_capture_observations.iter())
+        .map(
+            |((((capture, (stem_id, ingress)), activity), signal), capture_observations)| {
+                debug_assert_eq!(capture.stem_id, stem_id);
+                SourceObservationBinding {
+                    stem_id: capture.stem_id,
+                    capture: capture_observations.clone(),
+                    ingress,
+                    activity: activity.clone(),
+                    signal: signal.clone(),
+                }
+            },
+        )
         .collect::<Vec<_>>();
     let runner = match RealtimePlanRunner::new(executor, source_inputs, cancellation) {
         Ok(runner) => runner,
@@ -931,17 +1181,24 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         .zip(source_mappings)
         .zip(source_activity_observations)
         .zip(source_signal_observations)
-        .map(|(((capture, mapping), activity), signal)| RuntimeSource {
-            stem_id: mapping.stem_id,
-            capture: capture.owner,
-            sender: mapping.sender,
-            activity,
-            signal,
-        })
+        .zip(source_capture_observations)
+        .map(
+            |((((capture, mapping), activity), signal), capture_observations)| RuntimeSource {
+                stem_id: mapping.stem_id,
+                source: capture.source,
+                capture: capture.owner,
+                sender: mapping.sender,
+                activity,
+                signal,
+                capture_observations,
+            },
+        )
         .collect::<Vec<_>>();
     let stop_requested = Arc::new(AtomicBool::new(false));
     let worker_stop_requested = Arc::clone(&stop_requested);
     let (start_tx, start_rx) = std::sync::mpsc::sync_channel::<RuntimeWorkerStart>(1);
+    let (replacement_sender, replacement_receiver) =
+        std::sync::mpsc::sync_channel::<SourceControlCommand>(1);
     let (ready_tx, ready_rx) = std::sync::mpsc::sync_channel::<()>(1);
     let runtime_worker = match std::thread::Builder::new()
         .name("pocketstation-session-runtime".to_owned())
@@ -955,6 +1212,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
                     start.options,
                     start.session_id,
                     start.event_sender,
+                    replacement_receiver,
                 ))
             }
             Err(_) => None,
@@ -1256,6 +1514,15 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         state: SessionLifecycleState::Running,
         stop_requested,
         runtime_worker: Some(runtime_worker),
+        replacement_sender,
+        replacement_targets: spec
+            .stems()
+            .iter()
+            .map(|stem| (stem.id(), stem.source().clone()))
+            .collect(),
+        replacement_frame_capacity_frames: options.capture_frame_capacity_frames,
+        replacement_runtime_event_capacity_events: options.capture_runtime_event_capacity_events,
+        replacement_response_timeout_ms: options.runtime_ready_timeout_ms,
         async_runtime_host,
         operators: running_operators,
         endpoints: running_endpoints,
@@ -1931,6 +2198,7 @@ fn prepare_and_open_captures(
         };
         captures.push(OpenedCapture {
             stem_id: stem.id(),
+            source: stem.source().clone(),
             owner: capture,
         });
     }
@@ -2030,17 +2298,24 @@ fn run_runtime_worker(
     options: SessionStartOptions,
     session_id: SessionId,
     event_sender: SessionEventSender,
+    replacement_receiver: std::sync::mpsc::Receiver<SourceControlCommand>,
 ) -> RuntimeWorkerOutcome {
     let mut sources = sources
         .into_iter()
         .map(|source| {
-            (
-                source.stem_id,
-                Some(source.capture),
-                source.sender,
-                source.activity,
-                source.signal,
-            )
+            let metadata = source.capture.open_metadata();
+            RuntimeSourceState {
+                stem_id: source.stem_id,
+                source: source.source,
+                capture: Some(source.capture),
+                active_source_id: metadata.source_id,
+                sender: source.sender,
+                activity: source.activity,
+                signal: source.signal,
+                capture_observations: source.capture_observations,
+                replacement_generation: metadata.source_generation,
+                replacement_discontinuity_epoch: metadata.discontinuity_epoch,
+            }
         })
         .collect::<Vec<_>>();
     let mut captures = Vec::with_capacity(sources.len());
@@ -2051,8 +2326,19 @@ fn run_runtime_worker(
     let mut source_failures = Vec::new();
     while !stop_requested.load(Ordering::Acquire) {
         let mut work_observed = false;
-        for (stem_id, capture, sender, activity, signal) in &mut sources {
-            let Some(active_capture) = capture.as_mut() else {
+        while let Ok(command) = replacement_receiver.try_recv() {
+            work_observed = true;
+            match command {
+                SourceControlCommand::Attach(command) => {
+                    handle_replace_capture(command, &mut sources, &mut captures);
+                }
+                SourceControlCommand::Detach(command) => {
+                    handle_detach_capture(command, &mut sources, &mut captures);
+                }
+            }
+        }
+        for source in &mut sources {
+            let Some(active_capture) = source.capture.as_mut() else {
                 continue;
             };
             loop {
@@ -2060,10 +2346,10 @@ fn run_runtime_worker(
                     Ok(Some(frame)) => {
                         work_observed = true;
                         let observed_at_ns = crate::timing::monotonic_timestamp_ns();
-                        activity.observe_frame(observed_at_ns);
-                        signal.observe_frame(observed_at_ns, &frame);
+                        source.activity.observe_frame(observed_at_ns);
+                        source.signal.observe_frame(observed_at_ns, &frame);
                         if let PlanSourceSendOutcome::Rejected { error, frame } =
-                            sender.try_send(frame)
+                            source.sender.try_send(frame)
                         {
                             drop(frame);
                             match error {
@@ -2077,25 +2363,34 @@ fn run_runtime_worker(
                     Ok(None) => break,
                     Err(_) => {
                         lineage_failures_total = lineage_failures_total.saturating_add(1);
-                        if let Some(failed_capture) = capture.take() {
-                            captures.push((*stem_id, failed_capture.stop_and_join()));
+                        if let Some(failed_capture) = source.capture.take() {
+                            let metadata = failed_capture.open_metadata();
+                            source.active_source_id = metadata.source_id;
+                            source.replacement_generation = metadata.source_generation.next();
+                            source.replacement_discontinuity_epoch =
+                                metadata.discontinuity_epoch.saturating_add(1);
+                            captures.push((source.stem_id, failed_capture.stop_and_join()));
                         }
                         break;
                     }
                 }
             }
-            let Some(active_capture) = capture.as_ref() else {
+            let Some(active_capture) = source.capture.as_ref() else {
                 continue;
             };
             if let SourceRuntimeEventReceive::Event(event) = active_capture.try_recv_runtime_event()
             {
                 runtime_events_total = runtime_events_total.saturating_add(1);
                 runtime_failures_total = runtime_failures_total.saturating_add(1);
-                let failure = SessionSourceFailure::new(*stem_id, event);
+                let failure = SessionSourceFailure::new(source.stem_id, event);
                 let _ = event_sender.publish_source(session_id, failure.clone());
                 source_failures.push(failure);
-                if let Some(failed_capture) = capture.take() {
-                    captures.push((*stem_id, failed_capture.stop_and_join()));
+                if let Some(failed_capture) = source.capture.take() {
+                    let metadata = failed_capture.open_metadata();
+                    source.active_source_id = metadata.source_id;
+                    source.replacement_generation = metadata.source_generation.next();
+                    source.replacement_discontinuity_epoch = metadata.discontinuity_epoch;
+                    captures.push((source.stem_id, failed_capture.stop_and_join()));
                 }
             }
         }
@@ -2110,11 +2405,11 @@ fn run_runtime_worker(
             std::thread::sleep(Duration::from_millis(options.runtime_idle_poll_ms));
         }
     }
-    captures.extend(sources.into_iter().filter_map(
-        |(stem_id, capture, _sender, _activity, _signal)| {
-            capture.map(|capture| (stem_id, capture.stop_and_join()))
-        },
-    ));
+    captures.extend(sources.into_iter().filter_map(|source| {
+        source
+            .capture
+            .map(|capture| (source.stem_id, capture.stop_and_join()))
+    }));
     let runner = runner.finish(
         PlanRunnerDrainPolicy::DiscardQueued,
         options.runtime_work_budget_frames,
@@ -2128,6 +2423,96 @@ fn run_runtime_worker(
         source_send_rejections_total,
         source_failures,
     }
+}
+
+fn handle_replace_capture(
+    command: ReplaceCaptureCommand,
+    sources: &mut [RuntimeSourceState],
+    completed_captures: &mut Vec<(StemId, Result<CaptureStopOutcome, CaptureError>)>,
+) {
+    let ReplaceCaptureCommand {
+        stem_id,
+        capture,
+        response,
+    } = command;
+    let Some(source) = sources
+        .iter_mut()
+        .find(|source| source.stem_id == stem_id && matches!(source.source, Source::Microphone(_)))
+    else {
+        let _ = capture.stop_and_join();
+        let _ = response.send(Err(CaptureError::BackendInit(
+            "replacement target is not a microphone stem".to_owned(),
+        )));
+        return;
+    };
+    let previous_metadata = source.capture.as_ref().map(|active| active.open_metadata());
+    let source_generation = previous_metadata.map_or(source.replacement_generation, |metadata| {
+        metadata.source_generation.next()
+    });
+    let discontinuity_epoch = previous_metadata
+        .map_or(source.replacement_discontinuity_epoch, |metadata| {
+            metadata.discontinuity_epoch.saturating_add(1)
+        });
+    capture.set_continuity(source_generation, discontinuity_epoch);
+    let metadata = capture.open_metadata();
+    let replacement = SessionSourceReplacement {
+        stem_id,
+        previous_source_id: previous_metadata
+            .map_or(source.active_source_id, |previous| previous.source_id),
+        source_id: metadata.source_id,
+        source_generation: metadata.source_generation.0,
+        discontinuity_epoch: metadata.discontinuity_epoch,
+        opened_native_format: capture.observation_receipt().opened_native_format(),
+    };
+    source.capture_observations.replace(
+        capture.observation_receipt(),
+        metadata,
+        crate::timing::monotonic_timestamp_ns(),
+    );
+    let previous = source.capture.replace(capture);
+    source.active_source_id = metadata.source_id;
+    source.replacement_generation = metadata.source_generation;
+    source.replacement_discontinuity_epoch = metadata.discontinuity_epoch;
+    let _ = response.send(Ok(replacement));
+    if let Some(previous) = previous {
+        completed_captures.push((stem_id, previous.stop_and_join()));
+    }
+}
+
+fn handle_detach_capture(
+    command: DetachCaptureCommand,
+    sources: &mut [RuntimeSourceState],
+    completed_captures: &mut Vec<(StemId, Result<CaptureStopOutcome, CaptureError>)>,
+) {
+    let DetachCaptureCommand { stem_id, response } = command;
+    let Some(source) = sources
+        .iter_mut()
+        .find(|source| source.stem_id == stem_id && matches!(source.source, Source::Microphone(_)))
+    else {
+        let _ = response.send(Err(CaptureError::BackendInit(
+            "reopen target is not a microphone stem".to_owned(),
+        )));
+        return;
+    };
+    let Some(capture) = source.capture.take() else {
+        let _ = response.send(Err(CaptureError::BackendInit(
+            "microphone stem has no attached capture to reopen".to_owned(),
+        )));
+        return;
+    };
+    let metadata = capture.open_metadata();
+    source.active_source_id = metadata.source_id;
+    source.replacement_generation = metadata.source_generation.next();
+    source.replacement_discontinuity_epoch = metadata.discontinuity_epoch.saturating_add(1);
+    source.capture_observations.detach(
+        source.replacement_generation,
+        source.replacement_discontinuity_epoch,
+    );
+    completed_captures.push((stem_id, capture.stop_and_join()));
+    let _ = response.send(Ok(DetachedCaptureContinuity {
+        source_generation: source.replacement_generation,
+        discontinuity_epoch: source.replacement_discontinuity_epoch,
+    }));
 }
 
 fn rollback_operator_runtimes(

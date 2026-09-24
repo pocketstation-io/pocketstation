@@ -124,12 +124,14 @@ pub use crate::session::lifecycle::{
     SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRouteDropObservations, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
     SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionSourceSignalEvaluation,
-    SessionSourceSignalObservations, SessionSourceSignalPolicy, SessionSourceSignalPolicyError,
-    SessionSourceSignalState, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
-    SessionTrace, SessionTraceRecord, SessionTraceRecordKind, SessionTraceRecorder,
-    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
-    SessionTraceTerminal, SessionTraceValidation, SessionTraceValidationError,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionSourceReplacement,
+    SessionSourceReplacementError, SessionSourceReplacementObservations,
+    SessionSourceSignalEvaluation, SessionSourceSignalObservations, SessionSourceSignalPolicy,
+    SessionSourceSignalPolicyError, SessionSourceSignalState, SessionStartCancellation,
+    SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecord,
+    SessionTraceRecordKind, SessionTraceRecorder, SessionTraceRecorderFinishError,
+    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceTerminal,
+    SessionTraceValidation, SessionTraceValidationError,
 };
 pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{
@@ -857,6 +859,36 @@ impl RunningSession {
         self.host
             .metrics_snapshot(&self.events, 0, Some(&self.running))
             .ok_or(SessionRuntimeError::MissingMetricsSnapshot)
+    }
+
+    /// Replaces one declared microphone with an exact host-selected device.
+    ///
+    /// PocketStation does not choose the selector or retry automatically. The
+    /// existing stem and routes remain active; replacement frames carry a new
+    /// source generation and discontinuity epoch.
+    pub fn replace_microphone_source(
+        &mut self,
+        stem_id: StemId,
+        selector: DeviceSelector,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        self.host
+            .replace_microphone_source(&mut self.running, stem_id, selector)
+    }
+
+    /// Reacquires one exact host-selected microphone after first closing its
+    /// current native capture.
+    ///
+    /// This is the explicit reset mechanism for routes such as Bluetooth HFP
+    /// that may require teardown before a same-device open. Core never chooses
+    /// a selector or retry policy. If reacquisition fails, the microphone stem
+    /// remains detached while unrelated stems continue.
+    pub fn reopen_microphone_source(
+        &mut self,
+        stem_id: StemId,
+        selector: DeviceSelector,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        self.host
+            .reopen_microphone_source(&mut self.running, stem_id, selector)
     }
 
     /// Returns one finalizable observation handle per Session-owned operator

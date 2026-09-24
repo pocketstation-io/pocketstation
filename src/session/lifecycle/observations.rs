@@ -39,6 +39,7 @@ pub struct SessionMetricsSnapshot {
     polled_audio: PolledAudioObservations,
     sources: Box<[SessionSourceMetrics]>,
     source_native_formats: Box<[SessionSourceNativeFormatObservation]>,
+    source_replacements: Box<[SessionSourceReplacementObservations]>,
     source_activity: Box<[SessionSourceActivityObservations]>,
     source_signal: Box<[SessionSourceSignalObservations]>,
     external_sources: Box<[SessionExternalSourceMetrics]>,
@@ -50,6 +51,7 @@ pub struct SessionMetricsSnapshot {
 pub(crate) struct SessionSourceMetricSnapshots {
     pub(crate) metrics: Box<[SessionSourceMetrics]>,
     pub(crate) native_formats: Box<[SessionSourceNativeFormatObservation]>,
+    pub(crate) replacements: Box<[SessionSourceReplacementObservations]>,
     pub(crate) activity: Box<[SessionSourceActivityObservations]>,
     pub(crate) signal: Box<[SessionSourceSignalObservations]>,
 }
@@ -67,6 +69,7 @@ impl SessionMetricsSnapshot {
         let SessionSourceMetricSnapshots {
             metrics,
             native_formats,
+            replacements,
             activity,
             signal,
         } = sources;
@@ -75,6 +78,7 @@ impl SessionMetricsSnapshot {
             polled_audio,
             sources: metrics,
             source_native_formats: native_formats,
+            source_replacements: replacements,
             source_activity: activity,
             source_signal: signal,
             external_sources,
@@ -111,6 +115,19 @@ impl SessionMetricsSnapshot {
 
     pub fn source_native_format_count(&self) -> usize {
         self.source_native_formats.len()
+    }
+
+    /// Returns explicit host-requested physical-source replacement facts for
+    /// the built-in Source at `index`, in declaration order.
+    pub fn source_replacement(
+        &self,
+        index: usize,
+    ) -> Option<&SessionSourceReplacementObservations> {
+        self.source_replacements.get(index)
+    }
+
+    pub fn source_replacement_count(&self) -> usize {
+        self.source_replacements.len()
     }
 
     /// Returns the raw frame-delivery activity for the built-in Source at
@@ -187,6 +204,26 @@ pub struct SessionSourceMetrics {
 pub struct SessionSourceNativeFormatObservation {
     pub stem_id: StemId,
     pub opened_native_format: Option<CaptureNativeFormat>,
+}
+
+/// Control-path accounting for explicit physical-source replacement.
+///
+/// A replacement attempt never implies automatic fallback. The host chooses
+/// the exact device and calls the replacement operation deliberately.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceReplacementObservations {
+    pub stem_id: StemId,
+    pub attempts_total: u64,
+    pub completed_total: u64,
+    pub failed_before_attach_total: u64,
+    pub response_timeouts_total: u64,
+    /// Physical source currently attached to the logical stem. `None` means
+    /// an explicit detach completed but reacquisition has not attached.
+    pub attached_source_id: Option<SourceId>,
+    /// Continuity generation assigned to the attached or next capture.
+    pub source_generation: u32,
+    pub discontinuity_epoch: u64,
+    pub latest_completed_at_ns: Option<u64>,
 }
 
 /// Raw process-clock activity observed after a built-in Source frame leaves
