@@ -151,6 +151,8 @@ impl SessionEngineHost {
             );
         let source_activity =
             running_session.map_or_else(Box::default, RunningSession::source_activity_observations);
+        let source_signal =
+            running_session.map_or_else(Box::default, RunningSession::source_signal_observations);
         let source_native_formats = running_session.map_or_else(
             Box::default,
             RunningSession::source_native_format_observations,
@@ -162,6 +164,7 @@ impl SessionEngineHost {
                 metrics: sources,
                 native_formats: source_native_formats,
                 activity: source_activity,
+                signal: source_signal,
             },
             external_sources,
             routes,

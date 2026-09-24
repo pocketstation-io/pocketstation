@@ -124,11 +124,12 @@ pub use crate::session::lifecycle::{
     SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRouteDropObservations, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
     SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionStartCancellation,
-    SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecord,
-    SessionTraceRecordKind, SessionTraceRecorder, SessionTraceRecorderFinishError,
-    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceTerminal,
-    SessionTraceValidation, SessionTraceValidationError,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionSourceSignalEvaluation,
+    SessionSourceSignalObservations, SessionSourceSignalPolicy, SessionSourceSignalPolicyError,
+    SessionSourceSignalState, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
+    SessionTrace, SessionTraceRecord, SessionTraceRecordKind, SessionTraceRecorder,
+    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
+    SessionTraceTerminal, SessionTraceValidation, SessionTraceValidationError,
 };
 pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{

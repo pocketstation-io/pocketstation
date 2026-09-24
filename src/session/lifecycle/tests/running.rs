@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
@@ -30,6 +30,7 @@ use crate::graph::{
     SignalPayload, SignalSpec, SignalTiming, TextFormat,
 };
 use crate::runtime::PlanEdgeFrame;
+use crate::{SessionSourceSignalPolicy, SessionSourceSignalState};
 
 use crate::session::{
     prepare_session_runtime, start_prepared_session, ApplicationSelector, CaptureBackendSet,
@@ -209,6 +210,7 @@ struct CaptureControl {
     prepare_calls_total: AtomicU64,
     open_calls_total: AtomicU64,
     startup_frames_count: AtomicU64,
+    sample_value_bits: AtomicU32,
     live_prepared_total: AtomicUsize,
     live_active_total: AtomicUsize,
     stop_calls_total: AtomicU64,
@@ -271,6 +273,7 @@ impl PreparedCaptureBackend for TestPreparedCapture {
             .startup_frames_count
             .load(Ordering::Acquire)
             .max(1);
+        let sample_value = f32::from_bits(self.control.sample_value_bits.load(Ordering::Acquire));
         let CaptureDelivery {
             mut frame_sender,
             runtime_event_sender,
@@ -283,6 +286,7 @@ impl PreparedCaptureBackend for TestPreparedCapture {
             buffer
                 .try_set_len(960)
                 .expect("test frame fits the fixed-capacity buffer");
+            buffer.as_mut_slice().fill(sample_value);
             let frame = AudioFrame::new(
                 StreamId(self.source_id.0),
                 self.source_id,
@@ -322,6 +326,7 @@ impl PreparedCaptureBackend for TestPreparedCapture {
                 buffer
                     .try_set_len(960)
                     .expect("test frame fits the fixed-capacity buffer");
+                buffer.as_mut_slice().fill(sample_value);
                 let frame = AudioFrame::new(
                     StreamId(source_id.0),
                     source_id,
@@ -1423,6 +1428,9 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
     application
         .startup_frames_count
         .store(16, Ordering::Release);
+    application
+        .sample_value_bits
+        .store(0.25f32.to_bits(), Ordering::Release);
     let microphone = Arc::new(CaptureControl::default());
     microphone.startup_frames_count.store(16, Ordering::Release);
     let endpoints = Arc::new(EndpointControl::default());
@@ -1453,6 +1461,7 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
     );
     let (sources, routes) = running.indexed_metrics();
     let source_activity = running.source_activity_observations();
+    let source_signal = running.source_signal_observations();
     let source_native_formats = running.source_native_format_observations();
     let outcome = running.stop();
 
@@ -1471,6 +1480,7 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
             && source.ingress.frames_discarded_total == 0
     }));
     assert_eq!(source_activity.len(), 2);
+    assert_eq!(source_signal.len(), 2);
     assert_eq!(source_native_formats.len(), 2);
     assert!(source_native_formats.iter().all(|format| {
         format.opened_native_format
@@ -1493,6 +1503,32 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
                 .expect("a received frame has a latest-frame timestamp")
                 <= activity.observed_at_ns
     }));
+    let policy = SessionSourceSignalPolicy::new(-20.0, -20.0, Duration::from_millis(20))
+        .expect("finite caller thresholds");
+    let application_signal = source_signal[0];
+    assert_eq!(application_signal.window_samples_total, 960);
+    assert_eq!(application_signal.window_exact_zero_samples_total, 0);
+    assert_eq!(application_signal.window_nonzero_samples_total, 960);
+    assert_eq!(application_signal.window_nonfinite_samples_total, 0);
+    assert_eq!(application_signal.window_peak_linear(), Some(0.25));
+    assert_eq!(application_signal.window_rms_linear(), Some(0.25));
+    assert_eq!(
+        application_signal.evaluate(policy).state,
+        SessionSourceSignalState::MeetsCallerThresholds
+    );
+    let microphone_signal = source_signal[1];
+    assert_eq!(microphone_signal.window_samples_total, 960);
+    assert_eq!(microphone_signal.window_exact_zero_samples_total, 960);
+    assert_eq!(microphone_signal.window_nonzero_samples_total, 0);
+    assert_eq!(microphone_signal.window_nonfinite_samples_total, 0);
+    assert_eq!(
+        microphone_signal.consecutive_exact_zero_duration_ns,
+        20_000_000
+    );
+    assert_eq!(
+        microphone_signal.evaluate(policy).state,
+        SessionSourceSignalState::SustainedExactDigitalZero
+    );
     assert!(
         routes
             .iter()

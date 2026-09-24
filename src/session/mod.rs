@@ -88,7 +88,7 @@ pub use lifecycle::{
     SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics,
     SessionSourceActivityEvaluation, SessionSourceActivityObservations,
     SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
-    SessionSourceMetrics, SessionSourceNativeFormatObservation,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionSourceSignalObservations,
 };
 pub use lifecycle::{
     NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,
