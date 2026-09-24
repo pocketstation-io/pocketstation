@@ -198,7 +198,8 @@ fn given_stopped_public_session_when_new_session_starts_then_capture_restarts_cl
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
-fn given_running_public_session_when_microphone_is_reacquired_then_lineage_advances() {
+fn given_running_public_session_when_microphone_is_reopened_with_exact_device_then_lineage_advances(
+) {
     let session = pocketstation::conformance::session().expect("canonical conformance Session");
     let application = session
         .capture(Source::application("PocketStation Fixture"))
@@ -221,7 +222,8 @@ fn given_running_public_session_when_microphone_is_reacquired_then_lineage_advan
         .expect("explicit microphone reopen");
 
     assert_eq!(replacement.stem_id, microphone_stem_id);
-    assert_eq!(replacement.previous_source_id, replacement.source_id);
+    assert_eq!(replacement.previous_source_id.get(), 202);
+    assert_eq!(replacement.source_id.get(), 203);
     assert_eq!(replacement.source_generation, 2);
     assert_eq!(replacement.discontinuity_epoch, 1);
 
