@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 
-use crate::capture::CaptureOwnerObservations;
+use crate::capture::{CaptureNativeFormat, CaptureOwnerObservations};
 use crate::endpoint::EndpointDriverObservations;
 use crate::frame::{EndpointId, RouteId, SourceId, StemId};
 use crate::runtime::{
@@ -38,6 +38,7 @@ pub struct SessionMetricsSnapshot {
     event_queue: SessionEventQueueObservations,
     polled_audio: PolledAudioObservations,
     sources: Box<[SessionSourceMetrics]>,
+    source_native_formats: Box<[SessionSourceNativeFormatObservation]>,
     source_activity: Box<[SessionSourceActivityObservations]>,
     external_sources: Box<[SessionExternalSourceMetrics]>,
     routes: Box<[SessionRouteMetrics]>,
@@ -47,6 +48,7 @@ pub struct SessionMetricsSnapshot {
 
 pub(crate) struct SessionSourceMetricSnapshots {
     pub(crate) metrics: Box<[SessionSourceMetrics]>,
+    pub(crate) native_formats: Box<[SessionSourceNativeFormatObservation]>,
     pub(crate) activity: Box<[SessionSourceActivityObservations]>,
 }
 
@@ -60,11 +62,16 @@ impl SessionMetricsSnapshot {
         operators: Box<[SessionOperatorMetrics]>,
         derived_routes: Box<[SessionDerivedRouteMetrics]>,
     ) -> Self {
-        let SessionSourceMetricSnapshots { metrics, activity } = sources;
+        let SessionSourceMetricSnapshots {
+            metrics,
+            native_formats,
+            activity,
+        } = sources;
         Self {
             event_queue,
             polled_audio,
             sources: metrics,
+            source_native_formats: native_formats,
             source_activity: activity,
             external_sources,
             routes,
@@ -87,6 +94,19 @@ impl SessionMetricsSnapshot {
 
     pub fn source(&self, index: usize) -> Option<&SessionSourceMetrics> {
         self.sources.get(index)
+    }
+
+    /// Returns the native device format opened for the built-in Source at
+    /// `index`, in the same stable declaration order as [`Self::source`].
+    pub fn source_native_format(
+        &self,
+        index: usize,
+    ) -> Option<&SessionSourceNativeFormatObservation> {
+        self.source_native_formats.get(index)
+    }
+
+    pub fn source_native_format_count(&self) -> usize {
+        self.source_native_formats.len()
     }
 
     /// Returns the raw frame-delivery activity for the built-in Source at
@@ -141,6 +161,17 @@ pub struct SessionSourceMetrics {
     pub stem_id: StemId,
     pub capture: CaptureOwnerObservations,
     pub ingress: PlanSourceInputObservations,
+}
+
+/// Native acquisition format observed when one built-in Source opened.
+///
+/// `opened_native_format` is `None` for capture backends that do not negotiate
+/// a PCM device format. It never changes the canonical format delivered to the
+/// Session graph.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceNativeFormatObservation {
+    pub stem_id: StemId,
+    pub opened_native_format: Option<CaptureNativeFormat>,
 }
 
 /// Raw process-clock activity observed after a built-in Source frame leaves

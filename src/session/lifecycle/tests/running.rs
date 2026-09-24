@@ -4,10 +4,10 @@ use std::time::{Duration, Instant};
 
 use crate::capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CapturedFrameDelivery,
-    PreparedCaptureBackend, SourceGeneration, SourceKind, SourceRecoveryRequirement,
-    SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
+    CaptureNativeFormat, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleRepresentation,
+    CapturedFrameDelivery, PreparedCaptureBackend, SourceGeneration, SourceKind,
+    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
 };
 use crate::endpoint::{EndpointAudioReceiver, EndpointSignalReceiver};
 use crate::endpoint::{
@@ -364,6 +364,14 @@ impl Drop for TestPreparedCapture {
 impl ActiveCaptureBackend for TestActiveCapture {
     fn source_id(&self) -> SourceId {
         self.source_id
+    }
+
+    fn native_format(&self) -> Option<CaptureNativeFormat> {
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 16_000,
+            channel_count: 1,
+            sample_representation: CaptureSampleRepresentation::SignedInteger16,
+        })
     }
 
     fn observation_handle(&self) -> CaptureObservationHandle {
@@ -1445,6 +1453,7 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
     );
     let (sources, routes) = running.indexed_metrics();
     let source_activity = running.source_activity_observations();
+    let source_native_formats = running.source_native_format_observations();
     let outcome = running.stop();
 
     assert!(outcome.is_success());
@@ -1462,6 +1471,15 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
             && source.ingress.frames_discarded_total == 0
     }));
     assert_eq!(source_activity.len(), 2);
+    assert_eq!(source_native_formats.len(), 2);
+    assert!(source_native_formats.iter().all(|format| {
+        format.opened_native_format
+            == Some(CaptureNativeFormat {
+                sample_rate_hz: 16_000,
+                channel_count: 1,
+                sample_representation: CaptureSampleRepresentation::SignedInteger16,
+            })
+    }));
     assert!(source_activity.iter().all(|activity| {
         activity.frames_received_total == 1
             && activity.first_frame_received_at_ns.is_some()

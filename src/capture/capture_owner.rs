@@ -9,11 +9,12 @@ use crate::capture::frame_stream::{
     captured_frame_stream_with_start_gate, CaptureDeliveryStartGate,
 };
 use crate::capture::{
-    source_runtime_event_channel, CaptureError, CaptureMode, CaptureObservationHandle,
-    CaptureObservations, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream,
-    CapturedFrameStreamStats, PermissionEpoch, SourceGeneration, SourceRuntimeEvent,
-    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventReceive,
-    SourceRuntimeEventReceiver, SourceRuntimeEventSender,
+    source_runtime_event_channel, CaptureError, CaptureMode, CaptureNativeFormat,
+    CaptureObservationHandle, CaptureObservations, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch,
+    SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
+    SourceRuntimeEventSender,
 };
 
 /// Monotonic timestamp domain used by native capture backends.
@@ -104,6 +105,14 @@ pub trait ActiveCaptureBackend: Send {
     /// captured lineage. Session configuration never supplies it.
     fn source_id(&self) -> SourceId;
 
+    /// Exact native PCM format accepted by the operating-system stream.
+    ///
+    /// Backends that do not negotiate a PCM device format return `None`.
+    /// Session frames still use the canonical graph signal format.
+    fn native_format(&self) -> Option<CaptureNativeFormat> {
+        None
+    }
+
     fn observation_handle(&self) -> CaptureObservationHandle;
 
     fn observations(&self) -> CaptureObservations;
@@ -134,6 +143,7 @@ impl PreparedCapture {
             backend: active_backend.observation_handle(),
             frame_stream: frame_observations,
             runtime_events: runtime_event_observations,
+            opened_native_format: active_backend.native_format(),
         };
         Ok(CaptureOwner {
             active_backend,
@@ -168,6 +178,7 @@ pub struct CaptureObservationReceipt {
     backend: CaptureObservationHandle,
     frame_stream: CapturedFrameObservationHandle,
     runtime_events: SourceRuntimeEventObservationHandle,
+    opened_native_format: Option<CaptureNativeFormat>,
 }
 
 impl CaptureObservationReceipt {
@@ -177,6 +188,10 @@ impl CaptureObservationReceipt {
             frame_stream: self.frame_stream.observations(),
             runtime_events: self.runtime_events.observations(),
         }
+    }
+
+    pub const fn opened_native_format(&self) -> Option<CaptureNativeFormat> {
+        self.opened_native_format
     }
 }
 

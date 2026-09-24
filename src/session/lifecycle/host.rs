@@ -151,11 +151,16 @@ impl SessionEngineHost {
             );
         let source_activity =
             running_session.map_or_else(Box::default, RunningSession::source_activity_observations);
+        let source_native_formats = running_session.map_or_else(
+            Box::default,
+            RunningSession::source_native_format_observations,
+        );
         Some(SessionMetricsSnapshot::new(
             events.observations(),
             polled_audio,
             SessionSourceMetricSnapshots {
                 metrics: sources,
+                native_formats: source_native_formats,
                 activity: source_activity,
             },
             external_sources,

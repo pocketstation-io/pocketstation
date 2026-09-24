@@ -53,9 +53,9 @@ use crate::session::{
     SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics,
     SessionSourceActivityObservations, SessionSourceFailure, SessionSourceMetrics,
-    SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec,
-    SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle,
-    SourceSessionContext,
+    SessionSourceNativeFormatObservation, SessionTerminalOutcome, SessionTraceRecorderHandle,
+    Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime,
+    SourceRuntimeObservationHandle, SourceSessionContext,
 };
 
 struct RuntimeSource {
@@ -344,6 +344,19 @@ impl RunningSession {
         self.source_observations
             .iter()
             .map(|binding| binding.activity.observations(observed_at_ns))
+            .collect::<Vec<_>>()
+            .into_boxed_slice()
+    }
+
+    pub(crate) fn source_native_format_observations(
+        &self,
+    ) -> Box<[SessionSourceNativeFormatObservation]> {
+        self.source_observations
+            .iter()
+            .map(|binding| SessionSourceNativeFormatObservation {
+                stem_id: binding.stem_id,
+                opened_native_format: binding.capture.opened_native_format(),
+            })
             .collect::<Vec<_>>()
             .into_boxed_slice()
     }

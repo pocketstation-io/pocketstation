@@ -38,7 +38,7 @@ pub use observations::{
     SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
     SessionSourceActivityEvaluation, SessionSourceActivityObservations,
     SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
-    SessionSourceMetrics,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation,
 };
 pub(crate) use running::start_prepared_session_cancellable_with_trace;
 pub use running::RunningSession;

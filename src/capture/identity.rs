@@ -5,6 +5,36 @@ use crate::frame::Platform;
 use super::authorization::SourceIdentityStrength;
 use super::selection::{ProcessTreeScope, SelectorPersistenceScope};
 
+/// Native PCM representation opened by a capture backend before conversion to
+/// PocketStation's canonical interleaved `f32` signal.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum CaptureSampleRepresentation {
+    SignedInteger8,
+    SignedInteger16,
+    SignedInteger24,
+    SignedInteger32,
+    SignedInteger64,
+    UnsignedInteger8,
+    UnsignedInteger16,
+    UnsignedInteger24,
+    UnsignedInteger32,
+    UnsignedInteger64,
+    Float32,
+    Float64,
+}
+
+/// Exact native PCM format accepted by the operating-system capture stream.
+///
+/// This is acquisition truth, not the format delivered to a Session. Session
+/// audio remains canonical `f32`; callers use this record to diagnose device
+/// negotiation without reverse-engineering backend choices.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct CaptureNativeFormat {
+    pub sample_rate_hz: u32,
+    pub channel_count: u16,
+    pub sample_representation: CaptureSampleRepresentation,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SourceKind {
     Application,

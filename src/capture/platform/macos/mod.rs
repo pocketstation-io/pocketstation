@@ -3,6 +3,8 @@ mod authorization;
 #[cfg(target_os = "macos")]
 mod input;
 #[cfg(target_os = "macos")]
+mod input_format;
+#[cfg(target_os = "macos")]
 mod loopback;
 #[cfg(target_os = "macos")]
 pub mod macos_asp;
@@ -98,6 +100,13 @@ impl DesktopCaptureSource {
         match &self.0 {
             DesktopCaptureImplementation::Input(source) => source.source_id(),
             DesktopCaptureImplementation::Loopback(source) => source.source_id(),
+        }
+    }
+
+    pub fn native_format(&self) -> Option<crate::capture::CaptureNativeFormat> {
+        match &self.0 {
+            DesktopCaptureImplementation::Input(source) => Some(source.native_format()),
+            DesktopCaptureImplementation::Loopback(_) => None,
         }
     }
 

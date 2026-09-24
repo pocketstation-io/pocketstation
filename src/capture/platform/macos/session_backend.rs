@@ -69,6 +69,10 @@ impl ActiveCaptureBackend for ActiveDesktopCapture {
         self.source.source_id()
     }
 
+    fn native_format(&self) -> Option<crate::capture::CaptureNativeFormat> {
+        self.source.native_format()
+    }
+
     fn observation_handle(&self) -> CaptureObservationHandle {
         self.source.observation_handle()
     }

@@ -94,8 +94,23 @@ fn given_macos_input_callback_when_source_changes_then_realtime_contract_remains
     assert_realtime_fragment(
         "macOS CPAL input callback",
         callback,
-        &["callback_pool.acquire()", "producer.push(frame)"],
+        &[
+            "free_packet_consumer.pop()",
+            "copy_from_slice(bytes)",
+            "packet_producer.push(packet)",
+        ],
     );
+    for reader_only_operation in [
+        "decode_interleaved_to_mono",
+        "rate_converter.process",
+        "frame_normalizer.push",
+        "frame_pool.acquire",
+    ] {
+        assert!(
+            !callback.contains(reader_only_operation),
+            "macOS CPAL input callback contains reader-only operation {reader_only_operation:?}"
+        );
+    }
 }
 
 #[test]
