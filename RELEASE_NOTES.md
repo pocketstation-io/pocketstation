@@ -4,6 +4,57 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+### Observe whether a microphone is usable
+
+Starting a Session and opening a device no longer have to stand in for media
+readiness. Each built-in Source now exposes three separate facts through
+`RunningSession::metrics_snapshot`:
+
+- `source_native_format` reports the sample rate, channel count, and PCM
+  representation actually opened by the native backend;
+- `source_activity` reports first-frame and latest-frame delivery; and
+- `source_signal` reports exact-zero, nonzero, non-finite, peak, and RMS
+  measurements for the latest canonical PCM frame.
+
+`SessionSourceActivityPolicy` distinguishes a Source awaiting its first frame,
+an active Source, a first-frame timeout, and a later stall. A caller-supplied
+`SessionSourceSignalPolicy` separately distinguishes no samples, pending or
+sustained exact digital zero, signal below the caller's numeric thresholds,
+signal meeting those thresholds, and non-finite samples. PocketStation does
+not supply universal time or signal thresholds and does not treat numeric
+signal as proof of speech or audibility.
+
+### Open native microphone formats on macOS
+
+The macOS microphone backend now accepts the device's advertised PCM format,
+including common 8, 16, 24, 32, 44.1, 48, and 96 kHz rates and supported
+integer or floating-point representations. Conversion, channel reduction, and
+rate conversion to PocketStation's canonical mono 48 kHz `f32` signal happen
+on the reader worker, not the Core Audio callback. Source timestamps and
+streaming rate-conversion phase are preserved across native packets.
+
+This expands valid acquisition formats. It does not claim that an operating
+system or Bluetooth profile already delivering zero-valued samples has been
+repaired.
+
+### Recover one microphone without stopping healthy stems
+
+`RunningSession::replace_microphone_source` opens an exact host-selected
+device before detaching the current microphone. If preparation or open fails,
+the current microphone remains attached.
+
+`RunningSession::reopen_microphone_source` is the explicit teardown-first operation
+for routes that must close before the same device can be acquired again. If
+reopening fails after detach, that microphone stem remains detached while
+unrelated application or system-audio stems continue.
+
+Both operations retain the logical stem and routes while advancing source
+generation and discontinuity. Replacement metrics report attempts, completed
+operations, pre-attach failures, response timeouts, current physical source,
+and continuity. Success means the device was opened and attached; callers must
+still apply their own first-frame and signal windows. PocketStation never
+chooses a fallback device or retries automatically.
+
 ## 1.1.10 — 2026-09-04
 
 Windows applications can now use PocketStation's default features in debug

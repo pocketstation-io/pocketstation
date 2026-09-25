@@ -100,6 +100,7 @@ impl CaptureSampleTimeline {
         }
     }
 
+    #[cfg(any(test, target_os = "linux"))]
     pub fn anchored(sample_rate_hz: NonZeroU32, origin_timestamp_ns: u64) -> Self {
         Self {
             sample_rate_hz,
@@ -111,7 +112,7 @@ impl CaptureSampleTimeline {
     }
 
     /// Returns this buffer's source-time start and advances the next start.
-    #[cfg(any(test, target_os = "linux", target_os = "macos"))]
+    #[cfg(any(test, target_os = "linux"))]
     pub fn advance(&mut self, sample_frames: u64) -> u64 {
         let origin_timestamp_ns = *self
             .origin_timestamp_ns
