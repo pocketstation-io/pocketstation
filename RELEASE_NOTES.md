@@ -4,6 +4,8 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.11 — 2026-09-24
+
 ### Observe whether a microphone is usable
 
 Starting a Session and opening a device no longer have to stand in for media
