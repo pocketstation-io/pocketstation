@@ -6,7 +6,8 @@ use std::time::{Duration, Instant};
 #[cfg(feature = "conformance-fixtures")]
 use pocketstation::SessionRecordingState;
 use pocketstation::{
-    ApplicationSelector, Platform, ProcessId, Session, Source, SourceKind, StableSourceId,
+    ApplicationSelector, DeviceId, DeviceSelector, Platform, ProcessId, Session, Source,
+    SourceKind, StableSourceId,
 };
 
 #[test]
@@ -193,6 +194,50 @@ fn given_stopped_public_session_when_new_session_starts_then_capture_restarts_cl
         wait_for_both_stems(&running);
         assert!(running.stop().is_success(), "Session must stop cleanly");
     }
+}
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_running_public_session_when_microphone_is_reopened_with_exact_device_then_lineage_advances(
+) {
+    let session = pocketstation::conformance::session().expect("canonical conformance Session");
+    let application = session
+        .capture(Source::application("PocketStation Fixture"))
+        .expect("application stem");
+    let microphone = session
+        .capture(Source::microphone_default())
+        .expect("microphone stem");
+    let microphone_stem_id = microphone.id();
+    let audio = session.polled_audio().expect("polled audio endpoint");
+    application.send(audio).expect("application audio route");
+    microphone.send(audio).expect("microphone audio route");
+
+    let mut running = session.start().expect("running Session");
+    wait_for_both_stems(&running);
+    let replacement = running
+        .reopen_microphone_source(
+            microphone_stem_id,
+            DeviceSelector::id(DeviceId::new("conformance:microphone")),
+        )
+        .expect("explicit microphone reopen");
+
+    assert_eq!(replacement.stem_id, microphone_stem_id);
+    assert_eq!(replacement.previous_source_id.get(), 202);
+    assert_eq!(replacement.source_id.get(), 203);
+    assert_eq!(replacement.source_generation, 2);
+    assert_eq!(replacement.discontinuity_epoch, 1);
+
+    let snapshot = running.metrics_snapshot().expect("Session metrics");
+    let observation = (0..snapshot.source_replacement_count())
+        .filter_map(|index| snapshot.source_replacement(index))
+        .find(|observation| observation.stem_id == microphone_stem_id)
+        .expect("microphone replacement observations");
+    assert_eq!(observation.attempts_total, 1);
+    assert_eq!(observation.completed_total, 1);
+    assert_eq!(observation.attached_source_id, Some(replacement.source_id));
+    assert_eq!(observation.source_generation, 2);
+    assert_eq!(observation.discontinuity_epoch, 1);
+    assert!(running.stop().is_success());
 }
 
 #[cfg(feature = "conformance-fixtures")]

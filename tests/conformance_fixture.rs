@@ -5,8 +5,9 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 use pocketstation::{
-    conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation,
-    SessionStartErrorKind, SessionStopDisposition, Source,
+    conformance, ApplicationSelector, CaptureNativeFormat, CaptureSampleRepresentation, DeviceId,
+    DeviceSelector, SessionEventReceive, SessionStartCancellation, SessionStartErrorKind,
+    SessionStopDisposition, Source,
 };
 
 fn artifact_root(test_name: &str) -> PathBuf {
@@ -49,12 +50,108 @@ fn given_fixture_session_when_started_then_two_stems_cross_canonical_engine() {
     assert!(metrics.source(0).is_some());
     assert!(metrics.source(1).is_some());
     assert!(metrics.source(2).is_none());
+    assert_eq!(metrics.source_activity_count(), metrics.source_count());
+    assert_eq!(metrics.source_native_format_count(), metrics.source_count());
+    for index in 0..metrics.source_count() {
+        let activity = metrics
+            .source_activity(index)
+            .expect("every built-in Source has aligned activity observations");
+        assert!(activity.frames_received_total > 0);
+        assert!(activity.first_frame_received_at_ns.is_some());
+        assert!(activity.latest_frame_received_at_ns.is_some());
+        assert!(activity.session_started_at_ns <= activity.observed_at_ns);
+        let native_format = metrics
+            .source_native_format(index)
+            .expect("every built-in Source has aligned native-format observations")
+            .opened_native_format
+            .expect("the deterministic capture fixture reports its opened format");
+        assert_eq!(native_format.sample_rate_hz, 48_000);
+        assert_eq!(
+            native_format.sample_representation,
+            CaptureSampleRepresentation::Float32
+        );
+    }
+    assert_eq!(
+        metrics
+            .source_native_format(0)
+            .and_then(|observation| observation.opened_native_format),
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 48_000,
+            channel_count: 2,
+            sample_representation: CaptureSampleRepresentation::Float32,
+        })
+    );
+    assert_eq!(
+        metrics
+            .source_native_format(1)
+            .and_then(|observation| observation.opened_native_format),
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 48_000,
+            channel_count: 1,
+            sample_representation: CaptureSampleRepresentation::Float32,
+        })
+    );
+    assert!(metrics.source_activity(metrics.source_count()).is_none());
     let first = running.stop();
     let second = running.stop();
     assert_eq!(first.disposition(), SessionStopDisposition::Stopped);
     assert_eq!(second.disposition(), SessionStopDisposition::AlreadyStopped);
     assert_eq!(first.outcome(), second.outcome());
     assert!(first.is_success());
+}
+
+#[test]
+fn given_hfp_selector_when_microphone_is_replaced_then_native_format_and_identity_change() {
+    let session = conformance::session().unwrap();
+    let application = session
+        .capture(Source::application(ApplicationSelector::name(
+            "conformance application",
+        )))
+        .unwrap();
+    let microphone = session.capture(Source::microphone_default()).unwrap();
+    let output = session.polled_audio().unwrap();
+    application.send(output).unwrap();
+    microphone.send(output).unwrap();
+
+    let mut running = session.start().unwrap();
+    let replacement = running
+        .replace_microphone_source(
+            microphone.id(),
+            DeviceSelector::id(DeviceId::new(conformance::HFP_MICROPHONE_DEVICE_ID)),
+        )
+        .unwrap();
+
+    assert_eq!(replacement.previous_source_id.get(), 202);
+    assert_eq!(replacement.source_id.get(), 204);
+    assert_eq!(replacement.source_generation, 2);
+    assert_eq!(replacement.discontinuity_epoch, 1);
+    assert_eq!(
+        replacement.opened_native_format,
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 16_000,
+            channel_count: 1,
+            sample_representation: CaptureSampleRepresentation::SignedInteger16,
+        })
+    );
+
+    let deadline = Instant::now() + Duration::from_secs(2);
+    let mut replacement_frame_observed = false;
+    while Instant::now() < deadline && !replacement_frame_observed {
+        if let Ok(batch) = running.try_poll_audio() {
+            replacement_frame_observed = (0..batch.len()).any(|index| {
+                batch.frame(index).is_some_and(|frame| {
+                    let lineage = frame.lineage();
+                    lineage.stem_id() == microphone.id()
+                        && lineage.source_id().get() == 204
+                        && lineage.source_generation() == 2
+                        && lineage.discontinuity_epoch() == 1
+                })
+            });
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert!(replacement_frame_observed);
+    assert!(running.stop().is_success());
 }
 
 #[test]

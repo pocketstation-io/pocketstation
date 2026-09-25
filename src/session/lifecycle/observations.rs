@@ -1,6 +1,7 @@
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::Duration;
 
-use crate::capture::CaptureOwnerObservations;
+use crate::capture::{CaptureNativeFormat, CaptureOwnerObservations};
 use crate::endpoint::EndpointDriverObservations;
 use crate::frame::{EndpointId, RouteId, SourceId, StemId};
 use crate::runtime::{
@@ -37,26 +38,49 @@ pub struct SessionMetricsSnapshot {
     event_queue: SessionEventQueueObservations,
     polled_audio: PolledAudioObservations,
     sources: Box<[SessionSourceMetrics]>,
+    source_native_formats: Box<[SessionSourceNativeFormatObservation]>,
+    source_replacements: Box<[SessionSourceReplacementObservations]>,
+    source_activity: Box<[SessionSourceActivityObservations]>,
+    source_signal: Box<[SessionSourceSignalObservations]>,
     external_sources: Box<[SessionExternalSourceMetrics]>,
     routes: Box<[SessionRouteMetrics]>,
     operators: Box<[SessionOperatorMetrics]>,
     derived_routes: Box<[SessionDerivedRouteMetrics]>,
 }
 
+pub(crate) struct SessionSourceMetricSnapshots {
+    pub(crate) metrics: Box<[SessionSourceMetrics]>,
+    pub(crate) native_formats: Box<[SessionSourceNativeFormatObservation]>,
+    pub(crate) replacements: Box<[SessionSourceReplacementObservations]>,
+    pub(crate) activity: Box<[SessionSourceActivityObservations]>,
+    pub(crate) signal: Box<[SessionSourceSignalObservations]>,
+}
+
 impl SessionMetricsSnapshot {
-    pub(crate) const fn new(
+    pub(crate) fn new(
         event_queue: SessionEventQueueObservations,
         polled_audio: PolledAudioObservations,
-        sources: Box<[SessionSourceMetrics]>,
+        sources: SessionSourceMetricSnapshots,
         external_sources: Box<[SessionExternalSourceMetrics]>,
         routes: Box<[SessionRouteMetrics]>,
         operators: Box<[SessionOperatorMetrics]>,
         derived_routes: Box<[SessionDerivedRouteMetrics]>,
     ) -> Self {
+        let SessionSourceMetricSnapshots {
+            metrics,
+            native_formats,
+            replacements,
+            activity,
+            signal,
+        } = sources;
         Self {
             event_queue,
             polled_audio,
-            sources,
+            sources: metrics,
+            source_native_formats: native_formats,
+            source_replacements: replacements,
+            source_activity: activity,
+            source_signal: signal,
             external_sources,
             routes,
             operators,
@@ -78,6 +102,57 @@ impl SessionMetricsSnapshot {
 
     pub fn source(&self, index: usize) -> Option<&SessionSourceMetrics> {
         self.sources.get(index)
+    }
+
+    /// Returns the native device format opened for the built-in Source at
+    /// `index`, in the same stable declaration order as [`Self::source`].
+    pub fn source_native_format(
+        &self,
+        index: usize,
+    ) -> Option<&SessionSourceNativeFormatObservation> {
+        self.source_native_formats.get(index)
+    }
+
+    pub fn source_native_format_count(&self) -> usize {
+        self.source_native_formats.len()
+    }
+
+    /// Returns explicit host-requested physical-source replacement facts for
+    /// the built-in Source at `index`, in declaration order.
+    pub fn source_replacement(
+        &self,
+        index: usize,
+    ) -> Option<&SessionSourceReplacementObservations> {
+        self.source_replacements.get(index)
+    }
+
+    pub fn source_replacement_count(&self) -> usize {
+        self.source_replacements.len()
+    }
+
+    /// Returns the raw frame-delivery activity for the built-in Source at
+    /// `index`.
+    ///
+    /// Activity entries use the same stable declaration order as [`Self::source`].
+    /// They are separate from [`SessionSourceMetrics`] so the existing public
+    /// metrics record remains source-compatible.
+    pub fn source_activity(&self, index: usize) -> Option<&SessionSourceActivityObservations> {
+        self.source_activity.get(index)
+    }
+
+    pub fn source_activity_count(&self) -> usize {
+        self.source_activity.len()
+    }
+
+    /// Returns the latest delivered PCM-window measurement for the built-in
+    /// Source at `index`, in the same stable declaration order as
+    /// [`Self::source`].
+    pub fn source_signal(&self, index: usize) -> Option<&SessionSourceSignalObservations> {
+        self.source_signal.get(index)
+    }
+
+    pub fn source_signal_count(&self) -> usize {
+        self.source_signal.len()
     }
 
     pub fn external_source_count(&self) -> usize {
@@ -118,6 +193,369 @@ pub struct SessionSourceMetrics {
     pub stem_id: StemId,
     pub capture: CaptureOwnerObservations,
     pub ingress: PlanSourceInputObservations,
+}
+
+/// Native acquisition format observed when one built-in Source opened.
+///
+/// `opened_native_format` is `None` for capture backends that do not negotiate
+/// a PCM device format. It never changes the canonical format delivered to the
+/// Session graph.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceNativeFormatObservation {
+    pub stem_id: StemId,
+    pub opened_native_format: Option<CaptureNativeFormat>,
+}
+
+/// Control-path accounting for explicit physical-source replacement.
+///
+/// A replacement attempt never implies automatic fallback. The host chooses
+/// the microphone selector and calls the replacement operation deliberately.
+/// Selecting the current default is therefore an explicit host policy; the
+/// resulting physical `SourceId` and continuity values remain observable.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceReplacementObservations {
+    pub stem_id: StemId,
+    pub attempts_total: u64,
+    pub completed_total: u64,
+    pub failed_before_attach_total: u64,
+    pub response_timeouts_total: u64,
+    /// Physical source currently attached to the logical stem. `None` means
+    /// an explicit detach completed but reacquisition has not attached.
+    pub attached_source_id: Option<SourceId>,
+    /// Continuity generation assigned to the attached or next capture.
+    pub source_generation: u32,
+    pub discontinuity_epoch: u64,
+    pub latest_completed_at_ns: Option<u64>,
+}
+
+/// Raw process-clock activity observed after a built-in Source frame leaves
+/// the capture queue and reaches the canonical Session runtime.
+///
+/// These values report delivery activity, not audible sound or speech. A frame
+/// containing digital silence still counts as a received frame. Timestamps use
+/// PocketStation's process-monotonic nanosecond domain.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceActivityObservations {
+    pub session_started_at_ns: u64,
+    pub observed_at_ns: u64,
+    pub first_frame_received_at_ns: Option<u64>,
+    pub latest_frame_received_at_ns: Option<u64>,
+    pub frames_received_total: u64,
+}
+
+/// Latest delivered PCM-window measurements for one built-in Source.
+///
+/// Measurement runs after capture dequeue on the Session runtime worker. The
+/// values describe PCM samples only: they do not infer speech, audibility,
+/// permission, intended routing, or whether an application should recover.
+/// `window_timestamp_start_ns` uses the Source clock carried by frame lineage;
+/// `window_observed_at_ns` and `observed_at_ns` use PocketStation's process
+/// monotonic clock.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceSignalObservations {
+    pub observed_at_ns: u64,
+    pub samples_observed_total: u64,
+    pub exact_zero_samples_observed_total: u64,
+    pub nonzero_samples_observed_total: u64,
+    pub nonfinite_samples_observed_total: u64,
+    pub window_timestamp_start_ns: Option<u64>,
+    pub window_duration_ns: u64,
+    pub window_observed_at_ns: Option<u64>,
+    pub window_sequence_number: Option<u64>,
+    pub window_source_generation: u32,
+    pub window_discontinuity_epoch: u64,
+    pub window_samples_total: u64,
+    pub window_exact_zero_samples_total: u64,
+    pub window_nonzero_samples_total: u64,
+    pub window_nonfinite_samples_total: u64,
+    window_peak_linear_bits: u32,
+    window_mean_square_linear_bits: u64,
+    pub consecutive_exact_zero_duration_ns: u64,
+}
+
+impl SessionSourceSignalObservations {
+    pub(crate) fn from_atomic_snapshot(snapshot: SessionSourceSignalAtomicSnapshot) -> Self {
+        let has_window = snapshot.samples_observed_total > 0;
+        Self {
+            observed_at_ns: snapshot.observed_at_ns,
+            samples_observed_total: snapshot.samples_observed_total,
+            exact_zero_samples_observed_total: snapshot.exact_zero_samples_observed_total,
+            nonzero_samples_observed_total: snapshot.nonzero_samples_observed_total,
+            nonfinite_samples_observed_total: snapshot.nonfinite_samples_observed_total,
+            window_timestamp_start_ns: has_window.then_some(snapshot.window_timestamp_start_ns),
+            window_duration_ns: snapshot.window_duration_ns,
+            window_observed_at_ns: has_window.then_some(snapshot.window_observed_at_ns),
+            window_sequence_number: has_window.then_some(snapshot.window_sequence_number),
+            window_source_generation: snapshot.window_source_generation,
+            window_discontinuity_epoch: snapshot.window_discontinuity_epoch,
+            window_samples_total: snapshot.window_samples_total,
+            window_exact_zero_samples_total: snapshot.window_exact_zero_samples_total,
+            window_nonzero_samples_total: snapshot.window_nonzero_samples_total,
+            window_nonfinite_samples_total: snapshot.window_nonfinite_samples_total,
+            window_peak_linear_bits: snapshot.window_peak_linear_bits,
+            window_mean_square_linear_bits: snapshot.window_mean_square_linear_bits,
+            consecutive_exact_zero_duration_ns: snapshot.consecutive_exact_zero_duration_ns,
+        }
+    }
+
+    pub fn window_peak_linear(self) -> Option<f32> {
+        (self.window_samples_total > self.window_nonfinite_samples_total)
+            .then(|| f32::from_bits(self.window_peak_linear_bits))
+    }
+
+    pub fn window_rms_linear(self) -> Option<f64> {
+        (self.window_samples_total > self.window_nonfinite_samples_total)
+            .then(|| f64::from_bits(self.window_mean_square_linear_bits).sqrt())
+    }
+
+    pub fn window_peak_dbfs(self) -> Option<f64> {
+        linear_to_dbfs(self.window_peak_linear().map(f64::from)?)
+    }
+
+    pub fn window_rms_dbfs(self) -> Option<f64> {
+        linear_to_dbfs(self.window_rms_linear()?)
+    }
+
+    pub fn window_exact_zero_ratio(self) -> Option<f64> {
+        (self.window_samples_total > 0)
+            .then(|| self.window_exact_zero_samples_total as f64 / self.window_samples_total as f64)
+    }
+
+    pub fn evaluate(self, policy: SessionSourceSignalPolicy) -> SessionSourceSignalEvaluation {
+        let state = if self.window_samples_total == 0 {
+            SessionSourceSignalState::NoSamplesObserved
+        } else if self.window_nonfinite_samples_total > 0 {
+            SessionSourceSignalState::NonFiniteSamplesObserved
+        } else if self.window_exact_zero_samples_total == self.window_samples_total {
+            if self.consecutive_exact_zero_duration_ns >= policy.exact_zero_timeout_ns {
+                SessionSourceSignalState::SustainedExactDigitalZero
+            } else {
+                SessionSourceSignalState::ExactDigitalZeroPending
+            }
+        } else {
+            let peak_dbfs = self.window_peak_dbfs().unwrap_or(f64::NEG_INFINITY);
+            let rms_dbfs = self.window_rms_dbfs().unwrap_or(f64::NEG_INFINITY);
+            if peak_dbfs >= policy.minimum_peak_dbfs() && rms_dbfs >= policy.minimum_rms_dbfs() {
+                SessionSourceSignalState::MeetsCallerThresholds
+            } else {
+                SessionSourceSignalState::BelowCallerThresholds
+            }
+        };
+        SessionSourceSignalEvaluation {
+            state,
+            peak_dbfs: self.window_peak_dbfs(),
+            rms_dbfs: self.window_rms_dbfs(),
+            consecutive_exact_zero_duration_ns: self.consecutive_exact_zero_duration_ns,
+        }
+    }
+}
+
+pub(crate) struct SessionSourceSignalAtomicSnapshot {
+    pub(crate) observed_at_ns: u64,
+    pub(crate) samples_observed_total: u64,
+    pub(crate) exact_zero_samples_observed_total: u64,
+    pub(crate) nonzero_samples_observed_total: u64,
+    pub(crate) nonfinite_samples_observed_total: u64,
+    pub(crate) window_timestamp_start_ns: u64,
+    pub(crate) window_duration_ns: u64,
+    pub(crate) window_observed_at_ns: u64,
+    pub(crate) window_sequence_number: u64,
+    pub(crate) window_source_generation: u32,
+    pub(crate) window_discontinuity_epoch: u64,
+    pub(crate) window_samples_total: u64,
+    pub(crate) window_exact_zero_samples_total: u64,
+    pub(crate) window_nonzero_samples_total: u64,
+    pub(crate) window_nonfinite_samples_total: u64,
+    pub(crate) window_peak_linear_bits: u32,
+    pub(crate) window_mean_square_linear_bits: u64,
+    pub(crate) consecutive_exact_zero_duration_ns: u64,
+}
+
+fn linear_to_dbfs(linear: f64) -> Option<f64> {
+    (linear.is_finite() && linear > 0.0).then(|| 20.0 * linear.log10())
+}
+
+/// Caller-owned thresholds for interpreting one Source signal observation.
+///
+/// Core intentionally provides no default. Thresholds say only whether the
+/// measured PCM meets the caller's numeric policy; they do not establish
+/// speech, audibility, route correctness, or a recovery decision.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceSignalPolicy {
+    minimum_peak_dbfs_bits: u64,
+    minimum_rms_dbfs_bits: u64,
+    exact_zero_timeout_ns: u64,
+}
+
+impl SessionSourceSignalPolicy {
+    pub fn new(
+        minimum_peak_dbfs: f64,
+        minimum_rms_dbfs: f64,
+        exact_zero_timeout: Duration,
+    ) -> Result<Self, SessionSourceSignalPolicyError> {
+        if !minimum_peak_dbfs.is_finite() || minimum_peak_dbfs > 0.0 {
+            return Err(SessionSourceSignalPolicyError::InvalidMinimumPeakDbfs);
+        }
+        if !minimum_rms_dbfs.is_finite() || minimum_rms_dbfs > 0.0 {
+            return Err(SessionSourceSignalPolicyError::InvalidMinimumRmsDbfs);
+        }
+        let exact_zero_timeout_ns = duration_ns(exact_zero_timeout)
+            .ok_or(SessionSourceSignalPolicyError::InvalidExactZeroTimeout)?;
+        Ok(Self {
+            minimum_peak_dbfs_bits: minimum_peak_dbfs.to_bits(),
+            minimum_rms_dbfs_bits: minimum_rms_dbfs.to_bits(),
+            exact_zero_timeout_ns,
+        })
+    }
+
+    pub fn minimum_peak_dbfs(self) -> f64 {
+        f64::from_bits(self.minimum_peak_dbfs_bits)
+    }
+
+    pub fn minimum_rms_dbfs(self) -> f64 {
+        f64::from_bits(self.minimum_rms_dbfs_bits)
+    }
+
+    pub const fn exact_zero_timeout_ns(self) -> u64 {
+        self.exact_zero_timeout_ns
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, thiserror::Error)]
+pub enum SessionSourceSignalPolicyError {
+    #[error("minimum peak threshold must be finite and no greater than 0 dBFS")]
+    InvalidMinimumPeakDbfs,
+    #[error("minimum RMS threshold must be finite and no greater than 0 dBFS")]
+    InvalidMinimumRmsDbfs,
+    #[error(
+        "exact-digital-zero timeout must be finite, non-zero, and representable in nanoseconds"
+    )]
+    InvalidExactZeroTimeout,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum SessionSourceSignalState {
+    NoSamplesObserved,
+    ExactDigitalZeroPending,
+    SustainedExactDigitalZero,
+    BelowCallerThresholds,
+    MeetsCallerThresholds,
+    NonFiniteSamplesObserved,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct SessionSourceSignalEvaluation {
+    pub state: SessionSourceSignalState,
+    pub peak_dbfs: Option<f64>,
+    pub rms_dbfs: Option<f64>,
+    pub consecutive_exact_zero_duration_ns: u64,
+}
+
+impl SessionSourceActivityObservations {
+    /// Evaluates delivery activity using the caller's workflow-specific
+    /// startup and stall deadlines.
+    ///
+    /// This method does not inspect sample energy, infer permission state,
+    /// replace a Source, or restart capture.
+    pub fn evaluate(self, policy: SessionSourceActivityPolicy) -> SessionSourceActivityEvaluation {
+        let session_age_ns = self
+            .observed_at_ns
+            .saturating_sub(self.session_started_at_ns);
+        match self.latest_frame_received_at_ns {
+            None if session_age_ns >= policy.first_frame_timeout_ns => {
+                SessionSourceActivityEvaluation {
+                    state: SessionSourceActivityState::FirstFrameTimedOut,
+                    session_age_ns,
+                    latest_frame_age_ns: None,
+                }
+            }
+            None => SessionSourceActivityEvaluation {
+                state: SessionSourceActivityState::AwaitingFirstFrame,
+                session_age_ns,
+                latest_frame_age_ns: None,
+            },
+            Some(latest_frame_received_at_ns) => {
+                let latest_frame_age_ns = self
+                    .observed_at_ns
+                    .saturating_sub(latest_frame_received_at_ns);
+                let state = if latest_frame_age_ns >= policy.stall_timeout_ns {
+                    SessionSourceActivityState::Stalled
+                } else {
+                    SessionSourceActivityState::Active
+                };
+                SessionSourceActivityEvaluation {
+                    state,
+                    session_age_ns,
+                    latest_frame_age_ns: Some(latest_frame_age_ns),
+                }
+            }
+        }
+    }
+}
+
+/// Caller-owned deadlines for evaluating Source delivery activity.
+///
+/// Core intentionally has no universal first-frame or stall threshold: an
+/// interactive dictation control and a long-running meeting recorder have
+/// different budgets.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceActivityPolicy {
+    first_frame_timeout_ns: u64,
+    stall_timeout_ns: u64,
+}
+
+impl SessionSourceActivityPolicy {
+    pub fn new(
+        first_frame_timeout: Duration,
+        stall_timeout: Duration,
+    ) -> Result<Self, SessionSourceActivityPolicyError> {
+        let first_frame_timeout_ns = duration_ns(first_frame_timeout)
+            .ok_or(SessionSourceActivityPolicyError::InvalidFirstFrameTimeout)?;
+        let stall_timeout_ns = duration_ns(stall_timeout)
+            .ok_or(SessionSourceActivityPolicyError::InvalidStallTimeout)?;
+        Ok(Self {
+            first_frame_timeout_ns,
+            stall_timeout_ns,
+        })
+    }
+
+    pub const fn first_frame_timeout_ns(self) -> u64 {
+        self.first_frame_timeout_ns
+    }
+
+    pub const fn stall_timeout_ns(self) -> u64 {
+        self.stall_timeout_ns
+    }
+}
+
+fn duration_ns(duration: Duration) -> Option<u64> {
+    if duration.is_zero() {
+        return None;
+    }
+    u64::try_from(duration.as_nanos()).ok()
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, thiserror::Error)]
+pub enum SessionSourceActivityPolicyError {
+    #[error("first-frame timeout must be finite, non-zero, and representable in nanoseconds")]
+    InvalidFirstFrameTimeout,
+    #[error("stall timeout must be finite, non-zero, and representable in nanoseconds")]
+    InvalidStallTimeout,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum SessionSourceActivityState {
+    AwaitingFirstFrame,
+    Active,
+    FirstFrameTimedOut,
+    Stalled,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceActivityEvaluation {
+    pub state: SessionSourceActivityState,
+    pub session_age_ns: u64,
+    pub latest_frame_age_ns: Option<u64>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -582,6 +1020,185 @@ impl SessionEventQueueCounters {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn signal_observations(
+        samples_total: u64,
+        exact_zero_total: u64,
+        nonzero_total: u64,
+        nonfinite_total: u64,
+        peak_linear: f32,
+        rms_linear: f64,
+        consecutive_exact_zero_duration_ns: u64,
+    ) -> SessionSourceSignalObservations {
+        SessionSourceSignalObservations::from_atomic_snapshot(SessionSourceSignalAtomicSnapshot {
+            observed_at_ns: 500,
+            samples_observed_total: samples_total,
+            exact_zero_samples_observed_total: exact_zero_total,
+            nonzero_samples_observed_total: nonzero_total,
+            nonfinite_samples_observed_total: nonfinite_total,
+            window_timestamp_start_ns: 100,
+            window_duration_ns: 20_000_000,
+            window_observed_at_ns: 200,
+            window_sequence_number: 7,
+            window_source_generation: 1,
+            window_discontinuity_epoch: 0,
+            window_samples_total: samples_total,
+            window_exact_zero_samples_total: exact_zero_total,
+            window_nonzero_samples_total: nonzero_total,
+            window_nonfinite_samples_total: nonfinite_total,
+            window_peak_linear_bits: peak_linear.to_bits(),
+            window_mean_square_linear_bits: (rms_linear * rms_linear).to_bits(),
+            consecutive_exact_zero_duration_ns,
+        })
+    }
+
+    #[test]
+    fn given_source_signal_measurements_when_evaluated_then_numeric_states_remain_distinct() {
+        let policy = SessionSourceSignalPolicy::new(-40.0, -50.0, Duration::from_millis(40))
+            .expect("finite caller thresholds");
+
+        let no_samples = signal_observations(0, 0, 0, 0, 0.0, 0.0, 0).evaluate(policy);
+        assert_eq!(
+            no_samples.state,
+            SessionSourceSignalState::NoSamplesObserved
+        );
+
+        let pending_zero =
+            signal_observations(960, 960, 0, 0, 0.0, 0.0, 20_000_000).evaluate(policy);
+        assert_eq!(
+            pending_zero.state,
+            SessionSourceSignalState::ExactDigitalZeroPending
+        );
+        assert_eq!(pending_zero.peak_dbfs, None);
+        assert_eq!(pending_zero.rms_dbfs, None);
+
+        let sustained_zero =
+            signal_observations(960, 960, 0, 0, 0.0, 0.0, 40_000_000).evaluate(policy);
+        assert_eq!(
+            sustained_zero.state,
+            SessionSourceSignalState::SustainedExactDigitalZero
+        );
+
+        let below = signal_observations(960, 0, 960, 0, 0.001, 0.001, 0).evaluate(policy);
+        assert_eq!(below.state, SessionSourceSignalState::BelowCallerThresholds);
+
+        let meets = signal_observations(960, 0, 960, 0, 0.1, 0.01, 0).evaluate(policy);
+        assert_eq!(meets.state, SessionSourceSignalState::MeetsCallerThresholds);
+
+        let nonfinite = signal_observations(960, 0, 959, 1, 0.1, 0.01, 0).evaluate(policy);
+        assert_eq!(
+            nonfinite.state,
+            SessionSourceSignalState::NonFiniteSamplesObserved
+        );
+    }
+
+    #[test]
+    fn given_source_signal_window_when_read_then_units_and_ratios_are_explicit() {
+        let observations = signal_observations(960, 240, 720, 0, 0.5, 0.25, 0);
+        assert_eq!(observations.window_timestamp_start_ns, Some(100));
+        assert_eq!(observations.window_duration_ns, 20_000_000);
+        assert_eq!(observations.window_observed_at_ns, Some(200));
+        assert_eq!(observations.window_sequence_number, Some(7));
+        assert_eq!(observations.window_source_generation, 1);
+        assert_eq!(observations.window_discontinuity_epoch, 0);
+        assert_eq!(observations.window_exact_zero_ratio(), Some(0.25));
+        assert_eq!(observations.window_peak_linear(), Some(0.5));
+        assert_eq!(observations.window_rms_linear(), Some(0.25));
+        assert!((observations.window_peak_dbfs().expect("non-zero peak") + 6.0206).abs() < 0.001);
+        assert!((observations.window_rms_dbfs().expect("non-zero RMS") + 12.0412).abs() < 0.001);
+    }
+
+    #[test]
+    fn given_invalid_source_signal_policy_when_constructed_then_each_input_fails_closed() {
+        assert_eq!(
+            SessionSourceSignalPolicy::new(f64::NAN, -60.0, Duration::from_secs(1),),
+            Err(SessionSourceSignalPolicyError::InvalidMinimumPeakDbfs)
+        );
+        assert_eq!(
+            SessionSourceSignalPolicy::new(1.0, -60.0, Duration::from_secs(1)),
+            Err(SessionSourceSignalPolicyError::InvalidMinimumPeakDbfs)
+        );
+        assert_eq!(
+            SessionSourceSignalPolicy::new(-40.0, f64::INFINITY, Duration::from_secs(1)),
+            Err(SessionSourceSignalPolicyError::InvalidMinimumRmsDbfs)
+        );
+        assert_eq!(
+            SessionSourceSignalPolicy::new(-40.0, -60.0, Duration::ZERO),
+            Err(SessionSourceSignalPolicyError::InvalidExactZeroTimeout)
+        );
+    }
+
+    #[test]
+    fn given_source_activity_when_evaluated_then_first_frame_and_stall_states_are_distinct() {
+        let policy =
+            SessionSourceActivityPolicy::new(Duration::from_nanos(100), Duration::from_nanos(20))
+                .expect("finite non-zero activity policy");
+        let awaiting = SessionSourceActivityObservations {
+            session_started_at_ns: 100,
+            observed_at_ns: 199,
+            first_frame_received_at_ns: None,
+            latest_frame_received_at_ns: None,
+            frames_received_total: 0,
+        }
+        .evaluate(policy);
+        assert_eq!(
+            awaiting.state,
+            SessionSourceActivityState::AwaitingFirstFrame
+        );
+        assert_eq!(awaiting.session_age_ns, 99);
+        assert_eq!(awaiting.latest_frame_age_ns, None);
+
+        let timed_out = SessionSourceActivityObservations {
+            observed_at_ns: 200,
+            ..SessionSourceActivityObservations {
+                session_started_at_ns: 100,
+                observed_at_ns: 0,
+                first_frame_received_at_ns: None,
+                latest_frame_received_at_ns: None,
+                frames_received_total: 0,
+            }
+        }
+        .evaluate(policy);
+        assert_eq!(
+            timed_out.state,
+            SessionSourceActivityState::FirstFrameTimedOut
+        );
+
+        let active_observations = SessionSourceActivityObservations {
+            session_started_at_ns: 100,
+            observed_at_ns: 209,
+            first_frame_received_at_ns: Some(150),
+            latest_frame_received_at_ns: Some(190),
+            frames_received_total: 3,
+        };
+        let active = active_observations.evaluate(policy);
+        assert_eq!(active.state, SessionSourceActivityState::Active);
+        assert_eq!(active.latest_frame_age_ns, Some(19));
+
+        let stalled = SessionSourceActivityObservations {
+            observed_at_ns: 210,
+            ..active_observations
+        }
+        .evaluate(policy);
+        assert_eq!(stalled.state, SessionSourceActivityState::Stalled);
+        assert_eq!(stalled.latest_frame_age_ns, Some(20));
+    }
+
+    #[test]
+    fn given_zero_or_unrepresentable_activity_deadline_when_constructed_then_policy_is_rejected() {
+        assert_eq!(
+            SessionSourceActivityPolicy::new(Duration::ZERO, Duration::from_secs(1)),
+            Err(SessionSourceActivityPolicyError::InvalidFirstFrameTimeout)
+        );
+        assert_eq!(
+            SessionSourceActivityPolicy::new(Duration::from_secs(1), Duration::ZERO),
+            Err(SessionSourceActivityPolicyError::InvalidStallTimeout)
+        );
+        assert_eq!(
+            SessionSourceActivityPolicy::new(Duration::MAX, Duration::from_secs(1)),
+            Err(SessionSourceActivityPolicyError::InvalidFirstFrameTimeout)
+        );
+    }
 
     #[test]
     fn given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons() {

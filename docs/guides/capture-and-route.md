@@ -127,5 +127,85 @@ events. After shutdown, inspect the stop result and any recording outcome.
 Treat a successful start as lifecycle readiness, not proof that every source
 has produced audio.
 
+For each built-in Source, `SessionMetricsSnapshot::source_activity(index)`
+reports when the Session started, when the first and latest frames reached the
+Session runtime, when the snapshot was taken, and how many frames were
+observed. Its index matches `SessionMetricsSnapshot::source(index)`. Evaluate
+that raw activity with `SessionSourceActivityPolicy`, using deadlines justified
+by your workflow. The result distinguishes `AwaitingFirstFrame`, `Active`,
+`FirstFrameTimedOut`, and `Stalled` without restarting or replacing the Source.
+C hosts obtain the same raw values with
+`pks_session_source_activity_at`; `frames_received_total == 0` means the first
+and latest frame timestamps are unavailable and encoded as zero.
+
+Activity is not signal energy. A frame of digital silence is still an active
+frame. `SessionMetricsSnapshot::source_signal(index)` separately reports the
+latest canonical PCM frame's sample totals, exact-zero and non-finite counts,
+peak, RMS, source time, generation, and discontinuity. Evaluate it with a
+caller-created `SessionSourceSignalPolicy`:
+
+```rust,no_run
+use std::time::Duration;
+use pocketstation::{SessionSourceSignalPolicy, SessionSourceSignalState};
+
+# fn inspect(running: &pocketstation::RunningSession, source_index: usize)
+#     -> Result<(), Box<dyn std::error::Error>> {
+let policy = SessionSourceSignalPolicy::new(
+    -36.0,                         // minimum peak, dBFS
+    -48.0,                         // minimum RMS, dBFS
+    Duration::from_millis(1_500), // exact-zero window
+)?;
+let snapshot = running.metrics_snapshot()?;
+let signal = snapshot
+    .source_signal(source_index)
+    .ok_or("source index is unavailable")?
+    .evaluate(policy);
+
+if signal.state == SessionSourceSignalState::SustainedExactDigitalZero {
+    // The host chooses whether to reopen, replace, pause, or stay degraded.
+}
+# Ok(())
+# }
+```
+
+The thresholds describe the application's numeric requirement. They do not
+prove speech, audibility, permission, or correct routing. Measurement runs on
+the Session worker after capture dequeue, never on the native callback.
+
+For a microphone, the host may keep unaffected stems running while it applies
+an explicit recovery decision. `replace_microphone_source` opens a selected
+device before detaching the current microphone. `reopen_microphone_source`
+closes the current capture first and then reacquires the selected device:
+
+```rust,no_run
+use pocketstation::{DeviceId, DeviceSelector};
+
+# fn reopen(
+#     running: &mut pocketstation::RunningSession,
+#     microphone: &pocketstation::StemHandle,
+# ) -> Result<(), Box<dyn std::error::Error>> {
+let replacement = running.reopen_microphone_source(
+    microphone.id(),
+    DeviceSelector::id(DeviceId::new("host-selected-device-id")),
+)?;
+println!(
+    "source={:?} generation={} discontinuity={}",
+    replacement.source_id,
+    replacement.source_generation,
+    replacement.discontinuity_epoch,
+);
+# Ok(())
+# }
+```
+
+Success means the physical capture opened and attached. It does not mean the
+first frame or useful signal arrived. Re-evaluate activity and signal after the
+operation. PocketStation never chooses a fallback selector or retry policy.
+
+`SessionMetricsSnapshot::source_native_format(index)` reports the device format
+opened before conversion to PocketStation's canonical mono 48 kHz `f32`
+signal. It may be unavailable for a backend that does not negotiate a native
+PCM format; absence is not reported as a fabricated default.
+
 Continue with [recording and observations](record-and-observe.md), or prepare
 the host using the [platform guide](../operations/platform-support.md).

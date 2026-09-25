@@ -31,7 +31,8 @@ media was dropped; inspect route metrics separately.
 
 `SessionMetricsSnapshot` groups the current measurements for:
 
-- Sources and source-owned delivery;
+- Sources, source-owned delivery, opened native format, explicit replacement,
+  first/latest frame activity, and delivered PCM signal;
 - routes and route latency;
 - Operators and their named inputs;
 - Connectors and Endpoints;
@@ -43,6 +44,37 @@ media was dropped; inspect route metrics separately.
 Counters are cumulative unless their type states otherwise. Durations include
 their unit in the field or enum. Unavailable measurements remain unavailable;
 they are not reported as zero.
+
+`SessionSourceActivityObservations` uses the process-monotonic nanosecond
+domain. It reports raw receipt activity after capture dequeue. Use
+`SessionSourceActivityPolicy` to apply separate caller-owned first-frame and
+stall deadlines. The resulting activity state does not classify sample energy,
+permission, route correctness, or recovery.
+
+The C ABI exposes the raw record as `PksSessionSourceActivity` through
+`pks_session_source_activity_at`. It is indexed in the same declaration order
+as `pks_session_source_metrics_at`. The existing `PksSessionSourceMetrics`
+record remains 176 bytes; activity is not appended to it.
+
+`SessionSourceNativeFormatObservation` reports the native sample rate in hertz,
+channel count, and PCM representation opened for a built-in Source. The Session
+still delivers canonical `f32` audio. An unavailable native format means the
+backend did not negotiate one; it is not equivalent to 48 kHz mono.
+
+`SessionSourceSignalObservations` reports cumulative sample counts and one
+latest-frame measurement window. Source timestamps remain separate from the
+process-monotonic observation time. Peak and RMS exclude non-finite samples,
+while non-finite counts remain explicit. Exact-zero duration resets when the
+source generation or discontinuity changes. Apply a caller-created
+`SessionSourceSignalPolicy` only after activity establishes that frames are
+arriving.
+
+`SessionSourceReplacementObservations` accounts for explicit host-requested
+microphone changes: attempts, completed changes, failures before attach,
+response timeouts, current physical source, generation, discontinuity, and the
+latest completion time. A response timeout is outcome-uncertain; inspect these
+observations before retrying because the runtime may complete an accepted
+operation later.
 
 ## Route latency
 
@@ -100,11 +132,16 @@ trace as evidence.
 
 1. Preserve the stable error code and component identity.
 2. Inspect whether Sources and unrelated routes remain valid.
-3. Request drain or abort once.
-4. Wait for the terminal Session result.
-5. Confirm recording and provider finalization.
-6. Rediscover Sources or refresh credentials when the error requires it.
-7. Start a new Session only after the previous one has joined.
+3. For one microphone, choose explicitly between exact-device reopen,
+   replacement with a host-selected device, degraded operation, pause, or
+   stopping the Session.
+4. After replacement, require a fresh finite first-frame and signal window;
+   successful attachment alone is not media readiness.
+5. For an application Source or a complete-Session failure, request drain or
+   abort once and wait for the terminal result.
+6. Confirm recording and provider finalization.
+7. Rediscover Sources or refresh credentials when the error requires it.
+8. Start a new Session only after the previous one has joined.
 
 Continue with [troubleshooting](../troubleshooting.md) for failure-specific
 actions.

@@ -10,7 +10,9 @@ use std::{path::PathBuf, thread};
 
 use crate::capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend,
+    CaptureNativeFormat, CaptureObservationHandle, CaptureObservations,
+    CaptureSampleRepresentation, CapturedFrameDelivery, InputDeviceSelector,
+    PreparedCaptureBackend,
 };
 use crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use crate::graph::PrepareContext;
@@ -38,6 +40,8 @@ const SLOW_BRANCH_QUEUE_CAPACITY_FRAMES: usize = RECORDING_EDGE_CAPACITY_FRAMES 
 /// The independently configured half-capacity polled branch still saturates.
 pub const FRAMES_PER_SOURCE: u64 = RECORDING_EDGE_CAPACITY_FRAMES as u64;
 pub const OBSERVED_CONNECTOR_OPERATOR_ID: &str = "io.pocketstation.conformance.connector.v1";
+/// Stable selector for the managed-SDK HFP-shaped native-format vector.
+pub const HFP_MICROPHONE_DEVICE_ID: &str = "fixture-hfp-16khz-i16";
 
 #[derive(Clone, Copy)]
 enum FixtureSource {
@@ -86,6 +90,8 @@ struct DeterministicCaptureBackend {
 
 struct DeterministicPreparedCapture {
     source: FixtureSource,
+    source_id: SourceId,
+    native_format: CaptureNativeFormat,
     timestamp_origin_ns: Arc<OnceLock<u64>>,
     frames_per_source: u64,
 }
@@ -94,20 +100,69 @@ struct DeterministicActiveCapture {
     stop_requested: Arc<AtomicBool>,
     worker: Option<std::thread::JoinHandle<()>>,
     source_id: SourceId,
+    native_format: CaptureNativeFormat,
 }
 
 impl CallbackCaptureBackend for DeterministicCaptureBackend {
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
-        let source = match mode {
-            CaptureMode::InputDevice(_) => FixtureSource::Microphone,
-            CaptureMode::SystemMix => FixtureSource::SystemAudio,
+        let (source, source_id, native_format) = match mode {
+            CaptureMode::InputDevice(InputDeviceSelector::StableId(device_id))
+                if device_id == HFP_MICROPHONE_DEVICE_ID =>
+            {
+                (
+                    FixtureSource::Microphone,
+                    SourceId(204),
+                    CaptureNativeFormat {
+                        sample_rate_hz: 16_000,
+                        channel_count: 1,
+                        sample_representation: CaptureSampleRepresentation::SignedInteger16,
+                    },
+                )
+            }
+            CaptureMode::InputDevice(InputDeviceSelector::StableId(_)) => (
+                FixtureSource::Microphone,
+                SourceId(203),
+                CaptureNativeFormat {
+                    sample_rate_hz: 48_000,
+                    channel_count: 1,
+                    sample_representation: CaptureSampleRepresentation::Float32,
+                },
+            ),
+            CaptureMode::InputDevice(InputDeviceSelector::Default) => (
+                FixtureSource::Microphone,
+                FixtureSource::Microphone.source_id(),
+                CaptureNativeFormat {
+                    sample_rate_hz: 48_000,
+                    channel_count: 1,
+                    sample_representation: CaptureSampleRepresentation::Float32,
+                },
+            ),
+            CaptureMode::SystemMix => (
+                FixtureSource::SystemAudio,
+                FixtureSource::SystemAudio.source_id(),
+                CaptureNativeFormat {
+                    sample_rate_hz: 48_000,
+                    channel_count: 2,
+                    sample_representation: CaptureSampleRepresentation::Float32,
+                },
+            ),
             CaptureMode::Application(_)
             | CaptureMode::Process(_)
             | CaptureMode::ExactApplication { .. }
-            | CaptureMode::ExactApplicationStable { .. } => FixtureSource::Application,
+            | CaptureMode::ExactApplicationStable { .. } => (
+                FixtureSource::Application,
+                FixtureSource::Application.source_id(),
+                CaptureNativeFormat {
+                    sample_rate_hz: 48_000,
+                    channel_count: 2,
+                    sample_representation: CaptureSampleRepresentation::Float32,
+                },
+            ),
         };
         Ok(Box::new(DeterministicPreparedCapture {
             source,
+            source_id,
+            native_format,
             timestamp_origin_ns: Arc::clone(&self.timestamp_origin_ns),
             frames_per_source: self.frames_per_source,
         }))
@@ -122,6 +177,8 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
         let stop_requested = Arc::new(AtomicBool::new(false));
         let worker_stop_requested = Arc::clone(&stop_requested);
         let source = self.source;
+        let source_id = self.source_id;
+        let native_format = self.native_format;
         let frames_per_source = self.frames_per_source;
         let timestamp_origin_ns = *self
             .timestamp_origin_ns
@@ -139,7 +196,7 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
                 buffer.as_mut_slice().fill(source.amplitude());
                 let frame = AudioFrame::new(
                     source.stream_id(),
-                    source.source_id(),
+                    source_id,
                     sequence,
                     timestamp_origin_ns + sequence.saturating_mul(FRAME_DURATION_NS),
                     source.channels(),
@@ -160,7 +217,8 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
         Ok(Box::new(DeterministicActiveCapture {
             stop_requested,
             worker: Some(worker),
-            source_id: source.source_id(),
+            source_id,
+            native_format,
         }))
     }
 }
@@ -168,6 +226,10 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
 impl ActiveCaptureBackend for DeterministicActiveCapture {
     fn source_id(&self) -> SourceId {
         self.source_id
+    }
+
+    fn native_format(&self) -> Option<CaptureNativeFormat> {
+        Some(self.native_format)
     }
 
     fn observation_handle(&self) -> CaptureObservationHandle {

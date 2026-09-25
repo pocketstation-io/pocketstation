@@ -713,6 +713,11 @@ fn given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_obse
 fn given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker() {
     let (session, _registered, _endpoint, control) = routed_fault_session("normal");
     let mut running = session.start().expect("running Session");
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while control.run_calls_total.load(Ordering::Relaxed) == 0 {
+        assert!(Instant::now() < deadline, "connector worker must start");
+        std::thread::sleep(Duration::from_millis(2));
+    }
     assert!(running.cancel().is_success());
     assert_eq!(control.completed_runs_total.load(Ordering::Relaxed), 1);
     assert_eq!(control.shutdown_mode.load(Ordering::Acquire), 2);

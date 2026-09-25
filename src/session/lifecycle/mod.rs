@@ -13,8 +13,9 @@ mod telemetry;
 mod trace;
 
 pub use control::{
-    CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure,
-    SessionStartOptions, SessionStopOutcome,
+    CaptureBackendSet, SessionSourceReplacement, SessionSourceReplacementError,
+    SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions,
+    SessionStopOutcome,
 };
 pub use engine::{
     EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError,
@@ -36,7 +37,12 @@ pub use observations::{
     SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRouteDropObservations, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
     SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics,
+    SessionSourceActivityEvaluation, SessionSourceActivityObservations,
+    SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation,
+    SessionSourceReplacementObservations, SessionSourceSignalEvaluation,
+    SessionSourceSignalObservations, SessionSourceSignalPolicy, SessionSourceSignalPolicyError,
+    SessionSourceSignalState,
 };
 pub(crate) use running::start_prepared_session_cancellable_with_trace;
 pub use running::RunningSession;

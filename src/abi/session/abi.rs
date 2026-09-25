@@ -271,6 +271,26 @@ pub struct PksSessionSourceMetrics {
     pub ingress_frames_discarded_total: u64,
 }
 
+/// Raw built-in Source delivery activity in the process-monotonic nanosecond
+/// domain.
+///
+/// `first_frame_received_at_ns` and `latest_frame_received_at_ns` are zero
+/// until `frames_received_total` becomes non-zero. The caller owns any
+/// first-frame or stall deadline and any recovery decision.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct PksSessionSourceActivity {
+    pub struct_size_bytes: u32,
+    pub abi_major: u16,
+    pub abi_minor: u16,
+    pub stem_id: u64,
+    pub session_started_at_ns: u64,
+    pub observed_at_ns: u64,
+    pub first_frame_received_at_ns: u64,
+    pub latest_frame_received_at_ns: u64,
+    pub frames_received_total: u64,
+}
+
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct PksSessionRouteMetrics {

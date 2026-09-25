@@ -63,6 +63,8 @@ A start error includes a stable code. Compile errors may also include a
 | Poll source-aware audio | `try_poll_audio` or `wait_audio` |
 | Receive lifecycle events | `try_recv_event` |
 | Read route and component metrics | `metrics_snapshot` |
+| Inspect native format, activity, signal, and replacement | `metrics_snapshot` Source observations |
+| Reopen or replace one microphone explicitly | `reopen_microphone_source` or `replace_microphone_source` |
 | Read Operator metrics | `operator_metrics` |
 | Read external Source metrics | `external_source_metrics` |
 | Read sidecar metrics | `sidecar_metrics` |
@@ -84,7 +86,7 @@ recordings or remote publication as complete.
 ## Recover a disappeared source
 
 PocketStation does not silently switch to another application or microphone.
-When a Source disappears:
+When an application Source disappears:
 
 1. record the source event and discontinuity;
 2. stop the current Session;
@@ -94,6 +96,19 @@ When a Source disappears:
 
 The Source reports how long its selector may be reused. A process-lifetime
 selector must be rediscovered after that process exits.
+
+For one microphone, the host may instead keep the Session and unrelated stems
+running. `replace_microphone_source` safely opens the selected replacement
+before detaching the current microphone. `reopen_microphone_source` tears down
+the current microphone first when the same native route must be reset. Both
+operations preserve the logical stem and routes while advancing physical
+source generation and discontinuity.
+
+Core does not infer the need for recovery. Use activity to establish frame
+delivery, signal observations for caller-owned numeric thresholds, and the
+opened native format for acquisition diagnostics. After an operation succeeds,
+wait again for a first frame and useful signal according to the host's finite
+policy.
 
 ## Continue developing
 

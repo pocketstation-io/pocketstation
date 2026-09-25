@@ -1,25 +1,61 @@
 //! Physical input-device capture through CoreAudio via CPAL.
 
-use std::num::NonZeroU32;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
 use crate::capture::frame_normalizer::CaptureFrameNormalizer;
+use crate::capture::platform::macos::input_format::{
+    decode_interleaved_to_mono, maximum_resampled_frames, select_input_config,
+    StreamingLinearResampler, CANONICAL_INPUT_CHANNEL_COUNT, CANONICAL_INPUT_SAMPLE_RATE_HZ,
+};
 use crate::capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
-    CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleTimeline, CaptureSource,
-    InputDeviceSelector, PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
+    CaptureNativeFormat, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSource, InputDeviceSelector,
+    PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
     SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 use crate::frame::{AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, StreamId};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
+use cpal::{ErrorKind, SupportedBufferSize};
+use rtrb::PushError;
 
 const QUEUE_CAPACITY_FRAMES: usize = 8;
 const POOL_CAPACITY_FRAMES: usize = QUEUE_CAPACITY_FRAMES + 2;
 const FALLBACK_MAX_CALLBACK_DURATION_MS: u32 = 200;
+const CPAL_ERROR_CLASS_CAPACITY: usize = 32;
+
+fn cpal_error_class(kind: ErrorKind) -> &'static str {
+    match kind {
+        ErrorKind::DeviceBusy => "cpal-device-busy",
+        ErrorKind::DeviceChanged => "cpal-device-changed",
+        ErrorKind::DeviceNotAvailable => "cpal-device-not-available",
+        ErrorKind::HostUnavailable => "cpal-host-unavailable",
+        ErrorKind::InvalidInput => "cpal-invalid-input",
+        ErrorKind::PermissionDenied => "cpal-permission-denied",
+        ErrorKind::RealtimeDenied => "cpal-realtime-denied",
+        ErrorKind::ResourceExhausted => "cpal-resource-exhausted",
+        ErrorKind::StreamInvalidated => "cpal-stream-invalidated",
+        ErrorKind::UnsupportedConfig => "cpal-unsupported-config",
+        ErrorKind::UnsupportedOperation => "cpal-unsupported-operation",
+        ErrorKind::Xrun => "cpal-xrun",
+        ErrorKind::BackendError => "cpal-backend-error",
+        ErrorKind::Other => "cpal-other",
+        _ => "cpal-unrecognized-error",
+    }
+}
+
+fn cpal_stream_continues(kind: ErrorKind) -> bool {
+    matches!(
+        kind,
+        ErrorKind::DeviceChanged | ErrorKind::RealtimeDenied | ErrorKind::Xrun
+    )
+}
+
+fn cpal_stream_has_discontinuity(kind: ErrorKind) -> bool {
+    matches!(kind, ErrorKind::DeviceChanged | ErrorKind::Xrun)
+}
 
 fn require_microphone_permission(permission: PermissionObservation) -> Result<(), CaptureError> {
     match permission {
@@ -38,6 +74,28 @@ fn require_microphone_permission(permission: PermissionObservation) -> Result<()
 struct InputCaptureTimestamp {
     timestamp_ns: u64,
     epoch_clamped: bool,
+}
+
+struct NativeInputPacket {
+    storage: Box<[u8]>,
+    length_bytes: usize,
+    timestamp_ns: u64,
+    starts_after_discontinuity: bool,
+}
+
+impl NativeInputPacket {
+    fn new(capacity_bytes: usize) -> Self {
+        Self {
+            storage: vec![0; capacity_bytes].into_boxed_slice(),
+            length_bytes: 0,
+            timestamp_ns: 1,
+            starts_after_discontinuity: false,
+        }
+    }
+
+    fn bytes(&self) -> &[u8] {
+        &self.storage[..self.length_bytes]
+    }
 }
 
 fn input_capture_timestamp(
@@ -68,6 +126,7 @@ pub struct MacosInputSource {
     running: Arc<AtomicBool>,
     counters: CaptureObservationCounters,
     source_id: crate::frame::SourceId,
+    native_format: CaptureNativeFormat,
 }
 
 impl MacosInputSource {
@@ -87,31 +146,33 @@ impl MacosInputSource {
             .id()
             .map_err(|error| capture_backend_error("read input device id", error))?;
         let stable_device_id = device_id.to_string();
-        let supported_config = select_f32_input_config(&device)?;
-        let sample_rate_hz = supported_config.sample_rate();
-        let sample_rate = NonZeroU32::new(sample_rate_hz).ok_or_else(|| {
-            CaptureError::BackendInit("input device sample rate is zero".to_owned())
+        let selected_format = select_input_config(
+            device
+                .supported_input_configs()
+                .map_err(|error| capture_backend_error("query input formats", error))?,
+        )
+        .ok_or_else(|| {
+            CaptureError::BackendInit(
+                "input device exposes no supported PCM input format".to_owned(),
+            )
         })?;
-        let channels = u8::try_from(supported_config.channels())
+        let native_format = selected_format.native;
+        let native_sample_rate_hz = native_format.sample_rate_hz;
+        let native_channels = u8::try_from(native_format.channel_count)
             .ok()
             .filter(|channels| *channels > 0)
             .ok_or_else(|| {
                 CaptureError::BackendInit("input device channel count is invalid".to_owned())
             })?;
-        let target_callback_frames =
-            u32::try_from(audio_frame_duration.samples_per_channel(sample_rate_hz))
+        let target_frame_samples =
+            u32::try_from(audio_frame_duration.samples_per_channel(CANONICAL_INPUT_SAMPLE_RATE_HZ))
                 .unwrap_or(u32::MAX)
                 .max(1);
         let fallback_max_callback_frames =
-            (sample_rate_hz / (1_000 / FALLBACK_MAX_CALLBACK_DURATION_MS)).max(1);
-        let mut stream_config = supported_config.config();
-        let maximum_callback_frames = match supported_config.buffer_size() {
-            SupportedBufferSize::Range { min, max }
-                if target_callback_frames >= *min && target_callback_frames <= *max =>
-            {
-                stream_config.buffer_size = BufferSize::Fixed(target_callback_frames);
-                fallback_max_callback_frames.max(*min).min(*max)
-            }
+            (native_sample_rate_hz / (1_000 / FALLBACK_MAX_CALLBACK_DURATION_MS)).max(1);
+        let stream_config = selected_format.config.config();
+        let native_sample_format = selected_format.config.sample_format();
+        let maximum_callback_frames = match selected_format.config.buffer_size() {
             SupportedBufferSize::Range { min, max } => {
                 fallback_max_callback_frames.max(*min).min(*max)
             }
@@ -119,88 +180,114 @@ impl MacosInputSource {
         };
         let maximum_callback_samples = usize::try_from(maximum_callback_frames)
             .ok()
-            .and_then(|frames| frames.checked_mul(usize::from(channels)))
+            .and_then(|frames| frames.checked_mul(usize::from(native_channels)))
             .ok_or_else(|| CaptureError::BackendInit("input pool size overflow".to_owned()))?;
-        let mut frame_normalizer = CaptureFrameNormalizer::new(
-            usize::try_from(target_callback_frames).unwrap_or(usize::MAX),
-            channels,
-            sample_rate_hz,
+        let maximum_callback_bytes = maximum_callback_samples
+            .checked_mul(selected_format.sample_size_bytes)
+            .ok_or_else(|| CaptureError::BackendInit("input packet size overflow".to_owned()))?;
+        let maximum_native_frames = maximum_callback_samples / usize::from(native_channels);
+        let maximum_canonical_frames =
+            maximum_resampled_frames(maximum_native_frames, native_sample_rate_hz).ok_or_else(
+                || CaptureError::BackendInit("input resampling pool size overflow".to_owned()),
+            )?;
+        let frame_normalizer = CaptureFrameNormalizer::new(
+            usize::try_from(target_frame_samples).unwrap_or(usize::MAX),
+            CANONICAL_INPUT_CHANNEL_COUNT,
+            CANONICAL_INPUT_SAMPLE_RATE_HZ,
         );
-        let pool =
+        let frame_pool =
             AudioBufferPool::new(POOL_CAPACITY_FRAMES, frame_normalizer.frame_sample_count());
-        let (mut producer, mut consumer) = rtrb::RingBuffer::new(QUEUE_CAPACITY_FRAMES);
+        let (mut packet_producer, packet_consumer) = rtrb::RingBuffer::new(QUEUE_CAPACITY_FRAMES);
+        let (mut free_packet_producer, mut free_packet_consumer) =
+            rtrb::RingBuffer::new(POOL_CAPACITY_FRAMES);
+        for _ in 0..POOL_CAPACITY_FRAMES {
+            free_packet_producer
+                .push(NativeInputPacket::new(maximum_callback_bytes))
+                .map_err(|_| {
+                    CaptureError::BackendInit("input packet pool initialization failed".to_owned())
+                })?;
+        }
         let running = Arc::new(AtomicBool::new(true));
         let counters = CaptureObservationCounters::default();
         initialize_monotonic_timestamp_domain();
         let stable_id =
             StableSourceId::new(Platform::Macos, SourceKind::InputDevice, stable_device_id);
         let source_id = stable_id.source_id();
-        let callback_pool = Arc::clone(&pool);
         let callback_counters = counters.clone();
-        let mut sequence_number = 0u64;
-        let mut sample_timeline = None;
-        let data_callback = move |data: &[f32], callback_info: &cpal::InputCallbackInfo| {
+        let callback_discontinuity_pending = Arc::new(AtomicBool::new(false));
+        let error_discontinuity_pending = Arc::clone(&callback_discontinuity_pending);
+        let mut pending_packet = None;
+        let data_callback = move |data: &cpal::Data, callback_info: &cpal::InputCallbackInfo| {
             callback_counters.observe_callback_buffer();
-            if data.len() > maximum_callback_samples {
+            if let Some(packet) = pending_packet.take() {
+                if let Err(PushError::Full(packet)) = packet_producer.push(packet) {
+                    pending_packet = Some(packet);
+                    callback_counters.observe_dispatch_queue_full();
+                    callback_discontinuity_pending.store(true, Ordering::Release);
+                    return;
+                }
+            }
+            let bytes = data.bytes();
+            if data.sample_format() != native_sample_format
+                || data.len() > maximum_callback_samples
+                || bytes.len() > maximum_callback_bytes
+            {
                 callback_counters.observe_oversized_buffer();
+                callback_discontinuity_pending.store(true, Ordering::Release);
                 return;
             }
-            let samples_per_channel = data.len() / usize::from(channels);
-            let timeline = sample_timeline.get_or_insert_with(|| {
-                let timestamp = input_capture_timestamp(monotonic_timestamp_ns(), callback_info);
-                if timestamp.epoch_clamped {
-                    callback_counters.observe_timestamp_epoch_clamp();
-                }
-                CaptureSampleTimeline::anchored(sample_rate, timestamp.timestamp_ns)
-            });
-            let timestamp_ns =
-                timeline.advance(u64::try_from(samples_per_channel).unwrap_or(u64::MAX));
-            let normalized = frame_normalizer.push(data, timestamp_ns, |timestamp_ns, samples| {
-                let frame_sequence_number = sequence_number;
-                sequence_number = sequence_number.saturating_add(1);
-                let Some(mut handle) = callback_pool.acquire() else {
-                    callback_counters.observe_pool_exhaustion();
-                    return;
-                };
-                if handle.try_copy_from_slice(samples).is_err() {
-                    callback_counters.observe_oversized_buffer();
-                    return;
-                }
-                let mut frame = AudioFrame::new(
-                    StreamId(source_id.0),
-                    source_id,
-                    frame_sequence_number,
-                    timestamp_ns,
-                    channels,
-                    handle,
-                );
-                frame.sample_rate_hz = sample_rate_hz;
-                if producer.push(frame).is_err() {
-                    callback_counters.observe_dispatch_queue_full();
-                    return;
-                }
-                callback_counters.observe_enqueued_frame();
-            });
-            if !normalized {
-                callback_counters.observe_invalid_buffer();
+            let Ok(mut packet) = free_packet_consumer.pop() else {
+                callback_counters.observe_pool_exhaustion();
+                callback_discontinuity_pending.store(true, Ordering::Release);
+                return;
+            };
+            packet.storage[..bytes.len()].copy_from_slice(bytes);
+            packet.length_bytes = bytes.len();
+            let timestamp = input_capture_timestamp(monotonic_timestamp_ns(), callback_info);
+            if timestamp.epoch_clamped {
+                callback_counters.observe_timestamp_epoch_clamp();
+            }
+            packet.timestamp_ns = timestamp.timestamp_ns;
+            packet.starts_after_discontinuity =
+                callback_discontinuity_pending.swap(false, Ordering::AcqRel);
+            if let Err(PushError::Full(packet)) = packet_producer.push(packet) {
+                pending_packet = Some(packet);
+                callback_counters.observe_dispatch_queue_full();
+                callback_discontinuity_pending.store(true, Ordering::Release);
             }
         };
         let error_counters = counters.clone();
-        let mut runtime_failure_event =
-            runtime_event_sender
-                .as_ref()
-                .map(|_| SourceRuntimeEvent::BackendFailure {
-                    stable_id,
-                    generation: SourceGeneration::INITIAL,
-                    failure: CaptureRuntimeFailure {
-                        operation: "macOS input stream callback",
-                        error_class: CaptureRuntimeFailureClass::BackendClass {
-                            class: "cpal-stream-error".to_owned(),
-                        },
-                    },
-                });
-        let error_callback = move |_error: cpal::Error| {
+        let mut runtime_failure_event = runtime_event_sender.as_ref().map(|_| {
+            let mut class = String::with_capacity(CPAL_ERROR_CLASS_CAPACITY);
+            class.push_str("cpal-unrecognized-error");
+            SourceRuntimeEvent::BackendFailure {
+                stable_id,
+                generation: SourceGeneration::INITIAL,
+                failure: CaptureRuntimeFailure {
+                    operation: "macOS input stream callback",
+                    error_class: CaptureRuntimeFailureClass::BackendClass { class },
+                },
+            }
+        });
+        let error_callback = move |error: cpal::Error| {
             error_counters.observe_stream_error();
+            let error_kind = error.kind();
+            if cpal_stream_has_discontinuity(error_kind) {
+                error_discontinuity_pending.store(true, Ordering::Release);
+            }
+            if cpal_stream_continues(error_kind) {
+                return;
+            }
+            if let Some(SourceRuntimeEvent::BackendFailure { failure, .. }) =
+                runtime_failure_event.as_mut()
+            {
+                let CaptureRuntimeFailureClass::BackendClass { class } = &mut failure.error_class
+                else {
+                    return;
+                };
+                class.clear();
+                class.push_str(cpal_error_class(error_kind));
+            }
             if let (Some(sender), Some(event)) =
                 (runtime_event_sender.as_ref(), runtime_failure_event.take())
             {
@@ -208,21 +295,106 @@ impl MacosInputSource {
             }
         };
         let stream = device
-            .build_input_stream(stream_config, data_callback, error_callback, None)
+            .build_input_stream_raw(
+                stream_config,
+                native_sample_format,
+                data_callback,
+                error_callback,
+                None,
+            )
             .map_err(|error| capture_backend_error("build input stream", error))?;
 
         let reader_running = Arc::clone(&running);
+        let reader_counters = counters.clone();
         let reader_thread = std::thread::Builder::new()
             .name("pks-input-reader".to_owned())
             .spawn(move || {
+                let mut packet_consumer = packet_consumer;
+                let mut frame_normalizer = frame_normalizer;
+                let mut rate_converter = StreamingLinearResampler::new(
+                    native_sample_rate_hz,
+                    CANONICAL_INPUT_SAMPLE_RATE_HZ,
+                );
+                let mut native_mono = vec![0.0; maximum_native_frames].into_boxed_slice();
+                let mut canonical_mono = vec![0.0; maximum_canonical_frames].into_boxed_slice();
+                let mut sequence_number = 0u64;
+                let mut conversion_discontinuity_pending = false;
+                let mut process_packet = |packet: &NativeInputPacket| {
+                    if packet.starts_after_discontinuity || conversion_discontinuity_pending {
+                        frame_normalizer.reset();
+                        rate_converter.reset();
+                        sequence_number = sequence_number.saturating_add(1);
+                        conversion_discontinuity_pending = false;
+                    }
+                    let native_frame_count = match decode_interleaved_to_mono(
+                        packet.bytes(),
+                        native_format,
+                        &mut native_mono,
+                    ) {
+                        Ok(frame_count) => frame_count,
+                        Err(_) => {
+                            reader_counters.observe_invalid_buffer();
+                            conversion_discontinuity_pending = true;
+                            return;
+                        }
+                    };
+                    let canonical_frame_count = match rate_converter
+                        .process(&native_mono[..native_frame_count], &mut canonical_mono)
+                    {
+                        Ok(frame_count) => frame_count,
+                        Err(_) => {
+                            reader_counters.observe_invalid_buffer();
+                            conversion_discontinuity_pending = true;
+                            return;
+                        }
+                    };
+                    let normalized = frame_normalizer.push(
+                        &canonical_mono[..canonical_frame_count],
+                        packet.timestamp_ns,
+                        |timestamp_ns, samples| {
+                            let frame_sequence_number = sequence_number;
+                            sequence_number = sequence_number.saturating_add(1);
+                            let Some(mut handle) = frame_pool.acquire() else {
+                                reader_counters.observe_pool_exhaustion();
+                                return;
+                            };
+                            if handle.try_copy_from_slice(samples).is_err() {
+                                reader_counters.observe_oversized_buffer();
+                                return;
+                            }
+                            let frame = AudioFrame::new(
+                                StreamId(source_id.0),
+                                source_id,
+                                frame_sequence_number,
+                                timestamp_ns,
+                                CANONICAL_INPUT_CHANNEL_COUNT,
+                                handle,
+                            );
+                            callback(frame);
+                            reader_counters.observe_enqueued_frame();
+                        },
+                    );
+                    if !normalized {
+                        reader_counters.observe_invalid_buffer();
+                        conversion_discontinuity_pending = true;
+                    }
+                };
                 while reader_running.load(Ordering::Acquire) {
-                    match consumer.pop() {
-                        Ok(frame) => callback(frame),
+                    match packet_consumer.pop() {
+                        Ok(packet) => {
+                            process_packet(&packet);
+                            if let Err(PushError::Full(_)) = free_packet_producer.push(packet) {
+                                reader_counters.observe_invalid_buffer();
+                            }
+                        }
                         Err(_) => std::thread::sleep(Duration::from_millis(1)),
                     }
                 }
-                while let Ok(frame) = consumer.pop() {
-                    callback(frame);
+                while let Ok(packet) = packet_consumer.pop() {
+                    process_packet(&packet);
+                    if let Err(PushError::Full(_)) = free_packet_producer.push(packet) {
+                        reader_counters.observe_invalid_buffer();
+                    }
                 }
             })
             .map_err(|error| CaptureError::BackendInit(format!("input reader thread: {error}")))?;
@@ -239,11 +411,16 @@ impl MacosInputSource {
             running,
             counters,
             source_id,
+            native_format,
         })
     }
 
     pub fn source_id(&self) -> crate::frame::SourceId {
         self.source_id
+    }
+
+    pub fn native_format(&self) -> CaptureNativeFormat {
+        self.native_format
     }
 
     pub fn observations(&self) -> CaptureObservations {
@@ -288,7 +465,7 @@ pub fn discover_input_sources_native() -> Vec<CaptureSource> {
         .filter_map(|device| {
             let id = device.id().ok()?.to_string();
             let description = device.description().ok()?;
-            let config = select_f32_input_config(&device).ok()?;
+            let config = select_input_config(device.supported_input_configs().ok()?)?;
             Some(CaptureSource {
                 stable_id: StableSourceId::new(
                     Platform::Macos,
@@ -300,8 +477,8 @@ pub fn discover_input_sources_native() -> Vec<CaptureSource> {
                 app_id: None,
                 device_uid: Some(id),
                 state: SourceState::Available,
-                sample_rate_hz: config.sample_rate(),
-                channels: config.channels(),
+                sample_rate_hz: config.native.sample_rate_hz,
+                channels: config.native.channel_count,
             })
         })
         .collect::<Vec<_>>();
@@ -336,33 +513,6 @@ fn select_input_device(
     }
 }
 
-fn select_f32_input_config(
-    device: &cpal::Device,
-) -> Result<cpal::SupportedStreamConfig, CaptureError> {
-    let configs = device
-        .supported_input_configs()
-        .map_err(|error| capture_backend_error("query input formats", error))?
-        .filter(|config| config.sample_format() == SampleFormat::F32)
-        .collect::<Vec<_>>();
-    configs
-        .iter()
-        .copied()
-        .filter_map(|config| config.try_with_sample_rate(48_000))
-        .max_by_key(|config| config.channels() == 1)
-        .or_else(|| {
-            configs
-                .iter()
-                .copied()
-                .filter_map(cpal::SupportedStreamConfigRange::try_with_standard_sample_rate)
-                .max_by_key(|config| config.channels() == 1)
-        })
-        .ok_or_else(|| {
-            CaptureError::BackendInit(
-                "input device exposes no supported f32 48 kHz or 44.1 kHz format".to_owned(),
-            )
-        })
-}
-
 fn capture_backend_error(context: &str, error: impl std::fmt::Display) -> CaptureError {
     CaptureError::BackendInit(format!("{context}: {error}"))
 }
@@ -371,6 +521,47 @@ fn capture_backend_error(context: &str, error: impl std::fmt::Display) -> Captur
 mod tests {
     use super::*;
     use cpal::{InputCallbackInfo, InputStreamTimestamp, StreamInstant};
+
+    #[test]
+    fn given_cpal_error_kinds_when_classified_then_names_fit_preallocated_storage() {
+        let cases = [
+            (ErrorKind::DeviceBusy, "cpal-device-busy"),
+            (ErrorKind::DeviceChanged, "cpal-device-changed"),
+            (ErrorKind::DeviceNotAvailable, "cpal-device-not-available"),
+            (ErrorKind::HostUnavailable, "cpal-host-unavailable"),
+            (ErrorKind::InvalidInput, "cpal-invalid-input"),
+            (ErrorKind::PermissionDenied, "cpal-permission-denied"),
+            (ErrorKind::RealtimeDenied, "cpal-realtime-denied"),
+            (ErrorKind::ResourceExhausted, "cpal-resource-exhausted"),
+            (ErrorKind::StreamInvalidated, "cpal-stream-invalidated"),
+            (ErrorKind::UnsupportedConfig, "cpal-unsupported-config"),
+            (
+                ErrorKind::UnsupportedOperation,
+                "cpal-unsupported-operation",
+            ),
+            (ErrorKind::Xrun, "cpal-xrun"),
+            (ErrorKind::BackendError, "cpal-backend-error"),
+            (ErrorKind::Other, "cpal-other"),
+        ];
+
+        for (kind, expected) in cases {
+            assert_eq!(cpal_error_class(kind), expected);
+            assert!(expected.len() <= CPAL_ERROR_CLASS_CAPACITY);
+        }
+        assert!("cpal-unrecognized-error".len() <= CPAL_ERROR_CLASS_CAPACITY);
+    }
+
+    #[test]
+    fn given_nonfatal_cpal_notifications_when_classified_then_stream_stays_active() {
+        assert!(cpal_stream_continues(ErrorKind::DeviceChanged));
+        assert!(cpal_stream_continues(ErrorKind::RealtimeDenied));
+        assert!(cpal_stream_continues(ErrorKind::Xrun));
+        assert!(cpal_stream_has_discontinuity(ErrorKind::DeviceChanged));
+        assert!(!cpal_stream_has_discontinuity(ErrorKind::RealtimeDenied));
+        assert!(cpal_stream_has_discontinuity(ErrorKind::Xrun));
+        assert!(!cpal_stream_continues(ErrorKind::DeviceNotAvailable));
+        assert!(!cpal_stream_continues(ErrorKind::StreamInvalidated));
+    }
 
     #[test]
     fn given_capture_before_callback_when_mapped_then_process_timestamp_preserves_delay() {

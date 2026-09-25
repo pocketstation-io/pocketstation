@@ -9,6 +9,8 @@ use crate::graph::{
 };
 use crate::runtime::SidecarProcessSpec;
 
+use super::observations::SessionSourceMetricSnapshots;
+
 #[cfg(all(
     target_os = "linux",
     any(feature = "pipewire-capture", feature = "alsa-fallback")
@@ -20,10 +22,12 @@ use crate::capture::platform::macos::DesktopCaptureBackend as NativeDesktopCaptu
 use crate::capture::platform::windows::DesktopCaptureBackend as NativeDesktopCaptureBackend;
 
 use crate::session::{
-    CaptureBackendSet, CompiledSession, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig,
-    PolledAudioEndpointConfigError, PolledAudioReceipt, RunningSession, Session, SessionEngine,
-    SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, SessionEventReceiver,
-    SessionMetricsSnapshot, SessionRecordingReceipt, SessionStartCancellation, SessionStartOptions,
+    CaptureBackendSet, CompiledSession, DeviceSelector, OperatorId, PolledAudioEndpoint,
+    PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, RunningSession,
+    Session, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError,
+    SessionEventReceiver, SessionMetricsSnapshot, SessionRecordingReceipt,
+    SessionSourceReplacement, SessionSourceReplacementError, SessionStartCancellation,
+    SessionStartOptions,
 };
 
 /// Owns the native Session resources projected to language adapters.
@@ -100,6 +104,44 @@ impl SessionEngineHost {
         )
     }
 
+    /// Explicitly replaces one microphone capture inside a running Session.
+    ///
+    /// Core does not select a fallback or retry automatically. The host
+    /// supplies the exact selector after applying its own product policy.
+    /// Existing routes and unaffected sources remain running; frames from the
+    /// replacement carry a new source generation and discontinuity epoch.
+    pub fn replace_microphone_source(
+        &self,
+        running_session: &mut RunningSession,
+        stem_id: crate::frame::StemId,
+        selector: DeviceSelector,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        running_session.replace_microphone_source(
+            stem_id,
+            selector,
+            self.microphone_backend.as_ref(),
+        )
+    }
+
+    /// Explicitly tears down and reacquires one host-selected microphone.
+    ///
+    /// Unlike [`Self::replace_microphone_source`], this closes the current
+    /// capture before opening the requested selector. Use it for native routes
+    /// that require teardown to reset. A failed reopen leaves that microphone
+    /// stem detached; every unrelated source and route remains running.
+    pub fn reopen_microphone_source(
+        &self,
+        running_session: &mut RunningSession,
+        stem_id: crate::frame::StemId,
+        selector: DeviceSelector,
+    ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
+        running_session.reopen_microphone_source(
+            stem_id,
+            selector,
+            self.microphone_backend.as_ref(),
+        )
+    }
+
     pub fn polled_audio_receipt(&self, index: usize) -> Option<PolledAudioReceipt> {
         self.polled_audio_receipts.get(index).cloned()
     }
@@ -147,10 +189,28 @@ impl SessionEngineHost {
                 },
                 RunningSession::indexed_metrics_full,
             );
+        let source_activity =
+            running_session.map_or_else(Box::default, RunningSession::source_activity_observations);
+        let source_signal =
+            running_session.map_or_else(Box::default, RunningSession::source_signal_observations);
+        let source_native_formats = running_session.map_or_else(
+            Box::default,
+            RunningSession::source_native_format_observations,
+        );
+        let source_replacements = running_session.map_or_else(
+            Box::default,
+            RunningSession::source_replacement_observations,
+        );
         Some(SessionMetricsSnapshot::new(
             events.observations(),
             polled_audio,
-            sources,
+            SessionSourceMetricSnapshots {
+                metrics: sources,
+                native_formats: source_native_formats,
+                replacements: source_replacements,
+                activity: source_activity,
+                signal: source_signal,
+            },
             external_sources,
             routes,
             operators,

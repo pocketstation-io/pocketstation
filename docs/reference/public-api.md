@@ -25,6 +25,8 @@ Source, Operator, Connector, or Endpoint.
 | Discover applications and devices | `discover_sources` |
 | Resolve a structured query | `resolve_query` and `SourceQuery` |
 | Inspect microphone permission without prompting | `microphone_permission_observation` |
+| Reopen an exact running microphone after teardown | `RunningSession::reopen_microphone_source` |
+| Replace a running microphone without first detaching it | `RunningSession::replace_microphone_source` |
 | Add application-owned PCM | `Session::audio_input` |
 | Add a package-owned Source | `Session::register_source` |
 
@@ -82,6 +84,10 @@ system brings data into the Session.
 | Configure the recording directory | `SessionBuilder::recording_root` |
 | Read the terminal recording result | `RunningSession::recording_outcome` |
 | Read one metrics snapshot | `RunningSession::metrics_snapshot` |
+| Inspect actual native capture format | `SessionMetricsSnapshot::source_native_format` |
+| Evaluate first-frame and stall activity | `source_activity` and `SessionSourceActivityPolicy` |
+| Evaluate delivered PCM signal | `source_signal` and `SessionSourceSignalPolicy` |
+| Inspect explicit microphone replacement | `SessionMetricsSnapshot::source_replacement` |
 | Receive lifecycle events | `RunningSession::try_recv_event` |
 | Record a Session trace with a fixed record capacity | `SessionBuilder::session_trace` |
 | Validate a trace | `SessionTraceValidation` |

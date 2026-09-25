@@ -44,10 +44,9 @@ pub use authorization::*;
     )
 ))]
 pub use capture_owner::join_capture_worker;
+pub(crate) use capture_owner::CaptureOpenMetadata;
 #[cfg(any(test, feature = "internal-testing"))]
-pub use capture_owner::{
-    prepare_capture, CaptureOpenMetadata, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
-};
+pub use capture_owner::{prepare_capture, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID};
 pub use capture_owner::{
     prepare_capture_with_start_gate, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery,
     CaptureLineageSeed, CaptureObservationReceipt, CaptureOwner, CaptureOwnerObservations,

@@ -1,13 +1,13 @@
-use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use crate::capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CapturedFrameDelivery,
-    PreparedCaptureBackend, SourceGeneration, SourceKind, SourceRecoveryRequirement,
-    SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
+    CaptureNativeFormat, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleRepresentation,
+    CapturedFrameDelivery, PreparedCaptureBackend, SourceGeneration, SourceKind,
+    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
 };
 use crate::endpoint::{EndpointAudioReceiver, EndpointSignalReceiver};
 use crate::endpoint::{
@@ -30,15 +30,17 @@ use crate::graph::{
     SignalPayload, SignalSpec, SignalTiming, TextFormat,
 };
 use crate::runtime::PlanEdgeFrame;
+use crate::{SessionSourceSignalPolicy, SessionSourceSignalState};
 
 use crate::session::{
     prepare_session_runtime, start_prepared_session, ApplicationSelector, CaptureBackendSet,
-    EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId,
-    Session, SessionCompiler, SessionEngineBuilder, SessionEngineStartError, SessionEventKind,
-    SessionEventReceive, SessionLifecycleState, SessionStartError, SessionStartOptions,
-    SessionTerminalState, Source, APPLICATION_SOURCE_NODE_TYPE_ID, BROWSER_NODE_TYPE_ID,
-    BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID,
-    RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
+    DeviceSelector, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration,
+    OperatorId, Session, SessionCompiler, SessionEngineBuilder, SessionEngineStartError,
+    SessionEventKind, SessionEventReceive, SessionLifecycleState, SessionSourceReplacementError,
+    SessionStartError, SessionStartOptions, SessionTerminalState, Source,
+    APPLICATION_SOURCE_NODE_TYPE_ID, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID,
+    CONNECTOR_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
+    RECORDER_OPERATOR_ID,
 };
 
 const TEST_CONNECTOR_OPERATOR_ID: &str = "example.connector.running-session.v1";
@@ -209,6 +211,8 @@ struct CaptureControl {
     prepare_calls_total: AtomicU64,
     open_calls_total: AtomicU64,
     startup_frames_count: AtomicU64,
+    post_start_frames_count: AtomicU64,
+    sample_value_bits: AtomicU32,
     live_prepared_total: AtomicUsize,
     live_active_total: AtomicUsize,
     stop_calls_total: AtomicU64,
@@ -271,6 +275,7 @@ impl PreparedCaptureBackend for TestPreparedCapture {
             .startup_frames_count
             .load(Ordering::Acquire)
             .max(1);
+        let sample_value = f32::from_bits(self.control.sample_value_bits.load(Ordering::Acquire));
         let CaptureDelivery {
             mut frame_sender,
             runtime_event_sender,
@@ -283,6 +288,7 @@ impl PreparedCaptureBackend for TestPreparedCapture {
             buffer
                 .try_set_len(960)
                 .expect("test frame fits the fixed-capacity buffer");
+            buffer.as_mut_slice().fill(sample_value);
             let frame = AudioFrame::new(
                 StreamId(self.source_id.0),
                 self.source_id,
@@ -311,32 +317,43 @@ impl PreparedCaptureBackend for TestPreparedCapture {
         let stop_requested = Arc::new(AtomicBool::new(false));
         let worker_stop_requested = Arc::clone(&stop_requested);
         let source_id = self.source_id;
+        let post_start_frames_count = self
+            .control
+            .post_start_frames_count
+            .load(Ordering::Acquire)
+            .max(1);
         let worker = std::thread::spawn(move || {
             let pool = AudioBufferPool::new(1, 960);
-            let sequence_num = startup_frames_count.saturating_add(1);
-            while !worker_stop_requested.load(Ordering::Acquire) {
-                let Some(mut buffer) = pool.acquire() else {
-                    std::thread::sleep(Duration::from_millis(1));
-                    continue;
-                };
-                buffer
-                    .try_set_len(960)
-                    .expect("test frame fits the fixed-capacity buffer");
-                let frame = AudioFrame::new(
-                    StreamId(source_id.0),
-                    source_id,
-                    sequence_num,
-                    sequence_num.saturating_mul(20_000_000),
-                    1,
-                    buffer,
-                );
-                match frame_sender.try_send(frame) {
-                    CapturedFrameDelivery::Delivered => break,
-                    CapturedFrameDelivery::DroppedNewest
-                    | CapturedFrameDelivery::DiscardedBeforeStart => {
+            for offset in 0..post_start_frames_count {
+                let sequence_num = startup_frames_count
+                    .saturating_add(offset)
+                    .saturating_add(1);
+                while !worker_stop_requested.load(Ordering::Acquire) {
+                    let Some(mut buffer) = pool.acquire() else {
                         std::thread::sleep(Duration::from_millis(1));
+                        continue;
+                    };
+                    buffer
+                        .try_set_len(960)
+                        .expect("test frame fits the fixed-capacity buffer");
+                    buffer.as_mut_slice().fill(sample_value);
+                    let frame = AudioFrame::new(
+                        StreamId(source_id.0),
+                        source_id,
+                        sequence_num,
+                        sequence_num.saturating_mul(20_000_000),
+                        1,
+                        buffer,
+                    );
+                    match frame_sender.try_send(frame) {
+                        CapturedFrameDelivery::Delivered => break,
+                        CapturedFrameDelivery::DroppedNewest
+                        | CapturedFrameDelivery::DiscardedBeforeStart => {
+                            std::thread::sleep(Duration::from_millis(1));
+                        }
                     }
                 }
+                std::thread::sleep(Duration::from_millis(2));
             }
         });
         self.control
@@ -364,6 +381,14 @@ impl Drop for TestPreparedCapture {
 impl ActiveCaptureBackend for TestActiveCapture {
     fn source_id(&self) -> SourceId {
         self.source_id
+    }
+
+    fn native_format(&self) -> Option<CaptureNativeFormat> {
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 16_000,
+            channel_count: 1,
+            sample_representation: CaptureSampleRepresentation::SignedInteger16,
+        })
     }
 
     fn observation_handle(&self) -> CaptureObservationHandle {
@@ -433,6 +458,7 @@ struct EndpointControl {
     fail_join_finalize: AtomicBool,
     consume_after_gate_delay_ms: AtomicU64,
     prepared_route_contexts: Mutex<Vec<PreparedRouteContextObservation>>,
+    delivered_lineage: Mutex<Vec<(StemId, SourceId, u32, u64)>>,
 }
 
 struct TestEndpointFactory {
@@ -670,6 +696,16 @@ fn observe_endpoint_frame(control: &EndpointControl, frame: PlanEdgeFrame) {
     let lineage = frame.lineage();
     let bit = 1u64.checked_shl(lineage.stem_id.0 as u32).unwrap_or(0);
     control.lineage_stem_mask.fetch_or(bit, Ordering::Relaxed);
+    control
+        .delivered_lineage
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .push((
+            lineage.stem_id,
+            lineage.source_id,
+            lineage.source_generation,
+            lineage.discontinuity_epoch,
+        ));
 }
 
 #[derive(Default)]
@@ -1415,6 +1451,9 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
     application
         .startup_frames_count
         .store(16, Ordering::Release);
+    application
+        .sample_value_bits
+        .store(0.25f32.to_bits(), Ordering::Release);
     let microphone = Arc::new(CaptureControl::default());
     microphone.startup_frames_count.store(16, Ordering::Release);
     let endpoints = Arc::new(EndpointControl::default());
@@ -1444,6 +1483,9 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
         "both post-start source frames must reach all three destinations"
     );
     let (sources, routes) = running.indexed_metrics();
+    let source_activity = running.source_activity_observations();
+    let source_signal = running.source_signal_observations();
+    let source_native_formats = running.source_native_format_observations();
     let outcome = running.stop();
 
     assert!(outcome.is_success());
@@ -1460,6 +1502,56 @@ fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows(
             && source.ingress.frames_rejected_cancelled_total == 0
             && source.ingress.frames_discarded_total == 0
     }));
+    assert_eq!(source_activity.len(), 2);
+    assert_eq!(source_signal.len(), 2);
+    assert_eq!(source_native_formats.len(), 2);
+    assert!(source_native_formats.iter().all(|format| {
+        format.opened_native_format
+            == Some(CaptureNativeFormat {
+                sample_rate_hz: 16_000,
+                channel_count: 1,
+                sample_representation: CaptureSampleRepresentation::SignedInteger16,
+            })
+    }));
+    assert!(source_activity.iter().all(|activity| {
+        activity.frames_received_total == 1
+            && activity.first_frame_received_at_ns.is_some()
+            && activity.first_frame_received_at_ns == activity.latest_frame_received_at_ns
+            && activity.session_started_at_ns
+                <= activity
+                    .first_frame_received_at_ns
+                    .expect("a received frame has a first-frame timestamp")
+            && activity
+                .latest_frame_received_at_ns
+                .expect("a received frame has a latest-frame timestamp")
+                <= activity.observed_at_ns
+    }));
+    let policy = SessionSourceSignalPolicy::new(-20.0, -20.0, Duration::from_millis(20))
+        .expect("finite caller thresholds");
+    let application_signal = source_signal[0];
+    assert_eq!(application_signal.window_samples_total, 960);
+    assert_eq!(application_signal.window_exact_zero_samples_total, 0);
+    assert_eq!(application_signal.window_nonzero_samples_total, 960);
+    assert_eq!(application_signal.window_nonfinite_samples_total, 0);
+    assert_eq!(application_signal.window_peak_linear(), Some(0.25));
+    assert_eq!(application_signal.window_rms_linear(), Some(0.25));
+    assert_eq!(
+        application_signal.evaluate(policy).state,
+        SessionSourceSignalState::MeetsCallerThresholds
+    );
+    let microphone_signal = source_signal[1];
+    assert_eq!(microphone_signal.window_samples_total, 960);
+    assert_eq!(microphone_signal.window_exact_zero_samples_total, 960);
+    assert_eq!(microphone_signal.window_nonzero_samples_total, 0);
+    assert_eq!(microphone_signal.window_nonfinite_samples_total, 0);
+    assert_eq!(
+        microphone_signal.consecutive_exact_zero_duration_ns,
+        20_000_000
+    );
+    assert_eq!(
+        microphone_signal.evaluate(policy).state,
+        SessionSourceSignalState::SustainedExactDigitalZero
+    );
     assert!(
         routes
             .iter()
@@ -1506,6 +1598,484 @@ fn given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_
     }
     assert_eq!(source_failures_total, 1);
     assert_no_live_owners(&application, &microphone, &endpoints);
+}
+
+#[test]
+fn given_digitally_silent_microphone_when_host_replaces_it_then_routes_and_healthy_source_continue()
+{
+    let nodes = node_registry();
+    let application = Arc::new(CaptureControl::default());
+    application
+        .post_start_frames_count
+        .store(100, Ordering::Release);
+    application
+        .sample_value_bits
+        .store(0.25f32.to_bits(), Ordering::Release);
+    let silent_microphone = Arc::new(CaptureControl::default());
+    let replacement_microphone = Arc::new(CaptureControl::default());
+    replacement_microphone
+        .sample_value_bits
+        .store(0.5f32.to_bits(), Ordering::Release);
+    let endpoints = Arc::new(EndpointControl::default());
+    let application_backend = capture_backend(&application, 11);
+    let silent_microphone_backend = capture_backend(&silent_microphone, 22);
+    let replacement_microphone_backend = capture_backend(&replacement_microphone, 33);
+    let registry = endpoint_registry(&endpoints);
+    let prepared = prepared_session(&nodes, &registry);
+    let (microphone_index, microphone_stem_id) = prepared
+        .spec()
+        .stems()
+        .iter()
+        .enumerate()
+        .find_map(|(index, stem)| {
+            matches!(stem.source(), Source::Microphone(_)).then_some((index, stem.id()))
+        })
+        .expect("product Session has one microphone stem");
+    let application_stem_id = prepared
+        .spec()
+        .stems()
+        .iter()
+        .find_map(|stem| matches!(stem.source(), Source::Application(_)).then_some(stem.id()))
+        .expect("product Session has one application stem");
+
+    let mut running = start_prepared_session(
+        prepared,
+        capture_backend_set(&application_backend, &silent_microphone_backend),
+        &registry,
+        SessionStartOptions::default(),
+    )
+    .expect("Session with a digitally silent microphone must start");
+    let delivery_deadline = Instant::now() + Duration::from_secs(1);
+    while endpoints.deliveries_total.load(Ordering::Acquire) < 6
+        && Instant::now() < delivery_deadline
+    {
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    let application_deliveries_before = endpoints
+        .delivered_lineage
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .iter()
+        .filter(|(_, source_id, _, _)| *source_id == SourceId(11))
+        .count();
+
+    let invalid_target = running
+        .replace_microphone_source(
+            application_stem_id,
+            DeviceSelector::Default,
+            &replacement_microphone_backend,
+        )
+        .expect_err("an application stem cannot be replaced by a microphone");
+    assert!(matches!(
+        invalid_target,
+        SessionSourceReplacementError::NotMicrophone { stem_id }
+            if stem_id == application_stem_id
+    ));
+    assert_eq!(
+        replacement_microphone
+            .prepare_calls_total
+            .load(Ordering::Acquire),
+        0,
+        "invalid replacement targets must fail before device acquisition"
+    );
+
+    let replacement = running
+        .replace_microphone_source(
+            microphone_stem_id,
+            DeviceSelector::Default,
+            &replacement_microphone_backend,
+        )
+        .expect("the host-requested microphone replacement must complete");
+    assert_eq!(replacement.previous_source_id, SourceId(22));
+    assert_eq!(replacement.source_id, SourceId(33));
+    assert_eq!(replacement.source_generation, 2);
+    assert_eq!(replacement.discontinuity_epoch, 1);
+    assert_eq!(
+        replacement.opened_native_format,
+        Some(CaptureNativeFormat {
+            sample_rate_hz: 16_000,
+            channel_count: 1,
+            sample_representation: CaptureSampleRepresentation::SignedInteger16,
+        })
+    );
+
+    let replacement_deadline = Instant::now() + Duration::from_secs(1);
+    loop {
+        let lineages = endpoints
+            .delivered_lineage
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let replacement_arrived = lineages
+            .iter()
+            .any(|(stem_id, source_id, generation, epoch)| {
+                *stem_id == microphone_stem_id
+                    && *source_id == SourceId(33)
+                    && *generation == 2
+                    && *epoch == 1
+            });
+        let application_continued = lineages
+            .iter()
+            .filter(|(_, source_id, _, _)| *source_id == SourceId(11))
+            .count()
+            > application_deliveries_before;
+        drop(lineages);
+        if replacement_arrived && application_continued {
+            break;
+        }
+        assert!(
+            Instant::now() < replacement_deadline,
+            "replacement microphone and healthy application must both keep delivering"
+        );
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    let source_signal = running.source_signal_observations();
+    let microphone_signal = source_signal
+        .get(microphone_index)
+        .expect("microphone signal observation remains present");
+    assert_eq!(microphone_signal.window_source_generation, 2);
+    assert_eq!(microphone_signal.window_discontinuity_epoch, 1);
+    assert_eq!(microphone_signal.window_peak_linear(), Some(0.5));
+    let replacement_observation = running
+        .source_replacement_observations()
+        .get(microphone_index)
+        .copied()
+        .expect("microphone replacement observations remain present");
+    assert_eq!(replacement_observation.attempts_total, 1);
+    assert_eq!(replacement_observation.completed_total, 1);
+    assert_eq!(replacement_observation.failed_before_attach_total, 0);
+    assert_eq!(replacement_observation.response_timeouts_total, 0);
+    assert_eq!(
+        replacement_observation.attached_source_id,
+        Some(SourceId(33))
+    );
+    assert_eq!(replacement_observation.source_generation, 2);
+    assert_eq!(replacement_observation.discontinuity_epoch, 1);
+    assert!(replacement_observation.latest_completed_at_ns.is_some());
+    let native_formats = running.source_native_format_observations();
+    assert_eq!(
+        native_formats
+            .iter()
+            .find(|format| format.stem_id == microphone_stem_id)
+            .and_then(|format| format.opened_native_format),
+        replacement.opened_native_format
+    );
+
+    let outcome = running.stop();
+    assert!(outcome.is_success());
+    assert_eq!(
+        silent_microphone.stop_calls_total.load(Ordering::Acquire),
+        1
+    );
+    assert_eq!(
+        replacement_microphone
+            .stop_calls_total
+            .load(Ordering::Acquire),
+        1
+    );
+    assert_no_live_owners(&application, &silent_microphone, &endpoints);
+    assert_eq!(
+        replacement_microphone
+            .live_prepared_total
+            .load(Ordering::Acquire),
+        0
+    );
+    assert_eq!(
+        replacement_microphone
+            .live_active_total
+            .load(Ordering::Acquire),
+        0
+    );
+}
+
+#[test]
+fn given_replacement_open_failure_when_host_requests_it_then_existing_microphone_stays_active() {
+    let nodes = node_registry();
+    let application = Arc::new(CaptureControl::default());
+    let microphone = Arc::new(CaptureControl::default());
+    microphone
+        .post_start_frames_count
+        .store(100, Ordering::Release);
+    let rejected_replacement = Arc::new(CaptureControl::default());
+    rejected_replacement
+        .fail_open
+        .store(true, Ordering::Release);
+    let endpoints = Arc::new(EndpointControl::default());
+    let application_backend = capture_backend(&application, 11);
+    let microphone_backend = capture_backend(&microphone, 22);
+    let rejected_replacement_backend = capture_backend(&rejected_replacement, 33);
+    let registry = endpoint_registry(&endpoints);
+    let prepared = prepared_session(&nodes, &registry);
+    let microphone_stem_id = prepared
+        .spec()
+        .stems()
+        .iter()
+        .find_map(|stem| matches!(stem.source(), Source::Microphone(_)).then_some(stem.id()))
+        .expect("product Session has one microphone stem");
+
+    let mut running = start_prepared_session(
+        prepared,
+        capture_backend_set(&application_backend, &microphone_backend),
+        &registry,
+        SessionStartOptions::default(),
+    )
+    .expect("Session must start");
+    let initial_deadline = Instant::now() + Duration::from_secs(1);
+    while endpoints
+        .delivered_lineage
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .iter()
+        .filter(|(_, source_id, _, _)| *source_id == SourceId(22))
+        .count()
+        < 3
+        && Instant::now() < initial_deadline
+    {
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    let microphone_deliveries_before = endpoints
+        .delivered_lineage
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .iter()
+        .filter(|(_, source_id, _, _)| *source_id == SourceId(22))
+        .count();
+    let error = running
+        .replace_microphone_source(
+            microphone_stem_id,
+            DeviceSelector::Default,
+            &rejected_replacement_backend,
+        )
+        .expect_err("replacement open must fail");
+    assert!(matches!(error, SessionSourceReplacementError::Open { .. }));
+    let replacement_observation = running
+        .source_replacement_observations()
+        .iter()
+        .find(|observation| observation.stem_id == microphone_stem_id)
+        .copied()
+        .expect("microphone replacement observation");
+    assert_eq!(replacement_observation.attempts_total, 1);
+    assert_eq!(replacement_observation.completed_total, 0);
+    assert_eq!(replacement_observation.failed_before_attach_total, 1);
+    assert_eq!(
+        replacement_observation.attached_source_id,
+        Some(SourceId(22))
+    );
+    assert_eq!(replacement_observation.source_generation, 1);
+    assert_eq!(replacement_observation.discontinuity_epoch, 0);
+
+    let continued_deadline = Instant::now() + Duration::from_secs(1);
+    loop {
+        let microphone_deliveries = endpoints
+            .delivered_lineage
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .iter()
+            .filter(|(_, source_id, generation, epoch)| {
+                *source_id == SourceId(22) && *generation == 1 && *epoch == 0
+            })
+            .count();
+        if microphone_deliveries > microphone_deliveries_before {
+            break;
+        }
+        assert!(
+            Instant::now() < continued_deadline,
+            "failed replacement must not stop the existing microphone"
+        );
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert!(running.stop().is_success());
+    assert_eq!(microphone.stop_calls_total.load(Ordering::Acquire), 1);
+    assert_eq!(
+        rejected_replacement
+            .live_prepared_total
+            .load(Ordering::Acquire),
+        0
+    );
+    assert_eq!(
+        rejected_replacement
+            .live_active_total
+            .load(Ordering::Acquire),
+        0
+    );
+    assert_no_live_owners(&application, &microphone, &endpoints);
+}
+
+#[test]
+fn given_exact_microphone_reopen_when_host_requests_it_then_old_capture_stops_before_reacquisition()
+{
+    let nodes = node_registry();
+    let application = Arc::new(CaptureControl::default());
+    application
+        .post_start_frames_count
+        .store(100, Ordering::Release);
+    application
+        .sample_value_bits
+        .store(0.25f32.to_bits(), Ordering::Release);
+    let initial_microphone = Arc::new(CaptureControl::default());
+    let reopened_microphone = Arc::new(CaptureControl::default());
+    reopened_microphone
+        .sample_value_bits
+        .store(0.5f32.to_bits(), Ordering::Release);
+    let endpoints = Arc::new(EndpointControl::default());
+    let application_backend = capture_backend(&application, 11);
+    let initial_microphone_backend = capture_backend(&initial_microphone, 22);
+    let reopened_microphone_backend = capture_backend(&reopened_microphone, 22);
+    let registry = endpoint_registry(&endpoints);
+    let prepared = prepared_session(&nodes, &registry);
+    let microphone_stem_id = prepared
+        .spec()
+        .stems()
+        .iter()
+        .find_map(|stem| matches!(stem.source(), Source::Microphone(_)).then_some(stem.id()))
+        .expect("product Session has one microphone stem");
+
+    let mut running = start_prepared_session(
+        prepared,
+        capture_backend_set(&application_backend, &initial_microphone_backend),
+        &registry,
+        SessionStartOptions::default(),
+    )
+    .expect("Session must start");
+    let application_deliveries_before = endpoints
+        .delivered_lineage
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .iter()
+        .filter(|(_, source_id, _, _)| *source_id == SourceId(11))
+        .count();
+    let replacement = running
+        .reopen_microphone_source(
+            microphone_stem_id,
+            DeviceSelector::Default,
+            &reopened_microphone_backend,
+        )
+        .expect("exact microphone reacquisition must complete");
+
+    assert_eq!(
+        initial_microphone.stop_calls_total.load(Ordering::Acquire),
+        1
+    );
+    assert_eq!(replacement.previous_source_id, SourceId(22));
+    assert_eq!(replacement.source_id, SourceId(22));
+    assert_eq!(replacement.source_generation, 2);
+    assert_eq!(replacement.discontinuity_epoch, 1);
+    let delivery_deadline = Instant::now() + Duration::from_secs(1);
+    loop {
+        let lineages = endpoints
+            .delivered_lineage
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let reopened_arrived =
+            lineages
+                .iter()
+                .any(|(stem_id, source_id, generation, discontinuity)| {
+                    *stem_id == microphone_stem_id
+                        && *source_id == SourceId(22)
+                        && *generation == 2
+                        && *discontinuity == 1
+                });
+        let application_continued = lineages
+            .iter()
+            .filter(|(_, source_id, _, _)| *source_id == SourceId(11))
+            .count()
+            > application_deliveries_before;
+        drop(lineages);
+        if reopened_arrived && application_continued {
+            break;
+        }
+        assert!(
+            Instant::now() < delivery_deadline,
+            "reacquired microphone and unaffected application must deliver"
+        );
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert!(running.stop().is_success());
+    assert_eq!(
+        reopened_microphone.stop_calls_total.load(Ordering::Acquire),
+        1
+    );
+    assert_no_live_owners(&application, &initial_microphone, &endpoints);
+    assert_eq!(
+        reopened_microphone
+            .live_active_total
+            .load(Ordering::Acquire),
+        0
+    );
+}
+
+#[test]
+fn given_exact_reopen_failure_when_old_capture_is_detached_then_state_is_explicit() {
+    let nodes = node_registry();
+    let application = Arc::new(CaptureControl::default());
+    application
+        .post_start_frames_count
+        .store(100, Ordering::Release);
+    let initial_microphone = Arc::new(CaptureControl::default());
+    let rejected_reopen = Arc::new(CaptureControl::default());
+    rejected_reopen.fail_open.store(true, Ordering::Release);
+    let endpoints = Arc::new(EndpointControl::default());
+    let application_backend = capture_backend(&application, 11);
+    let initial_microphone_backend = capture_backend(&initial_microphone, 22);
+    let rejected_reopen_backend = capture_backend(&rejected_reopen, 22);
+    let registry = endpoint_registry(&endpoints);
+    let prepared = prepared_session(&nodes, &registry);
+    let (microphone_index, microphone_stem_id) = prepared
+        .spec()
+        .stems()
+        .iter()
+        .enumerate()
+        .find_map(|(index, stem)| {
+            matches!(stem.source(), Source::Microphone(_)).then_some((index, stem.id()))
+        })
+        .expect("product Session has one microphone stem");
+
+    let mut running = start_prepared_session(
+        prepared,
+        capture_backend_set(&application_backend, &initial_microphone_backend),
+        &registry,
+        SessionStartOptions::default(),
+    )
+    .expect("Session must start");
+    let error = running
+        .reopen_microphone_source(
+            microphone_stem_id,
+            DeviceSelector::Default,
+            &rejected_reopen_backend,
+        )
+        .expect_err("native reopen must report its open failure");
+    assert!(matches!(
+        error,
+        SessionSourceReplacementError::Reopen { .. }
+    ));
+    assert_eq!(
+        initial_microphone.stop_calls_total.load(Ordering::Acquire),
+        1
+    );
+    let observation = running
+        .source_replacement_observations()
+        .get(microphone_index)
+        .copied()
+        .expect("microphone replacement observation");
+    assert_eq!(observation.attempts_total, 1);
+    assert_eq!(observation.completed_total, 0);
+    assert_eq!(observation.failed_before_attach_total, 1);
+    assert_eq!(observation.attached_source_id, None);
+    assert_eq!(observation.source_generation, 2);
+    assert_eq!(observation.discontinuity_epoch, 1);
+    assert_eq!(
+        running.source_native_format_observations()[microphone_index].opened_native_format,
+        None
+    );
+    assert!(
+        running.stop().is_success(),
+        "a surfaced host-requested reopen failure must not corrupt finalization"
+    );
+    assert_no_live_owners(&application, &initial_microphone, &endpoints);
+    assert_eq!(
+        rejected_reopen.live_prepared_total.load(Ordering::Acquire),
+        0
+    );
+    assert_eq!(rejected_reopen.live_active_total.load(Ordering::Acquire), 0);
 }
 
 mod composed_runtime {

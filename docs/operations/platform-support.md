@@ -69,10 +69,22 @@ persistence scope when the application needs to remember a selection.
 
 PocketStation does not silently switch applications or devices during a
 Session. Source disappearance and backend failure are typed Session events.
-When the event reports `ExplicitRediscoveryAndNewSession`, stop or cancel the
-current Session, discover again, let the user confirm any changed selection,
-and create a new Session. The next source generation and discontinuity remain
-visible instead of being presented as uninterrupted media.
+For an application Source, stop or cancel the current Session, discover again,
+let the user confirm any changed selection, and create a new Session.
+
+A running microphone has an additional explicit recovery operation. The host may
+call `reopen_microphone_source` to close and reacquire one exact device, or
+`replace_microphone_source` to open a host-selected device before detaching the
+current microphone. The logical stem and its routes remain declared, healthy
+application or system-audio stems continue, and the physical source generation
+and discontinuity advance. Core never chooses the selector or retries on its
+own.
+
+Inspect `source_activity`, `source_signal`, `source_native_format`, and
+`source_replacement` in the Session metrics before and after recovery. Opening
+and attaching a device is not proof that a first frame or useful signal
+arrived. Apply finite caller-owned windows, and avoid retrying blindly after a
+response timeout because the accepted operation may still complete.
 
 Choose fallback behavior in the application:
 
@@ -134,8 +146,9 @@ Before starting a Session:
 5. inspect Session events and route metrics after startup.
 
 After a source disappears, do not restart capture inside a callback or reuse a
-stale process ID. Stop capture, discover the application again, and create a
-new Session.
+stale process ID. Rediscover applications before starting a new Session. For a
+microphone, perform any explicit reopen or replacement only from application
+control code and preserve the resulting source generation and discontinuity.
 
 The 10 ms and 20 ms profiles describe PocketStation's normalized frame cadence.
 They do not promise end-to-end latency below that duration. Report capture,

@@ -5,8 +5,9 @@
 //! changes, HAL plugin installation, or Screen Recording permission.
 
 use std::ptr::NonNull;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
+use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
 
 use crate::capture::{
@@ -43,6 +44,7 @@ struct ApplicationCaptureSelection {
 
 extern "C" {
     fn pks_process_tap_available() -> i32;
+    fn pks_process_start_time_ns(process_id: i32) -> u64;
     fn pks_discover_sources(out: *mut RawSourceInfo, max_count: i32) -> i32;
     fn pks_create_process_tap(
         pids: *const i32,
@@ -50,7 +52,12 @@ extern "C" {
         out_status: *mut i32,
         out_stage: *mut u8,
     ) -> *mut std::ffi::c_void;
-    fn pks_tap_start(tap: *mut std::ffi::c_void, out_status: *mut i32, out_stage: *mut u8) -> i32;
+    fn pks_tap_start(
+        tap: *mut std::ffi::c_void,
+        frame_duration_ms: u16,
+        out_status: *mut i32,
+        out_stage: *mut u8,
+    ) -> i32;
     fn pks_destroy_process_tap(tap: *mut std::ffi::c_void);
     fn pks_tap_read_frames_timed(
         tap: *mut std::ffi::c_void,
@@ -62,6 +69,15 @@ extern "C" {
     ) -> u32;
     fn pks_tap_current_host_time_ns() -> u64;
     fn pks_tap_drop_count(tap: *const std::ffi::c_void) -> u64;
+    fn pks_tap_io_buffer_before_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_requested_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_applied_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_min_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_io_buffer_max_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_input_device_latency_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_input_safety_offset_frames(tap: *const std::ffi::c_void) -> u32;
+    fn pks_tap_input_safety_offset_settable(tap: *const std::ffi::c_void) -> u8;
+    fn pks_tap_input_stream_latency_frames(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_channels(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_level(tap: *const std::ffi::c_void) -> f32;
@@ -264,6 +280,19 @@ fn cstr_to_opt(buf: &[u8]) -> Option<String> {
 struct ProcessTap(NonNull<std::ffi::c_void>);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ProcessTapIoBuffer {
+    before_frames: u32,
+    requested_frames: u32,
+    applied_frames: u32,
+    minimum_frames: u32,
+    maximum_frames: u32,
+    input_device_latency_frames: u32,
+    input_safety_offset_frames: u32,
+    input_safety_offset_settable: bool,
+    input_stream_latency_frames: u32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct ProcessTapReadBatch {
     frame_count: u32,
     source_frame_position_frames: u64,
@@ -290,6 +319,15 @@ fn process_timestamp_ns(
     host_to_process: TimelineMapping,
 ) -> Option<u64> {
     host_to_process.normalize_timestamp_ns(source_host_timestamp_ns(batch, sample_rate_hz)?)
+}
+
+const fn process_tap_io_duration_ms(audio_frame_duration: crate::frame::AudioFrameDuration) -> u16 {
+    // Keep the native callback at no more than 10 ms. Twenty-millisecond
+    // product frames then comprise exactly two native batches instead of
+    // straddling the aggregate device's 512-frame default callback cadence.
+    match audio_frame_duration {
+        crate::frame::AudioFrameDuration::Ms10 | crate::frame::AudioFrameDuration::Ms20 => 10,
+    }
 }
 
 const CORE_AUDIO_PERMISSION_DENIED_STATUS: i32 = i32::from_be_bytes(*b"!hog");
@@ -407,21 +445,59 @@ fn capture_exact_application_open_audit(
         })
 }
 
-fn verify_exact_application_open_audit(
-    expected: &ExactApplicationOpenAudit,
-) -> Result<(), LoopbackError> {
-    let observed = exact_application_open_audit(
-        &discover_sources_native_with_audit(),
-        expected.process_id,
-        &expected.stable_id,
-    );
-    if observed.as_ref() == Some(expected) {
-        Ok(())
-    } else {
-        Err(LoopbackError::SourceUnavailable {
-            stable_key: expected.stable_id.stable_key.clone(),
+fn capture_application_open_audits(
+    selection: &ApplicationCaptureSelection,
+) -> Result<Vec<ExactApplicationOpenAudit>, LoopbackError> {
+    let sources = discover_sources_native_with_audit();
+    selection
+        .process_ids
+        .iter()
+        .map(|process_id| {
+            u32::try_from(*process_id)
+                .ok()
+                .and_then(|process_id| {
+                    exact_application_open_audit(&sources, process_id, &selection.stable_id)
+                })
+                .ok_or_else(|| LoopbackError::SourceUnavailable {
+                    stable_key: selection.stable_id.stable_key.clone(),
+                })
         })
+        .collect()
+}
+
+fn selected_application_is_running_with(
+    audits: &[ExactApplicationOpenAudit],
+    mut process_start_time: impl FnMut(u32) -> u64,
+) -> bool {
+    audits.is_empty()
+        || audits
+            .iter()
+            .any(|audit| process_start_time(audit.process_id) == audit.process_start_time_ns)
+}
+
+fn selected_application_is_running(audits: &[ExactApplicationOpenAudit]) -> bool {
+    selected_application_is_running_with(audits, |process_id| {
+        let Ok(process_id) = i32::try_from(process_id) else {
+            return 0;
+        };
+        // SAFETY: this control-thread query borrows no memory and returns zero
+        // when the selected process instance no longer exists.
+        unsafe { pks_process_start_time_ns(process_id) }
+    })
+}
+
+fn verify_application_open_audits(
+    audits: &[ExactApplicationOpenAudit],
+) -> Result<(), LoopbackError> {
+    if selected_application_is_running(audits) {
+        return Ok(());
     }
+    Err(LoopbackError::SourceUnavailable {
+        stable_key: audits
+            .first()
+            .map(|audit| audit.stable_id.stable_key.clone())
+            .unwrap_or_else(|| "selected-application".to_owned()),
+    })
 }
 
 // SAFETY:
@@ -454,15 +530,44 @@ impl ProcessTap {
             .ok_or_else(|| tap_error(status_code, stage_code))
     }
 
-    fn start(&mut self) -> Result<(), LoopbackError> {
+    fn start(
+        &mut self,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+    ) -> Result<(), LoopbackError> {
         let mut status_code = 0;
         let mut stage_code = 0;
         // SAFETY: self owns a live tap handle and both out-pointers live through
         // this call.
-        if unsafe { pks_tap_start(self.0.as_ptr(), &mut status_code, &mut stage_code) } == 0 {
+        if unsafe {
+            pks_tap_start(
+                self.0.as_ptr(),
+                process_tap_io_duration_ms(audio_frame_duration),
+                &mut status_code,
+                &mut stage_code,
+            )
+        } == 0
+        {
             Ok(())
         } else {
             Err(tap_error(status_code, stage_code))
+        }
+    }
+
+    fn io_buffer(&self) -> ProcessTapIoBuffer {
+        // SAFETY: self owns a live tap handle for the duration of these reads.
+        unsafe {
+            ProcessTapIoBuffer {
+                before_frames: pks_tap_io_buffer_before_frames(self.0.as_ptr()),
+                requested_frames: pks_tap_io_buffer_requested_frames(self.0.as_ptr()),
+                applied_frames: pks_tap_io_buffer_applied_frames(self.0.as_ptr()),
+                minimum_frames: pks_tap_io_buffer_min_frames(self.0.as_ptr()),
+                maximum_frames: pks_tap_io_buffer_max_frames(self.0.as_ptr()),
+                input_device_latency_frames: pks_tap_input_device_latency_frames(self.0.as_ptr()),
+                input_safety_offset_frames: pks_tap_input_safety_offset_frames(self.0.as_ptr()),
+                input_safety_offset_settable: pks_tap_input_safety_offset_settable(self.0.as_ptr())
+                    != 0,
+                input_stream_latency_frames: pks_tap_input_stream_latency_frames(self.0.as_ptr()),
+            }
         }
     }
 
@@ -536,6 +641,8 @@ impl Drop for ProcessTap {
 // consumes 20 ms frames. Keep bounded ownership for a full downstream burst;
 // empty pool slots add memory headroom, not playout latency.
 const POOL_CAPACITY_FRAMES: usize = 32;
+const PROCESS_LIFETIME_POLL_INTERVAL: Duration = Duration::from_millis(100);
+const EMPTY_RING_POLL_INTERVAL: Duration = Duration::from_micros(500);
 
 /// Captures system audio via CoreAudio process tap (macOS 14.2+).
 pub struct TapLoopbackSource {
@@ -561,41 +668,36 @@ impl TapLoopbackSource {
             ));
         }
 
-        let exact_application_open_audit = match &mode {
-            CaptureMode::Process(process_id) => {
-                Some(capture_application_open_audit_for_process(*process_id)?)
+        let (mut tap, stable_id, application_open_audits) = match &mode {
+            CaptureMode::SystemMix => (ProcessTap::global()?, stable_source_id(&mode)?, Vec::new()),
+            CaptureMode::Process(pid) => {
+                let audit = capture_application_open_audit_for_process(*pid)?;
+                let stable_id = audit.stable_id.clone();
+                (
+                    ProcessTap::for_pids(&[*pid as i32])?,
+                    stable_id,
+                    vec![audit],
+                )
             }
             CaptureMode::ExactApplication {
                 process_id,
                 stable_id,
-            } => Some(capture_exact_application_open_audit(
-                *process_id,
-                stable_id,
-            )?),
-            _ => None,
-        };
-
-        let (mut tap, stable_id) = match &mode {
-            CaptureMode::SystemMix => (ProcessTap::global()?, stable_source_id(&mode)?),
-            CaptureMode::Process(pid) => {
-                let stable_id = exact_application_open_audit
-                    .as_ref()
-                    .map(|audit| audit.stable_id.clone())
-                    .ok_or_else(|| LoopbackError::SourceUnavailable {
-                        stable_key: format!("pid:{pid}"),
-                    })?;
-                (ProcessTap::for_pids(&[*pid as i32])?, stable_id)
+            } => {
+                let audit = capture_exact_application_open_audit(*process_id, stable_id)?;
+                (
+                    ProcessTap::for_pids(&[*process_id as i32])?,
+                    stable_id.clone(),
+                    vec![audit],
+                )
             }
-            CaptureMode::ExactApplication { process_id, .. } => (
-                ProcessTap::for_pids(&[*process_id as i32])?,
-                stable_source_id(&mode)?,
-            ),
             CaptureMode::ExactApplicationStable { stable_id } => {
                 let sources = discover_sources_native();
                 let selected = select_stable_application_capture(&sources, stable_id)?;
+                let audits = capture_application_open_audits(&selected)?;
                 (
                     ProcessTap::for_pids(&selected.process_ids)?,
                     selected.stable_id,
+                    audits,
                 )
             }
             CaptureMode::Application(application) => {
@@ -609,9 +711,11 @@ impl TapLoopbackSource {
                         selected.process_ids
                     );
                 }
+                let audits = capture_application_open_audits(&selected)?;
                 (
                     ProcessTap::for_pids(&selected.process_ids)?,
                     selected.stable_id,
+                    audits,
                 )
             }
             CaptureMode::InputDevice(_) => {
@@ -619,10 +723,8 @@ impl TapLoopbackSource {
             }
         };
 
-        tap.start()?;
-        if let Some(expected) = exact_application_open_audit.as_ref() {
-            verify_exact_application_open_audit(expected)?;
-        }
+        tap.start(audio_frame_duration)?;
+        verify_application_open_audits(&application_open_audits)?;
 
         let sample_rate_hz = tap.sample_rate_hz();
         if sample_rate_hz == 0 {
@@ -631,6 +733,21 @@ impl TapLoopbackSource {
             ));
         }
         let channel_count = tap.channel_count() as u8;
+        if std::env::var_os("PKS_TAP_DIAG").is_some() {
+            let io_buffer = tap.io_buffer();
+            eprintln!(
+                "tap_diag: io_buffer_before_frames={} io_buffer_requested_frames={} io_buffer_applied_frames={} io_buffer_min_frames={} io_buffer_max_frames={} input_device_latency_frames={} input_safety_offset_frames={} input_safety_offset_settable={} input_stream_latency_frames={}",
+                io_buffer.before_frames,
+                io_buffer.requested_frames,
+                io_buffer.applied_frames,
+                io_buffer.minimum_frames,
+                io_buffer.maximum_frames,
+                io_buffer.input_device_latency_frames,
+                io_buffer.input_safety_offset_frames,
+                io_buffer.input_safety_offset_settable,
+                io_buffer.input_stream_latency_frames,
+            );
+        }
         initialize_monotonic_timestamp_domain();
         let host_time_before_ns = ProcessTap::current_host_time_ns();
         let process_time_ns = monotonic_timestamp_ns();
@@ -648,6 +765,11 @@ impl TapLoopbackSource {
                 .unwrap_or(u32::MAX)
                 .max(1);
         let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
+        let mut frame_normalizer = CaptureFrameNormalizer::new(
+            callback_frame_count as usize,
+            channel_count,
+            sample_rate_hz,
+        );
         let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, buffer_capacity_samples);
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let counters = CaptureObservationCounters::default();
@@ -655,6 +777,7 @@ impl TapLoopbackSource {
 
         let source_id = stable_id.source_id();
         let failure_counters = counters.clone();
+        let runtime_stable_id = stable_id.clone();
 
         let thread = std::thread::Builder::new()
             .name("pks-tap-reader".into())
@@ -663,9 +786,31 @@ impl TapLoopbackSource {
                     let mut sequence_num: u64 = 0;
                     let mut buffer = vec![0.0f32; buffer_capacity_samples];
                     let mut observed_drop_count = tap.drop_count();
+                    let mut next_process_lifetime_check =
+                        Instant::now() + PROCESS_LIFETIME_POLL_INTERVAL;
                     loop {
                         if stop_rx.try_recv().is_ok() {
                             break;
+                        }
+                        if Instant::now() >= next_process_lifetime_check {
+                            if !selected_application_is_running(&application_open_audits) {
+                                if let Some(sender) = runtime_event_sender.as_ref() {
+                                    let _ = sender.try_send(
+                                        crate::capture::SourceRuntimeEvent::SourceUnavailable {
+                                            stable_id: runtime_stable_id.clone(),
+                                            generation: crate::capture::SourceGeneration::INITIAL,
+                                            recovery_requirement: crate::capture::SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession,
+                                            failure: crate::capture::CaptureRuntimeFailure {
+                                                operation: "observe selected application lifetime",
+                                                error_class: crate::capture::CaptureRuntimeFailureClass::SourceInstanceExited,
+                                            },
+                                        },
+                                    );
+                                }
+                                break;
+                            }
+                            next_process_lifetime_check =
+                                Instant::now() + PROCESS_LIFETIME_POLL_INTERVAL;
                         }
                         let batch = tap.read_frames(&mut buffer, callback_frame_count);
                         let frame_count = batch.frame_count;
@@ -675,7 +820,7 @@ impl TapLoopbackSource {
                         );
                         observed_drop_count = drop_count;
                         if frame_count == 0 {
-                            std::thread::sleep(Duration::from_millis(1));
+                            std::thread::sleep(EMPTY_RING_POLL_INTERVAL);
                             continue;
                         }
                         capture_counters.observe_callback_buffer();
@@ -696,37 +841,41 @@ impl TapLoopbackSource {
                             }
                             break;
                         };
-                        let frame_sequence_number = sequence_num;
-                        sequence_num = sequence_num.saturating_add(1);
-                        let mut handle = match pool.acquire() {
-                            Some(h) => h,
-                            None => {
-                                capture_counters.observe_pool_exhaustion();
-                                continue;
-                            }
-                        };
-                        let dst = handle.as_mut_slice();
                         let sample_count = frame_count as usize * channel_count as usize;
-                        if sample_count > dst.len() {
+                        if sample_count > buffer.len() {
                             capture_counters.observe_oversized_buffer();
                             continue;
                         }
-                        dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
-                        if handle.try_set_len(sample_count).is_err() {
-                            capture_counters.observe_oversized_buffer();
-                            continue;
-                        }
-                        let mut frame = AudioFrame::new(
-                            StreamId(0),
-                            source_id,
-                            frame_sequence_number,
+                        let normalized = frame_normalizer.push(
+                            &buffer[..sample_count],
                             timestamp_ns,
-                            channel_count,
-                            handle,
+                            |timestamp_ns, samples| {
+                                let frame_sequence_number = sequence_num;
+                                sequence_num = sequence_num.saturating_add(1);
+                                let Some(mut handle) = pool.acquire() else {
+                                    capture_counters.observe_pool_exhaustion();
+                                    return;
+                                };
+                                if handle.try_copy_from_slice(samples).is_err() {
+                                    capture_counters.observe_oversized_buffer();
+                                    return;
+                                }
+                                let mut frame = AudioFrame::new(
+                                    StreamId(0),
+                                    source_id,
+                                    frame_sequence_number,
+                                    timestamp_ns,
+                                    channel_count,
+                                    handle,
+                                );
+                                frame.sample_rate_hz = sample_rate_hz;
+                                capture_counters.observe_enqueued_frame();
+                                callback(frame);
+                            },
                         );
-                        frame.sample_rate_hz = sample_rate_hz;
-                        capture_counters.observe_enqueued_frame();
-                        callback(frame);
+                        if !normalized {
+                            capture_counters.observe_invalid_buffer();
+                        }
                     }
                 }));
                 if let Err(payload) = worker {
@@ -734,7 +883,7 @@ impl TapLoopbackSource {
                     if let Some(sender) = runtime_event_sender.as_ref() {
                         let _ = crate::capture::publish_backend_failure(
                             sender,
-                            stable_id,
+                            runtime_stable_id,
                             crate::capture::SourceGeneration::INITIAL,
                             "macOS tap reader",
                             crate::capture::CaptureRuntimeFailureClass::BackendClass {
@@ -791,10 +940,11 @@ impl Drop for TapLoopbackSource {
 #[cfg(test)]
 mod tests {
     use super::{
-        application_open_audit_for_process, exact_application_open_audit, process_timestamp_ns,
-        select_application_capture, select_stable_application_capture, source_host_timestamp_ns,
-        stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit,
-        ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
+        application_open_audit_for_process, exact_application_open_audit,
+        process_tap_io_duration_ms, process_timestamp_ns, select_application_capture,
+        select_stable_application_capture, selected_application_is_running_with,
+        source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource,
+        ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS,
     };
     use crate::capture::{
         CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId,
@@ -843,6 +993,18 @@ mod tests {
             CaptureError::PermissionDenied {
                 operation: "creating the CoreAudio process tap"
             }
+        );
+    }
+
+    #[test]
+    fn given_supported_product_cadence_when_opening_tap_then_native_io_is_at_most_ten_ms() {
+        assert_eq!(
+            process_tap_io_duration_ms(crate::frame::AudioFrameDuration::Ms10),
+            10
+        );
+        assert_eq!(
+            process_tap_io_duration_ms(crate::frame::AudioFrameDuration::Ms20),
+            10
         );
     }
 
@@ -1051,5 +1213,49 @@ mod tests {
         let sources = vec![audited_application(selected.clone(), 42, 0)];
 
         assert_eq!(exact_application_open_audit(&sources, 42, &selected), None);
+    }
+
+    #[test]
+    fn given_one_selected_process_still_running_when_checked_then_application_remains_available() {
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::Application, "com.acme.meeting");
+        let audits = vec![
+            ExactApplicationOpenAudit {
+                process_id: 42,
+                stable_id: stable_id.clone(),
+                process_start_time_ns: 100,
+            },
+            ExactApplicationOpenAudit {
+                process_id: 43,
+                stable_id,
+                process_start_time_ns: 200,
+            },
+        ];
+
+        assert!(selected_application_is_running_with(
+            &audits,
+            |process_id| {
+                if process_id == 43 {
+                    200
+                } else {
+                    0
+                }
+            }
+        ));
+    }
+
+    #[test]
+    fn given_selected_pid_reused_after_exit_when_checked_then_application_is_unavailable() {
+        let audits = vec![ExactApplicationOpenAudit {
+            process_id: 42,
+            stable_id: StableSourceId::new(
+                Platform::Macos,
+                SourceKind::Application,
+                "com.acme.meeting",
+            ),
+            process_start_time_ns: 100,
+        }];
+
+        assert!(!selected_application_is_running_with(&audits, |_| 200));
     }
 }

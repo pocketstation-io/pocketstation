@@ -75,8 +75,9 @@ pub use lifecycle::SessionTraceRecorderHandle;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use lifecycle::{start_prepared_session, start_prepared_session_cancellable};
 pub use lifecycle::{
-    CaptureBackendSet, RunningSession, SessionStartCancellation, SessionStartError,
-    SessionStartFailure, SessionStartOptions, SessionStopOutcome,
+    CaptureBackendSet, RunningSession, SessionSourceReplacement, SessionSourceReplacementError,
+    SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions,
+    SessionStopOutcome,
 };
 pub use lifecycle::{
     EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError,
@@ -85,7 +86,11 @@ pub use lifecycle::{
 pub use lifecycle::{
     EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics,
     SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics,
-    SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceMetrics,
+    SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics,
+    SessionSourceActivityEvaluation, SessionSourceActivityObservations,
+    SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation,
+    SessionSourceReplacementObservations, SessionSourceSignalObservations,
 };
 pub use lifecycle::{
     NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,

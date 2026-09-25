@@ -54,6 +54,7 @@ int main(void) {
   uint32_t source_metrics_count = 0;
   uint32_t route_metrics_count = 0;
   PksSessionSourceMetrics source_metrics = {0};
+  PksSessionSourceActivity source_activity = {0};
   PksSessionRouteMetrics route_metrics = {0};
   PksSessionAbiVersion version = {0};
 
@@ -112,6 +113,19 @@ int main(void) {
           config.source_queue_capacity_frames) {
     return 20;
   }
+  status =
+      pks_session_source_activity_at(engine, session, 0u, &source_activity);
+  if (status.code != PKS_SESSION_STATUS_OK ||
+      source_activity.stem_id != source_metrics.stem_id ||
+      source_activity.frames_received_total == 0u ||
+      source_activity.first_frame_received_at_ns <
+          source_activity.session_started_at_ns ||
+      source_activity.latest_frame_received_at_ns <
+          source_activity.first_frame_received_at_ns ||
+      source_activity.observed_at_ns <
+          source_activity.latest_frame_received_at_ns) {
+    return 27;
+  }
   status = pks_session_route_metrics_at(engine, session, 0u, &route_metrics);
   if (status.code != PKS_SESSION_STATUS_OK || route_metrics.route_id == 0u ||
       route_metrics.endpoint_id == 0u ||
@@ -123,6 +137,11 @@ int main(void) {
       pks_session_source_metrics_at(engine, session, 2u, &source_metrics);
   if (status.code != PKS_SESSION_STATUS_INDEX_OUT_OF_RANGE) {
     return 22;
+  }
+  status =
+      pks_session_source_activity_at(engine, session, 2u, &source_activity);
+  if (status.code != PKS_SESSION_STATUS_INDEX_OUT_OF_RANGE) {
+    return 28;
   }
   status = pks_session_audio_batch_release(engine, first_batch.handle);
   if (status.code != PKS_SESSION_STATUS_OK) {

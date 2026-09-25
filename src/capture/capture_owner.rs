@@ -9,11 +9,12 @@ use crate::capture::frame_stream::{
     captured_frame_stream_with_start_gate, CaptureDeliveryStartGate,
 };
 use crate::capture::{
-    source_runtime_event_channel, CaptureError, CaptureMode, CaptureObservationHandle,
-    CaptureObservations, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream,
-    CapturedFrameStreamStats, PermissionEpoch, SourceGeneration, SourceRuntimeEvent,
-    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventReceive,
-    SourceRuntimeEventReceiver, SourceRuntimeEventSender,
+    source_runtime_event_channel, CaptureError, CaptureMode, CaptureNativeFormat,
+    CaptureObservationHandle, CaptureObservations, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch,
+    SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
+    SourceRuntimeEventSender,
 };
 
 /// Monotonic timestamp domain used by native capture backends.
@@ -104,6 +105,14 @@ pub trait ActiveCaptureBackend: Send {
     /// captured lineage. Session configuration never supplies it.
     fn source_id(&self) -> SourceId;
 
+    /// Exact native PCM format accepted by the operating-system stream.
+    ///
+    /// Backends that do not negotiate a PCM device format return `None`.
+    /// Session frames still use the canonical graph signal format.
+    fn native_format(&self) -> Option<CaptureNativeFormat> {
+        None
+    }
+
     fn observation_handle(&self) -> CaptureObservationHandle;
 
     fn observations(&self) -> CaptureObservations;
@@ -126,6 +135,14 @@ pub struct PreparedCapture {
 
 impl PreparedCapture {
     pub fn open(self) -> Result<CaptureOwner, CaptureError> {
+        self.open_with_continuity(SourceGeneration::INITIAL, 0)
+    }
+
+    pub(crate) fn open_with_continuity(
+        self,
+        source_generation: SourceGeneration,
+        discontinuity_epoch: u64,
+    ) -> Result<CaptureOwner, CaptureError> {
         let frame_observations = self.frame_stream.observation_handle();
         let runtime_event_observations = self.runtime_event_receiver.observation_handle();
         let active_backend = self.backend.open(self.delivery)?;
@@ -134,6 +151,7 @@ impl PreparedCapture {
             backend: active_backend.observation_handle(),
             frame_stream: frame_observations,
             runtime_events: runtime_event_observations,
+            opened_native_format: active_backend.native_format(),
         };
         Ok(CaptureOwner {
             active_backend,
@@ -145,12 +163,12 @@ impl PreparedCapture {
                 source_id,
                 stem_id: self.lineage_seed.stem_id(),
                 clock_id: CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
-                source_generation: SourceGeneration::INITIAL,
-                discontinuity_epoch: 0,
+                source_generation,
+                discontinuity_epoch,
                 permission_epoch: PermissionEpoch::INITIAL,
             },
-            source_generation: AtomicU32::new(SourceGeneration::INITIAL.0),
-            discontinuity_epoch: AtomicU64::new(0),
+            source_generation: AtomicU32::new(source_generation.0),
+            discontinuity_epoch: AtomicU64::new(discontinuity_epoch),
         })
     }
 }
@@ -168,6 +186,7 @@ pub struct CaptureObservationReceipt {
     backend: CaptureObservationHandle,
     frame_stream: CapturedFrameObservationHandle,
     runtime_events: SourceRuntimeEventObservationHandle,
+    opened_native_format: Option<CaptureNativeFormat>,
 }
 
 impl CaptureObservationReceipt {
@@ -177,6 +196,10 @@ impl CaptureObservationReceipt {
             frame_stream: self.frame_stream.observations(),
             runtime_events: self.runtime_events.observations(),
         }
+    }
+
+    pub const fn opened_native_format(&self) -> Option<CaptureNativeFormat> {
+        self.opened_native_format
     }
 }
 
@@ -202,6 +225,17 @@ pub struct CaptureOwner {
 }
 
 impl CaptureOwner {
+    pub(crate) fn set_continuity(
+        &self,
+        source_generation: SourceGeneration,
+        discontinuity_epoch: u64,
+    ) {
+        self.source_generation
+            .store(source_generation.0, Ordering::Release);
+        self.discontinuity_epoch
+            .store(discontinuity_epoch, Ordering::Release);
+    }
+
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
         let received = self.runtime_event_receiver.try_recv();
         if let SourceRuntimeEventReceive::Event(event) = &received {
@@ -287,8 +321,12 @@ impl CaptureOwner {
             SourceRuntimeEvent::SourceUnavailable { generation, .. }
             | SourceRuntimeEvent::BackendFailure { generation, .. } => *generation,
         };
+        // Native backends emit a generation relative to the physical capture
+        // they opened. A host-requested replacement may already have advanced
+        // the Session generation before that backend reports a failure, so an
+        // event must never move lineage backwards.
         self.source_generation
-            .store(generation.0, Ordering::Release);
+            .fetch_max(generation.0, Ordering::AcqRel);
         self.discontinuity_epoch.fetch_add(1, Ordering::AcqRel);
     }
 }
@@ -497,11 +535,13 @@ mod tests {
         );
         assert_eq!(frame.lineage().permission_epoch, PermissionEpoch::INITIAL.0);
         let receipt = owner.observation_receipt();
+        owner.set_continuity(SourceGeneration(4), 7);
         assert!(matches!(
             owner.try_recv_runtime_event(),
             SourceRuntimeEventReceive::Event(SourceRuntimeEvent::SourceUnavailable { .. })
         ));
-        assert_eq!(owner.open_metadata().discontinuity_epoch, 1);
+        assert_eq!(owner.open_metadata().source_generation, SourceGeneration(4));
+        assert_eq!(owner.open_metadata().discontinuity_epoch, 8);
         assert_eq!(receipt.observations().backend.callback_buffers_total, 1);
         assert_eq!(receipt.observations().frame_stream.delivered_frames, 1);
         assert_eq!(

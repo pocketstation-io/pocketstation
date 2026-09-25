@@ -22,7 +22,8 @@
 
 #include "source_discovery.h"
 
-static uint64_t pks_process_start_time_ns(pid_t pid) {
+uint64_t pks_process_start_time_ns(int32_t process_id) {
+    pid_t pid = (pid_t)process_id;
     struct proc_bsdinfo info;
     int bytes = proc_pidinfo(
         pid,
@@ -101,6 +102,11 @@ struct PksProcessTapHandle {
     AudioObjectID       tap_id;
     AudioObjectID       agg_device_id;
     AudioDeviceIOProcID io_proc_id;
+    uint32_t            io_buffer_before_frames;
+    uint32_t            io_buffer_requested_frames;
+    uint32_t            io_buffer_applied_frames;
+    uint32_t            io_buffer_min_frames;
+    uint32_t            io_buffer_max_frames;
     PksTapRing          ring;
 };
 
@@ -612,7 +618,83 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
 
 // ─── Start IO ────────────────────────────────────────────────────────────────
 
-int pks_tap_start(PksProcessTapHandle *tap, int32_t *out_status, uint8_t *out_stage) {
+static void pks_prefer_io_buffer_size(PksProcessTapHandle *tap,
+                                      double sample_rate,
+                                      uint16_t requested_io_duration_ms) {
+    AudioObjectPropertyAddress size_addr = {
+        kAudioDevicePropertyBufferFrameSize,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMain
+    };
+    uint32_t property_size = sizeof(uint32_t);
+    uint32_t current_frames = 0;
+    if (AudioObjectGetPropertyData(tap->agg_device_id, &size_addr, 0, NULL,
+                                   &property_size, &current_frames) != noErr) {
+        return;
+    }
+    tap->io_buffer_before_frames = current_frames;
+    tap->io_buffer_applied_frames = current_frames;
+
+    AudioObjectPropertyAddress range_addr = {
+        kAudioDevicePropertyBufferFrameSizeRange,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMain
+    };
+    AudioValueRange range = {0};
+    property_size = sizeof(range);
+    if (AudioObjectGetPropertyData(tap->agg_device_id, &range_addr, 0, NULL,
+                                   &property_size, &range) != noErr
+            || !isfinite(range.mMinimum)
+            || !isfinite(range.mMaximum)
+            || range.mMinimum <= 0
+            || range.mMaximum < range.mMinimum
+            || range.mMaximum > UINT32_MAX) {
+        return;
+    }
+    tap->io_buffer_min_frames = (uint32_t)ceil(range.mMinimum);
+    tap->io_buffer_max_frames = (uint32_t)floor(range.mMaximum);
+
+    double requested_frames_exact =
+        sample_rate * (double)requested_io_duration_ms / 1000.0;
+    if (!isfinite(requested_frames_exact)
+            || requested_frames_exact < 1
+            || requested_frames_exact > UINT32_MAX) {
+        return;
+    }
+    uint32_t requested_frames = (uint32_t)llround(requested_frames_exact);
+    tap->io_buffer_requested_frames = requested_frames;
+
+    // A smaller native callback can reduce capture delay. A larger callback
+    // cannot improve the requested Session cadence, so preserve the current
+    // device setting instead of increasing it for the 20 ms profile.
+    if (requested_frames >= current_frames
+            || requested_frames < tap->io_buffer_min_frames
+            || requested_frames > tap->io_buffer_max_frames) {
+        return;
+    }
+
+    Boolean settable = false;
+    if (AudioObjectIsPropertySettable(tap->agg_device_id, &size_addr, &settable) != noErr
+            || !settable) {
+        return;
+    }
+    property_size = sizeof(requested_frames);
+    if (AudioObjectSetPropertyData(tap->agg_device_id, &size_addr, 0, NULL,
+                                   property_size, &requested_frames) != noErr) {
+        return;
+    }
+
+    uint32_t applied_frames = 0;
+    property_size = sizeof(applied_frames);
+    if (AudioObjectGetPropertyData(tap->agg_device_id, &size_addr, 0, NULL,
+                                   &property_size, &applied_frames) == noErr
+            && applied_frames > 0) {
+        tap->io_buffer_applied_frames = applied_frames;
+    }
+}
+
+int pks_tap_start(PksProcessTapHandle *tap, uint16_t requested_io_duration_ms,
+                  int32_t *out_status, uint8_t *out_stage) {
     if (out_status) *out_status = noErr;
     if (out_stage) *out_stage = 0;
     if (!tap || tap->io_proc_id) {
@@ -633,6 +715,11 @@ int pks_tap_start(PksProcessTapHandle *tap, int32_t *out_status, uint8_t *out_st
         if (AudioObjectGetPropertyData(tap->agg_device_id, &fmtAddr, 0, NULL,
                                        &fmtSz, &fmt) == noErr && fmt.mSampleRate > 0)
             atomic_store(&tap->ring.sample_rate, (uint32_t)fmt.mSampleRate);
+
+        pks_prefer_io_buffer_size(
+            tap,
+            (fmt.mSampleRate > 0) ? fmt.mSampleRate : 48000.0,
+            requested_io_duration_ms);
 
         OSStatus err = AudioDeviceCreateIOProcID(
             tap->agg_device_id, tap_io_proc, &tap->ring, &tap->io_proc_id);
@@ -727,6 +814,119 @@ uint32_t pks_tap_read_frames(PksProcessTapHandle *tap, float *out, uint32_t fram
 uint64_t pks_tap_drop_count(const PksProcessTapHandle *tap) {
     if (!tap) return 0;
     return atomic_load_explicit(&tap->ring.drop_count, memory_order_relaxed);
+}
+
+uint32_t pks_tap_io_buffer_before_frames(const PksProcessTapHandle *tap) {
+    return tap ? tap->io_buffer_before_frames : 0;
+}
+
+uint32_t pks_tap_io_buffer_requested_frames(const PksProcessTapHandle *tap) {
+    return tap ? tap->io_buffer_requested_frames : 0;
+}
+
+uint32_t pks_tap_io_buffer_applied_frames(const PksProcessTapHandle *tap) {
+    return tap ? tap->io_buffer_applied_frames : 0;
+}
+
+uint32_t pks_tap_io_buffer_min_frames(const PksProcessTapHandle *tap) {
+    return tap ? tap->io_buffer_min_frames : 0;
+}
+
+uint32_t pks_tap_io_buffer_max_frames(const PksProcessTapHandle *tap) {
+    return tap ? tap->io_buffer_max_frames : 0;
+}
+
+static uint32_t pks_tap_input_device_property(
+    const PksProcessTapHandle *tap,
+    AudioObjectPropertySelector selector) {
+    if (!tap) return 0;
+    AudioObjectPropertyAddress address = {
+        selector,
+        kAudioObjectPropertyScopeInput,
+        kAudioObjectPropertyElementMain
+    };
+    uint32_t value = 0;
+    uint32_t size = sizeof(value);
+    return AudioObjectGetPropertyData(
+        tap->agg_device_id, &address, 0, NULL, &size, &value) == noErr
+        ? value
+        : 0;
+}
+
+uint32_t pks_tap_input_device_latency_frames(const PksProcessTapHandle *tap) {
+    return pks_tap_input_device_property(tap, kAudioDevicePropertyLatency);
+}
+
+uint32_t pks_tap_input_safety_offset_frames(const PksProcessTapHandle *tap) {
+    return pks_tap_input_device_property(tap, kAudioDevicePropertySafetyOffset);
+}
+
+uint8_t pks_tap_input_safety_offset_settable(const PksProcessTapHandle *tap) {
+    if (!tap) return 0;
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertySafetyOffset,
+        kAudioObjectPropertyScopeInput,
+        kAudioObjectPropertyElementMain
+    };
+    Boolean settable = false;
+    return AudioObjectIsPropertySettable(
+        tap->agg_device_id, &address, &settable) == noErr && settable;
+}
+
+uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap) {
+    if (!tap) return 0;
+    AudioObjectPropertyAddress streams_address = {
+        kAudioDevicePropertyStreams,
+        kAudioObjectPropertyScopeInput,
+        kAudioObjectPropertyElementMain
+    };
+    uint32_t streams_size = 0;
+    if (AudioObjectGetPropertyDataSize(
+            tap->agg_device_id,
+            &streams_address,
+            0,
+            NULL,
+            &streams_size) != noErr
+            || streams_size == 0
+            || streams_size % sizeof(AudioStreamID) != 0) {
+        return 0;
+    }
+    AudioStreamID *streams = (AudioStreamID *)malloc(streams_size);
+    if (!streams) return 0;
+    if (AudioObjectGetPropertyData(
+            tap->agg_device_id,
+            &streams_address,
+            0,
+            NULL,
+            &streams_size,
+            streams) != noErr) {
+        free(streams);
+        return 0;
+    }
+
+    const uint32_t stream_count = streams_size / sizeof(AudioStreamID);
+    uint32_t maximum_latency_frames = 0;
+    AudioObjectPropertyAddress latency_address = {
+        kAudioStreamPropertyLatency,
+        kAudioObjectPropertyScopeGlobal,
+        kAudioObjectPropertyElementMain
+    };
+    for (uint32_t index = 0; index < stream_count; index++) {
+        uint32_t latency_frames = 0;
+        uint32_t latency_size = sizeof(latency_frames);
+        if (AudioObjectGetPropertyData(
+                streams[index],
+                &latency_address,
+                0,
+                NULL,
+                &latency_size,
+                &latency_frames) == noErr
+                && latency_frames > maximum_latency_frames) {
+            maximum_latency_frames = latency_frames;
+        }
+    }
+    free(streams);
+    return maximum_latency_frames;
 }
 
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap) {

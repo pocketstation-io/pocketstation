@@ -60,7 +60,6 @@ impl CaptureDeliveryStartGate {
         self.open.load(Ordering::Acquire)
     }
 
-    #[cfg(any(test, feature = "internal-testing"))]
     pub(crate) fn opened() -> Arc<Self> {
         Arc::new(Self {
             open: AtomicBool::new(true),

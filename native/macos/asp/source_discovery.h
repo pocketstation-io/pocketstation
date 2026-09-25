@@ -32,6 +32,11 @@ typedef struct {
 // Returns 1 if the process tap API is available (macOS 14.2+), 0 otherwise.
 int pks_process_tap_available(void);
 
+// Returns the process start time for one live PID, or zero after that process
+// instance exits. Call only from a control or reader thread, never an audio
+// callback.
+uint64_t pks_process_start_time_ns(int32_t process_id);
+
 // Enumerate live audio source processes. Returns count written (≤ max).
 int pks_discover_sources(PksCaptureSourceInfo *out, int max);
 
@@ -54,8 +59,11 @@ typedef enum PksTapOperationStage {
 PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
                                             int32_t *out_status, uint8_t *out_stage);
 
-// Start capturing. Returns 0 on success.
-int pks_tap_start(PksProcessTapHandle *tap, int32_t *out_status, uint8_t *out_stage);
+// Start capturing. The requested native IO duration is used to prefer a
+// matching aggregate-device size when CoreAudio supports it. Returns 0 on
+// success.
+int pks_tap_start(PksProcessTapHandle *tap, uint16_t requested_io_duration_ms,
+                  int32_t *out_status, uint8_t *out_stage);
 
 // Destroy handle and release all CoreAudio resources.
 void pks_destroy_process_tap(PksProcessTapHandle *tap);
@@ -69,6 +77,15 @@ uint32_t pks_tap_read_frames_timed(PksProcessTapHandle *tap, float *out,
                                    uint64_t *out_anchor_host_time_ns);
 uint64_t pks_tap_drop_count(const PksProcessTapHandle *tap);
 uint64_t pks_tap_current_host_time_ns(void);
+uint32_t pks_tap_io_buffer_before_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_io_buffer_requested_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_io_buffer_applied_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_io_buffer_min_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_io_buffer_max_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_input_device_latency_frames(const PksProcessTapHandle *tap);
+uint32_t pks_tap_input_safety_offset_frames(const PksProcessTapHandle *tap);
+uint8_t pks_tap_input_safety_offset_settable(const PksProcessTapHandle *tap);
+uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap);
 
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap);
 uint32_t pks_tap_channels(const PksProcessTapHandle *tap);
