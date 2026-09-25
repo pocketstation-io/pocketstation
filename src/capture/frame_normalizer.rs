@@ -85,6 +85,7 @@ impl CaptureFrameNormalizer {
 
     /// Discards an incomplete frame after the native stream reports a gap.
     /// The next callback establishes a new timestamp anchor.
+    #[cfg(any(test, target_os = "macos"))]
     pub(crate) fn reset(&mut self) {
         self.sample_count = 0;
         self.next_timestamp_ns = None;
