@@ -1,5 +1,6 @@
 //! Physical input-device capture through CoreAudio via CPAL.
 
+use std::num::NonZeroU32;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,8 +13,8 @@ use crate::capture::platform::macos::input_format::{
 use crate::capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
     CaptureNativeFormat, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSource, InputDeviceSelector,
-    PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleTimeline, CaptureSource,
+    InputDeviceSelector, PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
     SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 use crate::frame::{AudioBufferPool, AudioFrame, AudioFrameDuration, Platform, StreamId};
@@ -120,6 +121,49 @@ fn input_capture_timestamp(
     }
 }
 
+// Combines fixed product framing with the microphone reader's sample clock.
+// It is constructed before capture and used only by the reader worker.
+struct InputFrames {
+    normalizer: CaptureFrameNormalizer,
+    sample_rate_hz: NonZeroU32,
+    timeline: Option<CaptureSampleTimeline>,
+}
+
+impl InputFrames {
+    fn new(samples_per_channel: usize, sample_rate_hz: NonZeroU32) -> Self {
+        Self {
+            normalizer: CaptureFrameNormalizer::new(
+                samples_per_channel,
+                CANONICAL_INPUT_CHANNEL_COUNT,
+                sample_rate_hz.get(),
+            ),
+            sample_rate_hz,
+            timeline: None,
+        }
+    }
+
+    fn frame_sample_count(&self) -> usize {
+        self.normalizer.frame_sample_count()
+    }
+
+    fn reset(&mut self) {
+        self.normalizer.reset();
+        self.timeline = None;
+    }
+
+    fn push(&mut self, samples: &[f32], timestamp_ns: u64, emit: impl FnMut(u64, &[f32])) -> bool {
+        if samples.is_empty() {
+            return true;
+        }
+        let timeline = self.timeline.get_or_insert_with(|| {
+            CaptureSampleTimeline::anchored(self.sample_rate_hz, timestamp_ns)
+        });
+        let source_timestamp_ns =
+            timeline.advance(u64::try_from(samples.len()).unwrap_or(u64::MAX));
+        self.normalizer.push(samples, source_timestamp_ns, emit)
+    }
+}
+
 pub struct MacosInputSource {
     stream: Option<cpal::Stream>,
     reader_thread: Option<std::thread::JoinHandle<()>>,
@@ -190,10 +234,13 @@ impl MacosInputSource {
             maximum_resampled_frames(maximum_native_frames, native_sample_rate_hz).ok_or_else(
                 || CaptureError::BackendInit("input resampling pool size overflow".to_owned()),
             )?;
-        let frame_normalizer = CaptureFrameNormalizer::new(
+        let canonical_sample_rate =
+            NonZeroU32::new(CANONICAL_INPUT_SAMPLE_RATE_HZ).ok_or_else(|| {
+                CaptureError::BackendInit("canonical input sample rate is zero".to_owned())
+            })?;
+        let frame_normalizer = InputFrames::new(
             usize::try_from(target_frame_samples).unwrap_or(usize::MAX),
-            CANONICAL_INPUT_CHANNEL_COUNT,
-            CANONICAL_INPUT_SAMPLE_RATE_HZ,
+            canonical_sample_rate,
         );
         let frame_pool =
             AudioBufferPool::new(POOL_CAPACITY_FRAMES, frame_normalizer.frame_sample_count());
@@ -521,6 +568,56 @@ fn capture_backend_error(context: &str, error: impl std::fmt::Display) -> Captur
 mod tests {
     use super::*;
     use cpal::{InputCallbackInfo, InputStreamTimestamp, StreamInstant};
+
+    #[test]
+    fn given_input_gap_when_reset_then_partial_audio_is_discarded_and_source_time_reanchors() {
+        let mut frames = InputFrames::new(960, NonZeroU32::new(48_000).unwrap());
+        let mut emitted = Vec::new();
+        assert!(frames.push(&[0.25; 512], 1_000_000_000, |_, _| panic!(
+            "partial frame emitted"
+        )));
+        frames.reset();
+        assert!(
+            frames.push(&[-0.5; 960], 2_000_000_000, |timestamp_ns, samples| {
+                emitted.push(timestamp_ns);
+                assert!(samples.iter().all(|sample| *sample == -0.5));
+            })
+        );
+        assert!(frames.push(&[], 9_000_000_000, |_, _| panic!("empty frame emitted")));
+        assert!(
+            frames.push(&[-0.5; 960], 2_020_100_000, |timestamp_ns, _| emitted
+                .push(timestamp_ns))
+        );
+        assert_eq!(emitted, [2_000_000_000, 2_020_000_000]);
+    }
+
+    #[test]
+    fn given_callback_jitter_when_input_frames_cross_packet_boundaries_then_sample_time_is_contiguous(
+    ) {
+        for frame_samples in [480, 960] {
+            let mut frames = InputFrames::new(frame_samples, NonZeroU32::new(48_000).unwrap());
+            let mut timestamps = Vec::new();
+            for packet in 0u64..120 {
+                let callback_jitter_ns = if packet % 2 == 0 { 0 } else { 200_000 };
+                let timestamp_ns =
+                    1_000_000_000 + packet * 512 * 1_000_000_000 / 48_000 + callback_jitter_ns;
+                assert!(
+                    frames.push(&[0.25; 512], timestamp_ns, |timestamp_ns, samples| {
+                        assert_eq!(samples.len(), frame_samples);
+                        assert!(samples.iter().all(|sample| *sample == 0.25));
+                        timestamps.push(timestamp_ns);
+                    })
+                );
+            }
+            assert_eq!(timestamps.len(), 120 * 512 / frame_samples);
+            for (index, timestamp_ns) in timestamps.iter().enumerate() {
+                assert_eq!(
+                    *timestamp_ns,
+                    1_000_000_000 + index as u64 * frame_samples as u64 * 1_000_000_000 / 48_000
+                );
+            }
+        }
+    }
 
     #[test]
     fn given_cpal_error_kinds_when_classified_then_names_fit_preallocated_storage() {
