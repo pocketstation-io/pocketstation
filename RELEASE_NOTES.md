@@ -14,8 +14,7 @@ without losing audio frames.
 The first timestamp remains anchored to capture time. Subsequent timestamps
 advance by represented samples; explicit capture gaps still reset partial
 framing and remain observable. Conversion and framing stay on the reader worker,
-and the realtime callback is unchanged. Public APIs and bounded queue sizes are
-unchanged.
+and the realtime callback is unchanged. Public APIs and queue capacities are unchanged.
 
 ## 1.1.11 — 2026-09-24
 
