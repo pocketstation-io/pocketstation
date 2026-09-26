@@ -4,6 +4,19 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.12 — 2026-09-26
+
+macOS microphone frames now preserve a continuous sample timeline when native
+packet sizes differ from the selected 10 ms or 20 ms Session frame size. This
+fixes a regression in 1.1.11 that could report periodic timestamp discontinuities
+without losing audio frames.
+
+The first timestamp remains anchored to capture time. Subsequent timestamps
+advance by represented samples; explicit capture gaps still reset partial
+framing and remain observable. Conversion and framing stay on the reader worker,
+and the realtime callback is unchanged. Public APIs and bounded queue sizes are
+unchanged.
+
 ## 1.1.11 — 2026-09-24
 
 ### Observe whether a microphone is usable
