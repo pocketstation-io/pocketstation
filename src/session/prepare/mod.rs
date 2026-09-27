@@ -634,6 +634,7 @@ fn map_worker_receivers(
                         route_settings: typed_edge.route_settings,
                     },
                     target: PreparedOperatorOutputTarget::OperatorInput {
+                        edge_id: edge.spec.id,
                         operator_instance_id: *target_instance,
                         input_port: edge.spec.to.port.clone(),
                     },

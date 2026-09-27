@@ -1752,9 +1752,8 @@ fn prepare_operator_runtimes(
                     capacity_signals,
                     ..
                 } => Some((
-                    (mapping.instance_id, input_port.clone()),
+                    (mapping.instance_id, input_port.clone(), *edge_id),
                     (
-                        *edge_id,
                         signal_spec.clone(),
                         *media,
                         *route_settings,
@@ -1770,12 +1769,15 @@ fn prepare_operator_runtimes(
         let ready_index = remaining.iter().position(|mapping| {
             mapping.inputs.iter().all(|input| match input {
                 PreparedOperatorInputMapping::Compiled { .. } => true,
-                PreparedOperatorInputMapping::Typed { input_port, .. } => {
-                    pending_inputs.iter().any(|pending| {
-                        pending.operator_instance_id == mapping.instance_id
-                            && pending.input_port == *input_port
-                    })
-                }
+                PreparedOperatorInputMapping::Typed {
+                    edge_id,
+                    input_port,
+                    ..
+                } => pending_inputs.iter().any(|pending| {
+                    pending.operator_instance_id == mapping.instance_id
+                        && pending.input_port == *input_port
+                        && pending.input.edge_id == Some(*edge_id)
+                }),
             })
         });
         let Some(ready_index) = ready_index else {
@@ -1852,6 +1854,7 @@ fn prepare_operator_runtimes(
                     let Some(index) = pending_inputs.iter().position(|pending| {
                         pending.operator_instance_id == instance_id
                             && pending.input_port == input_port
+                            && pending.input.edge_id == Some(edge_id)
                     }) else {
                         let rollback = rollback_operator_runtimes(host, prepared);
                         return Err((
@@ -2001,12 +2004,13 @@ fn prepare_operator_runtimes(
                     });
                 }
                 PreparedOperatorOutputTarget::OperatorInput {
+                    edge_id,
                     operator_instance_id,
                     input_port,
                 } => {
-                    let Some((edge_id, signal_spec, media, route_settings, capacity_signals)) =
+                    let Some((signal_spec, media, route_settings, capacity_signals)) =
                         typed_contracts
-                            .get(&(operator_instance_id, input_port.clone()))
+                            .get(&(operator_instance_id, input_port.clone(), edge_id))
                             .cloned()
                     else {
                         let mut incomplete = vec![PreparedOperatorRuntime {
