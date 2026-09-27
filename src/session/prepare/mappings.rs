@@ -207,6 +207,7 @@ pub(crate) struct PreparedOperatorOutputMapping {
 
 pub(crate) enum PreparedOperatorOutputTarget {
     OperatorInput {
+        edge_id: EdgeId,
         operator_instance_id: OperatorInstanceId,
         input_port: String,
     },

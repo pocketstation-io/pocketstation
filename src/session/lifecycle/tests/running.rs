@@ -2096,6 +2096,7 @@ mod composed_runtime {
         process_total: AtomicU64,
         left_total: AtomicU64,
         right_total: AtomicU64,
+        source_mask: AtomicU64,
         close_total: AtomicU64,
     }
 
@@ -2295,6 +2296,11 @@ mod composed_runtime {
         ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
             Box::pin(async move {
                 self.control.process_total.fetch_add(1, Ordering::Relaxed);
+                if let Some(lineage) = input.lineage {
+                    self.control
+                        .source_mask
+                        .fetch_or(1 << lineage.source_id.0, Ordering::Relaxed);
+                }
                 let role = match input_port {
                     "left" => {
                         self.control.left_total.fetch_add(1, Ordering::Relaxed);
@@ -2325,6 +2331,131 @@ mod composed_runtime {
                 OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
             ))
             .expect("text endpoint declaration")
+    }
+
+    #[test]
+    fn given_two_typed_producers_when_sharing_many_port_then_edges_and_sources_remain_distinct() {
+        for reverse_connections in [false, true] {
+            let producer = Arc::new(AsyncOperatorControl::default());
+            let consumer = Arc::new(ComposedControl::default());
+            let endpoint_control = Arc::new(DerivedEndpointControl::default());
+            let mut builder =
+                SessionEngineBuilder::new(context(), 8, SessionStartOptions::default())
+                    .expect("many-input engine builder");
+            builder
+                .register_async_operator(Arc::new(RunningTestAsyncFactory::new(
+                    Arc::clone(&producer),
+                    48_000,
+                )))
+                .expect("producer registration");
+            let mut factory = ComposedFactory::transform(
+                STAGE_TWO_OPERATOR_ID,
+                STAGE_TWO_NODE_ID,
+                Arc::clone(&consumer),
+            );
+            factory.manifest.node.inputs[0].multiplicity = Multiplicity::Many;
+            builder
+                .register_async_operator(Arc::new(factory))
+                .expect("many consumer registration");
+            builder
+                .register_endpoint(
+                    OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
+                    Arc::new(TextEndpointDefinition),
+                    Arc::new(DerivedTextEndpointFactory {
+                        control: Arc::clone(&endpoint_control),
+                    }),
+                )
+                .expect("endpoint registration");
+            let engine = builder.build().expect("many-input engine");
+            let session = Session::new();
+            let application = session
+                .capture(Source::application(ApplicationSelector::name(
+                    "many producer",
+                )))
+                .expect("application");
+            let microphone = session
+                .capture(Source::microphone_default())
+                .expect("microphone");
+            let first = application
+                .through(Operator::new(
+                    OperatorId::new(TEST_ASYNC_OPERATOR_ID),
+                    OperatorConfiguration::new(),
+                ))
+                .expect("first producer");
+            let many = session
+                .operator(Operator::new(
+                    OperatorId::new(STAGE_TWO_OPERATOR_ID),
+                    OperatorConfiguration::new(),
+                ))
+                .expect("many consumer");
+            let second = microphone
+                .through(Operator::new(
+                    OperatorId::new(TEST_ASYNC_OPERATOR_ID),
+                    OperatorConfiguration::new(),
+                ))
+                .expect("second producer");
+            let producers = if reverse_connections {
+                [second, first]
+            } else {
+                [first, second]
+            };
+            for output in producers {
+                output
+                    .connect(many.input("input").expect("many input"))
+                    .expect("typed edge");
+            }
+            many.output("output")
+                .expect("many output")
+                .send(endpoint(&session))
+                .expect("endpoint edge");
+            let application_control = Arc::new(CaptureControl::default());
+            let microphone_control = Arc::new(CaptureControl::default());
+            let application_backend = capture_backend(&application_control, 11);
+            let microphone_backend = capture_backend(&microphone_control, 22);
+            let mut running = engine
+                .start(
+                    session,
+                    capture_backend_set(&application_backend, &microphone_backend),
+                )
+                .expect("two typed producers on one MANY port must start");
+            let expected_sources = (1 << 11) | (1 << 22);
+            let deadline = Instant::now() + Duration::from_secs(2);
+            while consumer.source_mask.load(Ordering::Acquire) != expected_sources
+                && Instant::now() < deadline
+            {
+                std::thread::sleep(Duration::from_millis(1));
+            }
+            assert_eq!(
+                consumer.source_mask.load(Ordering::Acquire),
+                expected_sources
+            );
+            assert!(running.stop().is_success());
+            let (_, _, _, operators, _) = running.indexed_metrics_full();
+            assert_eq!(operators.len(), 3);
+            let many_metrics = operators
+                .iter()
+                .find(|operator| operator.input_ports.len() == 2)
+                .expect("two independently observed typed input edges");
+            assert!(many_metrics
+                .input_ports
+                .iter()
+                .all(|port| port.edge.frames_delivered_total > 0));
+            assert!(operators.iter().all(
+                |operator| operator.worker.joined && operator.finalization_failures_total == 0
+            ));
+            assert_eq!(producer.close_total.load(Ordering::Acquire), 2);
+            assert_eq!(consumer.close_total.load(Ordering::Acquire), 1);
+            assert_eq!(
+                application_control
+                    .live_active_total
+                    .load(Ordering::Acquire),
+                0
+            );
+            assert_eq!(
+                microphone_control.live_active_total.load(Ordering::Acquire),
+                0
+            );
+        }
     }
 
     #[test]
