@@ -127,6 +127,10 @@ fn discover_sources_native_with_audit() -> Vec<AuditedCaptureSource> {
         v
     };
 
+    decode_discovered_sources(&raw)
+}
+
+fn decode_discovered_sources(raw: &[RawSourceInfo]) -> Vec<AuditedCaptureSource> {
     raw.iter()
         .map(|r| {
             let process_id = if r.process_id > 0 {
@@ -140,7 +144,13 @@ fn discover_sources_native_with_audit() -> Vec<AuditedCaptureSource> {
                 3 => SourceKind::SystemMix,
                 _ => SourceKind::Application,
             };
-            let native_identity = cstr_to_opt(&r.bundle_id);
+            let native_identity = cstr_to_opt(&r.bundle_id).map(|identity| {
+                if source_kind == SourceKind::InputDevice {
+                    super::input::canonical_input_device_id(&identity)
+                } else {
+                    identity
+                }
+            });
             let stable_key = native_identity
                 .as_deref()
                 .map(|id| id.to_owned())
@@ -984,6 +994,35 @@ mod tests {
             sample_rate_hz: 48_000,
             channels: 2,
         }
+    }
+
+    #[test]
+    fn given_native_input_uid_when_discovered_then_identity_matches_canonical_opener() {
+        let mut raw = super::RawSourceInfo {
+            audio_object_id: 7,
+            process_id: 0,
+            bundle_id: [0; 256],
+            name: [0; 256],
+            source_kind_code: 1,
+            source_state_code: 0,
+            sample_rate_hz: 48_000,
+            channel_count: 1,
+            process_start_time_ns: 0,
+        };
+        let uid = b"BuiltInMicrophoneDevice";
+        raw.bundle_id[..uid.len()].copy_from_slice(uid);
+        let sources = super::decode_discovered_sources(&[raw]);
+        assert_eq!(sources.len(), 1);
+        let source = &sources[0].source;
+        let canonical = super::super::input::canonical_input_device_id("BuiltInMicrophoneDevice");
+        assert_eq!(source.stable_id.stable_key, canonical);
+        assert_eq!(source.device_uid.as_deref(), Some(canonical.as_str()));
+        assert_eq!(
+            source.stable_id.source_id(),
+            StableSourceId::new(Platform::Macos, SourceKind::InputDevice, canonical).source_id()
+        );
+        assert_eq!(source.state, SourceState::Available);
+        assert_eq!(source.channels, 1);
     }
 
     #[test]

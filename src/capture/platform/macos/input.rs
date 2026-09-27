@@ -544,20 +544,40 @@ fn select_input_device(
         InputDeviceSelector::Default => host.default_input_device().ok_or_else(|| {
             CaptureError::BackendInit("no default physical input device is available".to_owned())
         }),
-        InputDeviceSelector::StableId(expected_id) => host
-            .input_devices()
-            .map_err(|error| capture_backend_error("enumerate input devices", error))?
-            .find(|device| {
-                device
-                    .id()
-                    .is_ok_and(|device_id| device_id.to_string() == *expected_id)
-            })
-            .ok_or_else(|| {
+        InputDeviceSelector::StableId(expected_id) => {
+            let devices = host
+                .input_devices()
+                .map_err(|error| capture_backend_error("enumerate input devices", error))?
+                .filter_map(|device| device.id().ok().map(|id| (device, id)));
+            find_input_device_by_id(devices, expected_id).ok_or_else(|| {
                 CaptureError::BackendInit(format!(
                     "physical input device is unavailable: {expected_id}"
                 ))
-            }),
+            })
+        }
     }
+}
+
+pub(super) fn canonical_input_device_id(native_uid: &str) -> String {
+    cpal::DeviceId::new(cpal::HostId::CoreAudio, native_uid).to_string()
+}
+
+fn find_input_device_by_id<T>(
+    devices: impl IntoIterator<Item = (T, cpal::DeviceId)>,
+    expected_id: &str,
+) -> Option<T> {
+    let mut legacy_device = None;
+    for (device, id) in devices {
+        if id.to_string() == expected_id {
+            return Some(device);
+        }
+        // Older discovery exposed the native CoreAudio UID. Keep exact UID
+        // compatibility here; never guess by display name or use the default.
+        if !expected_id.is_empty() && id.id() == expected_id && legacy_device.is_none() {
+            legacy_device = Some(device);
+        }
+    }
+    legacy_device
 }
 
 fn capture_backend_error(context: &str, error: impl std::fmt::Display) -> CaptureError {
@@ -568,6 +588,50 @@ fn capture_backend_error(context: &str, error: impl std::fmt::Display) -> Captur
 mod tests {
     use super::*;
     use cpal::{InputCallbackInfo, InputStreamTimestamp, StreamInstant};
+
+    #[test]
+    fn given_canonical_and_legacy_uid_collision_when_resolved_then_canonical_id_wins() {
+        let devices = [
+            (
+                1,
+                cpal::DeviceId::new(cpal::HostId::CoreAudio, "coreaudio:mic"),
+            ),
+            (2, cpal::DeviceId::new(cpal::HostId::CoreAudio, "mic")),
+        ];
+        assert_eq!(find_input_device_by_id(devices, "coreaudio:mic"), Some(2));
+    }
+
+    #[test]
+    fn given_distinct_and_stale_uids_when_resolved_then_selection_never_falls_back() {
+        for selector in [
+            "",
+            "missing",
+            "MIC",
+            "coreaudio:missing",
+            "wasapi:mic",
+            "Microphone",
+        ] {
+            let devices = [(1, cpal::DeviceId::new(cpal::HostId::CoreAudio, "mic"))];
+            assert_eq!(find_input_device_by_id(devices, selector), None);
+        }
+        let devices = [(1, cpal::DeviceId::new(cpal::HostId::CoreAudio, "mic"))];
+        assert_eq!(
+            find_input_device_by_id(devices, &canonical_input_device_id("mic")),
+            Some(1)
+        );
+    }
+
+    #[test]
+    fn given_legacy_core_audio_uid_when_resolved_then_exact_device_is_selected() {
+        let devices = [(
+            7,
+            cpal::DeviceId::new(cpal::HostId::CoreAudio, "BuiltInMicrophoneDevice"),
+        )];
+        assert_eq!(
+            find_input_device_by_id(devices, "BuiltInMicrophoneDevice"),
+            Some(7)
+        );
+    }
 
     #[test]
     fn given_input_gap_when_reset_then_partial_audio_is_discarded_and_source_time_reanchors() {
