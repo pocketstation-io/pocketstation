@@ -4,9 +4,9 @@
 //! policy remain outside the core Session lifecycle.
 
 #[cfg(feature = "echo-cancellation")]
-mod echo_cancellation;
+mod aec;
 #[cfg(feature = "echo-cancellation")]
-pub use echo_cancellation::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
+pub use aec::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
 mod audio_input;
 pub(crate) mod builtins;
 mod native_library;

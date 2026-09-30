@@ -84,6 +84,6 @@ pkg-config, libclang and Rust's `llvm-tools` component. Its build can download
 checksum-pinned Abseil source. A configured dependency cache supports offline
 builds. Minimal `--no-default-features` builds omit this API and engine.
 
-The Core implementation is in `src/echo_cancellation`; `tests/session_aec.rs` exercises the
+The Core implementation is in `src/aec`; `tests/session_aec.rs` exercises the
 normal Session API with deterministic PCM and the actual native engine. Those
 tests establish software integration, not physical acoustic quality.
