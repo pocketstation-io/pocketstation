@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use std::fmt;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::frame::{AudioBufferPool, AudioFrame, OutputGenerationState};
 use crate::graph::{
@@ -24,6 +24,7 @@ use super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID};
 
 const OUTPUT_PORT: &str = "audio";
 const DRIVER_IDLE_WAIT: Duration = Duration::from_millis(2);
+const ADMISSION_DRAIN_TIMEOUT: Duration = Duration::from_millis(100);
 
 static NEXT_AUDIO_INPUT_WRITER_ID: AtomicU64 = AtomicU64::new(1);
 
@@ -287,13 +288,6 @@ impl SourceDriver for AudioInputDriver {
         }
         loop {
             if cancellation.is_cancelled() {
-                self.state
-                    .as_ref()
-                    .ok_or_else(|| {
-                        SourceDriverError::Failed("audio input state is not prepared".to_owned())
-                    })?
-                    .cancelled
-                    .store(true, Ordering::Release);
                 return Ok(None);
             }
             let receiver = self.receiver.as_mut().ok_or_else(|| {
@@ -303,6 +297,9 @@ impl SourceDriver for AudioInputDriver {
                 return self.emission(queued).map(Some);
             }
             if receiver.is_abandoned() {
+                // rtrb's relaxed abandonment observation needs an acquire fence
+                // before the final dequeue can establish producer EOF.
+                std::sync::atomic::fence(Ordering::Acquire);
                 if let Some(queued) = receiver.recv() {
                     return self.emission(queued).map(Some);
                 }
@@ -312,9 +309,43 @@ impl SourceDriver for AudioInputDriver {
         }
     }
 
+    fn drain(&mut self) -> Result<Option<SourceEmission>, SourceDriverError> {
+        let state = self.state.as_ref().ok_or_else(|| {
+            SourceDriverError::Failed("audio input state is not prepared".to_owned())
+        })?;
+        state.close_admission();
+        let started = Instant::now();
+        // Only the off-realtime source worker waits. A producer admitted before
+        // close must publish or reject its frame before an empty queue is EOF.
+        while state.write_in_flight() {
+            if started.elapsed() >= ADMISSION_DRAIN_TIMEOUT {
+                return Err(SourceDriverError::Failed(
+                    "audio input writer did not finish admission within 100 milliseconds"
+                        .to_owned(),
+                ));
+            }
+            std::thread::park_timeout(DRIVER_IDLE_WAIT);
+        }
+        let receiver = self.receiver.as_mut().ok_or_else(|| {
+            SourceDriverError::Failed("audio input receiver is not prepared".to_owned())
+        })?;
+        receiver
+            .recv()
+            .map(|queued| self.emission(queued))
+            .transpose()
+    }
+
+    fn cancel(&mut self) -> Result<(), SourceDriverError> {
+        if let Some(state) = &self.state {
+            state.cancelled.store(true, Ordering::Release);
+            state.close_admission();
+        }
+        Ok(())
+    }
+
     fn close(&mut self) -> Result<(), SourceDriverError> {
         if let Some(state) = &self.state {
-            state.closed.store(true, Ordering::Release);
+            state.close_admission();
         }
         Ok(())
     }
@@ -363,5 +394,41 @@ impl AudioInputDriver {
             envelope,
             terminal: false,
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{AudioInputWriteErrorKind, SampleFormat};
+
+    #[test]
+    fn given_cancel_before_first_next_when_writer_is_retained_then_cancelled_is_reported() {
+        let sample_spec = SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved);
+        let config = AudioInputConfig::new(sample_spec, 2, 4).unwrap();
+        let factory = AudioInputFactory::new(config).unwrap();
+        let reservation = factory.reserve(config).unwrap();
+        let mut writer = reservation.writer;
+        let mut held = writer.try_acquire().unwrap();
+        held.try_copy_from_slice(&[0.25; 4]).unwrap();
+        let mut driver = AudioInputDriver {
+            pending: Arc::clone(&factory.pending),
+            receiver: Some(reservation.pending.receiver),
+            state: Some(reservation.pending.state),
+            sample_spec,
+            session: None,
+            receiver_thread_registered: false,
+        };
+
+        // The generic runtime calls cancel before close even if next never ran.
+        driver.cancel().unwrap();
+        driver.close().unwrap();
+
+        assert!(writer.observations().cancelled);
+        assert!(writer.observations().closed);
+        let error = writer.try_send(held).unwrap_err();
+        assert_eq!(error.kind(), AudioInputWriteErrorKind::Cancelled);
+        assert_eq!(error.into_rejected().unwrap().samples(), &[0.25; 4]);
+        assert_eq!(writer.observations().accepted_total, 0);
     }
 }

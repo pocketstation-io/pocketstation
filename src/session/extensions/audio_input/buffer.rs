@@ -1,5 +1,5 @@
 use std::fmt;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering};
 use std::sync::Arc;
 
 use crate::frame::{
@@ -71,12 +71,59 @@ impl fmt::Debug for AudioInputBuffer {
 #[derive(Default)]
 pub(super) struct AudioInputState {
     pub(super) cancelled: AtomicBool,
-    pub(super) closed: AtomicBool,
+    admission: AtomicU8,
     accepted_total: AtomicU64,
     full_total: AtomicU64,
     invalid_total: AtomicU64,
     pub(super) discarded_output_frames_total: AtomicU64,
     cancelled_output_writes_total: AtomicU64,
+}
+
+const ADMISSION_OPEN: u8 = 0;
+const ADMISSION_WRITING: u8 = 1;
+const ADMISSION_CLOSED: u8 = 2;
+
+impl AudioInputState {
+    pub(super) fn close_admission(&self) {
+        self.admission.fetch_or(ADMISSION_CLOSED, Ordering::AcqRel);
+    }
+
+    pub(super) fn is_closed(&self) -> bool {
+        self.admission.load(Ordering::Acquire) & ADMISSION_CLOSED != 0
+    }
+
+    pub(super) fn write_in_flight(&self) -> bool {
+        self.admission.load(Ordering::Acquire) & ADMISSION_WRITING != 0
+    }
+
+    fn try_admit(&self) -> Option<AudioInputAdmission<'_>> {
+        // AudioInputWriter requires &mut self: only one writer can enter.
+        // This CAS orders admission against close without a callback lock or
+        // retry loop. A winning write is included in graceful drain even if
+        // shutdown closes admission before the queue publication completes.
+        self.admission
+            .compare_exchange(
+                ADMISSION_OPEN,
+                ADMISSION_WRITING,
+                Ordering::AcqRel,
+                Ordering::Acquire,
+            )
+            .ok()
+            .map(|_| AudioInputAdmission { state: self })
+    }
+}
+
+struct AudioInputAdmission<'a> {
+    state: &'a AudioInputState,
+}
+
+impl Drop for AudioInputAdmission<'_> {
+    // Hot-path invariant: one atomic release, no allocation, lock, wait or log.
+    fn drop(&mut self) {
+        self.state
+            .admission
+            .fetch_and(!ADMISSION_WRITING, Ordering::Release);
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -130,7 +177,7 @@ impl AudioInputWriter {
             return Err(AudioInputBufferAcquireError::Cancelled);
         }
         if self.sender.is_none()
-            || self.state.closed.load(Ordering::Acquire)
+            || self.state.is_closed()
             || self
                 .sender
                 .as_ref()
@@ -208,7 +255,7 @@ impl AudioInputWriter {
                 Some(buffer),
             ));
         };
-        if self.state.closed.load(Ordering::Acquire) || sender.is_abandoned() {
+        if self.state.is_closed() || sender.is_abandoned() {
             return Err(AudioInputWriteError::new(
                 AudioInputWriteErrorKind::Closed,
                 Some(buffer),
@@ -259,6 +306,12 @@ impl AudioInputWriter {
         } else {
             self.discontinuity_epoch
         };
+        let Some(_admission) = self.state.try_admit() else {
+            return Err(AudioInputWriteError::new(
+                AudioInputWriteErrorKind::Closed,
+                Some(buffer),
+            ));
+        };
         let queued = QueuedAudioInputFrame {
             buffer: buffer.buffer,
             sequence_number: self.next_sequence,
@@ -293,6 +346,7 @@ impl AudioInputWriter {
     }
 
     pub fn close(&mut self) {
+        self.state.close_admission();
         self.sender = None;
     }
 
@@ -305,7 +359,7 @@ impl AudioInputWriter {
             full_total: self.state.full_total.load(Ordering::Relaxed),
             invalid_total: self.state.invalid_total.load(Ordering::Relaxed),
             cancelled: self.state.cancelled.load(Ordering::Acquire),
-            closed: self.sender.is_none() || self.state.closed.load(Ordering::Acquire),
+            closed: self.sender.is_none() || self.state.is_closed(),
         }
     }
 
@@ -536,4 +590,62 @@ fn sample_duration_ns(sample_frames: usize, sample_rate_hz: u32) -> u64 {
         .checked_div(u128::from(sample_rate_hz))
         .unwrap_or(0)
         .min(u128::from(u64::MAX)) as u64
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::mpsc::sync_channel;
+    use std::time::Duration;
+
+    #[test]
+    fn given_admitted_write_when_close_races_publication_then_write_remains_part_of_drain() {
+        let state = Arc::new(AudioInputState::default());
+        let producer_state = Arc::clone(&state);
+        let (mut sender, mut receiver) = crate::runtime::SignalEdge::bounded(1);
+        let (admitted_tx, admitted_rx) = sync_channel(1);
+        let (publish_tx, publish_rx) = sync_channel(1);
+        let writer = std::thread::spawn(move || {
+            let _admission = producer_state.try_admit().expect("writer wins admission");
+            admitted_tx.send(()).unwrap();
+            publish_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+            sender.try_send(42_u64).unwrap();
+            producer_state
+                .accepted_total
+                .fetch_add(1, Ordering::Relaxed);
+        });
+
+        admitted_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+        state.close_admission();
+        assert!(state.is_closed());
+        assert!(state.write_in_flight());
+        assert!(
+            receiver.recv().is_none(),
+            "empty is not EOF while an admitted writer owns publication"
+        );
+        assert!(
+            state.try_admit().is_none(),
+            "close rejects later admissions"
+        );
+        publish_tx.send(()).unwrap();
+        writer.join().unwrap();
+
+        assert!(!state.write_in_flight());
+        assert!(
+            state.is_closed(),
+            "the writer must not reopen admission on exit"
+        );
+        assert_eq!(receiver.recv(), Some(42));
+        assert_eq!(state.accepted_total.load(Ordering::Relaxed), 1);
+        assert!(receiver.recv().is_none());
+    }
+
+    #[test]
+    fn given_closed_admission_when_writer_attempts_entry_then_nothing_is_accepted() {
+        let state = AudioInputState::default();
+        state.close_admission();
+        assert!(state.try_admit().is_none());
+        assert!(!state.write_in_flight());
+        assert_eq!(state.accepted_total.load(Ordering::Relaxed), 0);
+    }
 }

@@ -44,6 +44,13 @@ struct LifecycleSourceFactory {
     manifest: SourceManifest,
     control: Arc<SourceControl>,
     fail_at: Option<u64>,
+    finalization_failure: Option<SourceFailureStage>,
+}
+
+#[derive(Clone, Copy)]
+enum SourceFailureStage {
+    Drain,
+    Close,
 }
 
 struct LifecycleSourceDriver {
@@ -51,6 +58,7 @@ struct LifecycleSourceDriver {
     session: Option<SourceSessionContext>,
     sequence: u64,
     fail_at: Option<u64>,
+    finalization_failure: Option<SourceFailureStage>,
 }
 
 impl SourceDriver for LifecycleSourceDriver {
@@ -120,8 +128,22 @@ impl SourceDriver for LifecycleSourceDriver {
         }))
     }
 
+    fn drain(&mut self) -> Result<Option<SourceEmission>, SourceDriverError> {
+        if matches!(self.finalization_failure, Some(SourceFailureStage::Drain)) {
+            return Err(SourceDriverError::Failed(
+                "deterministic source drain failure".to_owned(),
+            ));
+        }
+        Ok(None)
+    }
+
     fn close(&mut self) -> Result<(), SourceDriverError> {
         self.control.closed_total.fetch_add(1, Ordering::Relaxed);
+        if matches!(self.finalization_failure, Some(SourceFailureStage::Close)) {
+            return Err(SourceDriverError::Failed(
+                "deterministic source close failure".to_owned(),
+            ));
+        }
         Ok(())
     }
 }
@@ -144,6 +166,7 @@ impl SourceFactory for LifecycleSourceFactory {
             session: None,
             sequence: 0,
             fail_at: self.fail_at,
+            finalization_failure: self.finalization_failure,
         }))
     }
 }
@@ -578,6 +601,7 @@ fn source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {
         },
         control,
         fail_at: None,
+        finalization_failure: None,
     })
 }
 
@@ -600,6 +624,7 @@ fn failing_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory>
         },
         control,
         fail_at: Some(4),
+        finalization_failure: None,
     })
 }
 
@@ -717,7 +742,7 @@ fn given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_r
     assert!(outcome.is_success());
     let (_, external_sources, _, _, _) = running.indexed_metrics_full();
     assert!(external_sources[0].runtime.joined);
-    assert_eq!(external_sources[0].runtime.cancellation_total, 1);
+    assert_eq!(external_sources[0].runtime.cancellation_total, 0);
     assert_eq!(source_control.closed_total.load(Ordering::Relaxed), 1);
     assert_eq!(
         fast_endpoint
@@ -820,6 +845,82 @@ fn given_one_external_source_failure_when_session_runs_then_unrelated_source_com
     assert!(!outcome.is_success());
     assert_eq!(healthy_control.closed_total.load(Ordering::Relaxed), 1);
     assert_eq!(failing_control.closed_total.load(Ordering::Relaxed), 1);
+}
+
+#[test]
+fn given_source_finalization_failure_when_session_stops_then_result_and_terminal_event_both_fail() {
+    use crate::session::{
+        SessionEventKind, SessionEventReceive, SessionLifecycleState, SessionTerminalState,
+    };
+
+    for stage in [SourceFailureStage::Drain, SourceFailureStage::Close] {
+        let control = Arc::new(SourceControl::default());
+        let mut builder = SessionEngineBuilder::new(
+            PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved)),
+            8,
+            SessionStartOptions::default(),
+        )
+        .unwrap();
+        builder
+            .register_source_factory(Arc::new(LifecycleSourceFactory {
+                manifest: source_factory(Arc::clone(&control)).manifest().clone(),
+                control: Arc::clone(&control),
+                fail_at: None,
+                finalization_failure: Some(stage),
+            }))
+            .unwrap();
+        builder
+            .register_endpoint(
+                OperatorId::new(ENDPOINT_OPERATOR),
+                Arc::new(EndpointDefinition),
+                Arc::new(LifecycleEndpointFactory {
+                    fast_control: Arc::default(),
+                    slow_control: Arc::default(),
+                }),
+            )
+            .unwrap();
+        let session = Session::new();
+        session
+            .source(
+                SourceTypeId::new(SOURCE_TYPE).unwrap(),
+                SourceConfiguration::default(),
+            )
+            .unwrap()
+            .output("signal")
+            .unwrap()
+            .send(endpoint(&session, true))
+            .unwrap();
+        let backend = ForbiddenCaptureBackend;
+        let mut running = builder
+            .build()
+            .unwrap()
+            .start(
+                session,
+                CaptureBackendSet {
+                    application: &backend,
+                    microphone: &backend,
+                },
+            )
+            .unwrap();
+        let events = running.take_event_receiver().unwrap();
+
+        let outcome = running.stop();
+        assert!(!outcome.is_success());
+        assert_eq!(running.state(), SessionLifecycleState::Failed);
+        let (_, sources, _, _, _) = running.indexed_metrics_full();
+        assert_eq!(sources[0].runtime.failure_total, 1);
+        assert_eq!(sources[0].runtime.cancellation_total, 0);
+        assert_eq!(control.closed_total.load(Ordering::Relaxed), 1);
+        let mut terminal = None;
+        while let SessionEventReceive::Event(event) = events.try_recv() {
+            if let SessionEventKind::Terminal(outcome) = event.kind() {
+                terminal = Some(outcome.clone());
+            }
+        }
+        let terminal = terminal.expect("source failure must produce a terminal event");
+        assert_eq!(terminal.state(), SessionTerminalState::Failed);
+        assert!(!terminal.finalization_failures().is_empty());
+    }
 }
 
 #[test]
