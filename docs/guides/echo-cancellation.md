@@ -42,8 +42,10 @@ the actual microphone and reference source IDs after processing starts.
 
 ## Current input requirements
 
-- Both inputs use the Session's 48 kHz interleaved float format, with matching
-  mono or stereo channel counts and 10 ms or 20 ms frames.
+- Both inputs use 48 kHz interleaved float PCM and the Session's 10 ms or 20 ms
+  cadence. Their channel counts are negotiated independently: a mono microphone
+  can use a stereo application reference, and the output retains the microphone
+  layout. Each input must declare a concrete mono or stereo format.
 - Source timestamps must be in the same declared clock domain. Core admits
   render and microphone frames independently; it neither splices reference
   samples nor requires an extra reference frame at EOF. The engine estimates
@@ -53,8 +55,10 @@ the actual microphone and reference source IDs after processing starts.
   reported as `maximum_cadence_error_ns`. A larger timestamp jump, changed source
   identity, sequence gap or discontinuity epoch resets the engine and discards
   queued frames with counters. This tolerance is not hardware-drift qualification.
-- Stereo reference channels remain separate; opposite-polarity playback is
-  exercised by the Session regression test.
+- Stereo reference channels remain separate from the first frame. The pinned
+  AEC3 engine uses its standard tuning with temporary stereo-content detection
+  disabled, since Session already knows the layout. Session regressions exercise
+  opposite-polarity playback, independent stereo paths and simultaneous signals.
 - Missing reference is held for at most 80 ms of unmatched microphone samples.
   Exhausting that frame limit fails the processor; it does not return raw samples
   labelled as cancelled audio. This is a retained-audio limit, not a wall-clock
@@ -83,9 +87,13 @@ when echo processing fails.
 
 Preparation establishes the native capture and render formats, then clears its
 initialization audio before accepting actual input. Initialization samples never
-enter source counts or output audio. `Session.stop()` drains admitted operator
-input and calls flush; `cancel()` discards queued work. Closing individual source
-writers does not finish Session-owned routing queues.
+enter source counts or output audio. `Session.stop()` closes AudioInput admission,
+drains accepted source and operator input, and calls flush; `cancel()` discards
+queued work. An optional `SourceDriver::drain` supplies already accepted work
+after `next` is interrupted. Core applies a shared one-second drain budget,
+checked between calls; it cannot interrupt a blocking custom driver. Drain and
+close failures appear in both the stop result and the terminal Session event.
+Closing individual source writers does not finish Session-owned routing queues.
 
 Native work runs on one dedicated thread per instance. The Session executor
 awaits results; capture callbacks do not run the engine. Commands and retained

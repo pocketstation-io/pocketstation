@@ -87,6 +87,7 @@ impl EchoProcessor {
     fn validate_input(
         &self,
         input: &SignalEnvelope,
+        channels: u8,
     ) -> Result<(SignalLineage, SignalTiming), NodeError> {
         input.validate().map_err(failure)?;
         let lineage = input
@@ -104,7 +105,6 @@ impl EchoProcessor {
         let SignalPayload::Audio(frame) = input.payload() else {
             return Err(failure("AEC input must be PCM"));
         };
-        let channels = self.configuration.reference_channels.count();
         if frame.sample_rate_hz() != SAMPLE_RATE_HZ
             || frame.channels() != channels
             || frame.samples().len() != self.configuration.frame_samples() * usize::from(channels)
@@ -157,7 +157,12 @@ impl EchoProcessor {
             "reference" => 1,
             _ => return Err(failure("unknown AEC input port")),
         };
-        let (lineage, timing) = self.validate_input(&input)?;
+        let channels = if index == 0 {
+            self.configuration.microphone_channels
+        } else {
+            self.configuration.reference_channels
+        };
+        let (lineage, timing) = self.validate_input(&input, channels.count())?;
         if let Some((last, last_time)) = self.previous[index] {
             let cadence_error = cadence_error_ns(
                 last_time.source_timestamp_ns().unwrap_or(0),
@@ -335,7 +340,7 @@ impl EchoProcessor {
             .processor
             .as_ref()
             .ok_or_else(|| failure("AEC processor absent"))?;
-        let channels = usize::from(self.configuration.reference_channels.count());
+        let channels = usize::from(self.configuration.microphone_channels.count());
         let start = Instant::now();
         for block_index in 0..(self.configuration.frame_samples() / ENGINE_FRAME_SAMPLES) {
             let mut capture = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
@@ -427,7 +432,7 @@ impl EchoProcessor {
                 .ok_or_else(|| failure("AEC output time missing"))?,
             SampleSpec::new(
                 SAMPLE_RATE_HZ,
-                self.configuration.reference_channels.count(),
+                self.configuration.microphone_channels.count(),
                 SampleFormat::F32Interleaved,
             ),
             buffer,
@@ -462,15 +467,30 @@ impl EchoProcessor {
 
 impl EchoProcessor {
     pub(crate) fn prepare(&mut self) -> Result<(), NodeError> {
-        let processor =
-            Processor::new(SAMPLE_RATE_HZ).map_err(|e| NodeError::Prepare(e.to_string()))?;
+        let processor = if self.configuration.reference_channels.count() > 1 {
+            // AEC3's content detector temporarily averages stereo, cancelling
+            // opposite-polarity channels before switching filters after 2 s.
+            // Session already negotiated the layout. Keep both render channels
+            // from the first actual frame, retaining standard upstream AEC3 tuning.
+            let mut config = webrtc_audio_processing::experimental::EchoCanceller3Config::default();
+            config.multi_channel.detect_stereo_content = false;
+            if !config.validate() {
+                return Err(NodeError::Prepare(
+                    "invalid negotiated AEC3 configuration".into(),
+                ));
+            }
+            Processor::with_aec3_config(SAMPLE_RATE_HZ, config)
+        } else {
+            Processor::new(SAMPLE_RATE_HZ)
+        }
+        .map_err(|e| NodeError::Prepare(e.to_string()))?;
         processor.set_config(Config {
             echo_canceller: Some(EchoCanceller::Full {
                 stream_delay_ms: None,
             }),
             pipeline: webrtc_audio_processing::config::Pipeline {
                 multi_channel_render: self.configuration.reference_channels.count() > 1,
-                multi_channel_capture: self.configuration.reference_channels.count() > 1,
+                multi_channel_capture: self.configuration.microphone_channels.count() > 1,
                 ..Default::default()
             },
             ..Default::default()
@@ -479,21 +499,26 @@ impl EchoProcessor {
         // Establish both formats privately, then reset that initialization audio
         // before accepting any source frame. Otherwise the first real reference
         // is lost and the first microphone block has a different signal delay.
-        let channels = usize::from(self.configuration.reference_channels.count());
+        let render_channels = usize::from(self.configuration.reference_channels.count());
+        let capture_channels = usize::from(self.configuration.microphone_channels.count());
         let render = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
         let mut capture = render;
         processor
-            .analyze_render_frame(render[..channels].iter().map(|c| c.as_slice()))
+            .analyze_render_frame(render[..render_channels].iter().map(|c| c.as_slice()))
             .map_err(|error| NodeError::Prepare(error.to_string()))?;
         processor
-            .process_capture_frame(capture[..channels].iter_mut().map(|c| c.as_mut_slice()))
+            .process_capture_frame(
+                capture[..capture_channels]
+                    .iter_mut()
+                    .map(|c| c.as_mut_slice()),
+            )
             .map_err(|error| NodeError::Prepare(error.to_string()))?;
         processor.reinitialize();
         self.processor = Some(processor);
         self.output_pool = Some(AudioBufferPool::new(
             OUTPUT_POOL_FRAMES,
             self.configuration.frame_samples()
-                * usize::from(self.configuration.reference_channels.count()),
+                * usize::from(self.configuration.microphone_channels.count()),
         ));
         self.publish();
         Ok(())

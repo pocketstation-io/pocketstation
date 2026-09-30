@@ -238,7 +238,9 @@ fn prepare_external_sources(
                     channels,
                     audio.format,
                 );
-                if sample_spec != default_prepare_context.sample_spec {
+                if sample_spec.sample_rate_hz != default_prepare_context.sample_spec.sample_rate_hz
+                    || sample_spec.format != default_prepare_context.sample_spec.format
+                {
                     return Err(SessionPrepareError::InvalidExternalAudioMedia {
                         source_instance_id: source.instance_id(),
                         output_port: output.output_port().to_owned(),

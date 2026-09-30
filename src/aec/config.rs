@@ -8,12 +8,12 @@ pub(super) const PROCESS_DEADLINE_MS: u32 = 100;
 
 /// Reference and capture layouts negotiated by Session; channels remain separate.
 #[derive(Clone, Copy, Debug)]
-pub(crate) enum ReferenceChannels {
+pub(crate) enum Channels {
     Mono,
     Stereo,
 }
 
-impl ReferenceChannels {
+impl Channels {
     pub(crate) fn count(self) -> u8 {
         match self {
             Self::Mono => 1,
@@ -34,15 +34,26 @@ impl ReferenceChannels {
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct AecConfiguration {
     pub frame_duration_ms: u32,
-    pub reference_channels: ReferenceChannels,
+    pub microphone_channels: Channels,
+    pub reference_channels: Channels,
     /// Maximum per-source timestamp residual before resetting adaptation.
     pub maximum_cadence_error_ns: u64,
 }
 
 impl AecConfiguration {
-    pub fn new(frame_duration_ms: u32, reference_channels: ReferenceChannels) -> Self {
+    #[cfg(test)]
+    pub fn new(frame_duration_ms: u32, reference_channels: Channels) -> Self {
+        Self::with_channels(frame_duration_ms, reference_channels, reference_channels)
+    }
+
+    pub fn with_channels(
+        frame_duration_ms: u32,
+        microphone_channels: Channels,
+        reference_channels: Channels,
+    ) -> Self {
         Self {
             frame_duration_ms,
+            microphone_channels,
             reference_channels,
             maximum_cadence_error_ns: 1_000_000,
         }

@@ -53,9 +53,9 @@ fn prepared_processor(
     Arc<AudioBufferPool>,
 ) {
     let channels = if stereo {
-        crate::aec::ReferenceChannels::Stereo
+        crate::aec::Channels::Stereo
     } else {
-        crate::aec::ReferenceChannels::Mono
+        crate::aec::Channels::Mono
     };
     let configuration = AecConfiguration::new(frame_ms, channels);
     let state = ObservationState::new(configuration.capacity_frames());

@@ -83,7 +83,7 @@ internal-testing = []
 macos-asp-driver-artifact = []
 
 [dependencies]
-webrtc-audio-processing = { version = "=2.1.0", features = ["bundled"], optional = true }
+webrtc-audio-processing = { version = "=2.1.0", features = ["bundled", "experimental-aec3-config"], optional = true }
 libloading = "0.8.9"
 rtrb = "0.3"
 thiserror = "1"

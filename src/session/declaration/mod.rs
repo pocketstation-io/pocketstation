@@ -9,6 +9,9 @@ mod selector;
 mod spec;
 mod typed_stream;
 
+#[cfg(feature = "echo-cancellation")]
+pub(crate) use draft::OriginDefinition;
+
 pub use draft::{
     DerivedStreamHandle, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle,
     Session, SourceInstanceHandle, SourceOutputHandle, StemHandle,

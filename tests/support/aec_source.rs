@@ -39,10 +39,25 @@ impl InputFrame {
 pub struct AecSource {
     pub output: SourceOutputHandle,
     sender: Option<mpsc::SyncSender<InputFrame>>,
+    samples_per_frame: usize,
 }
 
 impl AecSource {
     pub fn declare(session: &Session, label: &str) -> Self {
+        Self::declare_format(
+            session,
+            label,
+            SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+            FRAME_SAMPLES,
+        )
+    }
+
+    pub fn declare_format(
+        session: &Session,
+        label: &str,
+        sample_spec: SampleSpec,
+        frame_samples: usize,
+    ) -> Self {
         let source_type = SourceTypeId::new(format!("io.pocketstation.source.aec{label}.v1"))
             .expect("valid fixture source identifier");
         let (sender, receiver) = mpsc::sync_channel(8);
@@ -55,9 +70,13 @@ impl AecSource {
                 PortDirection::Output,
                 SignalSpec::audio(),
                 MediaCaps::Audio(AudioCaps {
-                    sample_rate_hz: Some(48_000),
-                    frame_samples: Some(FRAME_SAMPLES),
-                    channel_layout: ChannelLayout::Mono,
+                    sample_rate_hz: Some(sample_spec.sample_rate_hz),
+                    frame_samples: Some(frame_samples),
+                    channel_layout: if sample_spec.channels == 1 {
+                        ChannelLayout::Mono
+                    } else {
+                        ChannelLayout::Stereo
+                    },
                     format: SampleFormat::F32Interleaved,
                 }),
                 Multiplicity::Many,
@@ -71,6 +90,8 @@ impl AecSource {
         session
             .register_source(Arc::new(FixtureFactory {
                 manifest,
+                sample_spec,
+                frame_samples,
                 receiver: Mutex::new(Some(receiver)),
             }))
             .unwrap();
@@ -80,11 +101,12 @@ impl AecSource {
         Self {
             output: source.output("audio").unwrap(),
             sender: Some(sender),
+            samples_per_frame: frame_samples * usize::from(sample_spec.channels),
         }
     }
 
     pub fn send(&self, frame: InputFrame) {
-        assert_eq!(frame.samples.len(), FRAME_SAMPLES);
+        assert_eq!(frame.samples.len(), self.samples_per_frame);
         assert!(frame.samples.iter().all(|sample| sample.is_finite()));
         self.sender
             .as_ref()
@@ -100,6 +122,8 @@ impl AecSource {
 
 struct FixtureFactory {
     manifest: SourceManifest,
+    sample_spec: SampleSpec,
+    frame_samples: usize,
     receiver: Mutex<Option<mpsc::Receiver<InputFrame>>>,
 }
 
@@ -121,7 +145,13 @@ impl SourceFactory for FixtureFactory {
         Ok(Box::new(FixtureDriver {
             receiver: self.receiver.lock().unwrap().take().unwrap(),
             session: None,
-            pool: AudioBufferPool::new(16, FRAME_SAMPLES),
+            pool: AudioBufferPool::new(
+                16,
+                self.frame_samples * usize::from(self.sample_spec.channels),
+            ),
+            sample_spec: self.sample_spec,
+            duration_ns: self.frame_samples as u64 * 1_000_000_000
+                / u64::from(self.sample_spec.sample_rate_hz),
         }))
     }
 }
@@ -130,6 +160,8 @@ struct FixtureDriver {
     receiver: mpsc::Receiver<InputFrame>,
     session: Option<SourceSessionContext>,
     pool: Arc<AudioBufferPool>,
+    sample_spec: SampleSpec,
+    duration_ns: u64,
 }
 
 impl SourceDriver for FixtureDriver {
@@ -160,7 +192,7 @@ impl SourceDriver for FixtureDriver {
                 session.source_id,
                 input.sequence_number,
                 input.timestamp_ns,
-                SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+                self.sample_spec,
                 buffer,
             )
             .unwrap();
@@ -179,7 +211,7 @@ impl SourceDriver for FixtureDriver {
                 Some(input.timestamp_ns),
                 input.timestamp_ns,
                 Some(input.timestamp_ns),
-                Some(FRAME_DURATION_NS),
+                Some(self.duration_ns),
             )
             .unwrap();
             return Ok(Some(SourceEmission {
