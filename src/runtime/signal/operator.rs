@@ -173,11 +173,14 @@ impl AsyncOperatorWorkerSource {
         }
     }
 
-    fn port_name<'a>(&'a self, manifest: &'a AsyncOperatorManifest) -> Option<&'a str> {
+    fn port_name<'a>(&'a self, _manifest: &'a AsyncOperatorManifest) -> Option<&'a str> {
         match self {
             #[cfg(any(test, feature = "internal-testing"))]
-            Self::Direct(_) => manifest.input_ports().next().map(|port| port.name.as_str()),
-            Self::Compiled { .. } => manifest.input_ports().next().map(|port| port.name.as_str()),
+            Self::Direct(_) => _manifest
+                .input_ports()
+                .next()
+                .map(|port| port.name.as_str()),
+            Self::Compiled { lineage, .. } => Some(lineage.input_port.as_str()),
             Self::Typed { port_name, .. } => Some(port_name),
         }
     }

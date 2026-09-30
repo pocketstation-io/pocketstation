@@ -391,6 +391,75 @@ impl Session {
         })
     }
 
+    /// Commits a built-in audio computation and its input/output routing together.
+    #[cfg(feature = "echo-cancellation")]
+    pub(crate) fn connected_audio_operator(
+        &self,
+        operator: Operator,
+        inputs: &[(SessionId, StreamOrigin, &str)],
+        output_port: &str,
+    ) -> Result<StemHandle, SessionError> {
+        if operator.operator_id.as_str().trim().is_empty()
+            || output_port.is_empty()
+            || inputs.is_empty()
+            || inputs
+                .iter()
+                .any(|(session, _, port)| *session != self.id() || port.is_empty())
+        {
+            return Err(SessionError::InvalidOperator {
+                reason: "audio computation inputs must belong to this Session and name valid ports"
+                    .into(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.id())?;
+        // Reserve every fallible ID before changing declarations.
+        draft
+            .next_operator_instance_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        draft
+            .next_route_id
+            .checked_add(inputs.len() as u64)
+            .ok_or(SessionError::IdExhausted)?;
+        draft
+            .next_stem_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        draft
+            .next_external_source_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        draft
+            .next_stream_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        let instance_id = draft.declare_operator(operator)?;
+        for (_, origin, port) in inputs {
+            draft.connect_operator_input(instance_id, origin.clone(), Some((*port).to_owned()))?;
+        }
+        let stem_id = draft.allocate_stem_id()?;
+        let source_id = draft.allocate_external_source_id()?;
+        let stream_id = draft.allocate_stream_id()?;
+        draft
+            .generated_audio_ingresses
+            .push(GeneratedAudioIngressDraft {
+                stem_id,
+                operator_instance_id: instance_id,
+                output_port: Some(output_port.to_owned()),
+                source_id,
+                stream_id,
+            });
+        Ok(StemHandle {
+            stream: InternalStreamHandle::new(
+                Arc::clone(&self.shared),
+                self.id(),
+                StreamOrigin::Stem(stem_id),
+            ),
+            stem_id,
+        })
+    }
+
     pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {
         descriptor.validate()?;
         self.add_endpoint(descriptor, None)
@@ -776,6 +845,11 @@ impl fmt::Debug for OperatorInputHandle {
 }
 
 impl StemHandle {
+    #[cfg(feature = "echo-cancellation")]
+    pub(crate) fn signal_origin(&self) -> (SessionId, StreamOrigin) {
+        (self.stream.session_id, self.stream.origin.clone())
+    }
+
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
@@ -916,6 +990,11 @@ pub struct SourceOutputHandle {
 }
 
 impl SourceOutputHandle {
+    #[cfg(feature = "echo-cancellation")]
+    pub(crate) fn signal_origin(&self) -> (SessionId, StreamOrigin) {
+        (self.stream.session_id, self.stream.origin.clone())
+    }
+
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
@@ -989,6 +1068,11 @@ impl fmt::Debug for SourceOutputHandle {
 }
 
 impl DerivedStreamHandle {
+    #[cfg(feature = "echo-cancellation")]
+    pub(crate) fn signal_origin(&self) -> (SessionId, StreamOrigin) {
+        (self.stream.session_id, self.stream.origin.clone())
+    }
+
     fn new(
         shared: Arc<SessionShared>,
         session_id: SessionId,

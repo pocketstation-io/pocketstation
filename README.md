@@ -90,6 +90,14 @@ does not present a partial recording as a successful one.
 
 ## Use one capture for several jobs
 
+The development checkout includes built-in echo cancellation through
+`Session::echo_cancel`. The native engine is enabled by the default
+`echo-cancellation` feature. Callers select the microphone and playback reference;
+Session registers the processor and owns its worker. This is unreleased work
+with same-clock PCM integration tests; physical capture and device-clock
+adaptation are not yet qualified. See [echo cancellation](docs/guides/echo-cancellation.md)
+for the supported inputs and current limitations.
+
 A stem can feed several destinations at once:
 
 - application code that reads frames;
