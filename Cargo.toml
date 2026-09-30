@@ -30,6 +30,7 @@ include = [
   "/docs/guides/capture-and-route.md",
   "/docs/guides/connectors.md",
   "/docs/guides/extensions.md",
+  "/docs/guides/echo-cancellation.md",
   "/docs/guides/record-and-observe.md",
   "/docs/operations/platform-support.md",
   "/docs/reference/events-and-errors.md",
@@ -58,7 +59,7 @@ no-default-features = true
 crate-type = ["rlib", "cdylib", "staticlib"]
 
 [features]
-default = ["native-capture", "opus-codec"]
+default = ["native-capture", "opus-codec", "echo-cancellation"]
 native-capture = [
   "coreaudio-capture",
   "wasapi-capture",
@@ -76,11 +77,13 @@ wasapi-capture = [
 pipewire-capture = ["native-capture-runtime", "dep:pipewire", "dep:libc"]
 alsa-fallback = ["native-capture-runtime", "dep:alsa", "dep:libc"]
 opus-codec = ["dep:opus"]
+echo-cancellation = ["dep:webrtc-audio-processing"]
 conformance-fixtures = []
 internal-testing = []
 macos-asp-driver-artifact = []
 
 [dependencies]
+webrtc-audio-processing = { version = "=2.1.0", features = ["bundled"], optional = true }
 libloading = "0.8.9"
 rtrb = "0.3"
 thiserror = "1"

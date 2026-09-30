@@ -3,6 +3,10 @@
 //! Registration APIs live here; extension implementation and provider
 //! policy remain outside the core Session lifecycle.
 
+#[cfg(feature = "echo-cancellation")]
+mod echo_cancellation;
+#[cfg(feature = "echo-cancellation")]
+pub use echo_cancellation::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
 mod audio_input;
 pub(crate) mod builtins;
 mod native_library;

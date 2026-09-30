@@ -5,8 +5,14 @@ mod capture;
 #[cfg(feature = "opus-codec")]
 pub mod codec;
 pub mod connector;
+#[cfg(feature = "echo-cancellation")]
+mod echo_cancellation;
 mod endpoint;
 mod frame;
+#[cfg(feature = "echo-cancellation")]
+pub use crate::echo_cancellation::{EchoCancellationObservations, EchoCancellationState};
+#[cfg(feature = "echo-cancellation")]
+pub use crate::session::extensions::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
 /// Stable signal, port, capability, partition, and extension APIs.
 ///
 /// Compiler IR, registries, runtime plans, and execution machinery remain
