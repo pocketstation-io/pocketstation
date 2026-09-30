@@ -54,6 +54,7 @@ impl PlanExecutionSummary {
 pub struct RealtimePlanExecutor {
     node_order: Vec<NodeId>,
     nodes: Vec<Option<RealtimeNodeSlot>>,
+    closed_nodes: Vec<bool>,
     router: PlanEdgeRouter,
     realtime_receivers: Vec<PlanEdgeReceiver>,
 }
@@ -138,6 +139,7 @@ impl RealtimePlanExecutor {
         Ok((
             Self {
                 node_order: plan.node_order.clone(),
+                closed_nodes: vec![false; nodes.len()],
                 nodes,
                 router,
                 realtime_receivers,
@@ -152,6 +154,17 @@ impl RealtimePlanExecutor {
         frame: LineagedAudioFrame,
         now_ns: u64,
     ) -> Result<PlanExecutionSummary, ExecError> {
+        if self
+            .closed_nodes
+            .get(source_node_id.index() as usize)
+            .copied()
+            .unwrap_or(false)
+        {
+            return Err(ExecError::Node(format!(
+                "source node {} already reached EOF",
+                source_node_id.index()
+            )));
+        }
         let mut summary = PlanExecutionSummary::default();
         self.process_and_dispatch_lineaged(source_node_id, frame, now_ns, &mut summary)?;
 
@@ -182,6 +195,39 @@ impl RealtimePlanExecutor {
             self.process_and_dispatch_lineaged(node_id, frame, now_ns, &mut summary)?;
         }
         Ok(summary)
+    }
+
+    /// Propagates EOF from a drained ingress through completed realtime nodes.
+    ///
+    /// Call only during shutdown, after the source producer has closed and its
+    /// ingress queue is empty. Other source roots remain open. Closing edge
+    /// producers retains queued worker frames so operators can finish and
+    /// submit their final audio through their own still-open ingress.
+    pub(crate) fn finish_source(&mut self, source_node_id: NodeId) {
+        let Some(closed) = self.closed_nodes.get_mut(source_node_id.index() as usize) else {
+            return;
+        };
+        if !*closed {
+            *closed = true;
+            self.router.close_outputs(source_node_id);
+        }
+
+        for node_id in &self.node_order {
+            let index = node_id.index() as usize;
+            if self.closed_nodes[index] || self.nodes[index].is_none() {
+                continue;
+            }
+            let mut incoming = self
+                .realtime_receivers
+                .iter()
+                .filter(|receiver| receiver.to().node == *node_id)
+                .peekable();
+            // A source with no incoming edges must be closed by its own ingress.
+            if incoming.peek().is_some() && incoming.all(PlanEdgeReceiver::is_drained) {
+                self.closed_nodes[index] = true;
+                self.router.close_outputs(*node_id);
+            }
+        }
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
@@ -443,5 +489,63 @@ mod tests {
                 panic!("worker edge should own an isolated lineaged branch copy")
             }
         }
+    }
+
+    #[test]
+    fn given_finished_source_when_eof_propagates_then_fanout_drains_and_other_source_stays_live() {
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let gain = graph.add_node("gain", NodeConfig::new().with("gain_db", "0"));
+        let other_source = graph.add_node("passthrough", NodeConfig::new());
+        let first_worker = graph.add_node("test.worker_sink", NodeConfig::new());
+        let second_worker = graph.add_node("test.worker_sink", NodeConfig::new());
+        let other_worker = graph.add_node("test.worker_sink", NodeConfig::new());
+        graph.connect(source.out("out"), gain.in_("in"));
+        graph.connect(gain.out("out"), first_worker.in_("in"));
+        graph.connect(gain.out("out"), second_worker.in_("in"));
+        graph.connect(other_source.out("out"), other_worker.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut executor, mut workers) =
+            RealtimePlanExecutor::new(&plan, &ir, &registry, &context()).unwrap();
+
+        executor
+            .execute_from(source.id(), lineaged_frame(&[0.25]), 10)
+            .unwrap();
+        executor.finish_source(source.id());
+        executor.finish_source(source.id());
+        for worker in workers
+            .iter_mut()
+            .filter(|worker| worker.to().node != other_worker.id())
+        {
+            assert!(worker.is_abandoned());
+            assert!(
+                !worker.is_drained(),
+                "producer closure retains its final queued frame"
+            );
+            assert_eq!(worker.recv_at(20).unwrap().samples(), &[0.25]);
+            assert!(worker.is_drained());
+            assert_eq!(worker.observations().shutdown_discarded_total, 0);
+        }
+        let remaining = workers
+            .iter_mut()
+            .find(|worker| worker.to().node == other_worker.id())
+            .unwrap();
+        assert!(
+            !remaining.is_abandoned(),
+            "independent source has not reached EOF"
+        );
+        executor
+            .execute_from(other_source.id(), lineaged_frame(&[0.5]), 30)
+            .unwrap();
+        assert_eq!(remaining.recv_at(40).unwrap().samples(), &[0.5]);
+        executor.finish_source(other_source.id());
+        assert!(remaining.is_drained());
+        assert!(executor
+            .execute_from(source.id(), lineaged_frame(&[1.0]), 50)
+            .is_err());
     }
 }

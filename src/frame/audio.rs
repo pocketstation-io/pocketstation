@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle};
-use crate::frame::{FrameLineage, OutputGeneration, SourceId, StreamId};
+use crate::frame::{AudioProcessing, FrameLineage, OutputGeneration, SourceId, StreamId};
 
 pub const SAMPLE_RATE_HZ: u32 = 48_000;
 #[cfg(test)]
@@ -45,6 +45,7 @@ pub struct AudioFrame {
     pub(crate) timestamp_ns: u64,
     pub(crate) sequence_number: u64,
     pub(crate) buffer: AudioBufferHandle,
+    processing: Option<AudioProcessing>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
@@ -90,6 +91,7 @@ impl AudioFrame {
             timestamp_ns,
             sequence_number,
             buffer,
+            processing: None,
         })
     }
 
@@ -112,6 +114,7 @@ impl AudioFrame {
             timestamp_ns,
             sequence_number,
             buffer,
+            processing: None,
         }
     }
 
@@ -147,6 +150,17 @@ impl AudioFrame {
         self.buffer.as_slice()
     }
 
+    /// Actual input provenance and processor-tail information, when present.
+    pub const fn processing(&self) -> Option<AudioProcessing> {
+        self.processing
+    }
+
+    /// Attaches fixed-size processing provenance without changing audio identity.
+    pub fn with_processing(mut self, processing: AudioProcessing) -> Self {
+        self.processing = Some(processing);
+        self
+    }
+
     pub fn freeze(self) -> Option<SharedAudioFrame> {
         let Self {
             stream_id,
@@ -157,6 +171,7 @@ impl AudioFrame {
             timestamp_ns,
             sequence_number,
             buffer,
+            processing,
         } = self;
         let buffer = buffer.freeze().ok()?;
         Some(SharedAudioFrame {
@@ -168,6 +183,7 @@ impl AudioFrame {
             timestamp_ns,
             sequence_number,
             buffer,
+            processing,
         })
     }
 }
@@ -182,6 +198,7 @@ pub struct SharedAudioFrame {
     pub(crate) timestamp_ns: u64,
     pub(crate) sequence_number: u64,
     pub(crate) buffer: SharedAudioBufferHandle,
+    processing: Option<AudioProcessing>,
 }
 
 impl SharedAudioFrame {
@@ -217,6 +234,17 @@ impl SharedAudioFrame {
         self.buffer.as_slice()
     }
 
+    /// Actual input provenance and processor-tail information, when present.
+    pub const fn processing(&self) -> Option<AudioProcessing> {
+        self.processing
+    }
+
+    /// Attaches provenance to this frame view without changing shared samples.
+    pub fn with_processing(mut self, processing: AudioProcessing) -> Self {
+        self.processing = Some(processing);
+        self
+    }
+
     pub fn try_clone(&self) -> Option<Self> {
         Some(Self {
             stream_id: self.stream_id,
@@ -227,6 +255,7 @@ impl SharedAudioFrame {
             timestamp_ns: self.timestamp_ns,
             sequence_number: self.sequence_number,
             buffer: self.buffer.try_clone()?,
+            processing: self.processing,
         })
     }
 
@@ -242,6 +271,7 @@ impl SharedAudioFrame {
             timestamp_ns: self.timestamp_ns,
             sequence_number: self.sequence_number,
             buffer,
+            processing: self.processing,
         })
     }
 }
@@ -508,6 +538,21 @@ mod tests {
         let mut buffer = pool.acquire().unwrap();
         buffer.try_copy_from_slice(&[0.1, 0.2, 0.3, 0.4]).unwrap();
         let frame = AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer);
+        assert_eq!(frame.processing(), None);
+        let processing = AudioProcessing {
+            input_source_id: SourceId(20),
+            input_stream_id: StreamId(21),
+            input_sequence_number: 22,
+            input_timestamp_ns: 23,
+            input_duration_ns: 80_000,
+            input_source_generation: 24,
+            input_discontinuity_epoch: 25,
+            generation: 26,
+            nominal_delay_samples: 432,
+            padding_samples: 4,
+            tail_offset_samples: 0,
+        };
+        let frame = frame.with_processing(processing);
         let lineage = FrameLineage {
             session_id: SessionId(5),
             source_id: SourceId(2),
@@ -531,6 +576,15 @@ mod tests {
         assert_eq!(shared.lineage(), lineage);
         assert_eq!(copied.lineage(), lineage);
         assert_eq!(copied.frame().buffer.as_slice(), &[0.1, 0.2, 0.3, 0.4]);
+        assert_eq!(shared.frame().processing(), Some(processing));
+        assert_eq!(second_delivery.frame().processing(), Some(processing));
+        assert_eq!(copied.frame().processing(), Some(processing));
+        assert!(processing.is_tail());
+        let (owned, retained_lineage, generation) = copied.into_parts_with_output_generation();
+        let reconstructed = LineagedAudioFrame::new(owned, retained_lineage)
+            .unwrap()
+            .with_output_generation(generation);
+        assert_eq!(reconstructed.frame().processing(), Some(processing));
     }
 
     #[test]

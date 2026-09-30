@@ -60,6 +60,10 @@ impl ConnectorInputDescriptor {
 }
 
 /// One bounded item delivered by Core to a connector driver.
+#[expect(
+    clippy::large_enum_variant,
+    reason = "audio delivery transfers bounded inline frame ownership without a per-item allocation"
+)]
 pub enum ConnectorItem<'a> {
     Audio {
         input: &'a ConnectorInputDescriptor,

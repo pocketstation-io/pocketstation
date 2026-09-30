@@ -949,7 +949,11 @@ impl StemWorkerRuntime {
             },
         )?;
         let mut event_writer = BufWriter::new(File::create(event_path)?);
-        let mut state = StemWriteState::new(self.config.timeline_mapping.session_origin_ns);
+        let mut state = StemWriteState::new(
+            self.session_dir
+                .join("events")
+                .join(format!("processing-{}.jsonl", self.config.label.as_str())),
+        );
 
         if let Some(frame) = self.initial_frame.take() {
             observe_and_write_frame(
@@ -981,6 +985,9 @@ impl StemWorkerRuntime {
         }
 
         event_writer.flush()?;
+        if let Some(processing) = state.processing_writer.as_mut() {
+            processing.flush()?;
+        }
         writer.finalize()?;
         let wav_bytes = fs::metadata(&wav_path)?.len();
         let checksum_fnv1a64 = checksum_fnv1a64(&wav_path)?;
@@ -1031,6 +1038,8 @@ fn observe_and_write_frame(
 }
 
 struct StemWriteState {
+    processing_path: PathBuf,
+    processing_writer: Option<BufWriter<File>>,
     expected_timestamp_ns: Option<u64>,
     expected_sequence: Option<u64>,
     first_timestamp_ns: Option<u64>,
@@ -1041,8 +1050,10 @@ struct StemWriteState {
 }
 
 impl StemWriteState {
-    fn new(_session_origin_ns: u64) -> Self {
+    fn new(processing_path: PathBuf) -> Self {
         Self {
+            processing_path,
+            processing_writer: None,
             // The first real frame establishes this stem's recording origin.
             // Session start may precede physical capture permission/startup by
             // seconds; manufacturing that interval as PCM silence is not a
@@ -1172,6 +1183,7 @@ impl StemWriteState {
         for sample in frame.samples() {
             writer.write_sample(*sample)?;
         }
+        self.record_processing(frame, effective_timestamp_ns)?;
         self.first_timestamp_ns
             .get_or_insert(effective_timestamp_ns);
         self.expected_timestamp_ns = Some(
@@ -1183,6 +1195,46 @@ impl StemWriteState {
         );
         self.expected_sequence = frame.sequence_number().checked_add(1);
         self.written_frames = self.written_frames.saturating_add(1);
+        Ok(())
+    }
+
+    // Filesystem and JSON work remain on the recording worker. Raw sources
+    // do not create a processing ledger. Tail records retain the last actual
+    // input and cannot be mistaken for additional microphone capture.
+    fn record_processing(
+        &mut self,
+        frame: &PlanEdgeFrame,
+        timestamp_ns: u64,
+    ) -> Result<(), RecorderError> {
+        let Some(p) = frame.processing() else {
+            return Ok(());
+        };
+        if self.processing_writer.is_none() {
+            self.processing_writer = Some(BufWriter::new(File::create(&self.processing_path)?));
+        }
+        if let Some(writer) = self.processing_writer.as_mut() {
+            serde_json::to_writer(
+                &mut *writer,
+                &serde_json::json!({
+                    "output_sequence_number": frame.sequence_number(),
+                    "output_timestamp_ns": frame.timestamp_ns(),
+                    "recording_timestamp_ns": timestamp_ns,
+                    "output_source_id": frame.source_id().0,
+                    "input_source_id": p.input_source_id.0,
+                    "input_stream_id": p.input_stream_id.0,
+                    "input_sequence_number": p.input_sequence_number,
+                    "input_timestamp_ns": p.input_timestamp_ns,
+                    "input_duration_ns": p.input_duration_ns,
+                    "input_source_generation": p.input_source_generation,
+                    "input_discontinuity_epoch": p.input_discontinuity_epoch,
+                    "generation": p.generation,
+                    "nominal_delay_samples": p.nominal_delay_samples,
+                    "padding_samples": p.padding_samples,
+                    "tail_offset_samples": p.tail_offset_samples,
+                }),
+            )?;
+            writer.write_all(b"\n")?;
+        }
         Ok(())
     }
 

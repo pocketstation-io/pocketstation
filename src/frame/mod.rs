@@ -11,6 +11,7 @@ mod lineage;
 mod output_generation;
 mod platform;
 mod pool;
+mod processing;
 
 pub use audio::*;
 pub use duration::*;
@@ -19,3 +20,4 @@ pub use lineage::*;
 pub use output_generation::*;
 pub use platform::Platform;
 pub use pool::*;
+pub use processing::AudioProcessing;

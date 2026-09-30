@@ -95,6 +95,13 @@ impl PlanEdgeFrame {
         }
     }
 
+    pub fn processing(&self) -> Option<crate::frame::AudioProcessing> {
+        match self {
+            Self::Exclusive(frame) => frame.frame().processing(),
+            Self::Shared(frame) => frame.frame().processing(),
+        }
+    }
+
     pub fn output_generation(&self) -> Option<&crate::frame::OutputGeneration> {
         match self {
             Self::Exclusive(frame) => frame.output_generation(),
@@ -502,18 +509,18 @@ fn histogram_percentile_ns(histogram: &[u64; LATENCY_HISTOGRAM_BUCKETS], percent
 }
 
 struct EdgeSender {
-    producer: Producer<QueuedPlanEdgeFrame>,
+    producer: Option<Producer<QueuedPlanEdgeFrame>>,
     alive: Arc<AtomicBool>,
     telemetry: Arc<EdgeTelemetry>,
 }
 
 impl EdgeSender {
     fn is_full(&self) -> bool {
-        self.producer.is_full()
+        self.producer.as_ref().is_some_and(Producer::is_full)
     }
 
     fn send(&mut self, frame: PlanEdgeFrame, enqueued_at_ns: u64) -> bool {
-        if !self.alive.load(Ordering::Acquire) {
+        if self.producer.is_none() || !self.alive.load(Ordering::Acquire) {
             self.telemetry
                 .observe_drop(EdgeDropReason::ReceiverUnavailable);
             return false;
@@ -522,7 +529,10 @@ impl EdgeSender {
             frame,
             enqueued_at_ns,
         };
-        match self.producer.push(queued) {
+        let Some(producer) = self.producer.as_mut() else {
+            return false;
+        };
+        match producer.push(queued) {
             Ok(()) => {
                 self.telemetry.observe_enqueue();
                 true
@@ -611,6 +621,17 @@ impl PlanEdgeReceiver {
 
     pub fn is_abandoned(&self) -> bool {
         self.consumer.is_abandoned()
+    }
+
+    /// EOF requires both producer closure and delivery of every queued frame.
+    pub(crate) fn is_drained(&self) -> bool {
+        if !self.consumer.is_abandoned() {
+            return false;
+        }
+        // rtrb's Arc count is not itself a producer-thread synchronization.
+        // Acquire its final writes before deciding that EOF has no queued data.
+        std::sync::atomic::fence(Ordering::Acquire);
+        self.consumer.is_empty()
     }
 
     fn recv_receipt_with_clock(
@@ -802,7 +823,7 @@ impl PlanEdgeRouter {
                 copy_policy: buffer.copy_policy,
                 branch_pool,
                 sender: EdgeSender {
-                    producer,
+                    producer: Some(producer),
                     alive: Arc::clone(&alive),
                     telemetry: Arc::clone(&telemetry),
                 },
@@ -819,6 +840,19 @@ impl PlanEdgeRouter {
             });
         }
         Ok((Self { edges }, receivers))
+    }
+
+    /// Closes one node's producers during shutdown without discarding queued audio.
+    ///
+    /// This releases producer ownership and must not run on a capture callback
+    /// or during ordinary realtime processing. Receivers retain their queues
+    /// and observe EOF only after consuming the last frame.
+    pub(crate) fn close_outputs(&mut self, node_id: NodeId) {
+        for edge in &mut self.edges {
+            if edge.from.node == node_id {
+                edge.sender.producer.take();
+            }
+        }
     }
 
     pub fn dispatch_from(
@@ -1140,7 +1174,24 @@ mod tests {
         let pool = AudioBufferPool::new(1, 2);
 
         // When
-        let summary = router.dispatch_from(source.id(), "out", frame(&pool, 7, 11), 100);
+        let processing = crate::frame::AudioProcessing {
+            input_source_id: SourceId(70),
+            input_stream_id: StreamId(71),
+            input_sequence_number: 9,
+            input_timestamp_ns: 180_000_000,
+            input_duration_ns: 20_000_000,
+            input_source_generation: 2,
+            input_discontinuity_epoch: 3,
+            generation: 4,
+            nominal_delay_samples: 432,
+            padding_samples: 2,
+            tail_offset_samples: 2,
+        };
+        let (audio, lineage, generation) = frame(&pool, 7, 11).into_parts_with_output_generation();
+        let frame = LineagedAudioFrame::new(audio.with_processing(processing), lineage)
+            .unwrap()
+            .with_output_generation(generation);
+        let summary = router.dispatch_from(source.id(), "out", frame, 100);
 
         // Then
         assert_eq!(summary.enqueued_edges, 3);
@@ -1148,6 +1199,7 @@ mod tests {
             let received = receiver.recv_at(150).unwrap();
             assert_eq!(received.source_id(), SourceId(7));
             assert_eq!(received.sequence_number(), 11);
+            assert_eq!(received.processing(), Some(processing));
         }
     }
 

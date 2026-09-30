@@ -17,6 +17,16 @@ pub enum EchoCancellationState {
 pub struct EchoCancellationObservations {
     pub state: EchoCancellationState,
     pub processed_microphone_frames_total: u64,
+    /// Includes normal frames and the bounded graceful-finish tail.
+    pub output_frames_total: u64,
+    pub tail_frames_total: u64,
+    /// Internal EOF padding per channel; never captured-input samples.
+    pub tail_padding_samples_total: u64,
+    pub discarded_tail_generations_total: u64,
+    /// Nominal frequency-dependent signal delay, distinct from CPU duration.
+    pub nominal_delay_samples: u32,
+    /// Explicit termination policy; adaptive/noise state may continue after it.
+    pub drain_duration_ms: u32,
     pub discarded_microphone_frames_total: u64,
     pub discarded_reference_frames_total: u64,
     pub resets_total: u64,
@@ -43,6 +53,12 @@ impl EchoCancellationObservations {
         Self {
             state: EchoCancellationState::WaitingForReference,
             processed_microphone_frames_total: 0,
+            output_frames_total: 0,
+            tail_frames_total: 0,
+            tail_padding_samples_total: 0,
+            discarded_tail_generations_total: 0,
+            nominal_delay_samples: 432,
+            drain_duration_ms: 40,
             discarded_microphone_frames_total: 0,
             discarded_reference_frames_total: 0,
             resets_total: 0,

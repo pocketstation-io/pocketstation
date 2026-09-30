@@ -93,15 +93,38 @@ audio have fixed queue limits. A native call cannot be forcibly interrupted;
 executor timeout is not a promise to terminate hung native code. Normal shutdown
 closes the command queue and joins its worker outside the Session executor.
 
-Output timestamps retain the microphone input interval. The qualified
-algorithmic-delay field is `None`; measured processing duration is CPU execution
-time, not acoustic or algorithmic delay. Do not use it to align a transcript or
-claim end-to-end latency. The complete native filter response at EOF is not yet
-delivered. Derived audio has its own source identity; this handle retains the
-microphone relationship, but per-frame derivation is not retained through audio
-reentry and recording. These limitations are open release gates. Simultaneous
-human speech, physical speaker echo,
-device changes and additional operating systems still require qualification.
+Normal output timestamps retain the microphone input interval and identify a
+new derived audio source. `frame.processing()` retains the actual input source,
+stream, sequence, time, discontinuity epoch and processing generation through
+fan-out, typed reentry, endpoints and recording. This describes the latest input
+consumed; it does not claim each output sample depends on only that input frame.
+The reference relationship remains available on the Session's processed handle.
+
+`nominal_delay_samples` is 432 samples per channel (9 ms at 48 kHz) for the pinned
+configuration. This combines block buffering and nominal filter delay. It is
+frequency-dependent, not a pure sample shift or a measurement of acoustic delay.
+CPU duration remains separate. `qualified_algorithmic_delay_samples` remains
+`None`: a device/route-qualified alignment guarantee is not established. Raw
+samples and the start of the native output are never cropped to force alignment.
+
+Graceful finish emits 40 ms of native tail using internal zero capture padding,
+without inventing reference frames. Its whole 10/20 ms output frames retain the
+last actual input's provenance; `padding_samples` and `tail_offset_samples`
+identify them as processor output rather than more microphone capture. Output
+sequence advances independently. Separate output/tail counters never inflate
+`processed_microphone_frames_total` or `analyzed_reference_frames_total`.
+The fixed cap is a termination policy: AEC3 can keep generating comfort noise,
+so it is not a promise of complete mathematical convergence or zero residual.
+Reset and cancellation discard old history with explicit generation accounting.
+A failed drain is terminal and is not retried against partially advanced state.
+
+The Session keeps audio routing alive while operators finish. Polled consumers
+can drain accepted audio after `stop()` through the existing polled-audio queues
+(32 frames per endpoint by default). No background worker or additional queue
+is retained. `cancel()` discards queued
+audio. Recordings store frame provenance in `events/processing-<stem>.jsonl`;
+raw stems do not create that ledger. Simultaneous human speech, physical speaker
+echo, device changes and additional operating systems still require qualification.
 
 ## Build requirements
 

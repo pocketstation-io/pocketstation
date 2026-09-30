@@ -239,6 +239,19 @@ impl AsyncOperatorWorkerInputs {
             .iter()
             .all(AsyncOperatorWorkerSource::is_abandoned)
     }
+
+    /// Rechecks queues after observing that every producer has closed.
+    ///
+    /// A producer can enqueue its last frame between an empty receive and the
+    /// abandonment check. rtrb also requires this fence after observing its
+    /// non-synchronizing Arc count. Only a second empty receive proves EOF.
+    fn recv_after_abandonment(
+        &mut self,
+        manifest: &AsyncOperatorManifest,
+    ) -> Result<Option<(String, SignalEnvelope)>, AsyncOperatorWorkerError> {
+        std::sync::atomic::fence(Ordering::Acquire);
+        self.recv(manifest)
+    }
 }
 
 struct NamedOutputFanout {
@@ -1047,8 +1060,17 @@ async fn run_operator_loop(
             };
             envelope
         } else {
-            let Some(envelope) = input.recv(manifest)? else {
-                if input.is_abandoned() {
+            let received = input.recv(manifest)?;
+            let abandoned = received.is_none() && input.is_abandoned();
+            let received = if abandoned {
+                input.recv_after_abandonment(manifest)?
+            } else {
+                received
+            };
+            let Some(envelope) = received else {
+                // Use the closure snapshot taken before the second receive.
+                // Rechecking abandonment here would open the same race again.
+                if abandoned {
                     let emitted = match tokio::time::timeout(timeout_duration, node.flush()).await {
                         Ok(Ok(emitted)) => emitted,
                         Ok(Err(error)) => {
@@ -2153,6 +2175,14 @@ mod tests {
             &[output_branch(2)],
         )
         .unwrap();
+        assert!(worker.observations().wait_ready().await);
+        tokio::time::timeout(Duration::from_millis(100), async {
+            while worker.observations().snapshot().idle_poll_total == 0 {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .expect("worker observes an initially empty, live input");
         worker.input_mut().unwrap().send(envelope(0)).unwrap();
         let observations = worker.observations();
 
@@ -2187,6 +2217,84 @@ mod tests {
         assert_eq!(snapshot.cancellation_total, 0);
         assert!(snapshot.joined);
         assert!(closed.load(Ordering::Acquire));
+    }
+
+    #[test]
+    fn given_final_named_inputs_arrive_after_empty_poll_when_producers_close_then_recheck_preserves_both_ports(
+    ) {
+        let mut manifest = manifest(
+            "operator.eof",
+            "operator.eof.node",
+            100,
+            OperatorFailurePolicy::Continue,
+        );
+        manifest.node.inputs = vec![
+            port(
+                "left",
+                PortDirection::Input,
+                SignalSpec::text(TextFormat::Utf8),
+            ),
+            port(
+                "right",
+                PortDirection::Input,
+                SignalSpec::text(TextFormat::Utf8),
+            ),
+        ];
+        let (mut left, mut left_receivers) = TypedEdgeFanout::new(&[output_branch(1)]).unwrap();
+        let (mut right, mut right_receivers) = TypedEdgeFanout::new(&[output_branch(1)]).unwrap();
+        let mut input = AsyncOperatorWorkerInputs {
+            sources: vec![
+                AsyncOperatorWorkerSource::Typed {
+                    port_name: "left".to_owned(),
+                    receiver: left_receivers.remove(0),
+                },
+                AsyncOperatorWorkerSource::Typed {
+                    port_name: "right".to_owned(),
+                    receiver: right_receivers.remove(0),
+                },
+            ],
+            next_index: 0,
+        };
+        assert!(input.recv(&manifest).unwrap().is_none());
+        assert!(!input.is_abandoned());
+
+        // Explicitly schedule final writes between the first empty poll and
+        // closure observation. These are actual bounded queues, not test mocks.
+        left.publish(text_envelope(71), false).unwrap();
+        drop(left);
+        assert!(!input.is_abandoned(), "one live input prevents EOF");
+        right.publish(text_envelope(92), false).unwrap();
+        drop(right);
+        assert!(input.is_abandoned());
+        let (left_port, left_frame) = input.recv_after_abandonment(&manifest).unwrap().unwrap();
+        let (right_port, right_frame) = input.recv_after_abandonment(&manifest).unwrap().unwrap();
+        assert_eq!(left_port, "left");
+        assert_eq!(left_frame.lineage.unwrap().sequence_number(), 71);
+        assert_eq!(right_port, "right");
+        assert_eq!(right_frame.lineage.unwrap().sequence_number(), 92);
+        assert!(input.recv_after_abandonment(&manifest).unwrap().is_none());
+    }
+
+    #[test]
+    fn given_final_direct_audio_arrives_after_empty_poll_when_sender_closes_then_recheck_retains_it(
+    ) {
+        let manifest = manifest(
+            "operator.eof.audio",
+            "operator.eof.audio.node",
+            100,
+            OperatorFailurePolicy::Continue,
+        );
+        let (mut sender, receiver) = SignalEdge::bounded(1);
+        let mut input = AsyncOperatorWorkerInputs::one(AsyncOperatorWorkerSource::Direct(receiver));
+        assert!(input.recv(&manifest).unwrap().is_none());
+        sender.send(envelope(19)).unwrap();
+        drop(sender);
+        assert!(input.is_abandoned());
+        let (port, final_audio) = input.recv_after_abandonment(&manifest).unwrap().unwrap();
+        assert_eq!(port, "audio");
+        assert_eq!(final_audio.lineage.unwrap().sequence_number(), 19);
+        assert!(matches!(final_audio.payload, SignalPayload::Audio(_)));
+        assert!(input.recv_after_abandonment(&manifest).unwrap().is_none());
     }
 
     #[tokio::test(flavor = "current_thread")]

@@ -86,10 +86,10 @@ pub use crate::endpoint::{
     PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
 };
 pub use crate::frame::{
-    AudioBufferPool, AudioFrame, AudioFrameBuildError, AudioFrameDuration, ClockDomainId,
-    ConnectorId, EndpointId, FrameLineage, FrameLineageBuildError, OutputCancelResult,
-    OutputGeneration, OutputGenerationError, OutputGenerationId, RouteId, SampleFormat, SampleSpec,
-    SessionId, SourceId, StemId, StreamId,
+    AudioBufferPool, AudioFrame, AudioFrameBuildError, AudioFrameDuration, AudioProcessing,
+    ClockDomainId, ConnectorId, EndpointId, FrameLineage, FrameLineageBuildError,
+    OutputCancelResult, OutputGeneration, OutputGenerationError, OutputGenerationId, RouteId,
+    SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId,
 };
 pub use crate::graph::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
@@ -817,6 +817,14 @@ impl RunningSession {
         self.running.session_id()
     }
 
+    /// Retains the existing bounded audio rings, without retaining a worker.
+    /// After graceful stop, accepted frames can be drained before end-of-stream.
+    /// Cancellation discards queued frames. Dropping the final receipt releases
+    /// any unread audio; cloning does not allocate another audio queue.
+    pub fn audio_receipt(&self) -> PolledAudioReceipt {
+        self.receipt.clone()
+    }
+
     pub fn try_poll_audio(&self) -> Result<PolledAudioBatchLease, PolledAudioPollError> {
         self.receipt.try_poll()
     }
@@ -998,6 +1006,7 @@ impl RunningSession {
 
 pub use crate::session::{
     PolledAudioBatchLease, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError,
+    PolledAudioReceipt,
 };
 
 /// Stable façade error for Session startup.
