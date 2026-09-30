@@ -35,6 +35,128 @@ fn given_completed_reply_when_await_guard_drops_then_it_does_not_report_cancella
     assert!(state.snapshot().last_error.is_none());
 }
 
+#[test]
+fn given_abandoned_reply_when_native_command_finishes_then_outputs_are_counted_and_worker_stops() {
+    for flush in [false, true] {
+        let (mut processor, state, configuration, pool) = prepared_processor(20, false);
+        let stamp = initial_stamp();
+        processor
+            .accept(
+                "reference",
+                pcm_input(configuration, &pool, 20, stamp, false),
+            )
+            .unwrap();
+        if flush {
+            let output = processor
+                .accept(
+                    "microphone",
+                    pcm_input(configuration, &pool, 10, stamp, true),
+                )
+                .unwrap();
+            assert_eq!(output.len(), 1);
+        }
+        let (reply, response) = oneshot::channel();
+        let pending = PendingResponse::new(state.clone());
+        drop(response);
+        drop(pending);
+        let submitted_at = Instant::now()
+            .checked_sub(Duration::from_millis(20))
+            .unwrap();
+        let command = if flush {
+            Command::Flush {
+                reply,
+                submitted_at,
+            }
+        } else {
+            Command::Process {
+                port: "microphone".into(),
+                input: Box::new(pcm_input(configuration, &pool, 10, stamp, true)),
+                reply,
+                submitted_at,
+            }
+        };
+        assert!(!execute_command(&mut processor, command, &state));
+        processor.stop();
+        let observed = state.snapshot();
+        assert_eq!(observed.state, EchoCancellationState::Interrupted);
+        assert_eq!(observed.interrupted_requests_total, 1);
+        assert!(observed.last_error.is_none());
+        assert_eq!(observed.processed_microphone_frames_total, 1);
+        assert_eq!(observed.discarded_microphone_frames_total, 0);
+        assert_eq!(
+            observed.discarded_output_frames_total,
+            if flush { 2 } else { 1 }
+        );
+        assert_eq!(observed.output_frames_total, if flush { 3 } else { 1 });
+        assert!(observed.latest_processing_duration_ns >= 20_000_000);
+        assert!(observed.maximum_processing_duration_ns >= observed.latest_processing_duration_ns);
+    }
+}
+
+#[test]
+fn given_delivered_native_reply_when_command_finishes_then_output_is_not_discarded() {
+    let (mut processor, state, configuration, pool) = prepared_processor(20, false);
+    let stamp = initial_stamp();
+    processor
+        .accept(
+            "reference",
+            pcm_input(configuration, &pool, 20, stamp, false),
+        )
+        .unwrap();
+    let (reply, mut response) = oneshot::channel();
+    assert!(execute_command(
+        &mut processor,
+        Command::Process {
+            port: "microphone".into(),
+            input: Box::new(pcm_input(configuration, &pool, 10, stamp, false)),
+            reply,
+            submitted_at: Instant::now(),
+        },
+        &state,
+    ));
+    assert_eq!(response.try_recv().unwrap().into_result().unwrap().len(), 1);
+    processor.stop();
+    let observed = state.snapshot();
+    assert_eq!(observed.state, EchoCancellationState::Stopped);
+    assert_eq!(observed.discarded_output_frames_total, 0);
+    assert_eq!(observed.interrupted_requests_total, 0);
+    assert!(observed.maximum_processing_duration_ns > 0);
+}
+
+#[test]
+fn given_enqueued_reply_when_receiver_drops_before_poll_then_late_stop_retains_discarded_output() {
+    let (mut processor, state, configuration, pool) = prepared_processor(20, false);
+    let stamp = initial_stamp();
+    processor
+        .accept(
+            "reference",
+            pcm_input(configuration, &pool, 20, stamp, false),
+        )
+        .unwrap();
+    let (reply, response) = oneshot::channel();
+    let pending = PendingResponse::new(state.clone());
+    assert!(execute_command(
+        &mut processor,
+        Command::Process {
+            port: "microphone".into(),
+            input: Box::new(pcm_input(configuration, &pool, 10, stamp, true)),
+            reply,
+            submitted_at: Instant::now(),
+        },
+        &state
+    ));
+    assert_eq!(state.snapshot().discarded_output_frames_total, 0);
+    drop(response);
+    drop(pending);
+    processor.stop();
+    let observed = state.snapshot();
+    assert_eq!(observed.state, EchoCancellationState::Interrupted);
+    assert_eq!(observed.output_frames_total, 1);
+    assert_eq!(observed.discarded_output_frames_total, 1);
+    assert_eq!(observed.interrupted_requests_total, 1);
+    assert!(observed.last_error.is_none());
+}
+
 #[derive(Clone, Copy)]
 struct InputStamp {
     sequence: u64,
@@ -376,7 +498,14 @@ fn given_processed_history_when_stopped_or_interrupted_then_no_tail_is_emitted_a
         processor.stop();
         assert!(processor.flush().unwrap().is_empty());
         let observed = state.snapshot();
-        assert_eq!(observed.state, EchoCancellationState::Stopped);
+        assert_eq!(
+            observed.state,
+            if interrupted {
+                EchoCancellationState::Interrupted
+            } else {
+                EchoCancellationState::Stopped
+            }
+        );
         assert_eq!(observed.processed_microphone_frames_total, 1);
         assert_eq!(observed.analyzed_reference_frames_total, 1);
         assert_eq!(observed.output_frames_total, 1);

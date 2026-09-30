@@ -127,6 +127,10 @@ impl<Item> SignalEdgeSendError<Item> {
 
 impl<Item> SignalEdgeSender<Item> {
     pub fn try_send(&mut self, item: Item) -> Result<(), SignalEdgeSendError<Item>> {
+        if self.producer.is_abandoned() {
+            self.state.dropped_total.fetch_add(1, Ordering::Relaxed);
+            return Err(SignalEdgeSendError { rejected: item });
+        }
         let depth = self
             .state
             .depth_signals
@@ -315,7 +319,7 @@ impl TypedEdgeFanout {
     pub fn publish(
         &mut self,
         envelope: SignalEnvelope,
-        terminal: bool,
+        _terminal: bool,
     ) -> Result<TypedEdgePublishReport, TypedEdgePublishError> {
         envelope
             .validate()
@@ -333,16 +337,26 @@ impl TypedEdgeFanout {
                 max_payload_bytes: branch.max_payload_bytes,
             });
         }
-        if terminal {
-            if let Some(branch_index) = self.branches.iter().position(|branch| {
-                branch.loss == LossPolicy::MustDeliverOrFail && branch.sender.is_full()
-            }) {
-                self.branches[branch_index]
+        // Required delivery applies to every value. Check before fan-out so an
+        // already unavailable required branch cannot cause partial delivery.
+        for (branch_index, branch) in self.branches.iter().enumerate() {
+            if branch.loss != LossPolicy::MustDeliverOrFail {
+                continue;
+            }
+            let rejection = if branch.sender.is_abandoned() {
+                Some(TypedEdgePublishError::RequiredBranchClosed { branch_index })
+            } else if branch.sender.is_full() {
+                Some(TypedEdgePublishError::RequiredBranchFull { branch_index })
+            } else {
+                None
+            };
+            if let Some(error) = rejection {
+                branch
                     .sender
                     .state
                     .dropped_total
                     .fetch_add(1, Ordering::Relaxed);
-                return Err(TypedEdgePublishError::RequiredBranchFull { branch_index });
+                return Err(error);
             }
         }
         let shared = Arc::new(envelope);
@@ -358,8 +372,12 @@ impl TypedEdgeFanout {
                 Err(error) => {
                     drop(error.into_rejected());
                     report.dropped_total = report.dropped_total.saturating_add(1);
-                    if terminal && branch.loss == LossPolicy::MustDeliverOrFail {
-                        return Err(TypedEdgePublishError::RequiredBranchFull { branch_index });
+                    if branch.loss == LossPolicy::MustDeliverOrFail {
+                        return Err(if branch.sender.is_abandoned() {
+                            TypedEdgePublishError::RequiredBranchClosed { branch_index }
+                        } else {
+                            TypedEdgePublishError::RequiredBranchFull { branch_index }
+                        });
                     }
                 }
             }
@@ -372,9 +390,15 @@ impl TypedEdgeFanout {
             Err(error) => {
                 drop(error.into_rejected());
                 report.dropped_total = report.dropped_total.saturating_add(1);
-                if terminal && final_branch.loss == LossPolicy::MustDeliverOrFail {
-                    return Err(TypedEdgePublishError::RequiredBranchFull {
-                        branch_index: final_branch_index,
+                if final_branch.loss == LossPolicy::MustDeliverOrFail {
+                    return Err(if final_branch.sender.is_abandoned() {
+                        TypedEdgePublishError::RequiredBranchClosed {
+                            branch_index: final_branch_index,
+                        }
+                    } else {
+                        TypedEdgePublishError::RequiredBranchFull {
+                            branch_index: final_branch_index,
+                        }
                     });
                 }
             }
@@ -427,6 +451,8 @@ pub enum TypedEdgePublishError {
     },
     #[error("required typed edge branch {branch_index} is full")]
     RequiredBranchFull { branch_index: usize },
+    #[error("required typed edge branch {branch_index} is closed")]
+    RequiredBranchClosed { branch_index: usize },
 }
 
 #[cfg(test)]
@@ -501,7 +527,8 @@ mod tests {
 
     #[test]
     fn given_independent_shared_branches_when_one_saturates_then_other_continues() {
-        let route_settings = RouteSettings::bounded_async();
+        let mut route_settings = RouteSettings::bounded_async();
+        route_settings.loss = LossPolicy::DropAllowed;
         let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[
             TypedEdgeBranchSpec {
                 capacity_signals: 1,
@@ -540,6 +567,76 @@ mod tests {
         assert_eq!(receivers[1].recv().unwrap().sequence_number(), Some(2));
         assert_eq!(receivers[1].observations().depth_signals, 0);
         assert_eq!(receivers[1].observations().received_total, 2);
+    }
+
+    #[test]
+    fn given_required_branch_when_full_then_every_role_fails_before_partial_fanout() {
+        for terminal in [false, true] {
+            for required_index in [0, 1] {
+                let mut optional = RouteSettings::bounded_async();
+                optional.loss = LossPolicy::DropAllowed;
+                let branches = std::array::from_fn::<_, 2, _>(|index| TypedEdgeBranchSpec {
+                    capacity_signals: if index == required_index { 1 } else { 2 },
+                    route_settings: if index == required_index {
+                        RouteSettings::bounded_async()
+                    } else {
+                        optional
+                    },
+                });
+                let (mut fanout, mut receivers) = TypedEdgeFanout::new(&branches).unwrap();
+                let event = |sequence| {
+                    envelope(
+                        SignalPayload::Bytes(vec![1]),
+                        SignalSpec::event(EventFormat::Json),
+                        sequence,
+                    )
+                };
+                fanout.publish(event(1), false).unwrap();
+                assert_eq!(
+                    fanout.publish(event(2), terminal),
+                    Err(TypedEdgePublishError::RequiredBranchFull {
+                        branch_index: required_index
+                    })
+                );
+                assert_eq!(receivers[required_index].observations().dropped_total, 1);
+                for receiver in &mut receivers {
+                    assert_eq!(receiver.recv().unwrap().sequence_number(), Some(1));
+                    assert!(receiver.recv().is_none());
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn given_closed_required_branch_when_published_then_no_delivery_is_claimed() {
+        let (mut fanout, receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
+            capacity_signals: 2,
+            route_settings: RouteSettings::bounded_async(),
+        }])
+        .unwrap();
+        drop(receivers);
+        assert_eq!(
+            fanout.publish(
+                envelope(
+                    SignalPayload::Bytes(vec![1]),
+                    SignalSpec::event(EventFormat::Json),
+                    1
+                ),
+                false
+            ),
+            Err(TypedEdgePublishError::RequiredBranchClosed { branch_index: 0 })
+        );
+        assert_eq!(fanout.branches[0].sender.dropped_count(), 1);
+    }
+
+    #[test]
+    fn given_closed_signal_receiver_when_sent_then_item_is_returned_without_queueing() {
+        let (mut sender, receiver) = SignalEdge::bounded(2);
+        drop(receiver);
+        assert_eq!(sender.try_send(7_u64).unwrap_err().into_rejected(), 7);
+        assert_eq!(sender.dropped_count(), 1);
+        assert_eq!(sender.state.enqueued_total.load(Ordering::Relaxed), 0);
+        assert_eq!(sender.state.depth_signals.load(Ordering::Relaxed), 0);
     }
 
     #[test]

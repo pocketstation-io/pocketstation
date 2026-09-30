@@ -19,6 +19,8 @@ pub struct EchoCancellationObservations {
     pub processed_microphone_frames_total: u64,
     /// Includes normal frames and the bounded graceful-finish tail.
     pub output_frames_total: u64,
+    /// Produced frames discarded because the awaiting request was interrupted.
+    pub discarded_output_frames_total: u64,
     pub tail_frames_total: u64,
     /// Internal EOF padding per channel; never captured-input samples.
     pub tail_padding_samples_total: u64,
@@ -34,7 +36,10 @@ pub struct EchoCancellationObservations {
     pub microphone_queue_depth_frames: usize,
     pub reference_queue_depth_frames: usize,
     pub queue_capacity_frames: usize,
+    /// Complete native command wall time, including queue wait, resets, render
+    /// analysis and capture processing; not just DSP CPU time or signal delay.
     pub latest_processing_duration_ns: u64,
+    /// Maximum complete native command wall time observed before shutdown.
     pub maximum_processing_duration_ns: u64,
     pub latest_reference_age_ns: u64,
     pub latest_reference_lead_ns: u64,
@@ -54,6 +59,7 @@ impl EchoCancellationObservations {
             state: EchoCancellationState::WaitingForReference,
             processed_microphone_frames_total: 0,
             output_frames_total: 0,
+            discarded_output_frames_total: 0,
             tail_frames_total: 0,
             tail_padding_samples_total: 0,
             discarded_tail_generations_total: 0,
@@ -104,10 +110,8 @@ impl ObservationState {
             value.last_error = Some(error.clone());
         }
         value.interrupted_requests_total = current.interrupted_requests_total;
-        if current.state == EchoCancellationState::Interrupted
-            && value.state != EchoCancellationState::Stopped
-            && value.last_error.is_none()
-        {
+        value.discarded_output_frames_total = current.discarded_output_frames_total;
+        if current.state == EchoCancellationState::Interrupted && value.last_error.is_none() {
             value.state = EchoCancellationState::Interrupted;
         }
         *current = value;
@@ -128,6 +132,19 @@ impl ObservationState {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         current.interrupted_requests_total = current.interrupted_requests_total.saturating_add(1);
+        if current.last_error.is_none() {
+            current.state = EchoCancellationState::Interrupted;
+        }
+    }
+
+    pub(crate) fn discard_outputs(&self, outputs: usize) {
+        let mut current = self
+            .0
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        current.discarded_output_frames_total = current
+            .discarded_output_frames_total
+            .saturating_add(outputs as u64);
         if current.last_error.is_none() {
             current.state = EchoCancellationState::Interrupted;
         }

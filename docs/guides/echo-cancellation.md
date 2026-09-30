@@ -80,10 +80,17 @@ durations, processing generation, reference age/lead and the last error.
 `Processing` means the engine ran; it does not assert convergence or measured
 echo removal. Processing errors remain observable after shutdown; late native
 replies cannot erase a terminal error. An interrupted request increments
-`interrupted_requests_total` and reports `Interrupted` until shutdown completes.
+`interrupted_requests_total` and retains `Interrupted` after shutdown. A computed
+reply abandoned by its awaiting request increments
+`discarded_output_frames_total`; the native worker then stops. These are output
+frames already processed, distinct from input frames discarded before processing.
 An interruption can result from stop or a deadline; it does not by itself prove
-an engine failure. An independent application branch keeps delivering audio
-when echo processing fails.
+an engine failure, so it does not manufacture a native `last_error`. Session's
+terminal outcome separately reports a process deadline failure. Processing
+durations measure complete native command wall time from enqueue to completion,
+including queue wait, reset, reference analysis and capture processing. They are
+neither just DSP CPU time nor acoustic signal delay. An independent application
+branch keeps delivering audio when echo processing fails.
 
 Preparation establishes the native capture and render formats, then clears its
 initialization audio before accepting actual input. Initialization samples never

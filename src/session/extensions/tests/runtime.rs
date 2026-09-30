@@ -12,9 +12,9 @@ use crate::endpoint::{
 use crate::frame::{AudioBufferPool, AudioFrame, ClockDomainId, SampleFormat, SampleSpec};
 use crate::graph::{
     AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, ExecutionSafety,
-    MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection,
-    PortSpec, PrepareContext, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec,
-    SignalTiming,
+    LossPolicy, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,
+    PortDirection, PortSpec, PrepareContext, RouteSettings, SignalEnvelope, SignalLineage,
+    SignalPayload, SignalSpec, SignalTiming,
 };
 use crate::session::{
     CaptureBackendSet, EndpointConfiguration, EndpointDescriptor, OperatorId, Session,
@@ -706,7 +706,19 @@ fn given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_r
     // The same registered factory owns both route instances; the second route
     // deliberately never consumes and therefore exercises bounded saturation.
     // Its per-route configuration is retained in the prepare context.
-    output.send(endpoint(&session, false)).unwrap();
+    let mut lossy = RouteSettings::bounded_async();
+    lossy.loss = LossPolicy::DropAllowed;
+    let slow = session
+        .endpoint(
+            EndpointDescriptor::new(
+                NodeTypeId::from(ENDPOINT_NODE),
+                OperatorId::new(ENDPOINT_OPERATOR),
+            )
+            .with_configuration(EndpointConfiguration::new().with("consume", "no"))
+            .with_route_settings(lossy),
+        )
+        .unwrap();
+    output.send(slow).unwrap();
 
     let forbidden_capture = ForbiddenCaptureBackend;
     let mut running = engine
@@ -756,6 +768,91 @@ fn given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_r
             .load(Ordering::Relaxed),
         0
     );
+}
+
+#[test]
+fn given_required_nonterminal_source_when_endpoint_saturates_then_session_and_terminal_event_fail()
+{
+    use crate::session::{
+        SessionEventKind, SessionEventReceive, SessionLifecycleState, SessionTerminalState,
+    };
+    let control = Arc::new(SourceControl::default());
+    let slow = Arc::new(EndpointControl::default());
+    let mut builder = SessionEngineBuilder::new(
+        PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved)),
+        8,
+        SessionStartOptions::default(),
+    )
+    .unwrap();
+    builder
+        .register_source_factory(source_factory(Arc::clone(&control)))
+        .unwrap();
+    builder
+        .register_endpoint(
+            OperatorId::new(ENDPOINT_OPERATOR),
+            Arc::new(EndpointDefinition),
+            Arc::new(LifecycleEndpointFactory {
+                fast_control: Arc::default(),
+                slow_control: Arc::clone(&slow),
+            }),
+        )
+        .unwrap();
+    let session = Session::new();
+    session
+        .source(
+            SourceTypeId::new(SOURCE_TYPE).unwrap(),
+            SourceConfiguration::default(),
+        )
+        .unwrap()
+        .output("signal")
+        .unwrap()
+        .send(endpoint(&session, false))
+        .unwrap();
+    let backend = ForbiddenCaptureBackend;
+    let mut running = builder
+        .build()
+        .unwrap()
+        .start(
+            session,
+            CaptureBackendSet {
+                application: &backend,
+                microphone: &backend,
+            },
+        )
+        .unwrap();
+    let events = running.take_event_receiver().unwrap();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while control.closed_total.load(Ordering::Relaxed) == 0 && Instant::now() < deadline {
+        std::thread::sleep(Duration::from_millis(2));
+    }
+    // This driver emits only nonterminal values. Failure must occur on the
+    // first rejected required value, rather than claiming successful shutdown.
+    let (_, sources, _, _, routes) = running.indexed_metrics_full();
+    assert_eq!(sources[0].runtime.failure_total, 1);
+    assert_eq!(sources[0].runtime.emitted_total, 8);
+    assert_eq!(sources[0].runtime.dropped_total, 1);
+    assert_eq!(control.emitted_total.load(Ordering::Relaxed), 9);
+    assert_eq!(slow.received_total.load(Ordering::Relaxed), 0);
+    assert_eq!(routes.len(), 1);
+    let outcome = running.stop();
+    assert!(!outcome.is_success());
+    assert_eq!(running.state(), SessionLifecycleState::Failed);
+    assert_eq!(control.closed_total.load(Ordering::Relaxed), 1);
+    let mut terminal = None;
+    while let SessionEventReceive::Event(event) = events.try_recv() {
+        if let SessionEventKind::Terminal(outcome) = event.kind() {
+            terminal = Some(outcome.clone());
+        }
+    }
+    let terminal = terminal.expect("required delivery failure must produce a terminal event");
+    assert_eq!(terminal.state(), SessionTerminalState::Failed);
+    assert!(terminal
+        .finalization_failures()
+        .iter()
+        .any(|failure| failure
+            .failure()
+            .error_class()
+            .contains("required typed edge branch")));
 }
 
 #[test]

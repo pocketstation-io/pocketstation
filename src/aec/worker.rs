@@ -3,18 +3,87 @@ use crate::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorPrepareContext, NodeError, OperatorId, SignalEnvelope,
 };
 use std::sync::mpsc::{self, SyncSender};
+use std::time::Instant;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
-type Reply = oneshot::Sender<Result<Vec<SignalEnvelope>, NodeError>>;
+type Reply = oneshot::Sender<CommandReply>;
+
+/// Owns native output until the awaiting future actually takes it. A successful
+/// oneshot send alone is not delivery: the receiver can be dropped before polling.
+struct CommandReply {
+    result: Result<Vec<SignalEnvelope>, NodeError>,
+    observations: ObservationState,
+    consumed: bool,
+}
+
+impl CommandReply {
+    fn into_result(mut self) -> Result<Vec<SignalEnvelope>, NodeError> {
+        self.consumed = true;
+        std::mem::replace(&mut self.result, Ok(Vec::new()))
+    }
+}
+
+/// Drop contract — remains off capture/realtime threads; panic-free and log-free.
+/// Retains abandoned-output accounting before releasing owned native responses.
+impl Drop for CommandReply {
+    fn drop(&mut self) {
+        if !self.consumed {
+            self.observations
+                .discard_outputs(self.result.as_ref().map_or(0, Vec::len));
+        }
+    }
+}
 
 enum Command {
     Process {
         port: String,
         input: Box<SignalEnvelope>,
         reply: Reply,
+        submitted_at: Instant,
     },
-    Flush(Reply),
+    Flush {
+        reply: Reply,
+        submitted_at: Instant,
+    },
+}
+
+/// Returns false once processing failed or its result has no recipient. A late
+/// native completion must not silently discard audio and continue adaptation.
+fn execute_command(
+    engine: &mut EchoProcessor,
+    command: Command,
+    observations: &ObservationState,
+) -> bool {
+    let (result, reply, submitted_at) = match command {
+        Command::Process {
+            port,
+            input,
+            reply,
+            submitted_at,
+        } => (engine.accept(&port, *input), reply, submitted_at),
+        Command::Flush {
+            reply,
+            submitted_at,
+        } => (engine.flush(), reply, submitted_at),
+    };
+    if let Err(error) = &result {
+        engine.fail(error);
+    }
+    let failed = result.is_err();
+    engine.complete_request(submitted_at);
+    let response = CommandReply {
+        result,
+        observations: observations.clone(),
+        consumed: false,
+    };
+    match reply.send(response) {
+        Ok(()) => !failed,
+        Err(response) => {
+            drop(response);
+            false
+        }
+    }
 }
 
 /// Tracks cancellation of a lifecycle future, not the completion of native work.
@@ -115,7 +184,8 @@ impl AsyncNode for AecWorker {
             // The runtime retains ownership if preparation or close is cancelled.
             // Dropping this object's sender closes the queue; the worker then exits.
             let task = tokio::task::spawn_blocking(move || {
-                let mut engine = EchoProcessor::new(configuration, operator_id, observations);
+                let mut engine =
+                    EchoProcessor::new(configuration, operator_id, observations.clone());
                 if let Err(error) = engine.prepare() {
                     engine.fail(&error);
                     let _ = ready.send(Err(error));
@@ -126,18 +196,7 @@ impl AsyncNode for AecWorker {
                     return;
                 }
                 while let Ok(command) = receiver.recv() {
-                    let (result, reply) = match command {
-                        Command::Process { port, input, reply } => {
-                            (engine.accept(&port, *input), reply)
-                        }
-                        Command::Flush(reply) => (engine.flush(), reply),
-                    };
-                    if let Err(error) = &result {
-                        engine.fail(error);
-                    }
-                    let failed = result.is_err();
-                    let _ = reply.send(result);
-                    if failed {
+                    if !execute_command(&mut engine, command, &observations) {
                         break;
                     }
                 }
@@ -174,6 +233,7 @@ impl AsyncNode for AecWorker {
                 port: port.to_owned(),
                 input: Box::new(input),
                 reply,
+                submitted_at: Instant::now(),
             });
             if let Err(error) = submitted {
                 let result = Err(error);
@@ -183,7 +243,7 @@ impl AsyncNode for AecWorker {
             let result = response
                 .await
                 .map_err(|_| NodeError::Process("AEC processing response lost".into()))
-                .and_then(|result| result);
+                .and_then(CommandReply::into_result);
             pending.complete(&result);
             result
         })
@@ -193,7 +253,10 @@ impl AsyncNode for AecWorker {
         Box::pin(async move {
             let (reply, response) = oneshot::channel();
             let mut pending = PendingResponse::new(self.observations.clone());
-            if let Err(error) = self.send(Command::Flush(reply)) {
+            if let Err(error) = self.send(Command::Flush {
+                reply,
+                submitted_at: Instant::now(),
+            }) {
                 let result = Err(error);
                 pending.complete(&result);
                 return result;
@@ -201,7 +264,7 @@ impl AsyncNode for AecWorker {
             let result = response
                 .await
                 .map_err(|_| NodeError::Process("AEC flush response lost".into()))
-                .and_then(|result| result);
+                .and_then(CommandReply::into_result);
             pending.complete(&result);
             result
         })

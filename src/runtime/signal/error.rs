@@ -34,7 +34,7 @@ pub enum AsyncOperatorWorkerError {
     UnknownInputPort { port_name: String },
     #[error("async operator output matches multiple declared output ports")]
     AmbiguousOutputPort,
-    #[error("terminal output was rejected by full output branch {branch_index}")]
+    #[error("required terminal output was rejected by output branch {branch_index}")]
     TerminalOutputDropped { branch_index: usize },
     #[error(
         "operator output branch {branch_index} rejected {payload_bytes} payload bytes; maximum is {max_payload_bytes}"
