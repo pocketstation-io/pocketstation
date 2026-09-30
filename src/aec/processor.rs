@@ -2,6 +2,7 @@ use super::config::{ENGINE_FRAME_SAMPLES, OUTPUT_POOL_FRAMES, SAMPLE_RATE_HZ};
 use super::{
     AecConfiguration, EchoCancellationObservations, EchoCancellationState, ObservationState,
 };
+use crate::timing::cadence_error_ns;
 use crate::{
     AudioBufferPool, AudioFrame, NodeError, OperatorId, SampleFormat, SampleSpec, SignalDerivation,
     SignalEnvelope, SignalLineage, SignalPayload, SignalTiming,
@@ -19,6 +20,7 @@ pub(crate) struct EchoProcessor {
     diagnostics: EchoCancellationObservations,
     observations: ObservationState,
     operator_id: OperatorId,
+    last_render_time_ns: Option<u64>,
 }
 
 fn failure(message: impl ToString) -> NodeError {
@@ -41,6 +43,7 @@ impl EchoProcessor {
             diagnostics: EchoCancellationObservations::new(configuration.capacity_frames()),
             observations,
             operator_id,
+            last_render_time_ns: None,
         }
     }
 
@@ -50,6 +53,7 @@ impl EchoProcessor {
         self.microphone.clear();
         self.reference.clear();
         self.previous = [None, None];
+        self.last_render_time_ns = None;
         if let Some(processor) = &self.processor {
             processor.reinitialize();
         }
@@ -131,6 +135,13 @@ impl EchoProcessor {
         };
         let (lineage, timing) = self.validate_input(&input)?;
         if let Some((last, last_time)) = self.previous[index] {
+            let cadence_error = cadence_error_ns(
+                last_time.source_timestamp_ns().unwrap_or(0),
+                timing.source_timestamp_ns().unwrap_or(0),
+                u64::from(self.configuration.frame_duration_ms) * 1_000_000,
+            );
+            self.diagnostics.maximum_cadence_error_ns =
+                self.diagnostics.maximum_cadence_error_ns.max(cadence_error);
             let changed = last.source_id() != lineage.source_id()
                 || last.stream_id() != lineage.stream_id()
                 || last.clock_id() != lineage.clock_id()
@@ -138,7 +149,7 @@ impl EchoProcessor {
                 || last.policy_epoch() != lineage.policy_epoch()
                 || last.discontinuity_epoch() != lineage.discontinuity_epoch()
                 || last.sequence_number().checked_add(1) != Some(lineage.sequence_number())
-                || last_time.timestamp_end_ns() != timing.source_timestamp_ns();
+                || cadence_error > self.configuration.maximum_cadence_error_ns;
             if changed {
                 self.reset();
             }
@@ -156,47 +167,63 @@ impl EchoProcessor {
         }
         queue.push_back(input);
         let mut outputs = Vec::new();
-        while let (Some(mic), Some(reference)) = (self.microphone.front(), self.reference.front()) {
+        while let Some(mic) = self.microphone.front() {
             let ml = mic
                 .lineage()
                 .ok_or_else(|| failure("missing microphone lineage"))?;
-            let rl = reference
-                .lineage()
-                .ok_or_else(|| failure("missing reference lineage"))?;
-            if ml.clock_id() != rl.clock_id() || ml.session_id() != rl.session_id() {
-                return Err(failure(
-                    "AEC inputs must share a Session and explicitly aligned clock",
-                ));
-            }
             let mt = mic
                 .timing()
                 .source_timestamp_ns()
                 .ok_or_else(|| failure("missing microphone time"))?;
-            let rt = reference
-                .timing()
-                .source_timestamp_ns()
-                .ok_or_else(|| failure("missing reference time"))?;
-            if mt.abs_diff(rt) > self.configuration.maximum_pair_skew_ns {
-                // A stale reference can be dropped. Never silently discard microphone audio.
-                if rt < mt {
-                    self.reference.pop_front();
-                    self.diagnostics.discarded_reference_frames_total += 1;
+            if let Some(reference) = self.reference.front() {
+                let rl = reference
+                    .lineage()
+                    .ok_or_else(|| failure("missing reference lineage"))?;
+                let rt = reference
+                    .timing()
+                    .source_timestamp_ns()
+                    .ok_or_else(|| failure("missing reference time"))?;
+                if ml.clock_id() != rl.clock_id() || ml.session_id() != rl.session_id() {
+                    return Err(failure(
+                        "AEC inputs must share a Session and declared clock domain",
+                    ));
+                }
+                // Render and capture are independent engine inputs. Feed each
+                // actual render block once, in source-time order, with no sample
+                // splicing or invented reference after EOF.
+                if rt <= mt || self.last_render_time_ns.is_none() {
+                    if rt.saturating_sub(mt)
+                        > u64::from(super::config::MAXIMUM_PENDING_AUDIO_MS) * 1_000_000
+                    {
+                        return Err(failure(
+                            "AEC reference begins beyond the bounded microphone startup interval",
+                        ));
+                    }
+                    let reference = self
+                        .reference
+                        .pop_front()
+                        .ok_or_else(|| failure("missing queued reference"))?;
+                    self.analyze_reference(reference)?;
                     continue;
                 }
-                return Err(failure("AEC reference advanced beyond pending microphone; discontinuity requires explicit recovery"));
             }
-            let mic = self
+            let Some(reference_ns) = self.last_render_time_ns else {
+                break;
+            };
+            let age_ns = mt.saturating_sub(reference_ns);
+            if age_ns > u64::from(super::config::MAXIMUM_PENDING_AUDIO_MS) * 1_000_000 {
+                // Wait only within the existing bounded microphone queue. A
+                // delayed or missing reference cannot grow retained audio.
+                break;
+            }
+            self.diagnostics.latest_reference_age_ns = age_ns;
+            self.diagnostics.latest_reference_lead_ns = reference_ns.saturating_sub(mt);
+            self.diagnostics.microphone_source_id = Some(ml.source_id());
+            let microphone = self
                 .microphone
                 .pop_front()
                 .ok_or_else(|| failure("missing queued microphone"))?;
-            let reference = self
-                .reference
-                .pop_front()
-                .ok_or_else(|| failure("missing queued reference"))?;
-            self.diagnostics.latest_pair_skew_ns = mt.abs_diff(rt);
-            self.diagnostics.reference_source_id = Some(rl.source_id());
-            self.diagnostics.microphone_source_id = Some(ml.source_id());
-            outputs.push(self.process_pair(mic, reference)?);
+            outputs.push(self.process_microphone(microphone)?);
         }
         if !self.microphone.is_empty() || self.diagnostics.processed_microphone_frames_total == 0 {
             self.diagnostics.state = EchoCancellationState::WaitingForReference;
@@ -205,10 +232,45 @@ impl EchoProcessor {
         Ok(outputs)
     }
 
-    fn process_pair(
+    fn analyze_reference(&mut self, reference: SignalEnvelope) -> Result<(), NodeError> {
+        let lineage = reference
+            .lineage()
+            .ok_or_else(|| failure("reference lineage missing"))?;
+        let timestamp_ns = reference
+            .timing()
+            .source_timestamp_ns()
+            .ok_or_else(|| failure("reference time missing"))?;
+        let SignalPayload::Audio(frame) = reference.payload() else {
+            return Err(failure("reference payload changed"));
+        };
+        let processor = self
+            .processor
+            .as_ref()
+            .ok_or_else(|| failure("AEC processor absent"))?;
+        let channels = usize::from(self.configuration.reference_channels.count());
+        for block in frame
+            .samples()
+            .chunks_exact(ENGINE_FRAME_SAMPLES * channels)
+        {
+            let mut render = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
+            for (channel, values) in render.iter_mut().take(channels).enumerate() {
+                for (sample, value) in values.iter_mut().enumerate() {
+                    *value = block[sample * channels + channel];
+                }
+            }
+            processor
+                .analyze_render_frame(render[..channels].iter().map(|c| c.as_slice()))
+                .map_err(failure)?;
+        }
+        self.last_render_time_ns = Some(timestamp_ns);
+        self.diagnostics.reference_source_id = Some(lineage.source_id());
+        self.diagnostics.analyzed_reference_frames_total += 1;
+        Ok(())
+    }
+
+    fn process_microphone(
         &mut self,
         microphone: SignalEnvelope,
-        reference: SignalEnvelope,
     ) -> Result<SignalEnvelope, NodeError> {
         let lineage = microphone
             .lineage()
@@ -217,9 +279,6 @@ impl EchoProcessor {
         let generation = microphone.output_generation().cloned();
         let SignalPayload::Audio(mic) = microphone.into_payload() else {
             return Err(failure("microphone payload changed"));
-        };
-        let SignalPayload::Audio(reference) = reference.into_payload() else {
-            return Err(failure("reference payload changed"));
         };
         let mut buffer = self
             .output_pool
@@ -233,18 +292,13 @@ impl EchoProcessor {
         let channels = usize::from(self.configuration.reference_channels.count());
         let start = Instant::now();
         for block_index in 0..(self.configuration.frame_samples() / ENGINE_FRAME_SAMPLES) {
-            let mut render = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
             let mut capture = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
-            for channel in 0..channels {
-                for sample in 0..ENGINE_FRAME_SAMPLES {
+            for (channel, values) in capture.iter_mut().take(channels).enumerate() {
+                for (sample, value) in values.iter_mut().enumerate() {
                     let offset = (block_index * ENGINE_FRAME_SAMPLES + sample) * channels + channel;
-                    render[channel][sample] = reference.samples()[offset];
-                    capture[channel][sample] = mic.samples()[offset];
+                    *value = mic.samples()[offset];
                 }
             }
-            processor
-                .analyze_render_frame(render[..channels].iter().map(|c| c.as_slice()))
-                .map_err(failure)?;
             processor
                 .process_capture_frame(capture[..channels].iter_mut().map(|c| c.as_mut_slice()))
                 .map_err(failure)?;
@@ -308,6 +362,20 @@ impl EchoProcessor {
             },
             ..Default::default()
         });
+        // APM's first capture configures its format and clears queued render.
+        // Establish both formats privately, then reset that initialization audio
+        // before accepting any source frame. Otherwise the first real reference
+        // is lost and the first microphone block has a different signal delay.
+        let channels = usize::from(self.configuration.reference_channels.count());
+        let render = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
+        let mut capture = render;
+        processor
+            .analyze_render_frame(render[..channels].iter().map(|c| c.as_slice()))
+            .map_err(|error| NodeError::Prepare(error.to_string()))?;
+        processor
+            .process_capture_frame(capture[..channels].iter_mut().map(|c| c.as_mut_slice()))
+            .map_err(|error| NodeError::Prepare(error.to_string()))?;
+        processor.reinitialize();
         self.processor = Some(processor);
         self.output_pool = Some(AudioBufferPool::new(
             OUTPUT_POOL_FRAMES,
@@ -322,6 +390,10 @@ impl EchoProcessor {
         if !self.microphone.is_empty() {
             return Err(failure("AEC ended with unpaired microphone frames"));
         }
+        while let Some(reference) = self.reference.pop_front() {
+            self.analyze_reference(reference)?;
+        }
+        self.publish();
         Ok(Vec::new())
     }
 

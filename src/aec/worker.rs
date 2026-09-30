@@ -17,6 +17,37 @@ enum Command {
     Flush(Reply),
 }
 
+/// Tracks cancellation of a lifecycle future, not the completion of native work.
+/// This guard only lives on the asynchronous worker boundary, never a callback.
+struct PendingResponse {
+    observations: ObservationState,
+    completed: bool,
+}
+
+impl PendingResponse {
+    fn new(observations: ObservationState) -> Self {
+        Self {
+            observations,
+            completed: false,
+        }
+    }
+
+    fn complete<T>(&mut self, result: &Result<T, NodeError>) {
+        if let Err(error) = result {
+            self.observations.fail(error.to_string());
+        }
+        self.completed = true;
+    }
+}
+
+impl Drop for PendingResponse {
+    fn drop(&mut self) {
+        if !self.completed {
+            self.observations.interrupt();
+        }
+    }
+}
+
 /// One blocking worker owns the engine for its lifetime; no per-frame task spawn.
 /// Replies yield the Session executor. The queue holds one pending command.
 pub(crate) struct AecWorker {
@@ -55,8 +86,11 @@ impl AecWorker {
         // No stop message can be stranded behind a full command queue.
         self.sender.take();
         if let Some(task) = self.task.take() {
-            task.await
-                .map_err(|e| NodeError::Process(format!("AEC native worker failed: {e}")))?;
+            if let Err(error) = task.await {
+                let message = format!("AEC native worker failed: {error}");
+                self.observations.fail(message.clone());
+                return Err(NodeError::Process(message));
+            }
         }
         Ok(())
     }
@@ -111,9 +145,13 @@ impl AsyncNode for AecWorker {
             });
             self.sender = Some(sender);
             self.task = Some(task);
-            response
+            let mut pending = PendingResponse::new(self.observations.clone());
+            let result = response
                 .await
-                .map_err(|_| NodeError::Prepare("AEC worker initialization failed".into()))?
+                .map_err(|_| NodeError::Prepare("AEC worker initialization failed".into()))
+                .and_then(|result| result);
+            pending.complete(&result);
+            result
         })
     }
 
@@ -131,24 +169,41 @@ impl AsyncNode for AecWorker {
     ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
             let (reply, response) = oneshot::channel();
-            self.send(Command::Process {
+            let mut pending = PendingResponse::new(self.observations.clone());
+            let submitted = self.send(Command::Process {
                 port: port.to_owned(),
                 input: Box::new(input),
                 reply,
-            })?;
-            response
+            });
+            if let Err(error) = submitted {
+                let result = Err(error);
+                pending.complete(&result);
+                return result;
+            }
+            let result = response
                 .await
-                .map_err(|_| NodeError::Process("AEC processing response lost".into()))?
+                .map_err(|_| NodeError::Process("AEC processing response lost".into()))
+                .and_then(|result| result);
+            pending.complete(&result);
+            result
         })
     }
 
     fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
             let (reply, response) = oneshot::channel();
-            self.send(Command::Flush(reply))?;
-            response
+            let mut pending = PendingResponse::new(self.observations.clone());
+            if let Err(error) = self.send(Command::Flush(reply)) {
+                let result = Err(error);
+                pending.complete(&result);
+                return result;
+            }
+            let result = response
                 .await
-                .map_err(|_| NodeError::Process("AEC flush response lost".into()))?
+                .map_err(|_| NodeError::Process("AEC flush response lost".into()))
+                .and_then(|result| result);
+            pending.complete(&result);
+            result
         })
     }
 
@@ -159,3 +214,7 @@ impl AsyncNode for AecWorker {
         Box::pin(async move { self.stop().await })
     }
 }
+
+#[cfg(test)]
+#[path = "worker_tests.rs"]
+mod tests;
