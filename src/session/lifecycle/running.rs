@@ -201,6 +201,7 @@ struct SidecarFinalizationOutcome {
 }
 
 struct SessionFinalizationOutcomes<'a> {
+    external_source_failures: &'a [SessionFinalizationFailure],
     operators: &'a [OperatorFinalizationOutcome],
     operator_runtime_shutdown_error: Option<&'a str>,
     endpoints: &'a [(Vec<(RouteId, EndpointId)>, EndpointFinalizationOutcome)],
@@ -718,7 +719,10 @@ impl RunningSession {
             .event_sender
             .publish_lifecycle(self.session_id, SessionLifecycleState::Stopping);
         for source in &self.external_sources {
-            source.runtime.cancel();
+            match operator_termination {
+                OperatorTermination::Finish => source.runtime.finish(),
+                OperatorTermination::Cancel => source.runtime.cancel(),
+            }
         }
         // Keep generated-audio ingress alive while Operators emit their final
         // outputs. Zero selects cancellation/rollback's discard behavior.
@@ -739,11 +743,30 @@ impl RunningSession {
         self.stop_requested.store(true, Ordering::Release);
         let mut final_external_source_observations =
             Vec::with_capacity(self.external_sources.len());
+        let mut external_source_finalization_failures = Vec::new();
         let external_source_failures_total = self
             .external_sources
             .drain(..)
             .map(|mut source| {
-                let failed = u64::from(source.runtime.join().is_err());
+                let failed = match source.runtime.join() {
+                    Ok(()) => 0,
+                    Err(error) => {
+                        push_finalization_failure(
+                            self.session_id,
+                            &self.event_sender,
+                            &mut external_source_finalization_failures,
+                            SessionFinalizationStage::DrainRuntime,
+                            SessionComponentId::Runtime,
+                            "join_external_source",
+                            format!(
+                                "source instance {} (source {}): {error}",
+                                source.instance_id.value(),
+                                source.source_id.get(),
+                            ),
+                        );
+                        1
+                    }
+                };
                 final_external_source_observations.push(SessionExternalSourceMetrics {
                     source_instance_id: source.instance_id,
                     source_id: source.source_id,
@@ -866,6 +889,7 @@ impl RunningSession {
             &self.event_sender,
             &worker,
             SessionFinalizationOutcomes {
+                external_source_failures: &external_source_finalization_failures,
                 operators: &operator_outcomes,
                 operator_runtime_shutdown_error: operator_runtime_shutdown_error.as_deref(),
                 endpoints: &endpoint_outcomes,
@@ -2908,7 +2932,9 @@ fn publish_terminal_events(
         _ => Vec::new(),
     };
     let mut endpoint_failures = Vec::new();
-    let mut finalization_failures = Vec::new();
+    // External source errors were already published during join. Retain the
+    // same failures in the durable terminal outcome, not only its stop counter.
+    let mut finalization_failures = finalization.external_source_failures.to_vec();
 
     if let Some(Ok(Some(worker))) = worker {
         for (stem_id, result) in &worker.captures {
@@ -2933,6 +2959,41 @@ fn publish_terminal_events(
                 SessionComponentId::Runtime,
                 "finish_runtime",
                 error.to_string(),
+            );
+        }
+        let drain_deadline_expired = worker
+            .runner
+            .as_ref()
+            .is_ok_and(|summary| summary.drain_budget_exhausted);
+        if drain_deadline_expired {
+            push_finalization_failure(
+                session_id,
+                event_sender,
+                &mut finalization_failures,
+                SessionFinalizationStage::DrainRuntime,
+                SessionComponentId::Runtime,
+                "drain_runtime",
+                "runtime inputs did not finish before the graceful drain deadline",
+            );
+        }
+        // Capture events already retain their concrete source failures. The
+        // worker counter also includes execution errors and drain deadlines;
+        // retain any remaining failures without duplicating those two cases.
+        // A runner.finish error is counted separately by stop_outcome.
+        let represented_runtime_failures =
+            (worker.source_failures.len() as u64).saturating_add(u64::from(drain_deadline_expired));
+        let unrepresented_runtime_failures = worker
+            .runtime_failures_total
+            .saturating_sub(represented_runtime_failures);
+        if unrepresented_runtime_failures > 0 {
+            push_finalization_failure(
+                session_id,
+                event_sender,
+                &mut finalization_failures,
+                SessionFinalizationStage::DrainRuntime,
+                SessionComponentId::Runtime,
+                "process_runtime",
+                format!("runtime processing failed {unrepresented_runtime_failures} time(s)"),
             );
         }
         if worker.lineage_failures_total > 0 {
@@ -3132,9 +3193,84 @@ fn complete_start_failure(
 #[cfg(test)]
 mod shutdown_tests {
     use super::*;
+    use crate::capture::{
+        CaptureRuntimeFailure, CaptureRuntimeFailureClass, SourceGeneration, SourceKind,
+        SourceRecoveryRequirement, SourceRuntimeEvent, StableSourceId,
+    };
     use crate::graph::compile::{Compiler, RuntimePlanner};
     use crate::graph::{NodeConfig, NodeRegistry, Pipeline, PrepareContext};
     use crate::runtime::{plan_source_channel, PlanRunnerCancellation, RealtimePlanExecutor};
+    use crate::session::{SessionEventKind, SessionEventReceive, SessionTerminalState};
+
+    fn assert_terminal_projection(
+        outcome: RuntimeWorkerOutcome,
+        expected_operations: &[&str],
+        expected_source_failures: usize,
+    ) {
+        let worker = Some(Ok(Some(outcome)));
+        let stop = stop_outcome(&worker, &[], None, &[]);
+        let expected_success = expected_operations.is_empty() && expected_source_failures == 0;
+        assert_eq!(stop.is_success(), expected_success);
+        let (sender, receiver) = session_event_channel(8, None);
+        publish_terminal_events(
+            SessionId::new(1),
+            &sender,
+            &worker,
+            SessionFinalizationOutcomes {
+                external_source_failures: &[],
+                operators: &[],
+                operator_runtime_shutdown_error: None,
+                endpoints: &[],
+                sidecars: &[],
+            },
+            stop,
+        );
+        let mut emitted_operations = Vec::new();
+        let mut lifecycle = None;
+        let mut terminal = None;
+        while let SessionEventReceive::Event(event) = receiver.try_recv() {
+            match event.kind() {
+                SessionEventKind::Finalization(failure) => {
+                    assert_eq!(failure.stage(), SessionFinalizationStage::DrainRuntime);
+                    emitted_operations.push(failure.failure().operation());
+                }
+                SessionEventKind::Lifecycle(state) => {
+                    assert!(lifecycle.replace(*state).is_none());
+                }
+                SessionEventKind::Terminal(outcome) => {
+                    assert!(terminal.replace(outcome.clone()).is_none());
+                }
+                event => panic!("unexpected terminal projection event: {event:?}"),
+            }
+        }
+        assert_eq!(emitted_operations, expected_operations);
+        assert_eq!(
+            lifecycle,
+            Some(if expected_success {
+                SessionLifecycleState::Stopped
+            } else {
+                SessionLifecycleState::Failed
+            })
+        );
+        let terminal = terminal.expect("one terminal event");
+        assert_eq!(
+            terminal.state(),
+            if expected_success {
+                SessionTerminalState::Stopped
+            } else {
+                SessionTerminalState::Failed
+            }
+        );
+        assert_eq!(terminal.source_failures().len(), expected_source_failures);
+        assert_eq!(
+            terminal
+                .finalization_failures()
+                .iter()
+                .map(|failure| failure.failure().operation())
+                .collect::<Vec<_>>(),
+            expected_operations,
+        );
+    }
 
     #[test]
     fn given_empty_live_ingress_when_graceful_deadline_expires_then_timeout_is_reported_without_discarded_frames(
@@ -3177,11 +3313,63 @@ mod shutdown_tests {
                 replacement_receiver,
             );
             drop(retained_sender);
-            let finish = outcome.runner.unwrap();
+            let finish = outcome.runner.as_ref().unwrap();
             assert_eq!(finish.drain_budget_exhausted, expected_expired);
             assert_eq!(outcome.runtime_failures_total, u64::from(expected_expired));
             assert_eq!(finish.source_frames_discarded_total, 0);
             assert_eq!(finish.source_frames_processed_total, 0);
+            assert_terminal_projection(
+                outcome,
+                if expected_expired {
+                    &["drain_runtime"]
+                } else {
+                    &[]
+                },
+                0,
+            );
+        }
+    }
+
+    #[test]
+    fn given_processing_and_source_failures_when_publishing_terminal_then_only_unrepresented_errors_are_added(
+    ) {
+        let source_failure = SessionSourceFailure::new(
+            StemId::new(1),
+            SourceRuntimeEvent::SourceUnavailable {
+                stable_id: StableSourceId::new(
+                    crate::Platform::Unknown,
+                    SourceKind::Application,
+                    "test:terminal-source",
+                ),
+                generation: SourceGeneration::INITIAL,
+                recovery_requirement: SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession,
+                failure: CaptureRuntimeFailure {
+                    operation: "capture",
+                    error_class: CaptureRuntimeFailureClass::SourceInstanceExited,
+                },
+            },
+        );
+        for source_failures in [Vec::new(), vec![source_failure]] {
+            for processing_failures in 0..=1 {
+                let source_failure_count = source_failures.len();
+                assert_terminal_projection(
+                    RuntimeWorkerOutcome {
+                        captures: Vec::new(),
+                        runner: Ok(PlanRunnerFinishSummary::default()),
+                        runtime_events_total: source_failure_count as u64,
+                        runtime_failures_total: source_failure_count as u64 + processing_failures,
+                        lineage_failures_total: 0,
+                        source_send_rejections_total: 0,
+                        source_failures: source_failures.clone(),
+                    },
+                    if processing_failures > 0 {
+                        &["process_runtime"]
+                    } else {
+                        &[]
+                    },
+                    source_failure_count,
+                );
+            }
         }
     }
 }

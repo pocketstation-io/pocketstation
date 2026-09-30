@@ -1,7 +1,8 @@
 use std::collections::{BTreeMap, BTreeSet};
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering};
 use std::sync::Arc;
 use std::thread::JoinHandle;
+use std::time::{Duration, Instant};
 
 use crate::frame::{SessionId, SourceId, StreamId};
 use crate::graph::{
@@ -246,14 +247,42 @@ impl SourceSessionContext {
     }
 }
 
+const SOURCE_DRAIN_TIMEOUT: Duration = Duration::from_secs(1);
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+enum SourceStopState {
+    Running,
+    Finishing,
+    Cancelled,
+}
+
 #[derive(Clone)]
 pub struct SourceCancellation {
-    cancelled: Arc<AtomicBool>,
+    state: Arc<AtomicU8>,
 }
 
 impl SourceCancellation {
+    /// Interrupts `next` for both graceful stop and cancellation.
+    ///
+    /// Return promptly when this becomes true. During graceful stop Core then
+    /// calls [`SourceDriver::drain`] for already accepted input; cancellation
+    /// skips that step. The existing boolean is an interruption signal, not a
+    /// request to discard a driver's accepted input.
     pub fn is_cancelled(&self) -> bool {
-        self.cancelled.load(Ordering::Acquire)
+        self.stop_state() != SourceStopState::Running
+    }
+
+    fn is_aborted(&self) -> bool {
+        self.stop_state() == SourceStopState::Cancelled
+    }
+
+    fn stop_state(&self) -> SourceStopState {
+        match self.state.load(Ordering::Acquire) {
+            value if value == SourceStopState::Running as u8 => SourceStopState::Running,
+            value if value == SourceStopState::Finishing as u8 => SourceStopState::Finishing,
+            _ => SourceStopState::Cancelled,
+        }
     }
 }
 
@@ -270,6 +299,23 @@ pub trait SourceDriver: Send {
         &mut self,
         cancellation: &SourceCancellation,
     ) -> Result<Option<SourceEmission>, SourceDriverError>;
+    /// Returns one already accepted emission during graceful stop, or `None`
+    /// when none remain. The default preserves drivers with no pending input.
+    ///
+    /// Stop accepting new work before returning drained emissions. Calls must
+    /// return promptly and must not acquire new live input. Core allows one
+    /// second between the first drain call and completion, checks cancellation
+    /// between calls, and validates these emissions exactly like `next`.
+    /// A blocking implementation cannot be forcibly interrupted by this limit.
+    fn drain(&mut self) -> Result<Option<SourceEmission>, SourceDriverError> {
+        Ok(None)
+    }
+    /// Stops producer admission and discards pending work on cancellation.
+    /// Core calls this once before `close`, including cancellation before the
+    /// first `next` call. Drivers without buffered input need no extra action.
+    fn cancel(&mut self) -> Result<(), SourceDriverError> {
+        Ok(())
+    }
     fn close(&mut self) -> Result<(), SourceDriverError>;
 }
 
@@ -514,7 +560,7 @@ impl PreparedSourceRuntime {
             .ok_or(SourceRuntimeError::PreparedStateConsumed)?;
         let session = self.session.clone();
         let cancellation = SourceCancellation {
-            cancelled: Arc::new(AtomicBool::new(false)),
+            state: Arc::new(AtomicU8::new(SourceStopState::Running as u8)),
         };
         let task_cancellation = cancellation.clone();
         let state = Arc::new(SourceRuntimeObservationState::default());
@@ -531,17 +577,7 @@ impl PreparedSourceRuntime {
                     &task_state,
                     session.as_ref(),
                 );
-                if result.is_err() {
-                    task_state.failure_total.fetch_add(1, Ordering::Relaxed);
-                }
-                if task_cancellation.is_cancelled() {
-                    task_state
-                        .cancellation_total
-                        .fetch_add(1, Ordering::Relaxed);
-                }
-                let close_result = driver.close().map_err(SourceRuntimeError::Driver);
-                task_state.joined.store(true, Ordering::Release);
-                result.and(close_result)
+                finalize_source_driver(driver.as_mut(), &task_cancellation, &task_state, result)
             })
             .map_err(SourceRuntimeError::Spawn)?;
         Ok(SourceRuntime {
@@ -573,7 +609,19 @@ impl SourceRuntime {
     }
 
     pub fn cancel(&self) {
-        self.cancellation.cancelled.store(true, Ordering::Release);
+        self.cancellation
+            .state
+            .store(SourceStopState::Cancelled as u8, Ordering::Release);
+    }
+
+    pub fn finish(&self) {
+        // A later graceful request must never downgrade cancellation.
+        let _ = self.cancellation.state.compare_exchange(
+            SourceStopState::Running as u8,
+            SourceStopState::Finishing as u8,
+            Ordering::AcqRel,
+            Ordering::Acquire,
+        );
     }
 
     pub fn observations(&self) -> SourceRuntimeObservationHandle {
@@ -599,6 +647,30 @@ impl Drop for SourceRuntime {
     }
 }
 
+fn finalize_source_driver(
+    driver: &mut dyn SourceDriver,
+    cancellation: &SourceCancellation,
+    observations: &SourceRuntimeObservationState,
+    result: Result<(), SourceRuntimeError>,
+) -> Result<(), SourceRuntimeError> {
+    let cancel_result = if cancellation.is_aborted() {
+        observations
+            .cancellation_total
+            .fetch_add(1, Ordering::Relaxed);
+        driver.cancel().map_err(SourceRuntimeError::Driver)
+    } else {
+        Ok(())
+    };
+    // Cleanup still runs when processing, drain or cancellation failed.
+    let close_result = driver.close().map_err(SourceRuntimeError::Driver);
+    let result = result.and(cancel_result).and(close_result);
+    if result.is_err() {
+        observations.failure_total.fetch_add(1, Ordering::Relaxed);
+    }
+    observations.joined.store(true, Ordering::Release);
+    result
+}
+
 fn run_source_driver(
     driver: &mut dyn SourceDriver,
     manifest: &SourceManifest,
@@ -608,13 +680,37 @@ fn run_source_driver(
     session: Option<&SourceSessionContext>,
 ) -> Result<(), SourceRuntimeError> {
     let mut continuity = BTreeMap::<String, SignalContinuityTracker>::new();
-    while !cancellation.is_cancelled() {
-        let Some(emission) = driver
-            .next(cancellation)
-            .map_err(SourceRuntimeError::Driver)?
-        else {
+    let mut drain_started = None;
+    loop {
+        let emission = match cancellation.stop_state() {
+            SourceStopState::Running => {
+                let emission = driver
+                    .next(cancellation)
+                    .map_err(SourceRuntimeError::Driver)?;
+                if emission.is_none() && cancellation.stop_state() == SourceStopState::Finishing {
+                    continue;
+                }
+                emission
+            }
+            SourceStopState::Finishing => {
+                let started = drain_started.get_or_insert_with(Instant::now);
+                if started.elapsed() >= SOURCE_DRAIN_TIMEOUT {
+                    return Err(SourceRuntimeError::DrainDeadlineExceeded);
+                }
+                let emission = driver.drain().map_err(SourceRuntimeError::Driver)?;
+                if started.elapsed() >= SOURCE_DRAIN_TIMEOUT {
+                    return Err(SourceRuntimeError::DrainDeadlineExceeded);
+                }
+                emission
+            }
+            SourceStopState::Cancelled => break,
+        };
+        let Some(emission) = emission else {
             break;
         };
+        if cancellation.is_aborted() {
+            break;
+        }
         let output = manifest
             .output_port(&emission.output_port)
             .ok_or_else(|| SourceRuntimeError::UnknownOutput(emission.output_port.clone()))?;
@@ -752,6 +848,8 @@ pub enum SourceDriverError {
 
 #[derive(Debug, thiserror::Error)]
 pub enum SourceRuntimeError {
+    #[error("source did not finish draining within one second")]
+    DrainDeadlineExceeded,
     #[error("invalid source manifest: {0}")]
     InvalidManifest(SourceManifestError),
     #[error("invalid source configuration: {0}")]
@@ -887,5 +985,369 @@ mod tests {
         configuration.insert("provider.api-key", "opaque");
 
         assert_eq!(configuration.get("provider.api-key"), Some("opaque"));
+    }
+
+    struct PendingSource {
+        pending: std::collections::VecDeque<SourceEmission>,
+        drain_calls: usize,
+        drain_error: Option<String>,
+        cancel_calls: usize,
+        close_calls: usize,
+        cancel_error: Option<String>,
+        close_error: Option<String>,
+    }
+
+    impl SourceDriver for PendingSource {
+        fn prepare(&mut self, _: &SourcePrepareContext) -> Result<(), SourceDriverError> {
+            Ok(())
+        }
+
+        fn next(
+            &mut self,
+            cancellation: &SourceCancellation,
+        ) -> Result<Option<SourceEmission>, SourceDriverError> {
+            // Deterministically place Finish between next's entry and its None.
+            cancellation
+                .state
+                .store(SourceStopState::Finishing as u8, Ordering::Release);
+            Ok(None)
+        }
+
+        fn drain(&mut self) -> Result<Option<SourceEmission>, SourceDriverError> {
+            self.drain_calls += 1;
+            if let Some(message) = self.drain_error.take() {
+                return Err(SourceDriverError::Failed(message));
+            }
+            Ok(self.pending.pop_front())
+        }
+
+        fn close(&mut self) -> Result<(), SourceDriverError> {
+            self.close_calls += 1;
+            self.close_error
+                .take()
+                .map_or(Ok(()), |message| Err(SourceDriverError::Failed(message)))
+        }
+
+        fn cancel(&mut self) -> Result<(), SourceDriverError> {
+            self.cancel_calls += 1;
+            self.cancel_error
+                .take()
+                .map_or(Ok(()), |message| Err(SourceDriverError::Failed(message)))
+        }
+    }
+
+    fn pending_source(spec: SignalSpec) -> PendingSource {
+        PendingSource {
+            pending: std::collections::VecDeque::from([SourceEmission {
+                output_port: "out".to_owned(),
+                envelope: SignalEnvelope::untracked(
+                    crate::graph::SignalPayload::Bytes(vec![1, 2, 3]),
+                    spec,
+                    1,
+                )
+                .with_lineage(
+                    crate::graph::SignalLineage {
+                        session_id: SessionId::new(1),
+                        stream_id: StreamId::new(1),
+                        source_id: SourceId::new(1),
+                        clock_id: crate::frame::ClockDomainId(1),
+                        sequence_number: 0,
+                        source_generation: 1,
+                        discontinuity_epoch: 0,
+                        policy_epoch: 0,
+                    },
+                    crate::graph::SignalTiming::observed(1),
+                ),
+                terminal: false,
+            }]),
+            drain_calls: 0,
+            drain_error: None,
+            cancel_calls: 0,
+            close_calls: 0,
+            cancel_error: None,
+            close_error: None,
+        }
+    }
+
+    fn stopped_source(state: SourceStopState) -> SourceCancellation {
+        SourceCancellation {
+            state: Arc::new(AtomicU8::new(state as u8)),
+        }
+    }
+
+    #[test]
+    fn given_accepted_source_emission_when_finish_precedes_first_next_then_drain_publishes_it() {
+        let manifest = manifest(vec![output("out")]);
+        let mut driver = pending_source(manifest.outputs[0].signal.clone());
+        let (fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
+            capacity_signals: 2,
+            route_settings: crate::graph::RouteSettings::bounded_async(),
+        }])
+        .unwrap();
+        let mut fanouts = BTreeMap::from([("out".to_owned(), fanout)]);
+        let observations = SourceRuntimeObservationState::default();
+
+        run_source_driver(
+            &mut driver,
+            &manifest,
+            &mut fanouts,
+            &stopped_source(SourceStopState::Finishing),
+            &observations,
+            None,
+        )
+        .unwrap();
+
+        assert_eq!(driver.drain_calls, 2);
+        let received = receivers[0].recv().expect("accepted source emission");
+        assert!(
+            matches!(received.payload(), crate::graph::SignalPayload::Bytes(bytes) if bytes == &[1, 2, 3])
+        );
+        assert!(receivers[0].recv().is_none());
+        assert_eq!(observations.emitted_total.load(Ordering::Relaxed), 1);
+    }
+
+    #[test]
+    fn given_finish_during_next_when_it_returns_none_then_accepted_source_input_still_drains() {
+        let manifest = manifest(vec![output("out")]);
+        let mut driver = pending_source(manifest.outputs[0].signal.clone());
+        let (fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
+            capacity_signals: 2,
+            route_settings: crate::graph::RouteSettings::bounded_async(),
+        }])
+        .unwrap();
+        run_source_driver(
+            &mut driver,
+            &manifest,
+            &mut BTreeMap::from([("out".to_owned(), fanout)]),
+            &stopped_source(SourceStopState::Running),
+            &SourceRuntimeObservationState::default(),
+            None,
+        )
+        .unwrap();
+        assert_eq!(driver.drain_calls, 2);
+        assert!(receivers[0].recv().is_some());
+        assert!(receivers[0].recv().is_none());
+    }
+
+    #[test]
+    fn given_pending_source_when_cancelled_then_drain_is_not_called() {
+        let manifest = manifest(vec![output("out")]);
+        let mut driver = pending_source(manifest.outputs[0].signal.clone());
+        run_source_driver(
+            &mut driver,
+            &manifest,
+            &mut BTreeMap::new(),
+            &stopped_source(SourceStopState::Cancelled),
+            &SourceRuntimeObservationState::default(),
+            None,
+        )
+        .unwrap();
+        assert_eq!(driver.drain_calls, 0);
+        assert_eq!(driver.pending.len(), 1);
+    }
+
+    #[test]
+    fn given_cancel_before_first_next_when_finalized_then_cancel_and_close_run_once() {
+        let manifest = manifest(vec![output("out")]);
+        let mut driver = pending_source(manifest.outputs[0].signal.clone());
+        let cancellation = stopped_source(SourceStopState::Cancelled);
+        let observations = SourceRuntimeObservationState::default();
+        let result = run_source_driver(
+            &mut driver,
+            &manifest,
+            &mut BTreeMap::new(),
+            &cancellation,
+            &observations,
+            None,
+        );
+        finalize_source_driver(&mut driver, &cancellation, &observations, result).unwrap();
+        assert_eq!(driver.drain_calls, 0);
+        assert_eq!(driver.cancel_calls, 1);
+        assert_eq!(driver.close_calls, 1);
+        assert_eq!(observations.cancellation_total.load(Ordering::Relaxed), 1);
+        assert_eq!(observations.failure_total.load(Ordering::Relaxed), 0);
+    }
+
+    #[test]
+    fn given_source_cleanup_errors_when_finalized_then_close_runs_and_original_failure_wins() {
+        for initial_failure in [None, Some("processing failed")] {
+            for cancel_failure in [None, Some("cancel failed")] {
+                let mut driver = pending_source(SignalSpec::text(crate::graph::TextFormat::Utf8));
+                driver.cancel_error = cancel_failure.map(str::to_owned);
+                driver.close_error = Some("close failed".to_owned());
+                let observations = SourceRuntimeObservationState::default();
+                let result = initial_failure.map_or(Ok(()), |message| {
+                    Err(SourceRuntimeError::Driver(SourceDriverError::Failed(
+                        message.to_owned(),
+                    )))
+                });
+                let result = finalize_source_driver(
+                    &mut driver,
+                    &stopped_source(SourceStopState::Cancelled),
+                    &observations,
+                    result,
+                );
+                let expected = initial_failure.or(cancel_failure).unwrap_or("close failed");
+                assert!(
+                    matches!(result, Err(SourceRuntimeError::Driver(SourceDriverError::Failed(message))) if message == expected)
+                );
+                assert_eq!(driver.cancel_calls, 1);
+                assert_eq!(driver.close_calls, 1);
+                assert_eq!(observations.failure_total.load(Ordering::Relaxed), 1);
+                assert!(observations.joined.load(Ordering::Acquire));
+            }
+        }
+    }
+
+    #[test]
+    fn given_failing_source_drain_when_finishing_then_error_is_preserved() {
+        let manifest = manifest(vec![output("out")]);
+        let mut driver = pending_source(manifest.outputs[0].signal.clone());
+        driver.drain_error = Some("accepted input could not drain".to_owned());
+        let result = run_source_driver(
+            &mut driver,
+            &manifest,
+            &mut BTreeMap::new(),
+            &stopped_source(SourceStopState::Finishing),
+            &SourceRuntimeObservationState::default(),
+            None,
+        );
+        assert!(
+            matches!(result, Err(SourceRuntimeError::Driver(SourceDriverError::Failed(message)))
+            if message == "accepted input could not drain")
+        );
+        assert_eq!(driver.drain_calls, 1);
+    }
+
+    #[test]
+    fn given_invalid_drained_emission_when_finishing_then_normal_format_validation_applies() {
+        let manifest = manifest(vec![output("out")]);
+        let mut driver = pending_source(SignalSpec::text(crate::graph::TextFormat::Utf8));
+        let result = run_source_driver(
+            &mut driver,
+            &manifest,
+            &mut BTreeMap::new(),
+            &stopped_source(SourceStopState::Finishing),
+            &SourceRuntimeObservationState::default(),
+            None,
+        );
+        assert!(matches!(
+            result,
+            Err(SourceRuntimeError::OutputFormatMismatch)
+        ));
+    }
+
+    #[test]
+    fn given_cancelled_source_when_finish_requested_then_cancellation_is_not_downgraded() {
+        let runtime = SourceRuntime {
+            cancellation: stopped_source(SourceStopState::Running),
+            observations: SourceRuntimeObservationHandle {
+                state: Arc::default(),
+            },
+            join: None,
+        };
+        runtime.finish();
+        assert!(runtime.cancellation.is_cancelled());
+        assert!(!runtime.cancellation.is_aborted());
+        runtime.cancel();
+        runtime.finish();
+        assert!(runtime.cancellation.is_aborted());
+    }
+
+    struct InterruptibleSource {
+        entered: Option<std::sync::mpsc::SyncSender<()>>,
+        closed: Arc<AtomicU64>,
+        fail_drain: bool,
+    }
+
+    impl SourceDriver for InterruptibleSource {
+        fn prepare(&mut self, _: &SourcePrepareContext) -> Result<(), SourceDriverError> {
+            Ok(())
+        }
+
+        fn next(
+            &mut self,
+            cancellation: &SourceCancellation,
+        ) -> Result<Option<SourceEmission>, SourceDriverError> {
+            self.entered.take().unwrap().send(()).unwrap();
+            let deadline = Instant::now() + Duration::from_secs(1);
+            while !cancellation.is_cancelled() {
+                assert!(
+                    Instant::now() < deadline,
+                    "test must request source shutdown"
+                );
+                std::thread::yield_now();
+            }
+            Ok(None)
+        }
+
+        fn drain(&mut self) -> Result<Option<SourceEmission>, SourceDriverError> {
+            if self.fail_drain {
+                Err(SourceDriverError::Failed("drain failed".to_owned()))
+            } else {
+                Ok(None)
+            }
+        }
+
+        fn close(&mut self) -> Result<(), SourceDriverError> {
+            self.closed.fetch_add(1, Ordering::Relaxed);
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn given_interrupted_next_when_draining_fails_then_worker_still_closes_and_reports_failure() {
+        let (entered_tx, entered_rx) = std::sync::mpsc::sync_channel(1);
+        let closed = Arc::new(AtomicU64::new(0));
+        let mut runtime = PreparedSourceRuntime {
+            driver: Some(Box::new(InterruptibleSource {
+                entered: Some(entered_tx),
+                closed: Arc::clone(&closed),
+                fail_drain: true,
+            })),
+            manifest: manifest(vec![output("out")]),
+            fanouts: Some(BTreeMap::new()),
+            session: None,
+        }
+        .start()
+        .unwrap();
+        entered_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+        runtime.finish();
+
+        assert!(
+            matches!(runtime.join(), Err(SourceRuntimeError::Driver(SourceDriverError::Failed(message))) if message == "drain failed")
+        );
+        assert_eq!(closed.load(Ordering::Relaxed), 1);
+        let observations = runtime.observations().snapshot();
+        assert!(observations.joined);
+        assert_eq!(observations.failure_total, 1);
+        assert_eq!(observations.cancellation_total, 0);
+    }
+
+    #[test]
+    fn given_interrupted_next_when_cancelling_then_drain_failure_is_never_invoked() {
+        let (entered_tx, entered_rx) = std::sync::mpsc::sync_channel(1);
+        let closed = Arc::new(AtomicU64::new(0));
+        let mut runtime = PreparedSourceRuntime {
+            driver: Some(Box::new(InterruptibleSource {
+                entered: Some(entered_tx),
+                closed: Arc::clone(&closed),
+                fail_drain: true,
+            })),
+            manifest: manifest(vec![output("out")]),
+            fanouts: Some(BTreeMap::new()),
+            session: None,
+        }
+        .start()
+        .unwrap();
+        entered_rx.recv_timeout(Duration::from_secs(1)).unwrap();
+        runtime.cancel();
+        runtime.join().unwrap();
+
+        assert_eq!(closed.load(Ordering::Relaxed), 1);
+        let observations = runtime.observations().snapshot();
+        assert!(observations.joined);
+        assert_eq!(observations.failure_total, 0);
+        assert_eq!(observations.cancellation_total, 1);
     }
 }

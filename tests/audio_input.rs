@@ -608,7 +608,8 @@ fn given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording
     assert_eq!(recording.failed_stems, 0);
 
     let observations = writer.observations();
-    assert!(observations.cancelled);
+    assert!(observations.closed);
+    assert!(!observations.cancelled);
     assert_eq!(observations.accepted_total, 4);
     assert_eq!(observations.available_buffers, observations.buffer_slots);
     assert_eq!(
@@ -616,7 +617,7 @@ fn given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording
             .try_write(&samples)
             .expect_err("stopped Session")
             .kind(),
-        AudioInputWriteErrorKind::Cancelled
+        AudioInputWriteErrorKind::Closed
     );
 
     assert_ne!(source_id.get(), 0);
