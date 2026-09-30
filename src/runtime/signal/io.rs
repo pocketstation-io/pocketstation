@@ -52,6 +52,13 @@ impl AsyncOperatorInput {
         result
     }
 
+    #[cfg_attr(
+        target_pointer_width = "64",
+        expect(
+            clippy::result_large_err,
+            reason = "full queues return the original pooled audio frame inline; saturation must not allocate"
+        )
+    )]
     pub fn send_audio(
         &mut self,
         frame: AudioFrame,

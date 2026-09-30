@@ -4,11 +4,23 @@ use super::{
 };
 use crate::timing::cadence_error_ns;
 use crate::{
-    AudioBufferPool, AudioFrame, NodeError, OperatorId, SampleFormat, SampleSpec, SignalDerivation,
-    SignalEnvelope, SignalLineage, SignalPayload, SignalTiming,
+    AudioBufferHandle, AudioBufferPool, AudioFrame, AudioProcessing, NodeError, OperatorId,
+    OutputGeneration, SampleFormat, SampleSpec, SignalDerivation, SignalEnvelope, SignalLineage,
+    SignalPayload, SignalTiming,
 };
 use std::{collections::VecDeque, sync::Arc, time::Instant};
 use webrtc_audio_processing::{config::EchoCanceller, Config, Processor};
+
+// At 48 kHz: 384 samples block/OLA buffering + nominal 48 filter samples.
+// Frequency-dependent signal delay, not CPU time or a pure sample shift.
+const NOMINAL_DELAY_SAMPLES: u32 = 432;
+const DRAIN_DURATION_MS: u32 = 40;
+
+struct LastMicrophone {
+    lineage: SignalLineage,
+    timing: SignalTiming,
+    generation: Option<OutputGeneration>,
+}
 
 pub(crate) struct EchoProcessor {
     configuration: AecConfiguration,
@@ -21,6 +33,9 @@ pub(crate) struct EchoProcessor {
     observations: ObservationState,
     operator_id: OperatorId,
     last_render_time_ns: Option<u64>,
+    last_microphone: Option<LastMicrophone>,
+    next_output_sequence: u64,
+    flushed: bool,
 }
 
 fn failure(message: impl ToString) -> NodeError {
@@ -44,6 +59,9 @@ impl EchoProcessor {
             observations,
             operator_id,
             last_render_time_ns: None,
+            last_microphone: None,
+            next_output_sequence: 0,
+            flushed: false,
         }
     }
 
@@ -52,6 +70,9 @@ impl EchoProcessor {
         self.diagnostics.discarded_reference_frames_total += self.reference.len() as u64;
         self.microphone.clear();
         self.reference.clear();
+        if self.last_microphone.take().is_some() {
+            self.diagnostics.discarded_tail_generations_total += 1;
+        }
         self.previous = [None, None];
         self.last_render_time_ns = None;
         if let Some(processor) = &self.processor {
@@ -125,6 +146,9 @@ impl EchoProcessor {
         port: &str,
         input: SignalEnvelope,
     ) -> Result<Vec<SignalEnvelope>, NodeError> {
+        if self.flushed {
+            return Err(failure("AEC input after graceful finish"));
+        }
         if self.processor.is_none() {
             return Err(failure("AEC worker is not prepared or is stopped"));
         }
@@ -280,6 +304,28 @@ impl EchoProcessor {
         let SignalPayload::Audio(mic) = microphone.into_payload() else {
             return Err(failure("microphone payload changed"));
         };
+        let buffer = self.process_capture(Some(mic.samples()))?;
+        let metadata = self.processing_metadata(lineage, timing, 0, 0)?;
+        let output = self.output(
+            buffer,
+            lineage,
+            timing,
+            timing,
+            generation.clone(),
+            metadata,
+        )?;
+        self.last_microphone = Some(LastMicrophone {
+            lineage,
+            timing,
+            generation,
+        });
+        self.diagnostics.processed_microphone_frames_total += 1;
+        self.diagnostics.state = EchoCancellationState::Processing;
+        Ok(output)
+    }
+
+    // None is internal EOF padding, never invented capture or reference.
+    fn process_capture(&mut self, samples: Option<&[f32]>) -> Result<AudioBufferHandle, NodeError> {
         let mut buffer = self
             .output_pool
             .as_ref()
@@ -293,10 +339,12 @@ impl EchoProcessor {
         let start = Instant::now();
         for block_index in 0..(self.configuration.frame_samples() / ENGINE_FRAME_SAMPLES) {
             let mut capture = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
-            for (channel, values) in capture.iter_mut().take(channels).enumerate() {
-                for (sample, value) in values.iter_mut().enumerate() {
-                    let offset = (block_index * ENGINE_FRAME_SAMPLES + sample) * channels + channel;
-                    *value = mic.samples()[offset];
+            if let Some(samples) = samples {
+                for (channel, values) in capture.iter_mut().take(channels).enumerate() {
+                    for (sample, value) in values.iter_mut().enumerate() {
+                        *value = samples
+                            [(block_index * ENGINE_FRAME_SAMPLES + sample) * channels + channel];
+                    }
                 }
             }
             processor
@@ -316,20 +364,82 @@ impl EchoProcessor {
             .diagnostics
             .maximum_processing_duration_ns
             .max(duration_ns);
-        self.diagnostics.processed_microphone_frames_total += 1;
-        self.diagnostics.state = EchoCancellationState::Processing;
-        let output = AudioFrame::try_new(
-            mic.stream_id(),
-            mic.source_id(),
-            mic.sequence_number(),
-            mic.timestamp_ns(),
-            SampleSpec::new(SAMPLE_RATE_HZ, channels as u8, SampleFormat::F32Interleaved),
-            buffer,
+        Ok(buffer)
+    }
+
+    fn processing_metadata(
+        &self,
+        lineage: SignalLineage,
+        timing: SignalTiming,
+        padding_samples: u32,
+        tail_offset_samples: u32,
+    ) -> Result<AudioProcessing, NodeError> {
+        Ok(AudioProcessing {
+            input_source_id: lineage.source_id(),
+            input_stream_id: lineage.stream_id(),
+            input_sequence_number: lineage.sequence_number(),
+            input_timestamp_ns: timing
+                .source_timestamp_ns()
+                .ok_or_else(|| failure("AEC input time missing"))?,
+            input_duration_ns: timing
+                .duration_ns()
+                .ok_or_else(|| failure("AEC input duration missing"))?,
+            input_source_generation: lineage.source_generation(),
+            input_discontinuity_epoch: lineage.discontinuity_epoch(),
+            generation: self.diagnostics.processing_generation,
+            nominal_delay_samples: NOMINAL_DELAY_SAMPLES,
+            padding_samples,
+            tail_offset_samples,
+        })
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn output(
+        &mut self,
+        buffer: AudioBufferHandle,
+        input: SignalLineage,
+        upstream_timing: SignalTiming,
+        timing: SignalTiming,
+        generation: Option<OutputGeneration>,
+        metadata: AudioProcessing,
+    ) -> Result<SignalEnvelope, NodeError> {
+        let sequence = self.next_output_sequence;
+        self.next_output_sequence = sequence
+            .checked_add(1)
+            .ok_or_else(|| failure("AEC output sequence exhausted"))?;
+        let lineage = SignalLineage::try_new(
+            input.session_id(),
+            input.stream_id(),
+            input.source_id(),
+            input.clock_id(),
+            sequence,
+            input.source_generation(),
+            input.discontinuity_epoch(),
+            input.policy_epoch(),
         )
         .map_err(failure)?;
+        let output = AudioFrame::try_new(
+            lineage.stream_id(),
+            lineage.source_id(),
+            sequence,
+            timing
+                .source_timestamp_ns()
+                .ok_or_else(|| failure("AEC output time missing"))?,
+            SampleSpec::new(
+                SAMPLE_RATE_HZ,
+                self.configuration.reference_channels.count(),
+                SampleFormat::F32Interleaved,
+            ),
+            buffer,
+        )
+        .map_err(failure)?
+        .with_processing(metadata);
+        self.diagnostics.output_frames_total += 1;
+        // The generated-audio bridge assigns the declared derived source/stream.
+        // Metadata retains the actual microphone input independently.
         Ok(SignalEnvelope::from_audio(output, None)
             .with_lineage(lineage, timing)
-            .with_derivation(self.derivation(lineage, timing)?)
+            .with_derivation(self.derivation(input, upstream_timing)?)
             .with_output_generation(generation))
     }
 
@@ -338,6 +448,9 @@ impl EchoProcessor {
         self.diagnostics.discarded_reference_frames_total += self.reference.len() as u64;
         self.microphone.clear();
         self.reference.clear();
+        if !self.flushed && self.last_microphone.take().is_some() {
+            self.diagnostics.discarded_tail_generations_total += 1;
+        }
         self.processor = None;
         self.output_pool = None;
         if self.diagnostics.last_error.is_none() {
@@ -387,14 +500,78 @@ impl EchoProcessor {
     }
 
     pub(crate) fn flush(&mut self) -> Result<Vec<SignalEnvelope>, NodeError> {
+        if self.flushed {
+            return match self.diagnostics.last_error.as_ref() {
+                Some(error) => Err(failure(error)),
+                None => Ok(Vec::new()),
+            };
+        }
+        // A failed drain cannot retry an already advanced native state. Its
+        // discarded generation remains explicit, and failure is durable.
+        self.flushed = true;
+        let had_history = self.last_microphone.is_some();
+        let result = self.drain();
+        if let Err(error) = &result {
+            if had_history {
+                self.diagnostics.discarded_tail_generations_total += 1;
+            }
+            self.last_microphone = None;
+            self.fail(error);
+        }
+        result
+    }
+
+    fn drain(&mut self) -> Result<Vec<SignalEnvelope>, NodeError> {
         if !self.microphone.is_empty() {
             return Err(failure("AEC ended with unpaired microphone frames"));
         }
         while let Some(reference) = self.reference.pop_front() {
             self.analyze_reference(reference)?;
         }
+        let Some(last) = self.last_microphone.take() else {
+            self.publish();
+            return Ok(Vec::new());
+        };
+        let frame_ms = self.configuration.frame_duration_ms;
+        let mut outputs = Vec::with_capacity((DRAIN_DURATION_MS / frame_ms) as usize);
+        for offset_ms in (0..DRAIN_DURATION_MS).step_by(frame_ms as usize) {
+            let delta_ns = u64::from(frame_ms + offset_ms) * 1_000_000;
+            let advance = |time: Option<u64>| -> Result<Option<u64>, NodeError> {
+                time.map(|t| {
+                    t.checked_add(delta_ns)
+                        .ok_or_else(|| failure("AEC tail timestamp overflow"))
+                })
+                .transpose()
+            };
+            let timing = SignalTiming::try_new(
+                advance(last.timing.source_timestamp_ns())?,
+                last.timing.observed_timestamp_ns(),
+                advance(last.timing.session_timestamp_ns())?,
+                last.timing.duration_ns(),
+            )
+            .map_err(failure)?;
+            let metadata = self.processing_metadata(
+                last.lineage,
+                last.timing,
+                self.configuration.frame_samples() as u32,
+                offset_ms * 48,
+            )?;
+            let buffer = self.process_capture(None)?;
+            outputs.push(self.output(
+                buffer,
+                last.lineage,
+                last.timing,
+                timing,
+                last.generation.clone(),
+                metadata,
+            )?);
+            self.diagnostics.tail_frames_total += 1;
+            self.diagnostics.tail_padding_samples_total += u64::from(metadata.padding_samples);
+        }
+        // AEC3 continues comfort noise: bound drain at this termination policy.
+        // Do not wait for zero output or claim all-state convergence.
         self.publish();
-        Ok(Vec::new())
+        Ok(outputs)
     }
 
     pub(crate) fn fail(&mut self, error: &NodeError) {

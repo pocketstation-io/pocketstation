@@ -46,6 +46,7 @@ while IFS= read -r package_file; do
       docs/guides/capture-and-route.md | \
       docs/guides/connectors.md | \
       docs/guides/extensions.md | \
+      docs/guides/echo-cancellation.md | \
       docs/guides/record-and-observe.md | \
       docs/operations/platform-support.md | \
       docs/reference/events-and-errors.md | \
@@ -74,13 +75,17 @@ for required_path in \
   docs/guides/capture-and-route.md \
   docs/guides/connectors.md \
   docs/guides/extensions.md \
+  docs/guides/echo-cancellation.md \
   docs/guides/record-and-observe.md \
   docs/operations/platform-support.md \
   docs/reference/events-and-errors.md \
   docs/reference/public-api.md \
   docs/troubleshooting.md \
   include/pocketstation.h \
-  src/lib.rs; do
+  src/lib.rs \
+  src/aec/mod.rs \
+  src/aec/processor.rs \
+  src/session/extensions/aec.rs; do
   if ! grep -Fx "${required_path}" <<<"${package_files}" >/dev/null; then
     echo "required package file is missing: ${required_path}" >&2
     exit 1

@@ -76,6 +76,11 @@ impl EndpointAudioFrame {
         self.frame.lineage()
     }
 
+    /// Actual input provenance, including whether this frame is processor tail.
+    pub fn processing(&self) -> Option<crate::frame::AudioProcessing> {
+        self.frame.processing()
+    }
+
     pub fn output_generation_id(&self) -> Option<OutputGenerationId> {
         self.output_generation()
             .map(crate::frame::OutputGeneration::id)

@@ -217,6 +217,9 @@ fn run_bridge(
         let shared = match receiver.recv() {
             Some(shared) => shared,
             None if receiver.is_abandoned() => {
+                // rtrb's abandonment check does not synchronize the producer's
+                // final write. Acquire it before the existing EOF recheck.
+                std::sync::atomic::fence(Ordering::Acquire);
                 let Some(shared) = receiver.recv() else {
                     break;
                 };
@@ -281,6 +284,9 @@ fn run_bridge(
         );
         normalized.sample_rate_hz = specification.sample_spec.sample_rate_hz;
         normalized.format = specification.sample_spec.format;
+        if let Some(processing) = input.processing() {
+            normalized = normalized.with_processing(processing);
+        }
         let per_channel_samples = specification
             .samples_per_frame
             .checked_div(usize::from(specification.sample_spec.channels))
@@ -330,6 +336,8 @@ fn run_bridge(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "internal-testing")]
+    use crate::frame::{AudioProcessing, OutputGenerationState};
     use crate::frame::{SampleFormat, SAMPLE_RATE_HZ};
     use crate::graph::{RouteSettings, SignalEnvelope};
     use crate::runtime::{
@@ -458,6 +466,96 @@ mod tests {
             samples_per_frame: 960,
             pool_slots,
         }
+    }
+
+    #[cfg(feature = "internal-testing")]
+    #[test]
+    fn given_processed_tail_when_audio_reenters_then_origin_and_output_cancellation_survive() {
+        let (sender, mut input) =
+            plan_source_channel(crate::graph::NodeId(1), 2, PlanRunnerCancellation::new())
+                .expect("source channel");
+        let (mut fanout, mut receivers) = TypedEdgeFanout::new(&[TypedEdgeBranchSpec {
+            capacity_signals: 1,
+            route_settings: RouteSettings::bounded_async(),
+        }])
+        .expect("typed edge");
+        let bridge =
+            GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(2))
+                .expect("bridge");
+        let pool = AudioBufferPool::new(1, 960);
+        let mut buffer = pool.acquire().expect("input buffer");
+        buffer.as_mut_slice().fill(0.125);
+        let processing = AudioProcessing {
+            input_source_id: SourceId(40),
+            input_stream_id: StreamId(30),
+            input_sequence_number: 7,
+            input_timestamp_ns: 140_000_000,
+            input_duration_ns: 20_000_000,
+            input_source_generation: 2,
+            input_discontinuity_epoch: 3,
+            generation: 4,
+            nominal_delay_samples: 432,
+            padding_samples: 960,
+            tail_offset_samples: 0,
+        };
+        let frame = AudioFrame::try_new(
+            StreamId(30),
+            SourceId(40),
+            8,
+            160_000_000,
+            SampleSpec::new(SAMPLE_RATE_HZ, 1, SampleFormat::F32Interleaved),
+            buffer,
+        )
+        .expect("input frame");
+        assert_eq!(frame.processing(), None);
+        let generation = OutputGenerationState::new().begin().expect("generation");
+        fanout
+            .publish(
+                SignalEnvelope::from_audio(
+                    frame.with_processing(processing),
+                    Some(FrameLineage {
+                        session_id: SessionId(1),
+                        source_id: SourceId(40),
+                        stem_id: StemId(10),
+                        clock_id: ClockDomainId(11),
+                        sequence_num: 8,
+                        timestamp_start_ns: 160_000_000,
+                        duration_ns: 20_000_000,
+                        source_generation: 2,
+                        discontinuity_epoch: 3,
+                        permission_epoch: 5,
+                    }),
+                )
+                .with_output_generation(Some(generation.clone())),
+                false,
+            )
+            .expect("publish");
+        drop(fanout);
+        bridge.finish_and_join();
+
+        let delivered = input.try_recv_for_testing().expect("derived output");
+        assert!(input.try_recv_for_testing().is_none());
+        assert_eq!(delivered.frame().source_id(), SourceId(4));
+        assert_eq!(delivered.frame().stream_id(), StreamId(3));
+        assert_eq!(delivered.frame().sequence_number(), 8);
+        assert_eq!(delivered.frame().timestamp_ns(), 160_000_000);
+        assert_eq!(delivered.lineage().clock_id(), ClockDomainId(11));
+        assert_eq!(delivered.lineage().permission_epoch(), 5);
+        assert_eq!(delivered.lineage().source_generation(), 2);
+        assert_eq!(delivered.lineage().discontinuity_epoch(), 3);
+        assert_eq!(delivered.frame().processing(), Some(processing));
+        assert_eq!(delivered.frame().samples(), &[0.125; 960]);
+        let endpoint = crate::EndpointAudioFrame::from_route_delivery(
+            crate::runtime::PlanEdgeFrame::Exclusive(delivered),
+            170_000_000,
+            180_000_000,
+        );
+        assert_eq!(endpoint.processing(), Some(processing));
+        assert_eq!(endpoint.output_generation_id(), Some(generation.id()));
+        assert!(endpoint.output_generation().unwrap().is_active());
+        generation.cancel();
+        assert!(!endpoint.output_generation().unwrap().is_active());
+        assert_eq!(endpoint.processing(), Some(processing));
     }
 
     #[test]

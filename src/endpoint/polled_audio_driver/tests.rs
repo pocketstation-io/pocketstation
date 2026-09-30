@@ -338,3 +338,52 @@ fn given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_ex
         1
     );
 }
+
+#[test]
+fn given_unread_terminal_audio_when_receipt_reused_then_capacity_cannot_grow_until_drained() {
+    let config = PolledAudioEndpointConfig::default();
+    let (factory, receipt) = PolledAudioEndpointFactory::new(config).unwrap();
+    let shared = &factory.shared;
+    let (mut producer, consumer) = RingBuffer::new(config.queue_capacity_frames);
+    let slot = shared
+        .register_consumer(consumer, config.queue_capacity_frames)
+        .unwrap();
+    let pool = AudioBufferPool::new(1, 4);
+    publish_delivered_frame(
+        &mut producer,
+        delivered(lineaged_frame(&pool, 1, 0.25)),
+        shared,
+        &WorkerObservations::default(),
+    );
+    drop(producer);
+    shared
+        .retire_consumer(slot, config.queue_capacity_frames)
+        .unwrap();
+    for _ in 0..8 {
+        let (_producer, consumer) = RingBuffer::new(config.queue_capacity_frames);
+        assert!(shared
+            .register_consumer(consumer, config.queue_capacity_frames)
+            .is_err());
+        assert_eq!(
+            receipt.observations().queue_capacity_frames,
+            config.queue_capacity_frames as u64
+        );
+    }
+    let batch = receipt.try_poll().unwrap();
+    assert_eq!(batch.len(), 1);
+    assert_eq!(batch.frame(0).unwrap().samples(), &[0.25; 4]);
+    drop(batch);
+    assert_eq!(receipt.observations().queue_capacity_frames, 0);
+    for _ in 0..8 {
+        let (producer, consumer) = RingBuffer::new(config.queue_capacity_frames);
+        let new_slot = shared
+            .register_consumer(consumer, config.queue_capacity_frames)
+            .unwrap();
+        assert_eq!(new_slot, slot);
+        drop(producer);
+        shared
+            .retire_consumer(new_slot, config.queue_capacity_frames)
+            .unwrap();
+        assert_eq!(receipt.observations().queue_capacity_frames, 0);
+    }
+}

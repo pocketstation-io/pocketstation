@@ -1,7 +1,7 @@
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::thread::JoinHandle;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::capture::{
     capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate,
@@ -217,6 +217,7 @@ pub struct RunningSession {
     session_id: SessionId,
     state: SessionLifecycleState,
     stop_requested: Arc<AtomicBool>,
+    drain_timeout_ms: Arc<AtomicU64>,
     runtime_worker: Option<JoinHandle<Option<RuntimeWorkerOutcome>>>,
     replacement_sender: std::sync::mpsc::SyncSender<SourceControlCommand>,
     replacement_targets: Vec<(StemId, Source)>,
@@ -719,6 +720,22 @@ impl RunningSession {
         for source in &self.external_sources {
             source.runtime.cancel();
         }
+        // Keep generated-audio ingress alive while Operators emit their final
+        // outputs. Zero selects cancellation/rollback's discard behavior.
+        let drain_timeout_ms = if operator_termination == OperatorTermination::Finish {
+            self.operators.iter().fold(1_000_u64, |total, operator| {
+                total.saturating_add(
+                    operator
+                        .lifecycle_timeout
+                        .as_millis()
+                        .min(u128::from(u64::MAX)) as u64,
+                )
+            })
+        } else {
+            0
+        };
+        self.drain_timeout_ms
+            .store(drain_timeout_ms, Ordering::Release);
         self.stop_requested.store(true, Ordering::Release);
         let mut final_external_source_observations =
             Vec::with_capacity(self.external_sources.len());
@@ -737,7 +754,10 @@ impl RunningSession {
             .sum::<u64>();
         self.final_external_source_observations = final_external_source_observations;
         for bridge in self.external_audio_bridges.drain(..) {
-            bridge.cancel_and_join();
+            match operator_termination {
+                OperatorTermination::Finish => bridge.finish_and_join(),
+                OperatorTermination::Cancel => bridge.cancel_and_join(),
+            }
         }
         let sidecar_outcomes = self
             .sidecars
@@ -771,7 +791,6 @@ impl RunningSession {
             .iter()
             .filter(|outcome| outcome.error.is_some())
             .count() as u64;
-        let worker = self.runtime_worker.take().map(JoinHandle::join);
         let (operator_outcomes, operator_runtime_shutdown_error) =
             self.async_runtime_host.take().map_or_else(
                 || (Vec::new(), None),
@@ -785,6 +804,7 @@ impl RunningSession {
                     (outcomes, shutdown_error)
                 },
             );
+        let worker = self.runtime_worker.take().map(JoinHandle::join);
         self.final_operator_observations = operator_outcomes
             .iter()
             .map(|outcome| FinalOperatorObservation {
@@ -1196,6 +1216,8 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         .collect::<Vec<_>>();
     let stop_requested = Arc::new(AtomicBool::new(false));
     let worker_stop_requested = Arc::clone(&stop_requested);
+    let drain_timeout_ms = Arc::new(AtomicU64::new(0));
+    let worker_drain_timeout_ms = Arc::clone(&drain_timeout_ms);
     let (start_tx, start_rx) = std::sync::mpsc::sync_channel::<RuntimeWorkerStart>(1);
     let (replacement_sender, replacement_receiver) =
         std::sync::mpsc::sync_channel::<SourceControlCommand>(1);
@@ -1206,12 +1228,9 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
             Ok(start) => {
                 let _ = ready_tx.send(());
                 Some(run_runtime_worker(
-                    start.sources,
-                    start.runner,
+                    start,
                     worker_stop_requested,
-                    start.options,
-                    start.session_id,
-                    start.event_sender,
+                    worker_drain_timeout_ms,
                     replacement_receiver,
                 ))
             }
@@ -1513,6 +1532,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         session_id,
         state: SessionLifecycleState::Running,
         stop_requested,
+        drain_timeout_ms,
         runtime_worker: Some(runtime_worker),
         replacement_sender,
         replacement_targets: spec
@@ -2296,14 +2316,18 @@ fn capture_mode(source: &Source) -> CaptureMode {
 }
 
 fn run_runtime_worker(
-    sources: Vec<RuntimeSource>,
-    mut runner: RealtimePlanRunner,
+    start: RuntimeWorkerStart,
     stop_requested: Arc<AtomicBool>,
-    options: SessionStartOptions,
-    session_id: SessionId,
-    event_sender: SessionEventSender,
+    drain_timeout_ms: Arc<AtomicU64>,
     replacement_receiver: std::sync::mpsc::Receiver<SourceControlCommand>,
 ) -> RuntimeWorkerOutcome {
+    let RuntimeWorkerStart {
+        sources,
+        mut runner,
+        options,
+        session_id,
+        event_sender,
+    } = start;
     let mut sources = sources
         .into_iter()
         .map(|source| {
@@ -2414,10 +2438,61 @@ fn run_runtime_worker(
             .capture
             .map(|capture| (source.stem_id, capture.stop_and_join()))
     }));
-    let runner = runner.finish(
-        PlanRunnerDrainPolicy::DiscardQueued,
-        options.runtime_work_budget_frames,
-    );
+    let drain_timeout_ms = drain_timeout_ms.load(Ordering::Acquire);
+    let mut drained = crate::runtime::PlanRunnerFinishSummary::default();
+    let mut drain_deadline_expired = false;
+    if drain_timeout_ms != 0 {
+        let drain_started = Instant::now();
+        loop {
+            match runner.process_ready(options.runtime_work_budget_frames) {
+                Ok(step) => {
+                    drained.source_frames_processed_total = drained
+                        .source_frames_processed_total
+                        .saturating_add(step.source_frames_processed_total);
+                    drained.execution.nodes_executed = drained
+                        .execution
+                        .nodes_executed
+                        .saturating_add(step.execution.nodes_executed);
+                    drained.execution.edges_attempted = drained
+                        .execution
+                        .edges_attempted
+                        .saturating_add(step.execution.edges_attempted);
+                    drained.execution.edges_enqueued = drained
+                        .execution
+                        .edges_enqueued
+                        .saturating_add(step.execution.edges_enqueued);
+                    drained.execution.edges_dropped = drained
+                        .execution
+                        .edges_dropped
+                        .saturating_add(step.execution.edges_dropped);
+                }
+                Err(_) => {
+                    runtime_failures_total = runtime_failures_total.saturating_add(1);
+                    break;
+                }
+            }
+            if runner.close_finished_sources() {
+                break;
+            }
+            if drain_started.elapsed() >= Duration::from_millis(drain_timeout_ms) {
+                drain_deadline_expired = true;
+                runtime_failures_total = runtime_failures_total.saturating_add(1);
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(options.runtime_idle_poll_ms));
+        }
+    }
+    let runner = runner
+        .finish(
+            PlanRunnerDrainPolicy::DiscardQueued,
+            options.runtime_work_budget_frames,
+        )
+        .map(|mut summary| {
+            summary.source_frames_processed_total = drained.source_frames_processed_total;
+            summary.execution = drained.execution;
+            summary.drain_budget_exhausted = drain_deadline_expired;
+            summary
+        });
     RuntimeWorkerOutcome {
         captures,
         runner,
@@ -2567,8 +2642,6 @@ fn terminate_operators(
     operators
         .into_iter()
         .map(|operator| {
-            let input_delivery = OperatorInputObservationBinding::aggregate(&operator.input_edges);
-            let input_ports = OperatorInputObservationBinding::per_port(&operator.input_edges);
             let result = match termination {
                 OperatorTermination::Finish => host.execute(
                     operator.lifecycle_timeout,
@@ -2602,6 +2675,10 @@ fn terminate_operators(
                 })
                 .collect::<Vec<_>>()
                 .into_boxed_slice();
+            // The router may deliver accepted inputs during graceful finish.
+            // Snapshot only after the worker and its reentry bridges have joined.
+            let input_delivery = OperatorInputObservationBinding::aggregate(&operator.input_edges);
+            let input_ports = OperatorInputObservationBinding::per_port(&operator.input_edges);
             OperatorFinalizationOutcome {
                 operator_instance_id: operator.instance_id,
                 input_delivery,
@@ -3049,6 +3126,63 @@ fn complete_start_failure(
         error,
         event_receiver: Some(event_receiver),
         rollback_failures: rollback_failures.into_boxed_slice(),
+    }
+}
+
+#[cfg(test)]
+mod shutdown_tests {
+    use super::*;
+    use crate::graph::compile::{Compiler, RuntimePlanner};
+    use crate::graph::{NodeConfig, NodeRegistry, Pipeline, PrepareContext};
+    use crate::runtime::{plan_source_channel, PlanRunnerCancellation, RealtimePlanExecutor};
+
+    #[test]
+    fn given_empty_live_ingress_when_graceful_deadline_expires_then_timeout_is_reported_without_discarded_frames(
+    ) {
+        for (hold_sender, timeout_ms, expected_expired) in
+            [(true, 1, true), (false, 1, false), (true, 0, false)]
+        {
+            let mut registry = NodeRegistry::new();
+            crate::graph::register_builtins(&mut registry).unwrap();
+            let mut graph = Pipeline::new();
+            let source = graph.add_node("passthrough", NodeConfig::new());
+            let ir = Compiler::new()
+                .compile(graph.into_spec(), &registry)
+                .unwrap();
+            let plan = RuntimePlanner::new().plan(&ir).unwrap();
+            let context = PrepareContext::new(crate::SampleSpec::new(
+                48_000,
+                1,
+                crate::SampleFormat::F32Interleaved,
+            ));
+            let (executor, _workers) =
+                RealtimePlanExecutor::new(&plan, &ir, &registry, &context).unwrap();
+            let cancellation = PlanRunnerCancellation::new();
+            let (sender, input) =
+                plan_source_channel(source.id(), 1, cancellation.clone()).unwrap();
+            let retained_sender = hold_sender.then_some(sender);
+            let runner = RealtimePlanRunner::new(executor, vec![input], cancellation).unwrap();
+            let (event_sender, _events) = session_event_channel(1, None);
+            let (_replacement_sender, replacement_receiver) = std::sync::mpsc::sync_channel(1);
+            let outcome = run_runtime_worker(
+                RuntimeWorkerStart {
+                    sources: Vec::new(),
+                    runner,
+                    options: SessionStartOptions::default(),
+                    session_id: SessionId::new(1),
+                    event_sender,
+                },
+                Arc::new(AtomicBool::new(true)),
+                Arc::new(AtomicU64::new(timeout_ms)),
+                replacement_receiver,
+            );
+            drop(retained_sender);
+            let finish = outcome.runner.unwrap();
+            assert_eq!(finish.drain_budget_exhausted, expected_expired);
+            assert_eq!(outcome.runtime_failures_total, u64::from(expected_expired));
+            assert_eq!(finish.source_frames_discarded_total, 0);
+            assert_eq!(finish.source_frames_processed_total, 0);
+        }
     }
 }
 

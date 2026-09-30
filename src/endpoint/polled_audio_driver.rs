@@ -6,8 +6,8 @@ use std::time::{Duration, Instant};
 use crate::endpoint::{
     EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
     EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage,
-    EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver,
-    RunningEndpointDriver,
+    EndpointPortInput, EndpointReceiver, EndpointShutdownMode, EndpointStartGate,
+    PreparedEndpointDriver, RunningEndpointDriver,
 };
 use crate::frame::{ConnectorId, EndpointId, FrameLineage, LineagedAudioFrame, RouteId, StreamId};
 use crate::runtime::{PlanEdgeFrame, PlanEdgeObservationHandle};
@@ -152,6 +152,16 @@ impl PolledAudioReceipt {
                 frame.polled_at_ns = crate::timing::monotonic_timestamp_ns();
                 frames.push(frame);
             }
+            // The producer has joined. Reclaim the existing ring only after
+            // the caller has drained its accepted terminal audio.
+            if consumer.is_empty() && state.retired_capacity_frames[index] != 0 {
+                let capacity = state.retired_capacity_frames[index];
+                state.consumers[index] = None;
+                state.retired_capacity_frames[index] = 0;
+                self.shared
+                    .queue_capacity_frames
+                    .fetch_sub(capacity as u64, Ordering::Relaxed);
+            }
         }
 
         if frames.is_empty() {
@@ -279,6 +289,11 @@ impl<'lease> PolledAudioFrame<'lease> {
         self.delivered.frame.lineage()
     }
 
+    /// Actual input provenance, including whether this frame is processor tail.
+    pub fn processing(self) -> Option<crate::frame::AudioProcessing> {
+        self.delivered.frame.frame().processing()
+    }
+
     pub fn endpoint_id(self) -> EndpointId {
         self.delivered.endpoint_id
     }
@@ -345,6 +360,7 @@ struct DeliveredAudioFrame {
 
 struct ReceiptState {
     consumers: Vec<Option<Consumer<DeliveredAudioFrame>>>,
+    retired_capacity_frames: Vec<usize>,
     recycled_batches: Vec<Vec<DeliveredAudioFrame>>,
     next_consumer: usize,
 }
@@ -381,6 +397,7 @@ impl ReceiptShared {
         Self {
             state: Mutex::new(ReceiptState {
                 consumers: Vec::new(),
+                retired_capacity_frames: Vec::new(),
                 recycled_batches,
                 next_consumer: 0,
             }),
@@ -415,6 +432,15 @@ impl ReceiptShared {
             .state
             .lock()
             .map_err(|_| prepare_failure("polled-audio receipt state is poisoned"))?;
+        if state
+            .retired_capacity_frames
+            .iter()
+            .any(|capacity| *capacity != 0)
+        {
+            return Err(prepare_failure(
+                "drain prior Session audio before reusing this receipt",
+            ));
+        }
         let slot = state
             .consumers
             .iter()
@@ -422,13 +448,49 @@ impl ReceiptShared {
             .unwrap_or(state.consumers.len());
         if slot == state.consumers.len() {
             state.consumers.push(Some(consumer));
+            state.retired_capacity_frames.push(0);
         } else {
             state.consumers[slot] = Some(consumer);
+            state.retired_capacity_frames[slot] = 0;
         }
         self.registered_endpoints.fetch_add(1, Ordering::Relaxed);
         self.queue_capacity_frames
             .fetch_add(capacity_frames as u64, Ordering::Relaxed);
         Ok(slot)
+    }
+
+    fn retire_consumer(&self, slot: usize, capacity_frames: usize) -> Result<(), EndpointFailure> {
+        let mut state = self.state.lock().map_err(|_| {
+            EndpointFailure::new(
+                EndpointFailureStage::JoinFinalize,
+                "polled-audio receipt state is poisoned",
+            )
+        })?;
+        if state.consumers.get(slot).is_none_or(Option::is_none)
+            || state.retired_capacity_frames[slot] != 0
+        {
+            return Err(EndpointFailure::new(
+                EndpointFailureStage::JoinFinalize,
+                "polled-audio consumer cannot be retired twice",
+            ));
+        }
+        if state.consumers[slot]
+            .as_ref()
+            .is_some_and(Consumer::is_empty)
+        {
+            state.consumers[slot] = None;
+            self.queue_capacity_frames
+                .fetch_sub(capacity_frames as u64, Ordering::Relaxed);
+        } else {
+            state.retired_capacity_frames[slot] = capacity_frames;
+        }
+        self.registered_endpoints.fetch_sub(1, Ordering::Relaxed);
+        drop(state);
+        let wake = self.wake.lock().unwrap_or_else(|error| error.into_inner());
+        self.wake_generation.fetch_add(1, Ordering::Release);
+        self.available.notify_all();
+        drop(wake);
+        Ok(())
     }
 
     fn remove_consumer(&self, slot: usize, capacity_frames: usize) -> Result<(), EndpointFailure> {
@@ -454,7 +516,10 @@ impl ReceiptShared {
         }
         self.observe_dequeued(discarded);
         drop(consumer);
-        self.registered_endpoints.fetch_sub(1, Ordering::Relaxed);
+        if state.retired_capacity_frames[slot] == 0 {
+            self.registered_endpoints.fetch_sub(1, Ordering::Relaxed);
+        }
+        state.retired_capacity_frames[slot] = 0;
         self.queue_capacity_frames
             .fetch_sub(capacity_frames as u64, Ordering::Relaxed);
         let wake = self.wake.lock().unwrap_or_else(|error| error.into_inner());
@@ -639,6 +704,7 @@ impl PreparedEndpointDriver for PreparedPolledAudioEndpoint {
             })?;
         Ok(Box::new(RunningPolledAudioEndpoint {
             stop,
+            shutdown_mode: EndpointShutdownMode::Drain,
             worker: Some(worker),
             observations,
             shared: self.shared,
@@ -663,6 +729,7 @@ impl PreparedEndpointDriver for PreparedPolledAudioEndpoint {
 }
 
 struct RunningPolledAudioEndpoint {
+    shutdown_mode: EndpointShutdownMode,
     stop: Arc<AtomicBool>,
     worker: Option<JoinHandle<()>>,
     observations: Arc<WorkerObservations>,
@@ -682,6 +749,13 @@ impl RunningEndpointDriver for RunningPolledAudioEndpoint {
         Ok(())
     }
 
+    fn request_shutdown(&mut self, mode: EndpointShutdownMode) -> Result<(), EndpointFailure> {
+        if mode == EndpointShutdownMode::Abort {
+            self.shutdown_mode = mode;
+        }
+        self.request_stop()
+    }
+
     fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {
         self.stop.store(true, Ordering::Release);
         let join_result = match self.worker.take() {
@@ -696,9 +770,14 @@ impl RunningEndpointDriver for RunningPolledAudioEndpoint {
                 "polled-audio worker ownership was already consumed",
             )),
         };
-        let remove_result = self
-            .shared
-            .remove_consumer(self.consumer_slot, self.queue_capacity_frames);
+        let remove_result =
+            if self.shutdown_mode == EndpointShutdownMode::Drain && join_result.is_ok() {
+                self.shared
+                    .retire_consumer(self.consumer_slot, self.queue_capacity_frames)
+            } else {
+                self.shared
+                    .remove_consumer(self.consumer_slot, self.queue_capacity_frames)
+            };
         let ownership_failures = self
             .observations
             .invalid_ownership_drops_total
