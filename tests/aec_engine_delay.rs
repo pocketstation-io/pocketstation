@@ -32,7 +32,14 @@ const INITIALIZATIONS: [Initialization; 7] = [
 ];
 
 fn processor(channels: usize) -> Processor {
-    let processor = Processor::new(48_000).unwrap();
+    let processor = if channels > 1 {
+        let mut config = webrtc_audio_processing::experimental::EchoCanceller3Config::default();
+        config.multi_channel.detect_stereo_content = false;
+        assert!(config.validate());
+        Processor::with_aec3_config(48_000, config).unwrap()
+    } else {
+        Processor::new(48_000).unwrap()
+    };
     processor.set_config(Config {
         echo_canceller: Some(EchoCanceller::Full {
             stream_delay_ms: None,

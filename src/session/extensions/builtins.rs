@@ -26,7 +26,85 @@ pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
 pub(crate) const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external_audio_ingress";
 pub(crate) const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated_audio_ingress";
 pub(crate) const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated_audio";
+const EXTERNAL_MONO_INGRESS: &str = "source.external_audio_ingress.mono";
+const EXTERNAL_STEREO_INGRESS: &str = "source.external_audio_ingress.stereo";
+const GENERATED_MONO_INGRESS: &str = "source.generated_audio_ingress.mono";
+const GENERATED_STEREO_INGRESS: &str = "source.generated_audio_ingress.stereo";
 
+impl Source {
+    fn capture_node_type(&self) -> &'static str {
+        match self {
+            Source::Application(_) => APPLICATION_SOURCE_NODE_TYPE_ID,
+            Source::SystemAudio => SYSTEM_AUDIO_SOURCE_NODE_TYPE_ID,
+            Source::Microphone(_) => MICROPHONE_SOURCE_NODE_TYPE_ID,
+        }
+    }
+}
+
+fn capture_layout(node_type_id: &str) -> ChannelLayout {
+    if node_type_id == MICROPHONE_SOURCE_NODE_TYPE_ID {
+        ChannelLayout::Mono
+    } else {
+        ChannelLayout::Stereo
+    }
+}
+
+#[cfg(feature = "echo-cancellation")]
+pub(crate) fn capture_audio_caps(
+    source: &Source,
+    sample_spec: SampleSpec,
+    duration: AudioFrameDuration,
+) -> AudioCaps {
+    AudioCaps {
+        sample_rate_hz: Some(sample_spec.sample_rate_hz),
+        frame_samples: Some(duration.samples_per_channel(sample_spec.sample_rate_hz)),
+        channel_layout: capture_layout(source.capture_node_type()),
+        format: sample_spec.format,
+    }
+}
+
+#[derive(Clone, Copy)]
+enum IngressOrigin {
+    External,
+    Generated,
+}
+
+impl IngressOrigin {
+    fn node_type(self, media: MediaCaps) -> &'static str {
+        match (self, media) {
+            (
+                Self::External,
+                MediaCaps::Audio(AudioCaps {
+                    channel_layout: ChannelLayout::Mono,
+                    ..
+                }),
+            ) => EXTERNAL_MONO_INGRESS,
+            (
+                Self::External,
+                MediaCaps::Audio(AudioCaps {
+                    channel_layout: ChannelLayout::Stereo,
+                    ..
+                }),
+            ) => EXTERNAL_STEREO_INGRESS,
+            (
+                Self::Generated,
+                MediaCaps::Audio(AudioCaps {
+                    channel_layout: ChannelLayout::Mono,
+                    ..
+                }),
+            ) => GENERATED_MONO_INGRESS,
+            (
+                Self::Generated,
+                MediaCaps::Audio(AudioCaps {
+                    channel_layout: ChannelLayout::Stereo,
+                    ..
+                }),
+            ) => GENERATED_STEREO_INGRESS,
+            (Self::External, _) => EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
+            (Self::Generated, _) => GENERATED_AUDIO_INGRESS_NODE_TYPE_ID,
+        }
+    }
+}
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum SessionGraphRegistrationError {
     #[error("Session structural node type '{node_type_id}' is already registered")]
@@ -52,27 +130,27 @@ pub(crate) fn register_session_graph_nodes_with_sample_spec(
 ) -> Result<Vec<Arc<dyn SessionGraphLowerer>>, SessionGraphRegistrationError> {
     let frame_samples_per_channel =
         audio_frame_duration.samples_per_channel(sample_spec.sample_rate_hz);
-    let factories: Vec<Arc<dyn NodeFactory>> = vec![
+    let mut factories: Vec<Arc<dyn NodeFactory>> = vec![
         Arc::new(AudioIngressFactory::new(
             APPLICATION_SOURCE_NODE_TYPE_ID,
             "Application Capture Ingress",
             sample_spec,
             frame_samples_per_channel,
-            ChannelLayout::Stereo,
+            capture_layout(APPLICATION_SOURCE_NODE_TYPE_ID),
         )),
         Arc::new(AudioIngressFactory::new(
             SYSTEM_AUDIO_SOURCE_NODE_TYPE_ID,
             "System Audio Capture Ingress",
             sample_spec,
             frame_samples_per_channel,
-            ChannelLayout::Stereo,
+            capture_layout(SYSTEM_AUDIO_SOURCE_NODE_TYPE_ID),
         )),
         Arc::new(AudioIngressFactory::new(
             MICROPHONE_SOURCE_NODE_TYPE_ID,
             "Microphone Capture Ingress",
             sample_spec,
             frame_samples_per_channel,
-            ChannelLayout::Mono,
+            capture_layout(MICROPHONE_SOURCE_NODE_TYPE_ID),
         )),
         Arc::new(AudioIngressFactory::new(
             EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
@@ -89,6 +167,20 @@ pub(crate) fn register_session_graph_nodes_with_sample_spec(
             channel_layout_for(sample_spec),
         )),
     ];
+    for (type_id, layout) in [
+        (EXTERNAL_MONO_INGRESS, ChannelLayout::Mono),
+        (EXTERNAL_STEREO_INGRESS, ChannelLayout::Stereo),
+        (GENERATED_MONO_INGRESS, ChannelLayout::Mono),
+        (GENERATED_STEREO_INGRESS, ChannelLayout::Stereo),
+    ] {
+        factories.push(Arc::new(AudioIngressFactory::new(
+            type_id,
+            "Audio Ingress",
+            sample_spec,
+            frame_samples_per_channel,
+            layout,
+        )));
+    }
     let definitions: Vec<Arc<dyn NodeDefinition>> =
         vec![Arc::new(GeneratedAudioBridgeDefinition {
             sample_spec,
@@ -142,11 +234,7 @@ impl SessionGraphLowerer for BuiltinSourceLowerer {
         context: &mut SessionSourceLoweringContext<'_>,
     ) -> Result<(), SessionCompileError> {
         for stem in spec.stems() {
-            let node_type_id = match stem.source() {
-                Source::Application(_) => NodeTypeId::from(APPLICATION_SOURCE_NODE_TYPE_ID),
-                Source::SystemAudio => NodeTypeId::from(SYSTEM_AUDIO_SOURCE_NODE_TYPE_ID),
-                Source::Microphone(_) => NodeTypeId::from(MICROPHONE_SOURCE_NODE_TYPE_ID),
-            };
+            let node_type_id = NodeTypeId::from(stem.source().capture_node_type());
             let source_node = context.pipeline.add_node(node_type_id, NodeConfig::new());
             context.bindings.insert_node(
                 source_node.id(),
@@ -191,7 +279,7 @@ impl SessionGraphLowerer for BuiltinSourceLowerer {
                 })?;
                 if port.signal.class.is_audio() {
                     let ingress = context.pipeline.add_node(
-                        NodeTypeId::from(EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID),
+                        NodeTypeId::from(IngressOrigin::External.node_type(port.media)),
                         NodeConfig::new(),
                     );
                     context.bindings.insert_node(
@@ -244,8 +332,26 @@ impl SessionGraphLowerer for OperatorAudioLowerer {
         context: &mut SessionSourceLoweringContext<'_>,
     ) -> Result<(), SessionCompileError> {
         for ingress in spec.generated_audio_ingresses() {
+            let operator = spec
+                .operators()
+                .iter()
+                .find(|operator| operator.instance_id() == ingress.operator_instance_id())
+                .ok_or(crate::session::SessionError::UnknownOperatorInstance {
+                    operator_instance_id: ingress.operator_instance_id(),
+                })?;
+            let factory = context
+                .node_registry
+                .async_factory_by_operator(operator.operator_id())
+                .ok_or_else(|| SessionCompileError::UnknownAsyncOperator {
+                    operator_id: operator.operator_id().as_str().to_owned(),
+                })?;
+            let output = select_operator_port(
+                factory.manifest(),
+                PortDirection::Output,
+                ingress.output_port(),
+            )?;
             let node = context.pipeline.add_node(
-                NodeTypeId::from(GENERATED_AUDIO_INGRESS_NODE_TYPE_ID),
+                NodeTypeId::from(IngressOrigin::Generated.node_type(output.media)),
                 NodeConfig::new(),
             );
             context.bindings.insert_node(
@@ -613,6 +719,10 @@ mod tests {
             EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
             GENERATED_AUDIO_INGRESS_NODE_TYPE_ID,
             GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID,
+            EXTERNAL_MONO_INGRESS,
+            EXTERNAL_STEREO_INGRESS,
+            GENERATED_MONO_INGRESS,
+            GENERATED_STEREO_INGRESS,
         ];
         assert_eq!(registry.len(), expected_node_type_ids.len());
         assert_eq!(lowerers.len(), 2);

@@ -4,7 +4,7 @@ mod observations;
 mod processor;
 mod worker;
 
-pub(crate) use config::{AecConfiguration, ReferenceChannels};
+pub(crate) use config::{AecConfiguration, Channels};
 pub(crate) use observations::ObservationState;
 pub use observations::{EchoCancellationObservations, EchoCancellationState};
 
@@ -39,7 +39,7 @@ impl AecOperatorFactory {
                 format: SampleFormat::F32Interleaved,
             })
         };
-        let microphone = audio(configuration.reference_channels.layout());
+        let microphone = audio(configuration.microphone_channels.layout());
         let reference = audio(configuration.reference_channels.layout());
         let port = |name, direction, spec, media, required| {
             PortSpec::new(name, direction, spec, media, Multiplicity::One, required)

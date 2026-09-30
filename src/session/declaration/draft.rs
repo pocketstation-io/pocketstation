@@ -317,7 +317,90 @@ pub struct Session {
     shared: Arc<SessionShared>,
 }
 
+/// Owned declaration facts; callers may consult factories after releasing the draft lock.
+#[cfg(feature = "echo-cancellation")]
+pub(crate) enum OriginDefinition {
+    Capture(Source),
+    SourceOutput {
+        source_type_id: SourceTypeId,
+        configuration: SourceConfiguration,
+        output_port: String,
+    },
+    OperatorOutput {
+        operator: Operator,
+        output_port: Option<String>,
+    },
+}
+
 impl Session {
+    #[cfg(feature = "echo-cancellation")]
+    pub(crate) fn origin_definition(
+        &self,
+        origin: &StreamOrigin,
+    ) -> Result<OriginDefinition, SessionError> {
+        let draft = self.shared.draft()?;
+        draft.ensure_open(self.id())?;
+        let (operator_instance_id, output_port) = match origin {
+            StreamOrigin::Stem(stem_id) => {
+                if let Some(stem) = draft.stems.iter().find(|stem| stem.stem_id == *stem_id) {
+                    return Ok(OriginDefinition::Capture(stem.source.clone()));
+                }
+                let ingress = draft
+                    .generated_audio_ingresses
+                    .iter()
+                    .find(|ingress| ingress.stem_id == *stem_id)
+                    .ok_or(SessionError::UnknownStem { stem_id: *stem_id })?;
+                (ingress.operator_instance_id, ingress.output_port.clone())
+            }
+            StreamOrigin::SourceOutput {
+                source_instance_id,
+                output_port,
+                stream_id,
+                source_id,
+            } => {
+                let source = draft
+                    .source_instances
+                    .iter()
+                    .find(|source| {
+                        source.instance_id == *source_instance_id && source.source_id == *source_id
+                    })
+                    .ok_or(SessionError::UnknownSourceInstance {
+                        source_instance_id: *source_instance_id,
+                    })?;
+                if !draft.source_outputs.iter().any(|output| {
+                    output.source_instance_id == *source_instance_id
+                        && output.output_port == *output_port
+                        && output.stream_id == *stream_id
+                }) {
+                    return Err(SessionError::UnknownSourceOutput {
+                        source_instance_id: *source_instance_id,
+                        output_port: output_port.clone(),
+                    });
+                }
+                return Ok(OriginDefinition::SourceOutput {
+                    source_type_id: source.source_type_id.clone(),
+                    configuration: source.configuration.clone(),
+                    output_port: output_port.clone(),
+                });
+            }
+            StreamOrigin::OperatorOutput {
+                operator_instance_id,
+                output_port,
+            } => (*operator_instance_id, output_port.clone()),
+        };
+        let operator = draft
+            .operators
+            .iter()
+            .find(|operator| operator.instance_id == operator_instance_id)
+            .ok_or(SessionError::UnknownOperatorInstance {
+                operator_instance_id,
+            })?;
+        Ok(OriginDefinition::OperatorOutput {
+            operator: operator.operator.clone(),
+            output_port,
+        })
+    }
+
     pub fn new() -> Self {
         let session_id = SessionId(NEXT_SESSION_ID.fetch_add(1, Ordering::Relaxed));
         Self {

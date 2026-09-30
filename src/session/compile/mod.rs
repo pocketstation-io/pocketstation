@@ -30,6 +30,7 @@ pub(crate) type LoweredExternalSourceNodes = HashMap<SourceInstanceId, NodeId>;
 pub(crate) type LoweredExternalAudioIngressNodes = HashMap<(SourceInstanceId, String), NodeId>;
 
 pub(crate) struct SessionSourceLoweringContext<'lowering> {
+    pub(crate) node_registry: &'lowering NodeRegistry,
     pub(crate) source_registry: Option<&'lowering SourceRegistry>,
     pub(crate) pipeline: &'lowering mut Pipeline,
     pub(crate) source_nodes: &'lowering mut LoweredStemNodes,
@@ -247,6 +248,7 @@ impl<'registry> SessionCompiler<'registry> {
             lowerer.lower_source_nodes(
                 spec,
                 &mut SessionSourceLoweringContext {
+                    node_registry: self.node_registry,
                     source_registry: self.source_registry,
                     pipeline: &mut pipeline,
                     source_nodes: &mut source_nodes,
