@@ -1,6 +1,4 @@
-use crate::echo_cancellation::{
-    AecConfiguration, AecOperatorFactory, ObservationState, ReferenceChannels,
-};
+use crate::aec::{AecConfiguration, AecOperatorFactory, ObservationState, ReferenceChannels};
 use crate::{
     DerivedStreamHandle, EchoCancellationObservations, Operator, OperatorConfiguration, OperatorId,
     Session, SessionError, SessionId, SourceOutputHandle, StemHandle, StreamOrigin,
