@@ -269,3 +269,228 @@ fn given_missing_reference_when_capacity_is_reached_then_failure_is_retained_and
     );
     assert_eq!(processed.observations().last_error, failed.last_error);
 }
+
+#[test]
+fn given_near_end_and_double_talk_when_session_processes_then_voice_level_and_timing_are_measured()
+{
+    // Synthetic voiced excitation, not physical speech qualification. Preserve
+    // the reference-engine thresholds; never normalize gain in the scorer.
+    for (duration_ms, channels, echo_gain_linear) in
+        [(10, 1, 0.0), (20, 1, 0.0), (10, 2, 0.0), (10, 1, 0.6)]
+    {
+        let frame_samples = duration_ms as usize * 48;
+        let sample_count = 48_000 * 12;
+        let spec = SampleSpec::new(48_000, channels, SampleFormat::F32Interleaved);
+        let session = Session::builder()
+            .sample_spec(spec)
+            .audio_frame_duration(if duration_ms == 10 {
+                AudioFrameDuration::Ms10
+            } else {
+                AudioFrameDuration::Ms20
+            })
+            .build();
+        let mut microphone = session
+            .audio_input(AudioInputConfig::new(spec, 8, frame_samples).unwrap())
+            .unwrap();
+        let mut reference = session
+            .audio_input(AudioInputConfig::new(spec, 8, frame_samples).unwrap())
+            .unwrap();
+        let processed = session
+            .echo_cancel(
+                microphone.output(),
+                PlaybackReference::rendered_audio(reference.output()),
+            )
+            .unwrap();
+        processed
+            .audio()
+            .send(session.polled_audio().unwrap())
+            .unwrap();
+        let mut running = session.start().unwrap();
+        let mut desired = Vec::with_capacity(sample_count);
+        let mut render = Vec::with_capacity(sample_count);
+        let (mut random, mut phase_rad, mut filtered_linear) = (0x13aec138_u32, 0.0_f32, 0.0_f32);
+        for sample_index in 0..sample_count {
+            random ^= random << 13;
+            random ^= random >> 17;
+            random ^= random << 5;
+            filtered_linear = 0.65 * filtered_linear
+                + 0.35 * (random as f64 / u32::MAX as f64 * 2.0 - 1.0) as f32;
+            render.push(filtered_linear * 0.35);
+            let time_s = sample_index as f32 / 48_000.0;
+            let frequency_hz = 173.0 + 43.0 * (time_s * 1.7).sin();
+            phase_rad = (phase_rad + std::f32::consts::TAU * frequency_hz / 48_000.0)
+                % std::f32::consts::TAU;
+            let envelope_ratio = 0.55 + 0.45 * (time_s * 4.3).sin().powi(2);
+            desired.push(
+                envelope_ratio
+                    * (0.14 * phase_rad.sin()
+                        + 0.07 * (2.0 * phase_rad).sin()
+                        + 0.035 * (3.0 * phase_rad).sin()),
+            );
+        }
+        let mut actual = Vec::with_capacity(sample_count);
+        for start_sample in (0..sample_count).step_by(frame_samples) {
+            let render_pcm: Vec<f32> = render[start_sample..start_sample + frame_samples]
+                .iter()
+                .flat_map(|value| {
+                    std::iter::repeat_n(
+                        if echo_gain_linear == 0.0 { 0.0 } else { *value },
+                        channels as usize,
+                    )
+                })
+                .collect();
+            let microphone_pcm: Vec<f32> = (start_sample..start_sample + frame_samples)
+                .flat_map(|index| {
+                    std::iter::repeat_n(
+                        desired[index]
+                            + index
+                                .checked_sub(960)
+                                .map_or(0.0, |past| render[past] * echo_gain_linear),
+                        channels as usize,
+                    )
+                })
+                .collect();
+            reference.try_write(&render_pcm).unwrap();
+            microphone.try_write(&microphone_pcm).unwrap();
+            let deadline = Instant::now() + Duration::from_secs(2);
+            loop {
+                if let Ok(batch) = running.try_poll_audio() {
+                    if let Some(frame) = batch.frame(0) {
+                        assert_eq!(frame.lineage().stem_id(), processed.audio().id());
+                        assert_eq!(frame.samples().len(), frame_samples * channels as usize);
+                        actual.extend(
+                            frame
+                                .samples()
+                                .chunks_exact(channels as usize)
+                                .map(|frame| frame[0]),
+                        );
+                        break;
+                    }
+                }
+                assert!(Instant::now() < deadline, "{:?}", processed.observations());
+                thread::sleep(Duration::from_millis(1));
+            }
+        }
+        microphone.close();
+        reference.close();
+        assert!(running.stop().is_success());
+        assert_eq!(actual.len(), sample_count);
+        // Compare after six seconds of adaptation. A short held-out interval
+        // keeps this integration gate fast while retaining sample-level delay.
+        let start_sample = 48_000 * 6;
+        let comparison_samples = 12_000;
+        let target = &desired[start_sample..start_sample + comparison_samples];
+        let target_power = target
+            .iter()
+            .map(|value| f64::from(*value).powi(2))
+            .sum::<f64>();
+        let (mut best_correlation_ratio, mut best_delay_samples, mut best_gain_db, mut best_snr_db) =
+            (-1.0, 0, 0.0, 0.0);
+        for delay_samples in 0..=960 {
+            let output = &actual
+                [start_sample + delay_samples..start_sample + delay_samples + comparison_samples];
+            let output_power = output
+                .iter()
+                .map(|value| f64::from(*value).powi(2))
+                .sum::<f64>();
+            let dot = target
+                .iter()
+                .zip(output)
+                .map(|(a, b)| f64::from(*a) * f64::from(*b))
+                .sum::<f64>();
+            let correlation_ratio = dot / (target_power * output_power).sqrt().max(1e-12);
+            if correlation_ratio > best_correlation_ratio {
+                let error_power = target
+                    .iter()
+                    .zip(output)
+                    .map(|(a, b)| (f64::from(*a) - f64::from(*b)).powi(2))
+                    .sum::<f64>();
+                best_correlation_ratio = correlation_ratio;
+                best_delay_samples = delay_samples;
+                best_gain_db = 10.0 * (output_power.max(1e-12) / target_power).log10();
+                best_snr_db = 10.0 * (target_power / error_power.max(1e-12)).log10();
+            }
+        }
+        println!("AEC Session: frame={duration_ms}ms channels={channels} echo_gain={echo_gain_linear}; delay={best_delay_samples} samples gain={best_gain_db:.3}dB correlation={best_correlation_ratio:.4} snr={best_snr_db:.3}dB");
+        assert!((-3.0..=3.0).contains(&best_gain_db));
+        assert!(best_correlation_ratio >= 0.8);
+        assert!(best_snr_db >= 6.0);
+        assert!(best_delay_samples < 960, "delay search exhausted");
+    }
+}
+
+#[test]
+fn given_first_microphone_transient_when_session_starts_then_formats_are_ready_before_real_audio() {
+    for (frame_duration, channels) in [
+        (AudioFrameDuration::Ms10, 1),
+        (AudioFrameDuration::Ms20, 1),
+        (AudioFrameDuration::Ms10, 2),
+        (AudioFrameDuration::Ms20, 2),
+    ] {
+        let samples = usize::from(frame_duration.milliseconds()) * 48;
+        let spec = SampleSpec::new(48_000, channels, SampleFormat::F32Interleaved);
+        let session = Session::builder()
+            .sample_spec(spec)
+            .audio_frame_duration(frame_duration)
+            .build();
+        let config = AudioInputConfig::new(spec, 8, samples).unwrap();
+        let mut reference = session.audio_input(config).unwrap();
+        let mut microphone = session.audio_input(config).unwrap();
+        let processed = session
+            .echo_cancel(
+                microphone.output(),
+                PlaybackReference::rendered_audio(reference.output()),
+            )
+            .unwrap();
+        processed
+            .audio()
+            .send(session.polled_audio().unwrap())
+            .unwrap();
+        let mut running = session.start().unwrap();
+        let mut impulse = vec![0.0; samples * usize::from(channels)];
+        for (channel, value) in impulse.iter_mut().take(usize::from(channels)).enumerate() {
+            *value = if channel == 0 { 0.35 } else { -0.21 };
+        }
+        reference.try_write(&vec![0.0; impulse.len()]).unwrap();
+        microphone.try_write(&impulse).unwrap();
+        let deadline = Instant::now() + Duration::from_secs(2);
+        loop {
+            if let Ok(batch) = running.try_poll_audio() {
+                if let Some(frame) = batch.frame(0) {
+                    for channel in 0..usize::from(channels) {
+                        let peak_sample = (0..samples)
+                            .max_by(|a, b| {
+                                frame.samples()[a * usize::from(channels) + channel]
+                                    .abs()
+                                    .total_cmp(
+                                        &frame.samples()[b * usize::from(channels) + channel].abs(),
+                                    )
+                            })
+                            .unwrap();
+                        // A first-capture format reset previously lost the real
+                        // reference and changed this peak to 238 samples.
+                        assert!(
+                            (428..=436).contains(&peak_sample),
+                            "first peak {peak_sample}"
+                        );
+                        assert!(
+                            frame.samples()[peak_sample * usize::from(channels) + channel].abs()
+                                > 0.1
+                        );
+                    }
+                    break;
+                }
+            }
+            assert!(Instant::now() < deadline, "{:?}", processed.observations());
+            thread::sleep(Duration::from_millis(1));
+        }
+        reference.close();
+        microphone.close();
+        assert!(running.stop().is_success());
+        let observed = processed.observations();
+        assert_eq!(observed.processed_microphone_frames_total, 1);
+        assert_eq!(observed.analyzed_reference_frames_total, 1);
+        assert_eq!(observed.resets_total, 0);
+        assert!(observed.last_error.is_none());
+    }
+}

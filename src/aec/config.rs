@@ -35,8 +35,8 @@ impl ReferenceChannels {
 pub(crate) struct AecConfiguration {
     pub frame_duration_ms: u32,
     pub reference_channels: ReferenceChannels,
-    /// Maximum first-sample skew accepted for pairing. Not an echo-path delay.
-    pub maximum_pair_skew_ns: u64,
+    /// Maximum per-source timestamp residual before resetting adaptation.
+    pub maximum_cadence_error_ns: u64,
 }
 
 impl AecConfiguration {
@@ -44,7 +44,7 @@ impl AecConfiguration {
         Self {
             frame_duration_ms,
             reference_channels,
-            maximum_pair_skew_ns: 1_000_000,
+            maximum_cadence_error_ns: 1_000_000,
         }
     }
 
@@ -55,10 +55,10 @@ impl AecConfiguration {
                 reason: "expected 10 or 20 ms".into(),
             });
         }
-        if self.maximum_pair_skew_ns > 2_000_000 {
+        if self.maximum_cadence_error_ns > 2_000_000 {
             return Err(ConfigError::Invalid {
-                key: "maximum_pair_skew_ns".into(),
-                reason: "must not exceed 2 ms; clock/route alignment belongs upstream".into(),
+                key: "maximum_cadence_error_ns".into(),
+                reason: "must not exceed 2 ms; larger cadence jumps require recovery".into(),
             });
         }
         Ok(())

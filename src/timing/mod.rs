@@ -5,6 +5,8 @@
 mod clock_correction;
 mod clock_drift;
 mod domain;
+#[cfg(feature = "echo-cancellation")]
+mod frame_cadence;
 mod timeline_mapping;
 
 use std::sync::OnceLock;
@@ -17,6 +19,8 @@ pub use clock_drift::{ClockDriftEstimator, ClockDriftSnapshot};
 pub use domain::{
     describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin,
 };
+#[cfg(feature = "echo-cancellation")]
+pub(crate) use frame_cadence::cadence_error_ns;
 pub use timeline_mapping::TimelineMapping;
 
 /// Clock-domain identity for timestamps produced by PocketStation's shared

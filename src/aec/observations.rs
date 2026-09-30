@@ -7,6 +7,7 @@ pub enum EchoCancellationState {
     WaitingForReference,
     Processing,
     Reset,
+    Interrupted,
     Failed,
     Stopped,
 }
@@ -25,7 +26,11 @@ pub struct EchoCancellationObservations {
     pub queue_capacity_frames: usize,
     pub latest_processing_duration_ns: u64,
     pub maximum_processing_duration_ns: u64,
-    pub latest_pair_skew_ns: u64,
+    pub latest_reference_age_ns: u64,
+    pub latest_reference_lead_ns: u64,
+    pub maximum_cadence_error_ns: u64,
+    pub analyzed_reference_frames_total: u64,
+    pub interrupted_requests_total: u64,
     pub reference_source_id: Option<SourceId>,
     pub microphone_source_id: Option<SourceId>,
     /// Unknown until qualified for the selected processor configuration.
@@ -47,7 +52,11 @@ impl EchoCancellationObservations {
             queue_capacity_frames,
             latest_processing_duration_ns: 0,
             maximum_processing_duration_ns: 0,
-            latest_pair_skew_ns: 0,
+            latest_reference_age_ns: 0,
+            latest_reference_lead_ns: 0,
+            maximum_cadence_error_ns: 0,
+            analyzed_reference_frames_total: 0,
+            interrupted_requests_total: 0,
             reference_source_id: None,
             microphone_source_id: None,
             qualified_algorithmic_delay_samples: None,
@@ -67,11 +76,45 @@ impl ObservationState {
         ))))
     }
 
-    pub(crate) fn update(&self, value: EchoCancellationObservations) {
-        *self
+    pub(crate) fn update(&self, mut value: EchoCancellationObservations) {
+        let mut current = self
             .0
             .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = value;
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        // A native reply can arrive after its awaiting future was cancelled.
+        // Preserve the first terminal error even if the worker later completes.
+        if let Some(error) = &current.last_error {
+            value.state = EchoCancellationState::Failed;
+            value.last_error = Some(error.clone());
+        }
+        value.interrupted_requests_total = current.interrupted_requests_total;
+        if current.state == EchoCancellationState::Interrupted
+            && value.state != EchoCancellationState::Stopped
+            && value.last_error.is_none()
+        {
+            value.state = EchoCancellationState::Interrupted;
+        }
+        *current = value;
+    }
+
+    pub(crate) fn fail(&self, message: String) {
+        let mut current = self
+            .0
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        current.state = EchoCancellationState::Failed;
+        current.last_error.get_or_insert(message);
+    }
+
+    pub(crate) fn interrupt(&self) {
+        let mut current = self
+            .0
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        current.interrupted_requests_total = current.interrupted_requests_total.saturating_add(1);
+        if current.last_error.is_none() {
+            current.state = EchoCancellationState::Interrupted;
+        }
     }
 
     pub(crate) fn snapshot(&self) -> EchoCancellationObservations {
@@ -79,5 +122,24 @@ impl ObservationState {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .clone()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn given_cancelled_response_when_native_work_later_finishes_then_failure_is_retained() {
+        let state = ObservationState::new(4);
+        state.fail("response interrupted".into());
+        let mut late = EchoCancellationObservations::new(4);
+        late.processed_microphone_frames_total = 1;
+        late.state = EchoCancellationState::Stopped;
+        state.update(late);
+        let observed = state.snapshot();
+        assert_eq!(observed.state, EchoCancellationState::Failed);
+        assert_eq!(observed.last_error.as_deref(), Some("response interrupted"));
+        assert_eq!(observed.processed_microphone_frames_total, 1);
     }
 }
