@@ -1247,11 +1247,18 @@ fn fan_out_outputs(
                     .output_dropped_total
                     .fetch_add(report.dropped_total, Ordering::Relaxed);
             }
-            Err(TypedEdgePublishError::RequiredBranchFull { branch_index }) => {
+            Err(
+                error @ (TypedEdgePublishError::RequiredBranchFull { branch_index }
+                | TypedEdgePublishError::RequiredBranchClosed { branch_index }),
+            ) => {
                 observations
                     .output_dropped_total
                     .fetch_add(1, Ordering::Relaxed);
-                return Err(AsyncOperatorWorkerError::TerminalOutputDropped { branch_index });
+                return Err(if is_terminal {
+                    AsyncOperatorWorkerError::TerminalOutputDropped { branch_index }
+                } else {
+                    AsyncOperatorWorkerError::Process(NodeError::Process(error.to_string()))
+                });
             }
             Err(TypedEdgePublishError::InvalidEnvelope(_)) => {
                 return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
@@ -2487,6 +2494,45 @@ mod tests {
         assert!(cancelled.load(Ordering::Acquire));
         assert!(closed.load(Ordering::Acquire));
         assert_eq!(observations.snapshot().cancellation_total, 1);
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn given_full_required_branch_when_nonterminal_processed_then_worker_fails_visibly() {
+        let (mut worker, outputs) = AsyncOperatorWorker::spawn(
+            factory(
+                "operator.required-partial",
+                "operator.required-partial.node",
+                TestBehavior::FlushFinal,
+                100,
+                OperatorFailurePolicy::Continue,
+                Arc::new(AtomicBool::new(false)),
+            ),
+            &NodeConfig::new(),
+            &[output_branch(1)],
+        )
+        .unwrap();
+        let observations = worker.observations();
+        assert!(observations.wait_ready().await);
+        worker.input_mut().unwrap().send(envelope(0)).unwrap();
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while outputs[0].observations().enqueued_total != 1 {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        worker.input_mut().unwrap().send(envelope(1)).unwrap();
+        let error = worker.finish_and_join().await.unwrap_err();
+        assert!(
+            matches!(error, AsyncOperatorWorkerError::Process(NodeError::Process(ref message))
+            if message.contains("required typed edge branch 0 is full"))
+        );
+        let snapshot = observations.snapshot();
+        assert_eq!(snapshot.output_nonterminal_total, 2);
+        assert_eq!(snapshot.output_terminal_total, 0);
+        assert_eq!(snapshot.output_emitted_total, 1);
+        assert_eq!(snapshot.output_dropped_total, 1);
+        assert!(snapshot.joined);
     }
 
     #[tokio::test(flavor = "current_thread")]

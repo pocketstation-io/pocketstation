@@ -123,6 +123,16 @@ impl EchoProcessor {
         self.observations.update(self.diagnostics.clone());
     }
 
+    pub(crate) fn complete_request(&mut self, submitted_at: Instant) {
+        let duration_ns = submitted_at.elapsed().as_nanos().min(u128::from(u64::MAX)) as u64;
+        self.diagnostics.latest_processing_duration_ns = duration_ns;
+        self.diagnostics.maximum_processing_duration_ns = self
+            .diagnostics
+            .maximum_processing_duration_ns
+            .max(duration_ns);
+        self.publish();
+    }
+
     fn derivation(
         &self,
         lineage: SignalLineage,
@@ -341,7 +351,6 @@ impl EchoProcessor {
             .as_ref()
             .ok_or_else(|| failure("AEC processor absent"))?;
         let channels = usize::from(self.configuration.microphone_channels.count());
-        let start = Instant::now();
         for block_index in 0..(self.configuration.frame_samples() / ENGINE_FRAME_SAMPLES) {
             let mut capture = [[0.0_f32; ENGINE_FRAME_SAMPLES]; 2];
             if let Some(samples) = samples {
@@ -363,12 +372,6 @@ impl EchoProcessor {
                 }
             }
         }
-        let duration_ns = start.elapsed().as_nanos().min(u128::from(u64::MAX)) as u64;
-        self.diagnostics.latest_processing_duration_ns = duration_ns;
-        self.diagnostics.maximum_processing_duration_ns = self
-            .diagnostics
-            .maximum_processing_duration_ns
-            .max(duration_ns);
         Ok(buffer)
     }
 

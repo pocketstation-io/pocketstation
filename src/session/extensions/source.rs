@@ -758,7 +758,16 @@ fn run_source_driver(
             .ok_or_else(|| SourceRuntimeError::UnroutedOutput(emission.output_port.clone()))?;
         let report = fanout
             .publish(emission.envelope, emission.terminal)
-            .map_err(SourceRuntimeError::Publish)?;
+            .map_err(|error| {
+                if matches!(
+                    error,
+                    TypedEdgePublishError::RequiredBranchFull { .. }
+                        | TypedEdgePublishError::RequiredBranchClosed { .. }
+                ) {
+                    observations.dropped_total.fetch_add(1, Ordering::Relaxed);
+                }
+                SourceRuntimeError::Publish(error)
+            })?;
         observations
             .emitted_total
             .fetch_add(report.delivered_total, Ordering::Relaxed);

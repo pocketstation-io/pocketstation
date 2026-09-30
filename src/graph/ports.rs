@@ -286,7 +286,7 @@ pub enum CopyPolicy {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LossPolicy {
     ConcealForAudio,   // PLC-eligible; dropped audio is concealed downstream
-    MustDeliverOrFail, // terminal output must be delivered or the branch fails visibly
+    MustDeliverOrFail, // every output must be delivered or the branch fails visibly
     DropAllowed,
 }
 
