@@ -397,6 +397,11 @@ impl DeliveryPolicy {
         self
     }
 
+    pub const fn with_loss(mut self, loss: LossPolicy) -> Self {
+        self.loss = loss;
+        self
+    }
+
     pub const fn with_copy_policy(mut self, copy_policy: CopyPolicy) -> Self {
         self.copy_policy = copy_policy;
         self
@@ -500,6 +505,11 @@ impl RouteSettings {
 
     pub fn with_backpressure(mut self, backpressure: BackpressurePolicy) -> Self {
         self.backpressure = backpressure;
+        self
+    }
+
+    pub fn with_loss(mut self, loss: LossPolicy) -> Self {
+        self.loss = loss;
         self
     }
 

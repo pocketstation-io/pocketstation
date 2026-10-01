@@ -187,6 +187,15 @@ impl EndpointSignalReceiver {
     pub fn is_abandoned(&self) -> bool {
         self.receiver.is_abandoned()
     }
+
+    /// Stops this subscription and discards unread and subsequent values.
+    ///
+    /// Explicit close revokes the producer's delivery requirement for this
+    /// receiver only. Unexpected receiver loss still fails required delivery.
+    /// Other subscriptions and routes remain active.
+    pub fn close(&mut self) {
+        self.receiver.close();
+    }
 }
 
 pub enum EndpointReceiver {
