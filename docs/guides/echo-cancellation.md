@@ -1,9 +1,52 @@
 # Echo cancellation
 
-The development checkout includes `Session::echo_cancel` in the default
-`echo-cancellation` feature. It uses WebRTC audio processing internally. No
+The development checkout exposes `Session::echo_cancel` with an opt-in `aec`
+feature. Default builds omit the WebRTC engine. `aec_available()` reports build
+availability; requesting processing without it returns an explicit error before
+adding an Operator. The compatibility feature `echo-cancellation` enables `aec`. No
 example-package dependency or factory registration is required. This API is
 unreleased and physical acoustic qualification is incomplete.
+
+
+This feature does not discover or enable OS-provided AEC automatically. Build
+availability is separate from device support and acoustic qualification. A device
+may already supply processed input; enabling another processor is an explicit
+application choice, not an automatic fallback.
+
+## Run application capture with optional AEC
+
+This is an unreleased source example. Build from this checkout; the current
+published package does not contain this API. macOS application capture requires
+system audio permission; microphone capture requires microphone permission.
+The AEC build additionally needs the tools listed below.
+
+```sh
+# Application-only capture: no microphone and no AEC build dependency.
+cargo run --release --example quickstart -- --application Safari --duration 10
+
+# Select both inputs explicitly; retain application, raw mic and processed mic.
+cargo run --release --features aec --example quickstart -- \
+  --application Safari --aec --record ./recordings --duration 10
+```
+
+Use a running application name, bundle identifier or process ID. Omit
+`--application` for the interactive application list. `--microphone` adds a raw
+microphone without AEC. `--aec` also selects the microphone and uses only the
+selected application's reference. `--system-audio --aec` instead explicitly
+selects the full output mix; do not choose it when other applications must be
+excluded. No additional reference is opened automatically.
+
+The example prints per-stem frame counts and final AEC observations, then stops
+and finalizes recordings after the requested duration. A missing source,
+unavailable engine, processing failure or incomplete recording returns a
+nonzero exit. Playback may be silent, but missing media is not reported as a
+successful recording. Remove only your chosen recording directory when done.
+
+The reference must match the sound reaching the speakers. Other applications,
+independent hardware clocks and device changes may violate the supported input
+requirements below. This example reports failures; it does not implement or qualify
+automatic recovery. Restart it after selecting a supported route. Use headphones
+or raw capture when the desired acoustic route has not been qualified.
 
 ## Select the two inputs
 
@@ -143,10 +186,12 @@ echo, device changes and additional operating systems still require qualificatio
 
 ## Build requirements
 
-The default native dependency requires a C/C++ toolchain, Meson, Ninja,
+The opt-in native dependency requires a C/C++ toolchain, Meson, Ninja,
 pkg-config, libclang and Rust's `llvm-tools` component. Its build can download
 checksum-pinned Abseil source. A configured dependency cache supports offline
-builds. Minimal `--no-default-features` builds omit this API and engine.
+builds. Default builds omit the engine and its build tools while retaining capability
+discovery and an explicit unavailable error. This does not disable ordinary
+native capture or Opus.
 
 The Core implementation is in `src/aec`; `tests/session_aec.rs` exercises the
 normal Session API with deterministic PCM and the actual native engine. Those

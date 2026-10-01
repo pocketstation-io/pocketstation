@@ -51,6 +51,15 @@ jobs:
       - name: Workspace tests
         run: cargo test --workspace --all-features --locked
 
+      - name: Verify default capture omits AEC
+        run: |
+          cargo test --test aec_availability --locked
+          cargo tree --locked -e normal,build --prefix none > default-dependencies.txt
+          if grep -E '^webrtc-audio-processing(-sys|-config)? v' default-dependencies.txt; then
+            echo "Default capture must not compile the optional AEC engine" >&2
+            exit 1
+          fi
+
       - name: Strict workspace Clippy
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
 

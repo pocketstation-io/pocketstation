@@ -1,11 +1,18 @@
-use crate::aec::{AecConfiguration, AecOperatorFactory, Channels, ObservationState};
-use crate::session::compile::select_operator_port;
-use crate::session::declaration::OriginDefinition;
+use crate::aec::ObservationState;
+#[cfg(feature = "aec")]
+use crate::aec::{AecConfiguration, AecOperatorFactory, Channels};
+#[cfg(feature = "aec")]
+use crate::session::{compile::select_operator_port, declaration::OriginDefinition};
+#[cfg(feature = "aec")]
 use crate::{
-    AudioCaps, ChannelLayout, DerivedStreamHandle, EchoCancellationObservations, MediaCaps,
-    Operator, OperatorConfiguration, OperatorId, PortDirection, SampleFormat, Session,
-    SessionError, SessionId, SourceOutputHandle, StemHandle, StreamOrigin,
+    AudioCaps, ChannelLayout, MediaCaps, Operator, OperatorConfiguration, OperatorId,
+    PortDirection, SampleFormat,
 };
+use crate::{
+    DerivedStreamHandle, EchoCancellationObservations, Session, SessionError, SessionId,
+    SourceOutputHandle, StemHandle, StreamOrigin,
+};
+#[cfg(feature = "aec")]
 use std::sync::Arc;
 
 /// A Session-owned audio source selected for echo processing.
@@ -97,6 +104,7 @@ impl EchoCancelledAudio {
     }
 }
 
+#[cfg(feature = "aec")]
 impl Session {
     /// Declares built-in echo cancellation using two explicitly selected audio inputs.
     ///
@@ -269,7 +277,26 @@ impl Session {
     }
 }
 
-#[cfg(test)]
+#[cfg(not(feature = "aec"))]
+impl Session {
+    /// AEC is opt-in. An unavailable engine leaves the Session declaration unchanged.
+    pub fn echo_cancel(
+        &self,
+        microphone: impl Into<EchoAudioInput>,
+        reference: PlaybackReference,
+    ) -> Result<EchoCancelledAudio, SessionError> {
+        if microphone.into().session_id != self.id() || reference.input.session_id != self.id() {
+            return Err(SessionError::InvalidOperator {
+                reason: "echo inputs belong to a different Session".into(),
+            });
+        }
+        Err(SessionError::InvalidOperator {
+            reason: "AEC is unavailable in this build; enable the `aec` Cargo feature".into(),
+        })
+    }
+}
+
+#[cfg(all(test, feature = "aec"))]
 mod tests {
     use super::*;
     use crate::graph::PrepareContext;

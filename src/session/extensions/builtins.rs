@@ -49,7 +49,7 @@ fn capture_layout(node_type_id: &str) -> ChannelLayout {
     }
 }
 
-#[cfg(feature = "echo-cancellation")]
+#[cfg(feature = "aec")]
 pub(crate) fn capture_audio_caps(
     source: &Source,
     sample_spec: SampleSpec,
