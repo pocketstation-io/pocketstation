@@ -7,6 +7,278 @@ use crate::{
 use std::sync::Arc;
 use std::time::Duration;
 
+// This fixture delays delivery to the real native worker. It neither replaces
+// APM nor changes Session's production manifest, timeout or cancellation policy.
+struct DelayedCommandFactory {
+    factory: crate::aec::AecOperatorFactory,
+    barrier: std::sync::Mutex<Option<CommandBarrier>>,
+    joined: Arc<std::sync::atomic::AtomicBool>,
+}
+
+struct CommandBarrier {
+    entered: SyncSender<()>,
+    release: mpsc::Receiver<()>,
+}
+
+struct DelayedCommandWorker {
+    worker: AecWorker,
+    barrier: Option<CommandBarrier>,
+    relay: Option<JoinHandle<()>>,
+    joined: Arc<std::sync::atomic::AtomicBool>,
+}
+
+impl crate::AsyncOperatorFactory for DelayedCommandFactory {
+    fn manifest(&self) -> &crate::AsyncOperatorManifest {
+        self.factory.manifest()
+    }
+
+    fn validate_config(
+        &self,
+        configuration: &crate::OperatorConfiguration,
+    ) -> Result<(), crate::ConfigError> {
+        self.factory.validate_config(configuration)
+    }
+
+    fn create(
+        &self,
+        configuration: &crate::OperatorConfiguration,
+    ) -> Result<Box<dyn AsyncNode>, NodeError> {
+        self.validate_config(configuration)
+            .map_err(|error| NodeError::Prepare(error.to_string()))?;
+        Ok(Box::new(DelayedCommandWorker {
+            worker: AecWorker::new(
+                self.factory.configuration,
+                self.factory.operator_id.clone(),
+                self.factory.observations.clone(),
+            ),
+            barrier: self.barrier.lock().unwrap().take(),
+            relay: None,
+            joined: self.joined.clone(),
+        }))
+    }
+}
+
+impl DelayedCommandWorker {
+    async fn join(&mut self) -> Result<(), NodeError> {
+        self.worker.sender.take();
+        if let Some(relay) = self.relay.as_mut() {
+            relay
+                .await
+                .map_err(|error| NodeError::Process(error.to_string()))?;
+            self.relay.take();
+        }
+        self.worker.stop().await?;
+        self.joined
+            .store(true, std::sync::atomic::Ordering::Release);
+        Ok(())
+    }
+}
+
+impl AsyncNode for DelayedCommandWorker {
+    fn prepare<'a>(
+        &'a mut self,
+        cx: &'a AsyncOperatorPrepareContext,
+    ) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
+        Box::pin(async move {
+            self.worker.prepare(cx).await?;
+            let barrier = self.barrier.take().expect("one prepared fixture");
+            let native = self.worker.sender.take().expect("prepared native sender");
+            let (sender, receiver) = mpsc::sync_channel(1);
+            self.worker.sender = Some(sender);
+            self.relay = Some(tokio::task::spawn_blocking(move || {
+                while let Ok(command) = receiver.recv() {
+                    let held =
+                        matches!(&command, Command::Process { port, .. } if port == "microphone");
+                    if held {
+                        let _ = barrier.entered.try_send(());
+                        // A disconnected test guard also releases teardown on panic.
+                        let _ = barrier.release.recv_timeout(Duration::from_secs(2));
+                    }
+                    if native.send(command).is_err() || held {
+                        break;
+                    }
+                }
+            }));
+            Ok(())
+        })
+    }
+
+    fn process<'a>(
+        &'a mut self,
+        input: SignalEnvelope,
+    ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
+        self.worker.process(input)
+    }
+
+    fn process_port<'a>(
+        &'a mut self,
+        port: &'a str,
+        input: SignalEnvelope,
+    ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
+        self.worker.process_port(port, input)
+    }
+
+    fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
+        self.worker.flush()
+    }
+
+    fn cancel<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
+        Box::pin(self.join())
+    }
+
+    fn close<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
+        Box::pin(self.join())
+    }
+}
+
+#[test]
+fn given_delayed_native_command_when_session_deadline_expires_then_application_continues_and_late_output_is_discarded(
+) {
+    use crate::{AsyncOperatorFactory, AudioInputConfig, PlaybackReference, Session};
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    let session = Session::new();
+    let input_configuration = AudioInputConfig::new(
+        SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+        8,
+        960,
+    )
+    .unwrap();
+    let mut microphone = session.audio_input(input_configuration).unwrap();
+    let mut reference = session.audio_input(input_configuration).unwrap();
+    let mut application = session.audio_input(input_configuration).unwrap();
+    let processed = session
+        .echo_cancel(
+            microphone.output(),
+            PlaybackReference::rendered_audio(reference.output()),
+        )
+        .unwrap();
+    let endpoint = session.polled_audio().unwrap();
+    processed.audio().send(endpoint).unwrap();
+    application.output().send(endpoint).unwrap();
+    let observations = ObservationState::new(4);
+    let joined = Arc::new(AtomicBool::new(false));
+    let (entered, pending) = mpsc::sync_channel(1);
+    let (release, barrier_release) = mpsc::sync_channel(1);
+    {
+        // Replace only the test instance's command transport after normal Session
+        // composition. All execution settings come from the production factory.
+        let mut factories = session.operator_registrations.lock().unwrap();
+        assert_eq!(factories.len(), 1);
+        let operator_id = factories[0].manifest().operator_id.clone();
+        let factory = crate::aec::AecOperatorFactory::new(
+            AecConfiguration::new(20, crate::aec::Channels::Mono),
+            operator_id,
+            observations.clone(),
+        )
+        .unwrap();
+        assert_eq!(factory.manifest().deadline.process_timeout_ms, 100);
+        factories[0] = Arc::new(DelayedCommandFactory {
+            factory,
+            barrier: std::sync::Mutex::new(Some(CommandBarrier {
+                entered,
+                release: barrier_release,
+            })),
+            joined: joined.clone(),
+        });
+    }
+    let mut running = session.start().unwrap();
+    // Declared after RunningSession so unwinding disconnects the barrier first.
+    let release = release;
+    reference.try_write(&[0.1; 960]).unwrap();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while observations.snapshot().reference_queue_depth_frames != 1 {
+        assert!(
+            Instant::now() < deadline,
+            "reference did not reach native APM"
+        );
+        std::thread::yield_now();
+    }
+    microphone.try_write(&[0.2; 960]).unwrap();
+    pending.recv_timeout(Duration::from_secs(2)).unwrap();
+    application.try_write(&[0.25; 960]).unwrap();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    let mut application_delivered = false;
+    loop {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let frame = batch.frame(index).unwrap();
+                assert_eq!(
+                    frame.lineage().source_id(),
+                    application.source().source_id()
+                );
+                assert_eq!(frame.samples(), &[0.25; 960]);
+                application_delivered = true;
+            }
+        }
+        let metrics = running.metrics_snapshot().unwrap();
+        if application_delivered
+            && observations.snapshot().interrupted_requests_total == 1
+            && metrics.operator(0).unwrap().worker.timeout_total == 1
+        {
+            break;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "Session failed to isolate the native wait"
+        );
+        std::thread::yield_now();
+    }
+    assert_eq!(observations.snapshot().processed_microphone_frames_total, 0);
+    assert!(!joined.load(Ordering::Acquire));
+    release.try_send(()).unwrap();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while !joined.load(Ordering::Acquire) {
+        assert!(
+            Instant::now() < deadline,
+            "relay and native worker were not joined"
+        );
+        std::thread::yield_now();
+    }
+    let late = observations.snapshot();
+    assert_eq!(late.state, EchoCancellationState::Interrupted);
+    assert_eq!(late.processed_microphone_frames_total, 1);
+    assert_eq!(late.analyzed_reference_frames_total, 1);
+    assert_eq!(late.output_frames_total, 1);
+    assert_eq!(late.discarded_output_frames_total, 1);
+    assert!(late.latest_processing_duration_ns >= 100_000_000);
+    application.try_write(&[0.375; 960]).unwrap();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    loop {
+        if let Ok(batch) = running.try_poll_audio() {
+            assert_eq!(batch.len(), 1, "late native audio escaped into delivery");
+            let frame = batch.frame(0).unwrap();
+            assert_eq!(
+                frame.lineage().source_id(),
+                application.source().source_id()
+            );
+            assert_eq!(frame.samples(), &[0.375; 960]);
+            break;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "application stopped after AEC failed"
+        );
+        std::thread::yield_now();
+    }
+    assert!(
+        running.try_poll_audio().is_err(),
+        "late audio reached a consumer"
+    );
+    microphone.close();
+    reference.close();
+    application.close();
+    assert!(!running.stop().is_success());
+    let metrics = running.metrics_snapshot().unwrap();
+    assert_eq!(metrics.operator(0).unwrap().worker.timeout_total, 1);
+    assert!(metrics.operator(0).unwrap().worker.joined);
+    let stopped = observations.snapshot();
+    assert_eq!(stopped.state, late.state);
+    assert_eq!(stopped.interrupted_requests_total, 1);
+    assert_eq!(stopped.discarded_output_frames_total, 1);
+    assert_eq!(stopped.output_frames_total, 1);
+}
+
 #[tokio::test]
 async fn given_waiting_native_reply_when_future_is_cancelled_then_interruption_is_observable() {
     let state = ObservationState::new(4);
