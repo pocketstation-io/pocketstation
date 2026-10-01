@@ -718,6 +718,14 @@ impl RunningSession {
         let _ = self
             .event_sender
             .publish_lifecycle(self.session_id, SessionLifecycleState::Stopping);
+        if operator_termination == OperatorTermination::Cancel {
+            // Notify the entire graph before joining anything. Otherwise an
+            // upstream worker can flush into a downstream worker already
+            // cancelled by reverse-order finalization.
+            for operator in &self.operators {
+                operator.worker.request_cancel();
+            }
+        }
         for source in &self.external_sources {
             match operator_termination {
                 OperatorTermination::Finish => source.runtime.finish(),

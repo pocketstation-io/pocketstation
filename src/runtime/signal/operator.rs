@@ -192,6 +192,17 @@ struct AsyncOperatorWorkerInputs {
 }
 
 impl AsyncOperatorWorkerInputs {
+    fn close_typed_inputs(&mut self) {
+        for source in &mut self.sources {
+            match source {
+                #[cfg(any(test, feature = "internal-testing"))]
+                AsyncOperatorWorkerSource::Direct(receiver) => receiver.close(),
+                AsyncOperatorWorkerSource::Typed { receiver, .. } => receiver.close(),
+                AsyncOperatorWorkerSource::Compiled { .. } => {}
+            }
+        }
+    }
+
     #[cfg(any(test, feature = "internal-testing"))]
     fn one(source: AsyncOperatorWorkerSource) -> Self {
         Self {
@@ -946,9 +957,14 @@ impl AsyncOperatorWorker {
         self.observations.clone()
     }
 
+    pub(crate) fn request_cancel(&self) {
+        if !self.cancellation.swap(true, Ordering::AcqRel) {
+            self.cancellation_notify.notify_one();
+        }
+    }
+
     pub async fn cancel_and_join(self) -> Result<(), AsyncOperatorWorkerError> {
-        self.cancellation.store(true, Ordering::Release);
-        self.cancellation_notify.notify_one();
+        self.request_cancel();
         #[cfg(any(test, feature = "internal-testing"))]
         drop(self.input);
         self.join.await?
@@ -1015,6 +1031,11 @@ async fn run_prepared_worker(
         timeout_duration,
     )
     .await;
+    if cancellation.load(Ordering::Acquire) {
+        // A requested cancellation relinquishes these input requirements. An
+        // ordinary worker failure must leave its disappearance unexpected.
+        input.close_typed_inputs();
+    }
     let close_result = match tokio::time::timeout(timeout_duration, node.close()).await {
         Ok(result) => result.map_err(AsyncOperatorWorkerError::Close),
         Err(_) => Err(AsyncOperatorWorkerError::CloseTimeout {
@@ -1071,6 +1092,9 @@ async fn run_operator_loop(
                 // Use the closure snapshot taken before the second receive.
                 // Rechecking abandonment here would open the same race again.
                 if abandoned {
+                    if cancellation.load(Ordering::Acquire) {
+                        continue;
+                    }
                     let emitted = match tokio::time::timeout(timeout_duration, node.flush()).await {
                         Ok(Ok(emitted)) => emitted,
                         Ok(Err(error)) => {
@@ -1092,6 +1116,9 @@ async fn run_operator_loop(
                             });
                         }
                     };
+                    if discard_cancelled_outputs(manifest, cancellation, observations, &emitted) {
+                        continue;
+                    }
                     observations
                         .graceful_finish_total
                         .fetch_add(1, Ordering::Relaxed);
@@ -1113,7 +1140,7 @@ async fn run_operator_loop(
             tokio::select! {
                 result = &mut process => ProcessAttempt::Completed(result),
                 _ = tokio::time::sleep(timeout_duration) => ProcessAttempt::TimedOut,
-                _ = cancellation_notify.notified() => ProcessAttempt::Cancelled,
+                _ = cancellation_notify.notified(), if !cancellation_cleanup_done => ProcessAttempt::Cancelled,
             }
         };
         let emitted = match process_attempt {
@@ -1154,9 +1181,29 @@ async fn run_operator_loop(
             }
         };
         observations.processed_total.fetch_add(1, Ordering::Relaxed);
+        if discard_cancelled_outputs(manifest, cancellation, observations, &emitted) {
+            continue;
+        }
         fan_out_outputs(manifest, emitted, output_branches, observations)?;
     }
     Ok(())
+}
+
+fn discard_cancelled_outputs(
+    manifest: &AsyncOperatorManifest,
+    cancellation: &AtomicBool,
+    observations: &AsyncOperatorObservationState,
+    emitted: &[SignalEnvelope],
+) -> bool {
+    if manifest.cancellation != OperatorCancellationPolicy::DiscardQueued
+        || !cancellation.load(Ordering::Acquire)
+    {
+        return false;
+    }
+    observations
+        .output_dropped_total
+        .fetch_add(emitted.len() as u64, Ordering::Relaxed);
+    true
 }
 
 async fn cancel_node(
@@ -2494,6 +2541,168 @@ mod tests {
         assert!(cancelled.load(Ordering::Acquire));
         assert!(closed.load(Ordering::Acquire));
         assert_eq!(observations.snapshot().cancellation_total, 1);
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn given_cancel_during_completed_process_when_discard_requested_then_output_is_counted_not_published(
+    ) {
+        struct CancelAtReturn {
+            cancellation: Arc<AtomicBool>,
+            cleanup: Arc<AtomicUsize>,
+        }
+        impl AsyncNode for CancelAtReturn {
+            fn prepare<'a>(
+                &'a mut self,
+                _: &'a AsyncOperatorPrepareContext,
+            ) -> crate::graph::AsyncNodeFuture<'a, Result<(), NodeError>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn process<'a>(
+                &'a mut self,
+                input: SignalEnvelope,
+            ) -> crate::graph::AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>>
+            {
+                Box::pin(async move {
+                    self.cancellation.store(true, Ordering::Release);
+                    Ok(vec![input])
+                })
+            }
+            fn cancel<'a>(
+                &'a mut self,
+            ) -> crate::graph::AsyncNodeFuture<'a, Result<(), NodeError>> {
+                Box::pin(async move {
+                    self.cleanup.fetch_add(1, Ordering::Relaxed);
+                    Ok(())
+                })
+            }
+            fn close<'a>(&'a mut self) -> crate::graph::AsyncNodeFuture<'a, Result<(), NodeError>> {
+                Box::pin(async move {
+                    self.cleanup.fetch_add(1, Ordering::Relaxed);
+                    Ok(())
+                })
+            }
+        }
+        let manifest = manifest(
+            "operator.cancel-return",
+            "operator.cancel-return.node",
+            100,
+            OperatorFailurePolicy::StopWorker,
+        );
+        let cancellation = Arc::new(AtomicBool::new(false));
+        let cleanup = Arc::new(AtomicUsize::new(0));
+        let observations = Arc::new(AsyncOperatorObservationState::default());
+        let (mut sender, receiver) = SignalEdge::bounded(1);
+        sender.try_send(envelope(0)).unwrap();
+        let (fanout, receivers) = TypedEdgeFanout::new(&[crate::runtime::TypedEdgeBranchSpec {
+            capacity_signals: 1,
+            route_settings: RouteSettings::bounded_async(),
+        }])
+        .unwrap();
+        drop(receivers);
+        run_prepared_worker(
+            manifest,
+            Box::new(CancelAtReturn {
+                cancellation: Arc::clone(&cancellation),
+                cleanup: Arc::clone(&cleanup),
+            }),
+            AsyncOperatorWorkerInputs::one(AsyncOperatorWorkerSource::Direct(receiver)),
+            vec![NamedOutputFanout {
+                port_name: "transcript".to_owned(),
+                fanout,
+            }],
+            cancellation,
+            Arc::new(Notify::new()),
+            Arc::clone(&observations),
+        )
+        .await
+        .unwrap();
+        assert_eq!(cleanup.load(Ordering::Relaxed), 2);
+        assert_eq!(observations.processed_total.load(Ordering::Relaxed), 1);
+        assert_eq!(observations.output_dropped_total.load(Ordering::Relaxed), 1);
+        assert_eq!(observations.output_emitted_total.load(Ordering::Relaxed), 0);
+        assert_eq!(observations.cancellation_total.load(Ordering::Relaxed), 1);
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn given_cancel_broadcast_before_join_when_producer_ends_then_worker_does_not_flush() {
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let closed = Arc::new(AtomicBool::new(false));
+        let operator_factory = Arc::new(TestFactory {
+            manifest: manifest(
+                "operator.broadcast-cancel",
+                "operator.broadcast-cancel.node",
+                100,
+                OperatorFailurePolicy::StopWorker,
+            ),
+            behavior: TestBehavior::FlushFinal,
+            cancelled: Arc::clone(&cancelled),
+            closed: Arc::clone(&closed),
+        });
+        let (mut worker, mut outputs) =
+            AsyncOperatorWorker::spawn(operator_factory, &NodeConfig::new(), &[output_branch(1)])
+                .unwrap();
+        let observations = worker.observations();
+        assert!(observations.wait_ready().await);
+        worker.input_mut().unwrap().send(envelope(0)).unwrap();
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while observations.snapshot().output_emitted_total == 0 {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        assert!(outputs[0].recv().is_some());
+        worker.request_cancel();
+        worker.request_cancel();
+        worker.finish_and_join().await.unwrap();
+        assert!(outputs[0].recv().is_none());
+        assert!(closed.load(Ordering::Acquire));
+        assert!(cancelled.load(Ordering::Acquire));
+        let snapshot = observations.snapshot();
+        assert_eq!(snapshot.cancellation_total, 1);
+        assert_eq!(snapshot.graceful_finish_total, 0);
+        assert_eq!(snapshot.output_terminal_total, 0);
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn given_queued_inputs_when_drain_cancel_precedes_first_poll_then_all_accepted_inputs_finish(
+    ) {
+        let closed = Arc::new(AtomicBool::new(false));
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let mut settings = manifest(
+            "operator.cancel-drain",
+            "operator.cancel-drain.node",
+            500,
+            OperatorFailurePolicy::StopWorker,
+        );
+        settings.cancellation = OperatorCancellationPolicy::DrainQueued;
+        settings.queue_capacity_frames = 2;
+        let operator_factory = Arc::new(TestFactory {
+            manifest: settings,
+            behavior: TestBehavior::Slow,
+            cancelled: Arc::clone(&cancelled),
+            closed: Arc::clone(&closed),
+        });
+        let (mut worker, mut outputs) =
+            AsyncOperatorWorker::spawn(operator_factory, &NodeConfig::new(), &[output_branch(2)])
+                .unwrap();
+        let observations = worker.observations();
+        // The current-thread task has not been polled yet. A pending cancel
+        // notification must not interrupt DrainQueued's first async process.
+        worker.input_mut().unwrap().send(envelope(0)).unwrap();
+        worker.input_mut().unwrap().send(envelope(1)).unwrap();
+        worker.request_cancel();
+        worker.cancel_and_join().await.unwrap();
+        assert!(outputs[0].recv().is_some());
+        assert!(outputs[0].recv().is_some());
+        assert!(outputs[0].recv().is_none());
+        let snapshot = observations.snapshot();
+        assert_eq!(snapshot.processed_total, 2);
+        assert_eq!(snapshot.output_emitted_total, 2);
+        assert_eq!(snapshot.output_dropped_total, 0);
+        assert_eq!(snapshot.cancellation_total, 1);
+        assert!(closed.load(Ordering::Acquire));
+        assert!(cancelled.load(Ordering::Acquire));
     }
 
     #[tokio::test(flavor = "current_thread")]

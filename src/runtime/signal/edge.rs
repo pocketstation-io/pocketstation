@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, OnceLock};
 use std::thread::Thread;
 
@@ -16,6 +16,7 @@ pub const MAX_TYPED_EDGE_CAPACITY_SIGNALS: usize = 64;
 
 #[derive(Default)]
 struct SignalEdgeObservationState {
+    revoked: AtomicBool,
     capacity_signals: u64,
     max_payload_bytes: u64,
     maximum_buffered_payload_bytes: u64,
@@ -52,16 +53,34 @@ pub struct SignalEdgeObservationHandle {
 
 impl SignalEdgeObservationHandle {
     pub fn snapshot(&self) -> SignalEdgeObservations {
+        let revoked = self.state.revoked.load(Ordering::Acquire);
+        let enqueued_total = self.state.enqueued_total.load(Ordering::Relaxed);
+        let received_total = self.state.received_total.load(Ordering::Relaxed);
+        // Explicit revocation discards every accepted but unread value, even
+        // if a producer finishes an already admitted insertion concurrently.
+        let discarded_pending = if revoked {
+            enqueued_total.saturating_sub(received_total)
+        } else {
+            0
+        };
         SignalEdgeObservations {
             capacity_signals: self.state.capacity_signals,
             max_payload_bytes: self.state.max_payload_bytes,
             maximum_buffered_payload_bytes: self.state.maximum_buffered_payload_bytes,
-            depth_signals: self.state.depth_signals.load(Ordering::Relaxed),
+            depth_signals: if revoked {
+                0
+            } else {
+                self.state.depth_signals.load(Ordering::Relaxed)
+            },
             peak_depth_signals: self.state.peak_depth_signals.load(Ordering::Relaxed),
-            enqueued_total: self.state.enqueued_total.load(Ordering::Relaxed),
-            received_total: self.state.received_total.load(Ordering::Relaxed),
+            enqueued_total,
+            received_total,
             delivered_total: self.state.delivered_total.load(Ordering::Relaxed),
-            dropped_total: self.state.dropped_total.load(Ordering::Relaxed),
+            dropped_total: self
+                .state
+                .dropped_total
+                .load(Ordering::Relaxed)
+                .saturating_add(discarded_pending),
         }
     }
 }
@@ -127,7 +146,7 @@ impl<Item> SignalEdgeSendError<Item> {
 
 impl<Item> SignalEdgeSender<Item> {
     pub fn try_send(&mut self, item: Item) -> Result<(), SignalEdgeSendError<Item>> {
-        if self.producer.is_abandoned() {
+        if self.is_revoked() || self.producer.is_abandoned() {
             self.state.dropped_total.fetch_add(1, Ordering::Relaxed);
             return Err(SignalEdgeSendError { rejected: item });
         }
@@ -162,6 +181,10 @@ impl<Item> SignalEdgeSender<Item> {
 
     pub(crate) fn is_abandoned(&self) -> bool {
         self.producer.is_abandoned()
+    }
+
+    fn is_revoked(&self) -> bool {
+        self.state.revoked.load(Ordering::Acquire)
     }
 
     #[cfg(test)]
@@ -229,6 +252,9 @@ impl<Item> SignalEdgeReceiver<Item> {
     }
 
     pub fn recv(&mut self) -> Option<Item> {
+        if self.state.revoked.load(Ordering::Acquire) {
+            return None;
+        }
         let item = self.consumer.pop().ok()?;
         self.state.depth_signals.fetch_sub(1, Ordering::Relaxed);
         self.state.received_total.fetch_add(1, Ordering::Relaxed);
@@ -248,6 +274,22 @@ impl<Item> SignalEdgeReceiver<Item> {
 
     pub fn is_abandoned(&self) -> bool {
         self.consumer.is_abandoned()
+    }
+
+    /// Explicitly relinquishes this receiver's delivery requirement.
+    ///
+    /// Unread and subsequent values count as discarded. Dropping a receiver
+    /// without closing it does not grant this permission to its producer.
+    pub(crate) fn close(&mut self) {
+        self.state.revoked.store(true, Ordering::Release);
+        // This off-realtime operation releases already queued payloads without
+        // calling them received. A producer insertion already in flight can
+        // still finish concurrently; its ownership remains in the finite ring
+        // until sender/receiver teardown and its loss is included in snapshots.
+        while let Ok(item) = self.consumer.pop() {
+            self.state.depth_signals.fetch_sub(1, Ordering::Relaxed);
+            drop(item);
+        }
     }
 }
 
@@ -325,11 +367,10 @@ impl TypedEdgeFanout {
             .validate()
             .map_err(TypedEdgePublishError::InvalidEnvelope)?;
         let payload_bytes = envelope.payload_size_bytes();
-        if let Some((branch_index, branch)) = self
-            .branches
-            .iter()
-            .enumerate()
-            .find(|(_, branch)| payload_bytes > branch.max_payload_bytes)
+        if let Some((branch_index, branch)) =
+            self.branches.iter().enumerate().find(|(_, branch)| {
+                !branch.sender.is_revoked() && payload_bytes > branch.max_payload_bytes
+            })
         {
             return Err(TypedEdgePublishError::PayloadTooLarge {
                 branch_index,
@@ -340,7 +381,7 @@ impl TypedEdgeFanout {
         // Required delivery applies to every value. Check before fan-out so an
         // already unavailable required branch cannot cause partial delivery.
         for (branch_index, branch) in self.branches.iter().enumerate() {
-            if branch.loss != LossPolicy::MustDeliverOrFail {
+            if branch.loss != LossPolicy::MustDeliverOrFail || branch.sender.is_revoked() {
                 continue;
             }
             let rejection = if branch.sender.is_abandoned() {
@@ -351,6 +392,9 @@ impl TypedEdgeFanout {
                 None
             };
             if let Some(error) = rejection {
+                if branch.sender.is_revoked() {
+                    continue;
+                }
                 branch
                     .sender
                     .state
@@ -372,7 +416,7 @@ impl TypedEdgeFanout {
                 Err(error) => {
                     drop(error.into_rejected());
                     report.dropped_total = report.dropped_total.saturating_add(1);
-                    if branch.loss == LossPolicy::MustDeliverOrFail {
+                    if branch.loss == LossPolicy::MustDeliverOrFail && !branch.sender.is_revoked() {
                         return Err(if branch.sender.is_abandoned() {
                             TypedEdgePublishError::RequiredBranchClosed { branch_index }
                         } else {
@@ -390,7 +434,9 @@ impl TypedEdgeFanout {
             Err(error) => {
                 drop(error.into_rejected());
                 report.dropped_total = report.dropped_total.saturating_add(1);
-                if final_branch.loss == LossPolicy::MustDeliverOrFail {
+                if final_branch.loss == LossPolicy::MustDeliverOrFail
+                    && !final_branch.sender.is_revoked()
+                {
                     return Err(if final_branch.sender.is_abandoned() {
                         TypedEdgePublishError::RequiredBranchClosed {
                             branch_index: final_branch_index,
@@ -605,6 +651,81 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn given_explicit_receiver_close_when_required_fanout_continues_then_only_that_branch_discards()
+    {
+        for closed_index in [0, 1] {
+            let specifications = [TypedEdgeBranchSpec {
+                capacity_signals: 2,
+                route_settings: RouteSettings::bounded_async(),
+            }; 2];
+            let (mut fanout, mut receivers) = TypedEdgeFanout::new(&specifications).unwrap();
+            let active_index = 1 - closed_index;
+            let event = |sequence| {
+                envelope(
+                    SignalPayload::Bytes(vec![1]),
+                    SignalSpec::event(EventFormat::Json),
+                    sequence,
+                )
+            };
+            fanout.publish(event(1), false).unwrap();
+            assert!(receivers[active_index].recv().is_some());
+            receivers[closed_index].close();
+            receivers[closed_index].close();
+            assert!(receivers[closed_index].recv().is_none());
+            let report = fanout.publish(event(2), true).unwrap();
+            assert_eq!(report.delivered_total, 1);
+            assert_eq!(report.dropped_total, 1);
+            assert_eq!(
+                receivers[active_index].recv().unwrap().sequence_number(),
+                Some(2)
+            );
+            let closed = receivers[closed_index].observations();
+            assert_eq!(closed.enqueued_total, 1);
+            assert_eq!(closed.received_total, 0);
+            assert_eq!(closed.depth_signals, 0);
+            assert_eq!(closed.dropped_total, 2);
+            let active = receivers[active_index].observations();
+            assert_eq!(active.received_total, 2);
+            assert_eq!(active.dropped_total, 0);
+        }
+    }
+
+    #[test]
+    fn given_unread_payloads_when_explicitly_closed_then_ownership_is_released_without_receiving() {
+        struct Payload(Arc<AtomicU64>);
+        impl Drop for Payload {
+            fn drop(&mut self) {
+                self.0.fetch_add(1, Ordering::Relaxed);
+            }
+        }
+        let released = Arc::new(AtomicU64::new(0));
+        let (mut sender, mut receiver) = SignalEdge::bounded(2);
+        assert!(sender.try_send(Payload(Arc::clone(&released))).is_ok());
+        assert!(sender.try_send(Payload(Arc::clone(&released))).is_ok());
+        receiver.close();
+        assert_eq!(released.load(Ordering::Relaxed), 2);
+        let snapshot = receiver.observations();
+        assert_eq!(snapshot.received_total, 0);
+        assert_eq!(snapshot.dropped_total, 2);
+        assert_eq!(snapshot.depth_signals, 0);
+    }
+
+    #[test]
+    fn given_explicit_close_before_receiver_drop_when_sent_then_rejection_stays_counted() {
+        let (mut sender, mut receiver) = SignalEdge::bounded(2);
+        let observations = receiver.observation_handle();
+        sender.try_send(1).unwrap();
+        receiver.close();
+        drop(receiver);
+        assert_eq!(sender.try_send(2).unwrap_err().into_rejected(), 2);
+        let snapshot = observations.snapshot();
+        assert_eq!(snapshot.enqueued_total, 1);
+        assert_eq!(snapshot.received_total, 0);
+        assert_eq!(snapshot.depth_signals, 0);
+        assert_eq!(snapshot.dropped_total, 2);
     }
 
     #[test]
