@@ -9,7 +9,7 @@ mod selector;
 mod spec;
 mod typed_stream;
 
-#[cfg(feature = "echo-cancellation")]
+#[cfg(feature = "aec")]
 pub(crate) use draft::OriginDefinition;
 
 pub use draft::{

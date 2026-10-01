@@ -53,6 +53,7 @@ pub struct EchoCancellationObservations {
     pub last_error: Option<String>,
 }
 
+#[cfg(feature = "aec")]
 impl EchoCancellationObservations {
     pub(crate) fn new(queue_capacity_frames: usize) -> Self {
         Self {
@@ -92,12 +93,14 @@ impl EchoCancellationObservations {
 pub(crate) struct ObservationState(Arc<Mutex<EchoCancellationObservations>>);
 
 impl ObservationState {
+    #[cfg(feature = "aec")]
     pub(crate) fn new(capacity_frames: usize) -> Self {
         Self(Arc::new(Mutex::new(EchoCancellationObservations::new(
             capacity_frames,
         ))))
     }
 
+    #[cfg(feature = "aec")]
     pub(crate) fn update(&self, mut value: EchoCancellationObservations) {
         let mut current = self
             .0
@@ -117,6 +120,7 @@ impl ObservationState {
         *current = value;
     }
 
+    #[cfg(feature = "aec")]
     pub(crate) fn fail(&self, message: String) {
         let mut current = self
             .0
@@ -126,6 +130,7 @@ impl ObservationState {
         current.last_error.get_or_insert(message);
     }
 
+    #[cfg(feature = "aec")]
     pub(crate) fn interrupt(&self) {
         let mut current = self
             .0
@@ -137,6 +142,7 @@ impl ObservationState {
         }
     }
 
+    #[cfg(feature = "aec")]
     pub(crate) fn discard_outputs(&self, outputs: usize) {
         let mut current = self
             .0
@@ -158,7 +164,7 @@ impl ObservationState {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "aec"))]
 mod tests {
     use super::*;
 

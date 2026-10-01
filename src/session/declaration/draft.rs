@@ -318,7 +318,7 @@ pub struct Session {
 }
 
 /// Owned declaration facts; callers may consult factories after releasing the draft lock.
-#[cfg(feature = "echo-cancellation")]
+#[cfg(feature = "aec")]
 pub(crate) enum OriginDefinition {
     Capture(Source),
     SourceOutput {
@@ -333,7 +333,7 @@ pub(crate) enum OriginDefinition {
 }
 
 impl Session {
-    #[cfg(feature = "echo-cancellation")]
+    #[cfg(feature = "aec")]
     pub(crate) fn origin_definition(
         &self,
         origin: &StreamOrigin,
@@ -475,7 +475,7 @@ impl Session {
     }
 
     /// Commits a built-in audio computation and its input/output routing together.
-    #[cfg(feature = "echo-cancellation")]
+    #[cfg(feature = "aec")]
     pub(crate) fn connected_audio_operator(
         &self,
         operator: Operator,
@@ -928,7 +928,6 @@ impl fmt::Debug for OperatorInputHandle {
 }
 
 impl StemHandle {
-    #[cfg(feature = "echo-cancellation")]
     pub(crate) fn signal_origin(&self) -> (SessionId, StreamOrigin) {
         (self.stream.session_id, self.stream.origin.clone())
     }
@@ -1073,7 +1072,6 @@ pub struct SourceOutputHandle {
 }
 
 impl SourceOutputHandle {
-    #[cfg(feature = "echo-cancellation")]
     pub(crate) fn signal_origin(&self) -> (SessionId, StreamOrigin) {
         (self.stream.session_id, self.stream.origin.clone())
     }
@@ -1151,7 +1149,6 @@ impl fmt::Debug for SourceOutputHandle {
 }
 
 impl DerivedStreamHandle {
-    #[cfg(feature = "echo-cancellation")]
     pub(crate) fn signal_origin(&self) -> (SessionId, StreamOrigin) {
         (self.stream.session_id, self.stream.origin.clone())
     }

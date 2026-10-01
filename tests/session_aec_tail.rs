@@ -1,4 +1,4 @@
-#![cfg(feature = "echo-cancellation")]
+#![cfg(feature = "aec")]
 
 use pocketstation::{
     AudioFrameDuration, AudioInputConfig, PlaybackReference, SampleFormat, SampleSpec, Session,

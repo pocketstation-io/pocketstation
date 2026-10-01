@@ -5,7 +5,7 @@
 mod clock_correction;
 mod clock_drift;
 mod domain;
-#[cfg(feature = "echo-cancellation")]
+#[cfg(feature = "aec")]
 mod frame_cadence;
 mod timeline_mapping;
 
@@ -19,7 +19,7 @@ pub use clock_drift::{ClockDriftEstimator, ClockDriftSnapshot};
 pub use domain::{
     describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin,
 };
-#[cfg(feature = "echo-cancellation")]
+#[cfg(feature = "aec")]
 pub(crate) use frame_cadence::cadence_error_ns;
 pub use timeline_mapping::TimelineMapping;
 

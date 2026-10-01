@@ -10,6 +10,7 @@ struct Options {
     application: Option<String>,
     system_audio: bool,
     microphone: bool,
+    aec: bool,
     recording_root: Option<PathBuf>,
     duration: Option<Duration>,
 }
@@ -18,6 +19,7 @@ fn options() -> Result<Option<Options>, Box<dyn Error>> {
     let mut application = None;
     let mut system_audio = false;
     let mut microphone = false;
+    let mut aec = false;
     let mut recording_root = None;
     let mut duration = None;
     let mut arguments = std::env::args().skip(1);
@@ -32,6 +34,10 @@ fn options() -> Result<Option<Options>, Box<dyn Error>> {
             }
             "--system-audio" => system_audio = true,
             "--microphone" => microphone = true,
+            "--aec" => {
+                aec = true;
+                microphone = true;
+            }
             "--record" => {
                 recording_root = Some(PathBuf::from(
                     arguments
@@ -52,7 +58,7 @@ fn options() -> Result<Option<Options>, Box<dyn Error>> {
             "--help" | "-h" => {
                 println!(
                     "Usage: quickstart [--application <name-or-id>] \
-                     [--system-audio] [--microphone] [--record <directory>] \
+                     [--system-audio] [--microphone] [--aec] [--record <directory>] \
                      [--duration <seconds>]"
                 );
                 return Ok(None);
@@ -63,10 +69,16 @@ fn options() -> Result<Option<Options>, Box<dyn Error>> {
     if system_audio && application.is_some() {
         return Err("--system-audio and --application cannot be used together".into());
     }
+    if aec && !pks::aec_available() {
+        return Err(
+            "AEC is unavailable; run with cargo --features aec before --example quickstart".into(),
+        );
+    }
     Ok(Some(Options {
         application,
         system_audio,
         microphone,
+        aec,
         recording_root,
         duration,
     }))
@@ -156,13 +168,30 @@ fn main() -> Result<(), Box<dyn Error>> {
         })?;
     }
 
+    let mut processed = None;
     let expected_stems = if options.microphone {
         let microphone = session.capture(pks::Source::microphone_default())?;
         microphone.send(session.polled_audio()?)?;
         if options.recording_root.is_some() {
             microphone.record("microphone")?;
         }
-        2
+        if options.aec {
+            let reference = if options.system_audio {
+                pks::PlaybackReference::output_mix(&primary)
+            } else {
+                pks::PlaybackReference::selected_application(&primary)
+            };
+            let audio = session.echo_cancel(&microphone, reference)?;
+            audio.audio().send(session.polled_audio()?)?;
+            if options.recording_root.is_some() {
+                audio.audio().record("microphone-processed")?;
+            }
+            println!("AEC reference: {}; raw stems remain independent. Device-clock recovery is not qualified.", audio.reference_coverage());
+            processed = Some(audio);
+            3
+        } else {
+            2
+        }
     } else {
         1
     };
@@ -186,11 +215,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         std::thread::sleep(Duration::from_millis(1));
     }
+    let outcome = running.stop();
+    if let Some(audio) = processed {
+        println!("AEC final observations: {:?}", audio.observations());
+    }
+    println!("Captured frames per stem: {frames_by_stem:?}");
     if frames_by_stem.values().filter(|count| **count >= 2).count() != expected_stems {
         return Err("the selected sources did not produce media before the deadline".into());
     }
 
-    let outcome = running.stop();
     if !outcome.is_success() {
         return Err("PocketStation Session did not finalize cleanly".into());
     }

@@ -1,7 +1,7 @@
 //! Qualification probe for the locked APM configuration, not physical AEC proof.
 //! The nominal delay is structural; measured waveform peaks may differ because
 //! WebRTC's three-band analysis/synthesis is not perfect reconstruction.
-#![cfg(feature = "echo-cancellation")]
+#![cfg(feature = "aec")]
 
 use webrtc_audio_processing::{config::EchoCanceller, Config, Processor};
 

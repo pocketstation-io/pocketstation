@@ -1,7 +1,6 @@
 #![doc = include_str!("../README.md")]
 
 mod abi;
-#[cfg(feature = "echo-cancellation")]
 mod aec;
 mod capture;
 #[cfg(feature = "opus-codec")]
@@ -9,9 +8,7 @@ pub mod codec;
 pub mod connector;
 mod endpoint;
 mod frame;
-#[cfg(feature = "echo-cancellation")]
-pub use crate::aec::{EchoCancellationObservations, EchoCancellationState};
-#[cfg(feature = "echo-cancellation")]
+pub use crate::aec::{aec_available, EchoCancellationObservations, EchoCancellationState};
 pub use crate::session::extensions::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
 /// Stable signal, port, capability, partition, and extension APIs.
 ///
