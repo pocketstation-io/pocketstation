@@ -151,7 +151,7 @@ fn given_wasapi_packet_delivery_when_source_changes_then_bounded_worker_contract
     let capture_handoff = fragment_between(
         WINDOWS_CAPTURE,
         "let capture_callback = move |frame| {",
-        "let result = match resolved_mode",
+        "let result = match (resolved_mode, native_request)",
     );
     assert_realtime_fragment(
         "WASAPI capture-worker handoff",

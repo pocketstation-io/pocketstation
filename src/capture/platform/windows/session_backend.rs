@@ -1,6 +1,7 @@
 use crate::capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
+    CaptureObservationHandle, CaptureObservations, CaptureProcessingObservationHandle,
+    NativeAecRequest, NativeAecRouteHandle, PreparedCaptureBackend,
 };
 
 use crate::capture::platform::windows::DesktopCaptureSource;
@@ -29,6 +30,7 @@ impl Default for DesktopCaptureBackend {
 
 struct PreparedDesktopCapture {
     mode: CaptureMode,
+    native_aec_request: Option<NativeAecRequest>,
     audio_frame_duration: AudioFrameDuration,
 }
 
@@ -40,6 +42,27 @@ impl CallbackCaptureBackend for DesktopCaptureBackend {
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
         Ok(Box::new(PreparedDesktopCapture {
             mode,
+            native_aec_request: None,
+            audio_frame_duration: self.audio_frame_duration,
+        }))
+    }
+
+    fn prepare_native_aec(
+        &self,
+        mode: CaptureMode,
+        request: &NativeAecRequest,
+    ) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+        if !matches!(mode, CaptureMode::InputDevice(_)) {
+            return Err(CaptureError::ModeUnsupported(mode));
+        }
+        if request.playback_device().as_str().is_empty() {
+            return Err(CaptureError::BackendInit(
+                "Windows native AEC requires an exact playback endpoint".to_owned(),
+            ));
+        }
+        Ok(Box::new(PreparedDesktopCapture {
+            mode,
+            native_aec_request: Some(request.clone()),
             audio_frame_duration: self.audio_frame_duration,
         }))
     }
@@ -54,12 +77,24 @@ impl PreparedCaptureBackend for PreparedDesktopCapture {
             frame_sender,
             runtime_event_sender,
         } = delivery;
-        let source = DesktopCaptureSource::capture_mode_with_runtime_event_sender(
-            self.mode,
-            self.audio_frame_duration,
-            frame_sender.into_callback(),
-            runtime_event_sender,
-        )?;
+        let source = match (self.mode, self.native_aec_request) {
+            (CaptureMode::InputDevice(selector), Some(request)) => {
+                DesktopCaptureSource::capture_native_input_with_runtime_event_sender(
+                    selector,
+                    request,
+                    self.audio_frame_duration,
+                    frame_sender.into_callback(),
+                    runtime_event_sender,
+                )?
+            }
+            (mode, None) => DesktopCaptureSource::capture_mode_with_runtime_event_sender(
+                mode,
+                self.audio_frame_duration,
+                frame_sender.into_callback(),
+                runtime_event_sender,
+            )?,
+            (mode, Some(_)) => return Err(CaptureError::ModeUnsupported(mode)),
+        };
         Ok(Box::new(ActiveDesktopCapture { source }))
     }
 }
@@ -71,6 +106,14 @@ impl ActiveCaptureBackend for ActiveDesktopCapture {
 
     fn observation_handle(&self) -> CaptureObservationHandle {
         self.source.observation_handle()
+    }
+
+    fn native_aec_route_handle(&self) -> Option<NativeAecRouteHandle> {
+        self.source.native_aec_route_handle()
+    }
+
+    fn processing_observation_handle(&self) -> Option<CaptureProcessingObservationHandle> {
+        self.source.processing_observation_handle()
     }
 
     fn observations(&self) -> CaptureObservations {

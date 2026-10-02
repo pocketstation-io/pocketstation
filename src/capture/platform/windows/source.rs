@@ -20,8 +20,9 @@
 //! The third-party `AudioClient::new_application_loopback_client` waits without
 //! a cancellation or deadline. This backend therefore owns the narrow
 //! `ActivateAudioInterfaceAsync` process-loopback boundary and retains the
-//! activation inputs with the Windows-owned completion handler. System-mix and
-//! input-device capture continue to use the third-party wrapper.
+//! activation inputs with the Windows-owned completion handler. System-mix
+//! uses the third-party wrapper; microphone capture uses one raw WASAPI client
+//! so effect observations describe the same stream that delivers PCM.
 //!
 //! Process loopback does not expose a useful device period. The period passed
 //! to `IAudioClient::Initialize` is irrelevant in this mode, so we use
@@ -33,6 +34,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
+use crate::capture::platform::windows::native_aec::WindowsInputStream;
 use crate::capture::platform::windows::open_lifecycle::{
     report_open, wait_for_completion, wait_for_open, CancellableWaitOutcome, OpenCancellation,
     OpenReportError, OpenWaitOutcome,
@@ -55,8 +57,9 @@ use crate::capture::frame_normalizer::CaptureFrameNormalizer;
 use crate::capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError,
     CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration,
-    SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventReceiver,
+    CaptureProcessingObservationHandle, CaptureRuntimeFailure, CaptureRuntimeFailureClass,
+    InputDeviceSelector, NativeAecRequest, NativeAecRouteHandle, SourceGeneration, SourceKind,
+    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventReceiver,
     SourceRuntimeEventSender, StableSourceId,
 };
 #[cfg(any(test, feature = "internal-testing"))]
@@ -64,7 +67,7 @@ use crate::capture::{
     source_runtime_event_channel, SourceRuntimeEventObservations, SourceRuntimeEventReceive,
 };
 
-const CAPTURE_CHANNEL_COUNT: u8 = 2;
+pub(super) const CAPTURE_CHANNEL_COUNT: u8 = 2;
 // A delivered WASAPI frame remains backed by this pool while it crosses the
 // 16-frame platform dispatch ring and the Session's bounded capture queue
 // (32 frames by default). Eight slots could therefore exhaust before either
@@ -79,7 +82,7 @@ const WASAPI_CALLBACK_MAX_SAMPLES: usize =
     WASAPI_CALLBACK_MAX_FRAMES * CAPTURE_CHANNEL_COUNT as usize;
 
 /// Buffer duration hint (20 ms in 100-ns units).  Ignored for loopback modes.
-const BUFFER_DURATION_100NS: i64 = 200_000;
+pub(super) const BUFFER_DURATION_100NS: i64 = 200_000;
 
 /// Hardcoded period for process-loopback mode (10 ms in 100-ns units).
 ///
@@ -162,6 +165,8 @@ pub struct SystemLoopbackSource {
     #[cfg(any(test, feature = "internal-testing"))]
     runtime_event_rx: Option<SourceRuntimeEventReceiver>,
     source_id: SourceId,
+    native_aec_route: Option<NativeAecRouteHandle>,
+    processing: Option<CaptureProcessingObservationHandle>,
 }
 
 pub struct DesktopCaptureSource {
@@ -195,6 +200,27 @@ impl DesktopCaptureSource {
         .map(|source| Self { source })
     }
 
+    pub(crate) fn capture_native_input_with_runtime_event_sender<F>(
+        selector: InputDeviceSelector,
+        native_request: NativeAecRequest,
+        audio_frame_duration: AudioFrameDuration,
+        callback: F,
+        runtime_event_sender: SourceRuntimeEventSender,
+    ) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        SystemLoopbackSource::capture_mode_with_runtime_events(
+            CaptureMode::InputDevice(selector),
+            Some(native_request),
+            audio_frame_duration,
+            callback,
+            runtime_event_sender,
+            None,
+        )
+        .map(|source| Self { source })
+    }
+
     pub fn observations(&self) -> CaptureObservations {
         self.source.observations()
     }
@@ -205,6 +231,16 @@ impl DesktopCaptureSource {
 
     pub fn observation_handle(&self) -> CaptureObservationHandle {
         self.source.observation_handle()
+    }
+
+    pub(crate) fn native_aec_route_handle(&self) -> Option<NativeAecRouteHandle> {
+        self.source.native_aec_route.clone()
+    }
+
+    pub(crate) fn processing_observation_handle(
+        &self,
+    ) -> Option<CaptureProcessingObservationHandle> {
+        self.source.processing.clone()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
@@ -666,6 +702,7 @@ impl SystemLoopbackSource {
             source_runtime_event_channel(RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS)?;
         Self::capture_mode_with_runtime_events(
             mode,
+            None,
             AudioFrameDuration::default(),
             callback,
             runtime_event_sender,
@@ -684,6 +721,7 @@ impl SystemLoopbackSource {
     {
         Self::capture_mode_with_runtime_events(
             mode,
+            None,
             audio_frame_duration,
             callback,
             runtime_event_sender,
@@ -693,6 +731,7 @@ impl SystemLoopbackSource {
 
     fn capture_mode_with_runtime_events<F>(
         mode: CaptureMode,
+        native_request: Option<NativeAecRequest>,
         audio_frame_duration: AudioFrameDuration,
         callback: F,
         runtime_event_tx: SourceRuntimeEventSender,
@@ -706,6 +745,10 @@ impl SystemLoopbackSource {
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let (open_tx, open_rx) =
             std::sync::mpsc::sync_channel::<Result<SourceId, LoopbackError>>(1);
+        let (native_route_tx, native_route_rx) =
+            std::sync::mpsc::sync_channel::<NativeAecRouteHandle>(1);
+        let (processing_tx, processing_rx) =
+            std::sync::mpsc::sync_channel::<CaptureProcessingObservationHandle>(1);
         let (worker_exit_tx, worker_exit_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let (mut frame_producer, mut frame_consumer) =
             rtrb::RingBuffer::<AudioFrame>::new(DISPATCH_QUEUE_CAPACITY_FRAMES);
@@ -753,8 +796,8 @@ impl SystemLoopbackSource {
                     }
                 };
 
-                let result = match resolved_mode {
-                    CaptureMode::SystemMix => run_system_loopback(
+                let result = match (resolved_mode, native_request) {
+                    (CaptureMode::SystemMix, None) => run_system_loopback(
                         CaptureWorkerContext {
                             frame_samples_per_channel,
                             pool,
@@ -767,7 +810,7 @@ impl SystemLoopbackSource {
                         },
                         capture_callback,
                     ),
-                    CaptureMode::Process(process_id) => {
+                    (CaptureMode::Process(process_id), None) => {
                         let stable_key = format!("wasapi:pid:{process_id}");
                         let source_id = StableSourceId::new(
                             Platform::Windows,
@@ -793,10 +836,10 @@ impl SystemLoopbackSource {
                             capture_callback,
                         )
                     }
-                    CaptureMode::ExactApplication {
+                    (CaptureMode::ExactApplication {
                         process_id,
                         stable_id,
-                    } => {
+                    }, None) => {
                         let source_id = stable_id.source_id();
                         if let Some(expected_instance) =
                             ProcessInstanceFingerprint::parse(&stable_id.stable_key)
@@ -825,8 +868,26 @@ impl SystemLoopbackSource {
                             )))
                         }
                     }
-                    CaptureMode::InputDevice(selector) => run_input_capture(
+                    (CaptureMode::InputDevice(selector), None) => run_input_capture(
                         selector,
+                        processing_tx,
+                        CaptureWorkerContext {
+                            frame_samples_per_channel,
+                            pool,
+                            sequence: sequence_number,
+                            stop_rx,
+                            open_tx: open_tx.clone(),
+                            counters: capture_counters.clone(),
+                            open_cancellation: worker_cancellation.clone(),
+                            runtime_event_tx: runtime_event_tx.clone(),
+                        },
+                        capture_callback,
+                    ),
+                    (CaptureMode::InputDevice(selector), Some(request)) => run_native_input_capture(
+                        selector,
+                        request,
+                        native_route_tx,
+                        processing_tx,
                         CaptureWorkerContext {
                             frame_samples_per_channel,
                             pool,
@@ -840,7 +901,7 @@ impl SystemLoopbackSource {
                         capture_callback,
                     ),
                     // Application(_) is resolved to Process before thread spawn.
-                    other => Err(LoopbackError::ModeUnsupported(other)),
+                    (other, _) => Err(LoopbackError::ModeUnsupported(other)),
                 };
                 if let Err(error) = result {
                     if !worker_cancellation.is_cancelled() {
@@ -888,6 +949,9 @@ impl SystemLoopbackSource {
             }
         };
 
+        let native_aec_route = native_route_rx.try_recv().ok();
+        let processing = processing_rx.try_recv().ok();
+
         let dispatch_thread = match std::thread::Builder::new()
             .name("pks-wasapi-dispatch".into())
             .spawn(move || {
@@ -922,6 +986,8 @@ impl SystemLoopbackSource {
             #[cfg(any(test, feature = "internal-testing"))]
             runtime_event_rx,
             source_id,
+            native_aec_route,
+            processing,
         })
     }
 
@@ -1658,6 +1724,24 @@ impl Drop for ProcessLoopbackStream {
 fn capture_process_loopback(
     stream: &ProcessLoopbackStream,
     state: CaptureLoopState,
+    callback: impl FnMut(AudioFrame) + Send + 'static,
+) -> Result<(), LoopbackError> {
+    let result = capture_raw_stream(
+        &stream.capture_client,
+        stream.event_handle,
+        None,
+        state,
+        callback,
+    );
+    stream.stop();
+    result
+}
+
+fn capture_raw_stream(
+    capture_client: &windows::Win32::Media::Audio::IAudioCaptureClient,
+    event_handle: windows::Win32::Foundation::HANDLE,
+    native_route: Option<&NativeAecRouteHandle>,
+    state: CaptureLoopState,
     mut callback: impl FnMut(AudioFrame) + Send + 'static,
 ) -> Result<(), LoopbackError> {
     use windows::Win32::Foundation::{GetLastError, WAIT_FAILED, WAIT_OBJECT_0, WAIT_TIMEOUT};
@@ -1674,12 +1758,18 @@ fn capture_process_loopback(
     let capture_result: Result<(), CaptureLoopFailure> = (|| {
         let timestamp_mapping =
             WasapiTimestampMapping::new().ok_or(CaptureLoopFailure::BackendClass {
-                operation: "initialize WASAPI process-loopback QPC timestamp mapping",
+                operation: "initialize WASAPI capture QPC timestamp mapping",
                 class: "qpc-clock-unavailable",
             })?;
         loop {
             if state.open_cancellation.is_cancelled() || state.stop_rx.try_recv().is_ok() {
                 break;
+            }
+            if native_route.is_some_and(|route| !route.is_valid()) {
+                return Err(CaptureLoopFailure::BackendClass {
+                    operation: "observe Windows native AEC route",
+                    class: "native-aec-route-invalidated",
+                });
             }
             if let Some(process_watch) = &state.process_watch {
                 match process_watch.poll() {
@@ -1693,7 +1783,7 @@ fn capture_process_loopback(
                 }
             }
             // SAFETY: event_handle remains valid for stream's lifetime.
-            match unsafe { WaitForSingleObject(stream.event_handle, WAIT_TIMEOUT_MS) } {
+            match unsafe { WaitForSingleObject(event_handle, WAIT_TIMEOUT_MS) } {
                 WAIT_OBJECT_0 => {}
                 WAIT_TIMEOUT => continue,
                 WAIT_FAILED => {
@@ -1702,13 +1792,13 @@ fn capture_process_loopback(
                         unsafe { GetLastError() }.0,
                     ));
                     return Err(CaptureLoopFailure::Windows {
-                        operation: "wait for WASAPI process-loopback capture event",
+                        operation: "wait for WASAPI capture event",
                         error,
                     });
                 }
                 status => {
                     return Err(CaptureLoopFailure::BackendClass {
-                        operation: "wait for WASAPI process-loopback capture event",
+                        operation: "wait for WASAPI capture event",
                         class: if status.0 == WAIT_FAILED.0 {
                             "wait-failed"
                         } else {
@@ -1718,11 +1808,19 @@ fn capture_process_loopback(
                 }
             }
             loop {
+                if native_route.is_some_and(|route| !route.is_valid()) {
+                    return Err(CaptureLoopFailure::BackendClass {
+                        operation: "observe Windows native AEC route",
+                        class: "native-aec-route-invalidated",
+                    });
+                }
                 // SAFETY: capture_client belongs to the initialized stream.
-                let announced_frames = unsafe { stream.capture_client.GetNextPacketSize() }
-                    .map_err(|error| CaptureLoopFailure::Windows {
-                        operation: "query next WASAPI process-loopback packet size",
-                        error,
+                let announced_frames =
+                    unsafe { capture_client.GetNextPacketSize() }.map_err(|error| {
+                        CaptureLoopFailure::Windows {
+                            operation: "query next WASAPI packet size",
+                            error,
+                        }
                     })?;
                 match plan_packet_read(
                     announced_frames,
@@ -1735,7 +1833,7 @@ fn capture_process_loopback(
                     PacketReadPlan::Oversized { .. } => {
                         state.counters.observe_oversized_buffer();
                         return Err(CaptureLoopFailure::BackendClass {
-                            operation: "validate announced WASAPI process-loopback packet size",
+                            operation: "validate announced WASAPI packet size",
                             class: "announced-packet-oversized",
                         });
                     }
@@ -1749,7 +1847,7 @@ fn capture_process_loopback(
                 // SAFETY: all out pointers are valid and capture_client owns
                 // the returned packet until ReleaseBuffer below.
                 unsafe {
-                    stream.capture_client.GetBuffer(
+                    capture_client.GetBuffer(
                         &mut data,
                         &mut delivered_frames,
                         &mut flags,
@@ -1758,7 +1856,7 @@ fn capture_process_loopback(
                     )
                 }
                 .map_err(|error| CaptureLoopFailure::Windows {
-                    operation: "read WASAPI process-loopback packet",
+                    operation: "read WASAPI packet",
                     error,
                 })?;
                 let read_plan = plan_packet_read(
@@ -1773,10 +1871,10 @@ fn capture_process_loopback(
                     PacketReadPlan::Oversized { .. } => {
                         // SAFETY: GetBuffer succeeded and this releases the
                         // exact packet before returning the validation error.
-                        let _ = unsafe { stream.capture_client.ReleaseBuffer(delivered_frames) };
+                        let _ = unsafe { capture_client.ReleaseBuffer(delivered_frames) };
                         state.counters.observe_oversized_buffer();
                         return Err(CaptureLoopFailure::BackendClass {
-                            operation: "validate delivered WASAPI process-loopback packet size",
+                            operation: "validate delivered WASAPI packet size",
                             class: "delivered-packet-oversized",
                         });
                     }
@@ -1788,9 +1886,9 @@ fn capture_process_loopback(
                     } else if data.is_null() {
                         // SAFETY: GetBuffer succeeded and this releases the
                         // packet before reporting the invalid pointer.
-                        let _ = unsafe { stream.capture_client.ReleaseBuffer(delivered_frames) };
+                        let _ = unsafe { capture_client.ReleaseBuffer(delivered_frames) };
                         return Err(CaptureLoopFailure::BackendClass {
-                            operation: "read WASAPI process-loopback packet",
+                            operation: "read WASAPI packet",
                             class: "null-packet-data",
                         });
                     } else {
@@ -1802,12 +1900,18 @@ fn capture_process_loopback(
                     }
                 }
                 // SAFETY: GetBuffer succeeded and the packet is released once.
-                unsafe { stream.capture_client.ReleaseBuffer(delivered_frames) }.map_err(
-                    |error| CaptureLoopFailure::Windows {
-                        operation: "release WASAPI process-loopback packet",
+                unsafe { capture_client.ReleaseBuffer(delivered_frames) }.map_err(|error| {
+                    CaptureLoopFailure::Windows {
+                        operation: "release WASAPI packet",
                         error,
-                    },
-                )?;
+                    }
+                })?;
+                if native_route.is_some_and(|route| !route.is_valid()) {
+                    return Err(CaptureLoopFailure::BackendClass {
+                        operation: "observe Windows native AEC route",
+                        class: "native-aec-route-invalidated",
+                    });
+                }
                 if packet_bytes > 0 {
                     let sample_count = packet_bytes / size_of::<f32>();
                     if flags
@@ -1819,14 +1923,14 @@ fn capture_process_loopback(
                     }
                     let qpc_timestamp_ns = wasapi_qpc_100ns_to_ns(qpc_position).ok_or(
                         CaptureLoopFailure::BackendClass {
-                            operation: "convert WASAPI process-loopback packet timestamp",
+                            operation: "convert WASAPI packet timestamp",
                             class: "qpc-timestamp-out-of-range",
                         },
                     )?;
                     let callback_timestamp_ns = timestamp_mapping
                         .to_monotonic_ns(qpc_timestamp_ns)
                         .ok_or(CaptureLoopFailure::BackendClass {
-                            operation: "map WASAPI process-loopback packet timestamp",
+                            operation: "map WASAPI packet timestamp",
                             class: "qpc-timestamp-out-of-range",
                         })?;
                     deliver_packet(
@@ -1841,7 +1945,6 @@ fn capture_process_loopback(
         }
         Ok(())
     })();
-    stream.stop();
     capture_result.map_err(|failure| {
         let _ = state
             .runtime_event_tx
@@ -2241,100 +2344,90 @@ fn run_process_loopback(
 
 fn run_input_capture(
     selector: InputDeviceSelector,
+    processing_tx: std::sync::mpsc::SyncSender<CaptureProcessingObservationHandle>,
     context: CaptureWorkerContext,
     callback: impl FnMut(AudioFrame) + Send + 'static,
 ) -> Result<(), LoopbackError> {
-    let enumerator =
-        DeviceEnumerator::new().map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    let device = match selector {
-        InputDeviceSelector::Default => enumerator
-            .get_default_device(&Direction::Capture)
-            .map_err(|error| LoopbackError::BackendInit(error.to_string()))?,
-        InputDeviceSelector::StableId(device_id) => {
-            ensure_input_device_is_available(&enumerator, &device_id)?;
-            match enumerator.get_device(&device_id) {
-                Ok(device) => device,
-                Err(open_error) => {
-                    if let Err(unavailable @ LoopbackError::SourceUnavailable { .. }) =
-                        ensure_input_device_is_available(&enumerator, &device_id)
-                    {
-                        return Err(unavailable);
-                    }
-                    return Err(LoopbackError::BackendInit(open_error.to_string()));
-                }
-            }
-        }
-    };
-    if device.get_direction() != Direction::Capture {
+    let stream = WindowsInputStream::open(selector, None)?;
+    if context.open_cancellation.is_cancelled() {
         return Err(LoopbackError::BackendInit(
-            "selected Windows endpoint is not an input device".to_owned(),
+            "Windows microphone open was cancelled".to_owned(),
         ));
     }
-    let device_id = device
-        .get_id()
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    let stable_id = StableSourceId::new(Platform::Windows, SourceKind::InputDevice, device_id);
-    let source_id = stable_id.source_id();
-    let mut audio_client = device
-        .get_iaudioclient()
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    let wave_fmt = target_wave_format();
-    audio_client
-        .initialize_client(
-            &wave_fmt,
-            &Direction::Capture,
-            &StreamMode::EventsShared {
-                autoconvert: true,
-                buffer_duration_hns: BUFFER_DURATION_100NS,
-            },
-        )
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    let h_event = audio_client
-        .set_get_eventhandle()
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    let capture_client = audio_client
-        .get_audiocaptureclient()
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    audio_client
-        .start_stream()
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    signal_open(
-        &audio_client,
-        source_id,
-        &context.open_tx,
-        &context.open_cancellation,
-    )?;
-    capture_loop(
-        &audio_client,
-        &capture_client,
-        &h_event,
-        context.into_loop_state(source_id, stable_id, None),
+    stream.start()?;
+    let source_id = stream.source_id();
+    if processing_tx.try_send(stream.processing_handle()).is_err() {
+        stream.stop();
+        return Err(LoopbackError::BackendInit(
+            "Windows microphone open could not publish processing observations".to_owned(),
+        ));
+    }
+    if let Err(error) = report_open(&context.open_tx, source_id, &context.open_cancellation) {
+        stream.stop();
+        return Err(LoopbackError::BackendInit(
+            match error {
+                OpenReportError::Cancelled => "Windows microphone open was cancelled",
+                OpenReportError::ReceiverUnavailable => "Windows microphone open receiver closed",
+            }
+            .to_owned(),
+        ));
+    }
+    let result = capture_raw_stream(
+        &stream.capture_client,
+        stream.event_handle,
+        None,
+        context.into_loop_state(source_id, stream.stable_id(), None),
         callback,
-    )
+    );
+    stream.stop();
+    result
 }
 
-fn ensure_input_device_is_available(
-    enumerator: &DeviceEnumerator,
-    stable_key: &str,
+fn run_native_input_capture(
+    selector: InputDeviceSelector,
+    request: NativeAecRequest,
+    route_tx: std::sync::mpsc::SyncSender<NativeAecRouteHandle>,
+    processing_tx: std::sync::mpsc::SyncSender<CaptureProcessingObservationHandle>,
+    context: CaptureWorkerContext,
+    callback: impl FnMut(AudioFrame) + Send + 'static,
 ) -> Result<(), LoopbackError> {
-    let devices = enumerator
-        .get_device_collection(&Direction::Capture)
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    let device_count = devices
-        .get_nbr_devices()
-        .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-    for device_index in 0..device_count {
-        let device = devices
-            .get_device_at_index(device_index)
-            .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-        let device_id = device
-            .get_id()
-            .map_err(|error| LoopbackError::BackendInit(error.to_string()))?;
-        if device_id == stable_key {
-            return Ok(());
-        }
+    let stream = WindowsInputStream::open(selector, Some(&request))?;
+    if context.open_cancellation.is_cancelled() || !stream.route_is_valid() {
+        return Err(LoopbackError::BackendInit(
+            "Windows native AEC route changed before capture start".to_owned(),
+        ));
     }
-    Err(LoopbackError::SourceUnavailable {
-        stable_key: stable_key.to_owned(),
-    })
+    stream.start()?;
+    let source_id = stream.source_id();
+    if !stream.route_is_valid()
+        || stream
+            .route_handle()
+            .is_none_or(|route| route_tx.try_send(route).is_err())
+        || processing_tx.try_send(stream.processing_handle()).is_err()
+    {
+        stream.stop();
+        return Err(LoopbackError::BackendInit(
+            "Windows native AEC open could not publish a live route".to_owned(),
+        ));
+    }
+    if let Err(error) = report_open(&context.open_tx, source_id, &context.open_cancellation) {
+        stream.stop();
+        return Err(LoopbackError::BackendInit(
+            match error {
+                OpenReportError::Cancelled => "Windows native AEC open was cancelled",
+                OpenReportError::ReceiverUnavailable => "Windows native AEC open receiver closed",
+            }
+            .to_owned(),
+        ));
+    }
+    let live_route = stream.route_handle();
+    let result = capture_raw_stream(
+        &stream.capture_client,
+        stream.event_handle,
+        live_route.as_ref(),
+        context.into_loop_state(source_id, stream.stable_id(), None),
+        callback,
+    );
+    stream.stop();
+    result
 }
