@@ -12,9 +12,10 @@ use crate::capture::{
     source_runtime_event_channel, CaptureError, CaptureMode, CaptureNativeFormat,
     CaptureObservationHandle, CaptureObservations, CaptureProcessingObservationHandle,
     CaptureProcessingObservations, CapturedFrameObservationHandle, CapturedFrameSender,
-    CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch, SourceGeneration,
-    SourceRuntimeEvent, SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations,
-    SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
+    CapturedFrameStream, CapturedFrameStreamStats, NativeAecRequest, NativeAecRouteHandle,
+    PermissionEpoch, SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
+    SourceRuntimeEventSender,
 };
 
 /// Monotonic timestamp domain used by native capture backends.
@@ -83,6 +84,23 @@ pub struct CaptureDelivery {
 /// is ready to deliver into the supplied bounded endpoints.
 pub trait CallbackCaptureBackend: Send + Sync {
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError>;
+
+    /// Prepares native processing for one microphone and an explicit playback
+    /// reference. An implementation must open only that requested capture and
+    /// attest its actual input/reference route on the active backend.
+    ///
+    /// The default rejects native selection without invoking ordinary prepare
+    /// or opening a raw stream. It does not silently substitute portable AEC.
+    fn prepare_native_aec(
+        &self,
+        _mode: CaptureMode,
+        _request: &NativeAecRequest,
+    ) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+        Err(CaptureError::BackendSetupRequired {
+            backend: "native-aec",
+            action: "use a capture backend that attests the opened microphone and playback route",
+        })
+    }
 }
 
 /// Backend state that has passed validation but has not started delivery.
@@ -117,6 +135,13 @@ pub trait ActiveCaptureBackend: Send {
     /// inspect them. Absence means unknown, not unprocessed audio.
     /// The handle is acquired at open; updates occur on backend control threads.
     fn processing_observation_handle(&self) -> Option<CaptureProcessingObservationHandle> {
+        None
+    }
+
+    /// Configuration evidence from the actual opened input/reference pairing.
+    /// Absence means unknown or unsupported, never successful native AEC.
+    /// The backend must revoke this handle before delivering changed-route PCM.
+    fn native_aec_route_handle(&self) -> Option<NativeAecRouteHandle> {
         None
     }
 
@@ -160,6 +185,7 @@ impl PreparedCapture {
             runtime_events: runtime_event_observations,
             opened_native_format: active_backend.native_format(),
             processing: active_backend.processing_observation_handle(),
+            native_aec_route: active_backend.native_aec_route_handle(),
         };
         Ok(CaptureOwner {
             active_backend,
@@ -196,6 +222,7 @@ pub struct CaptureObservationReceipt {
     runtime_events: SourceRuntimeEventObservationHandle,
     opened_native_format: Option<CaptureNativeFormat>,
     processing: Option<CaptureProcessingObservationHandle>,
+    native_aec_route: Option<NativeAecRouteHandle>,
 }
 
 impl CaptureObservationReceipt {
@@ -216,6 +243,12 @@ impl CaptureObservationReceipt {
             CaptureProcessingObservations::default,
             CaptureProcessingObservationHandle::observations,
         )
+    }
+
+    /// Clones the opened route handle on a control path. Its validity can then
+    /// be checked without allocations or locks during bounded delivery.
+    pub fn native_aec_route_handle(&self) -> Option<NativeAecRouteHandle> {
+        self.native_aec_route.clone()
     }
 
     pub(crate) fn processing_admission_snapshot(&self) -> (CaptureProcessingObservations, u64) {
@@ -369,12 +402,38 @@ pub fn prepare_capture_with_start_gate(
     request: CapturePrepareRequest,
     start_gate: Arc<CaptureDeliveryStartGate>,
 ) -> Result<PreparedCapture, CaptureError> {
+    prepare_capture_with_start_gate_using(backend, request, None, start_gate)
+}
+
+/// Prepares native AEC behind the same bounded, caller-owned delivery gate.
+///
+/// This invokes the backend's explicit native preparation path. Successful
+/// preparation is not admission or acoustic qualification; Session must check
+/// the active backend's actual route evidence before opening the delivery gate.
+pub fn prepare_capture_with_start_gate_native(
+    backend: &dyn CallbackCaptureBackend,
+    request: CapturePrepareRequest,
+    native_request: &NativeAecRequest,
+    start_gate: Arc<CaptureDeliveryStartGate>,
+) -> Result<PreparedCapture, CaptureError> {
+    prepare_capture_with_start_gate_using(backend, request, Some(native_request), start_gate)
+}
+
+fn prepare_capture_with_start_gate_using(
+    backend: &dyn CallbackCaptureBackend,
+    request: CapturePrepareRequest,
+    native_request: Option<&NativeAecRequest>,
+    start_gate: Arc<CaptureDeliveryStartGate>,
+) -> Result<PreparedCapture, CaptureError> {
     let lineage_seed = request.lineage_seed;
     let (frame_sender, frame_stream) =
         captured_frame_stream_with_start_gate(request.frame_capacity_frames, start_gate)?;
     let (runtime_event_sender, runtime_event_receiver) =
         source_runtime_event_channel(request.runtime_event_capacity_events)?;
-    let prepared_backend = backend.prepare(request.mode)?;
+    let prepared_backend = match native_request {
+        Some(native_request) => backend.prepare_native_aec(request.mode, native_request)?,
+        None => backend.prepare(request.mode)?,
+    };
     Ok(PreparedCapture {
         backend: prepared_backend,
         delivery: CaptureDelivery {
@@ -670,6 +729,47 @@ mod tests {
 
         assert!(matches!(prepared, Err(CaptureError::InvalidStreamCapacity)));
         assert!(!opened.load(Ordering::Acquire));
+    }
+
+    #[test]
+    fn given_backend_without_native_support_when_requested_then_ordinary_prepare_is_not_called() {
+        struct OrdinaryBackend {
+            prepared: AtomicBool,
+        }
+
+        impl CallbackCaptureBackend for OrdinaryBackend {
+            fn prepare(
+                &self,
+                mode: CaptureMode,
+            ) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+                self.prepared.store(true, Ordering::Release);
+                Err(CaptureError::ModeUnsupported(mode))
+            }
+        }
+
+        let backend = OrdinaryBackend {
+            prepared: AtomicBool::new(false),
+        };
+        let result = prepare_capture_with_start_gate_native(
+            &backend,
+            CapturePrepareRequest {
+                mode: CaptureMode::InputDevice(crate::capture::InputDeviceSelector::Default),
+                lineage_seed: lineage_seed(),
+                frame_capacity_frames: 1,
+                runtime_event_capacity_events: 1,
+            },
+            &NativeAecRequest::new(crate::session::DeviceId::new("speaker")),
+            CaptureDeliveryStartGate::opened(),
+        );
+
+        assert!(matches!(
+            result,
+            Err(CaptureError::BackendSetupRequired {
+                backend: "native-aec",
+                ..
+            })
+        ));
+        assert!(!backend.prepared.load(Ordering::Acquire));
     }
 
     #[test]

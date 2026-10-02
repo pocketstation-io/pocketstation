@@ -23,6 +23,13 @@ static NEXT_SESSION_ID: AtomicU64 = AtomicU64::new(1);
 struct StemDraft {
     stem_id: StemId,
     source: Source,
+    native_aec_request: Option<crate::capture::NativeAecRequest>,
+}
+
+#[derive(Default)]
+struct EchoAncestry {
+    portable_stage: bool,
+    native_request: bool,
 }
 
 #[derive(Debug)]
@@ -281,6 +288,14 @@ impl SessionDraft {
 
 impl SessionDraft {
     fn has_echo_processing(&self, origin: &StreamOrigin) -> Result<bool, SessionError> {
+        Ok(self.echo_ancestry(origin)?.portable_stage)
+    }
+
+    fn has_native_aec_request(&self, origin: &StreamOrigin) -> Result<bool, SessionError> {
+        Ok(self.echo_ancestry(origin)?.native_request)
+    }
+
+    fn echo_ancestry(&self, origin: &StreamOrigin) -> Result<EchoAncestry, SessionError> {
         // Setup-only graph walk. Each operator is visited once, including cycles.
         // No recursion, callbacks or external factory calls under the draft lock.
         let mut parents: HashMap<OperatorInstanceId, Vec<&StreamOrigin>> = HashMap::new();
@@ -298,7 +313,13 @@ impl SessionDraft {
         }
         let mut pending = vec![origin];
         let mut visited = HashSet::new();
+        let mut ancestry = EchoAncestry::default();
         while let Some(origin) = pending.pop() {
+            if let StreamOrigin::Stem(stem_id) = origin {
+                if let Some(stem) = self.stems.iter().find(|stem| stem.stem_id == *stem_id) {
+                    ancestry.native_request |= stem.native_aec_request.is_some();
+                }
+            }
             let Some(operator) = self.origin_operator(origin)? else {
                 continue;
             };
@@ -306,13 +327,13 @@ impl SessionDraft {
                 continue;
             }
             if operator.operator.echo_processed {
-                return Ok(true);
+                ancestry.portable_stage = true;
             }
             if let Some(inputs) = parents.get(&operator.instance_id) {
                 pending.extend(inputs.iter().copied());
             }
         }
-        Ok(false)
+        Ok(ancestry)
     }
 
     fn origin_operator(
@@ -385,7 +406,8 @@ impl SessionDraft {
                 };
                 if *operator_instance_id == operator.instance_id
                     && input_port.as_deref() == Some("microphone")
-                    && self.has_echo_processing(&connection.origin)?
+                    && (self.has_echo_processing(&connection.origin)?
+                        || self.has_native_aec_request(&connection.origin)?)
                 {
                     return Err(SessionError::InvalidOperator {
                         reason: "echo input already passes through cancellation; route the existing processed audio instead".into(),
@@ -463,6 +485,58 @@ pub(crate) enum OriginDefinition {
 impl Session {
     pub(crate) fn has_echo_processing(&self, origin: &StreamOrigin) -> Result<bool, SessionError> {
         self.shared.draft()?.has_echo_processing(origin)
+    }
+
+    pub(crate) fn has_native_aec_request(
+        &self,
+        origin: &StreamOrigin,
+    ) -> Result<bool, SessionError> {
+        self.shared.draft()?.has_native_aec_request(origin)
+    }
+
+    pub(crate) fn request_native_aec(
+        &self,
+        microphone: &StemHandle,
+        request: crate::capture::NativeAecRequest,
+    ) -> Result<(), SessionError> {
+        if microphone.session_id() != self.id() {
+            return Err(SessionError::InvalidOperator {
+                reason: "native AEC microphone belongs to a different Session".into(),
+            });
+        }
+        if request.playback_device().as_str().trim().is_empty() {
+            return Err(SessionError::InvalidSelector {
+                reason: "native AEC requires an exact playback device".into(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.id())?;
+        let index = draft
+            .stems
+            .iter()
+            .position(|stem| stem.stem_id == microphone.id())
+            .ok_or(SessionError::InvalidOperator {
+                reason: "native AEC requires a directly captured microphone".into(),
+            })?;
+        let stem = &draft.stems[index];
+        if !matches!(stem.source, Source::Microphone(_)) {
+            return Err(SessionError::InvalidOperator {
+                reason: "native AEC requires a microphone capture".into(),
+            });
+        }
+        if stem.native_aec_request.is_some() {
+            return Err(SessionError::InvalidOperator {
+                reason: "native AEC was already requested for this microphone".into(),
+            });
+        }
+        // The lock makes the tentative request invisible until validation succeeds.
+        // Rejection restores the same draft without allocating graph identities.
+        draft.stems[index].native_aec_request = Some(request);
+        if let Err(error) = draft.validate_echo_processing() {
+            draft.stems[index].native_aec_request = None;
+            return Err(error);
+        }
+        Ok(())
     }
     #[cfg(feature = "aec")]
     pub(crate) fn origin_definition(
@@ -550,7 +624,11 @@ impl Session {
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;
         let stem_id = draft.allocate_stem_id()?;
-        draft.stems.push(StemDraft { stem_id, source });
+        draft.stems.push(StemDraft {
+            stem_id,
+            source,
+            native_aec_request: None,
+        });
         Ok(StemHandle {
             stream: InternalStreamHandle::new(
                 Arc::clone(&self.shared),
@@ -630,7 +708,10 @@ impl Session {
         // Reserve every fallible ID before changing declarations.
         if operator.echo_processed {
             for (_, origin, port) in inputs {
-                if *port == "microphone" && draft.has_echo_processing(origin)? {
+                if *port == "microphone"
+                    && (draft.has_echo_processing(origin)?
+                        || draft.has_native_aec_request(origin)?)
+                {
                     return Err(SessionError::InvalidOperator {
                         reason: "echo input already passes through cancellation; route the existing processed audio instead".into(),
                     });
@@ -753,7 +834,10 @@ impl Session {
             stems: draft
                 .stems
                 .iter()
-                .map(|stem| stem_spec(stem.stem_id, stem.source.clone()))
+                .map(|stem| {
+                    stem_spec(stem.stem_id, stem.source.clone())
+                        .with_native_aec_request(stem.native_aec_request.clone())
+                })
                 .collect(),
             source_instances: draft
                 .source_instances

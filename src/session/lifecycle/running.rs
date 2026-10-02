@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use crate::capture::{
     capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate,
     CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome,
-    InputDeviceSelector, SourceRuntimeEventReceive,
+    InputDeviceSelector, NativeAecRequest, NativeAecRouteHandle, SourceRuntimeEventReceive,
 };
 use crate::endpoint::{
     endpoint_start_gate, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure,
@@ -64,6 +64,8 @@ struct RuntimeSource {
     stem_id: StemId,
     source: Source,
     capture: crate::capture::CaptureOwner,
+    native_aec_request: Option<NativeAecRequest>,
+    native_aec_route: Option<NativeAecRouteHandle>,
     sender: crate::runtime::PlanSourceSender,
     activity: SourceActivityObservationHandle,
     signal: SourceSignalObservationHandle,
@@ -74,11 +76,13 @@ struct OpenedCapture {
     stem_id: StemId,
     source: Source,
     owner: crate::capture::CaptureOwner,
+    native_aec_request: Option<NativeAecRequest>,
 }
 
 struct ReplaceCaptureCommand {
     stem_id: StemId,
     capture: crate::capture::CaptureOwner,
+    requested_selector: DeviceSelector,
     response: std::sync::mpsc::SyncSender<Result<SessionSourceReplacement, CaptureError>>,
 }
 
@@ -88,7 +92,7 @@ struct DetachCaptureCommand {
 }
 
 enum SourceControlCommand {
-    Attach(ReplaceCaptureCommand),
+    Attach(Box<ReplaceCaptureCommand>),
     Detach(DetachCaptureCommand),
 }
 
@@ -110,6 +114,8 @@ struct RuntimeSourceState {
     stem_id: StemId,
     source: Source,
     capture: Option<crate::capture::CaptureOwner>,
+    native_aec_request: Option<NativeAecRequest>,
+    native_aec_route: Option<NativeAecRouteHandle>,
     active_source_id: crate::frame::SourceId,
     sender: crate::runtime::PlanSourceSender,
     activity: SourceActivityObservationHandle,
@@ -223,6 +229,7 @@ pub struct RunningSession {
     runtime_worker: Option<JoinHandle<Option<RuntimeWorkerOutcome>>>,
     replacement_sender: std::sync::mpsc::SyncSender<SourceControlCommand>,
     replacement_targets: Vec<(StemId, Source)>,
+    native_aec_requests: Vec<(StemId, NativeAecRequest)>,
     replacement_frame_capacity_frames: usize,
     replacement_runtime_event_capacity_events: usize,
     replacement_response_timeout_ms: u64,
@@ -250,6 +257,12 @@ impl RunningSession {
         self.session_id
     }
 
+    fn native_aec_request(&self, stem_id: StemId) -> Option<&NativeAecRequest> {
+        self.native_aec_requests
+            .iter()
+            .find_map(|(candidate, request)| (*candidate == stem_id).then_some(request))
+    }
+
     /// Returns the authoritative current lifecycle state owned by this Session.
     pub const fn state(&self) -> SessionLifecycleState {
         self.state
@@ -271,16 +284,22 @@ impl RunningSession {
         let observation = self.replacement_observation(stem_id)?;
         observation.observe_attempt();
         let request = CapturePrepareRequest {
-            mode: capture_mode(&Source::Microphone(selector)),
+            mode: capture_mode(&Source::Microphone(selector.clone())),
             lineage_seed: CaptureLineageSeed::new(self.session_id, stem_id),
             frame_capacity_frames: self.replacement_frame_capacity_frames,
             runtime_event_capacity_events: self.replacement_runtime_event_capacity_events,
         };
-        let prepared = match prepare_capture_with_start_gate(
-            backend,
-            request,
-            CaptureDeliveryStartGate::opened(),
-        ) {
+        let native_request = self.native_aec_request(stem_id);
+        let prepared = match if let Some(native) = native_request {
+            crate::capture::prepare_capture_with_start_gate_native(
+                backend,
+                request,
+                native,
+                CaptureDeliveryStartGate::opened(),
+            )
+        } else {
+            prepare_capture_with_start_gate(backend, request, CaptureDeliveryStartGate::opened())
+        } {
             Ok(prepared) => prepared,
             Err(source) => {
                 observation.observe_failed_before_attach();
@@ -294,7 +313,7 @@ impl RunningSession {
                 return Err(SessionSourceReplacementError::Open { source });
             }
         };
-        self.attach_replacement(stem_id, capture, &observation)
+        self.attach_replacement(stem_id, capture, selector, &observation)
     }
 
     /// Stops the current microphone before opening the exact host-selected
@@ -313,16 +332,22 @@ impl RunningSession {
         let observation = self.replacement_observation(stem_id)?;
         observation.observe_attempt();
         let request = CapturePrepareRequest {
-            mode: capture_mode(&Source::Microphone(selector)),
+            mode: capture_mode(&Source::Microphone(selector.clone())),
             lineage_seed: CaptureLineageSeed::new(self.session_id, stem_id),
             frame_capacity_frames: self.replacement_frame_capacity_frames,
             runtime_event_capacity_events: self.replacement_runtime_event_capacity_events,
         };
-        let prepared = match prepare_capture_with_start_gate(
-            backend,
-            request,
-            CaptureDeliveryStartGate::opened(),
-        ) {
+        let native_request = self.native_aec_request(stem_id);
+        let prepared = match if let Some(native) = native_request {
+            crate::capture::prepare_capture_with_start_gate_native(
+                backend,
+                request,
+                native,
+                CaptureDeliveryStartGate::opened(),
+            )
+        } else {
+            prepare_capture_with_start_gate(backend, request, CaptureDeliveryStartGate::opened())
+        } {
             Ok(prepared) => prepared,
             Err(source) => {
                 observation.observe_failed_before_attach();
@@ -374,7 +399,7 @@ impl RunningSession {
                 return Err(SessionSourceReplacementError::Reopen { source });
             }
         };
-        self.attach_replacement(stem_id, capture, &observation)
+        self.attach_replacement(stem_id, capture, selector, &observation)
     }
 
     fn replacement_observation(
@@ -402,16 +427,20 @@ impl RunningSession {
         &self,
         stem_id: StemId,
         capture: crate::capture::CaptureOwner,
+        requested_selector: DeviceSelector,
         observation: &SourceCaptureObservationHandle,
     ) -> Result<SessionSourceReplacement, SessionSourceReplacementError> {
         let (response, receiver) = std::sync::mpsc::sync_channel(1);
         match self
             .replacement_sender
-            .try_send(SourceControlCommand::Attach(ReplaceCaptureCommand {
-                stem_id,
-                capture,
-                response,
-            })) {
+            .try_send(SourceControlCommand::Attach(Box::new(
+                ReplaceCaptureCommand {
+                    stem_id,
+                    capture,
+                    requested_selector,
+                    response,
+                },
+            ))) {
             Ok(()) => {}
             Err(std::sync::mpsc::TrySendError::Full(command)) => {
                 if let SourceControlCommand::Attach(command) = command {
@@ -1287,6 +1316,11 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
             |((((capture, mapping), activity), signal), capture_observations)| RuntimeSource {
                 stem_id: mapping.stem_id,
                 source: capture.source,
+                native_aec_request: capture.native_aec_request,
+                native_aec_route: capture
+                    .owner
+                    .observation_receipt()
+                    .native_aec_route_handle(),
                 capture: capture.owner,
                 sender: mapping.sender,
                 activity,
@@ -1621,6 +1655,15 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
             .iter()
             .map(|stem| (stem.id(), stem.source().clone()))
             .collect(),
+        native_aec_requests: spec
+            .stems()
+            .iter()
+            .filter_map(|stem| {
+                stem.native_aec_request()
+                    .cloned()
+                    .map(|request| (stem.id(), request))
+            })
+            .collect(),
         replacement_frame_capacity_frames: options.capture_frame_capacity_frames,
         replacement_runtime_event_capacity_events: options.capture_runtime_event_capacity_events,
         replacement_response_timeout_ms: options.runtime_ready_timeout_ms,
@@ -1906,6 +1949,35 @@ fn validate_opened_echo_inputs(
         }
     }
     Ok(())
+}
+
+fn validate_native_route(
+    capture: &crate::capture::CaptureOwner,
+    request: &NativeAecRequest,
+    selector: &DeviceSelector,
+) -> Result<NativeAecRouteHandle, CaptureError> {
+    let route = capture
+        .observation_receipt()
+        .native_aec_route_handle()
+        .ok_or_else(|| CaptureError::BackendInit("native AEC route evidence missing".to_owned()))?;
+    let facts = route.route();
+    let metadata = capture.open_metadata();
+    if !route.is_valid()
+        || facts.source_id() != metadata.source_id
+        || facts.microphone().kind != crate::capture::SourceKind::InputDevice
+        || facts.microphone().source_id() != metadata.source_id
+        || matches!(selector, DeviceSelector::Id(device) if facts.microphone().stable_key != device.as_str())
+        || facts.playback_device() != request.playback_device()
+        || !facts.enabled()
+        || facts.bypassed()
+        || !facts.reference_confirmed()
+    {
+        return Err(CaptureError::BackendInit(
+            "native AEC route does not match the opened microphone and exact playback reference"
+                .to_owned(),
+        ));
+    }
+    Ok(route)
 }
 
 fn prepare_operator_runtimes(
@@ -2355,17 +2427,26 @@ fn prepare_and_open_captures(
             frame_capacity_frames: options.capture_frame_capacity_frames,
             runtime_event_capacity_events: options.capture_runtime_event_capacity_events,
         };
-        let prepared =
-            match prepare_capture_with_start_gate(binding, request, Arc::clone(&start_gate)) {
-                Ok(prepared) => prepared,
-                Err(source) => {
-                    return Err(CaptureAcquisitionError::Prepare {
-                        stem_id: stem.id(),
-                        source,
-                        prior_captures: captures,
-                    });
-                }
-            };
+        let native_request = stem.native_aec_request().cloned();
+        let prepared = match if let Some(native) = native_request.as_ref() {
+            crate::capture::prepare_capture_with_start_gate_native(
+                binding,
+                request,
+                native,
+                Arc::clone(&start_gate),
+            )
+        } else {
+            prepare_capture_with_start_gate(binding, request, Arc::clone(&start_gate))
+        } {
+            Ok(prepared) => prepared,
+            Err(source) => {
+                return Err(CaptureAcquisitionError::Prepare {
+                    stem_id: stem.id(),
+                    source,
+                    prior_captures: captures,
+                });
+            }
+        };
         let capture = match prepared.open() {
             Ok(capture) => capture,
             Err(source) => {
@@ -2376,13 +2457,47 @@ fn prepare_and_open_captures(
                 });
             }
         };
+        if let Some(native) = native_request.as_ref() {
+            let Source::Microphone(selector) = stem.source() else {
+                return Err(CaptureAcquisitionError::Open {
+                    stem_id: stem.id(),
+                    source: reject_opened_capture(
+                        capture,
+                        CaptureError::BackendInit(
+                            "native AEC request is attached to a non-microphone source".to_owned(),
+                        ),
+                    ),
+                    prior_captures: captures,
+                });
+            };
+            if let Err(source) = validate_native_route(&capture, native, selector) {
+                return Err(CaptureAcquisitionError::Open {
+                    stem_id: stem.id(),
+                    source: reject_opened_capture(capture, source),
+                    prior_captures: captures,
+                });
+            }
+        }
         captures.push(OpenedCapture {
             stem_id: stem.id(),
             source: stem.source().clone(),
             owner: capture,
+            native_aec_request: native_request,
         });
     }
     Ok(captures)
+}
+
+fn reject_opened_capture(
+    capture: crate::capture::CaptureOwner,
+    rejected: CaptureError,
+) -> CaptureError {
+    match capture.stop_and_join() {
+        Ok(_) => rejected,
+        Err(cleanup) => CaptureError::BackendInit(format!(
+            "{rejected}; rejected capture cleanup failed: {cleanup}"
+        )),
+    }
 }
 
 enum CaptureAcquisitionError {
@@ -2492,6 +2607,8 @@ fn run_runtime_worker(
                 stem_id: source.stem_id,
                 source: source.source,
                 capture: Some(source.capture),
+                native_aec_request: source.native_aec_request,
+                native_aec_route: source.native_aec_route,
                 active_source_id: metadata.source_id,
                 sender: source.sender,
                 activity: source.activity,
@@ -2514,7 +2631,7 @@ fn run_runtime_worker(
             work_observed = true;
             match command {
                 SourceControlCommand::Attach(command) => {
-                    handle_replace_capture(command, &mut sources, &mut captures);
+                    handle_replace_capture(*command, &mut sources, &mut captures);
                 }
                 SourceControlCommand::Detach(command) => {
                     handle_detach_capture(command, &mut sources, &mut captures);
@@ -2522,6 +2639,18 @@ fn run_runtime_worker(
             }
         }
         for source in &mut sources {
+            if native_route_invalid(source) {
+                detach_invalid_native_route(
+                    source,
+                    &mut captures,
+                    &event_sender,
+                    session_id,
+                    &mut runtime_events_total,
+                    &mut runtime_failures_total,
+                    &mut source_failures,
+                );
+                continue;
+            }
             let Some(active_capture) = source.capture.as_mut() else {
                 continue;
             };
@@ -2529,6 +2658,14 @@ fn run_runtime_worker(
                 match active_capture.try_next_lineaged_frame() {
                     Ok(Some(frame)) => {
                         work_observed = true;
+                        if source
+                            .native_aec_route
+                            .as_ref()
+                            .is_some_and(|route| !route.is_valid())
+                        {
+                            drop(frame);
+                            break;
+                        }
                         let observed_at_ns = crate::timing::monotonic_timestamp_ns();
                         source.activity.observe_frame(observed_at_ns);
                         source.signal.observe_frame(observed_at_ns, &frame);
@@ -2548,6 +2685,7 @@ fn run_runtime_worker(
                     Err(_) => {
                         lineage_failures_total = lineage_failures_total.saturating_add(1);
                         if let Some(failed_capture) = source.capture.take() {
+                            source.native_aec_route = None;
                             let metadata = failed_capture.open_metadata();
                             source.active_source_id = metadata.source_id;
                             source.replacement_generation = metadata.source_generation.next();
@@ -2563,6 +2701,18 @@ fn run_runtime_worker(
                     }
                 }
             }
+            if native_route_invalid(source) {
+                detach_invalid_native_route(
+                    source,
+                    &mut captures,
+                    &event_sender,
+                    session_id,
+                    &mut runtime_events_total,
+                    &mut runtime_failures_total,
+                    &mut source_failures,
+                );
+                continue;
+            }
             let Some(active_capture) = source.capture.as_ref() else {
                 continue;
             };
@@ -2574,6 +2724,7 @@ fn run_runtime_worker(
                 let _ = event_sender.publish_source(session_id, failure.clone());
                 source_failures.push(failure);
                 if let Some(failed_capture) = source.capture.take() {
+                    source.native_aec_route = None;
                     let metadata = failed_capture.open_metadata();
                     source.active_source_id = metadata.source_id;
                     source.replacement_generation = metadata.source_generation.next();
@@ -2668,6 +2819,54 @@ fn run_runtime_worker(
     }
 }
 
+fn native_route_invalid(source: &RuntimeSourceState) -> bool {
+    source
+        .native_aec_route
+        .as_ref()
+        .is_some_and(|route| !route.is_valid())
+}
+
+fn detach_invalid_native_route(
+    source: &mut RuntimeSourceState,
+    completed_captures: &mut Vec<(StemId, Result<CaptureStopOutcome, CaptureError>)>,
+    event_sender: &SessionEventSender,
+    session_id: SessionId,
+    runtime_events_total: &mut u64,
+    runtime_failures_total: &mut u64,
+    source_failures: &mut Vec<SessionSourceFailure>,
+) {
+    let Some(route) = source.native_aec_route.take() else {
+        return;
+    };
+    let Some(failed_capture) = source.capture.take() else {
+        return;
+    };
+    let metadata = failed_capture.open_metadata();
+    let event = crate::capture::SourceRuntimeEvent::BackendFailure {
+        stable_id: route.route().microphone().clone(),
+        generation: metadata.source_generation,
+        failure: crate::capture::CaptureRuntimeFailure {
+            operation: "native AEC route",
+            error_class: crate::capture::CaptureRuntimeFailureClass::BackendClass {
+                class: "native-aec-route-invalidated".to_owned(),
+            },
+        },
+    };
+    *runtime_events_total = runtime_events_total.saturating_add(1);
+    *runtime_failures_total = runtime_failures_total.saturating_add(1);
+    let failure = SessionSourceFailure::new(source.stem_id, event);
+    let _ = event_sender.publish_source(session_id, failure.clone());
+    source_failures.push(failure);
+    source.active_source_id = metadata.source_id;
+    source.replacement_generation = metadata.source_generation.next();
+    source.replacement_discontinuity_epoch = metadata.discontinuity_epoch.saturating_add(1);
+    source.capture_observations.detach(
+        source.replacement_generation,
+        source.replacement_discontinuity_epoch,
+    );
+    completed_captures.push((source.stem_id, failed_capture.stop_and_join()));
+}
+
 fn handle_replace_capture(
     command: ReplaceCaptureCommand,
     sources: &mut [RuntimeSourceState],
@@ -2676,6 +2875,7 @@ fn handle_replace_capture(
     let ReplaceCaptureCommand {
         stem_id,
         capture,
+        requested_selector,
         response,
     } = command;
     let Some(source) = sources
@@ -2688,16 +2888,22 @@ fn handle_replace_capture(
         )));
         return;
     };
+    let native_route = match source.native_aec_request.as_ref() {
+        Some(request) => match validate_native_route(&capture, request, &requested_selector) {
+            Ok(route) => Some(route),
+            Err(rejected) => {
+                let error = reject_opened_capture(capture, rejected);
+                let _ = response.send(Err(error));
+                return;
+            }
+        },
+        None => None,
+    };
     if let Err(rejected) = source
         .capture_observations
         .validate_aec_replacement(&capture.observation_receipt())
     {
-        let error = match capture.stop_and_join() {
-            Ok(_) => rejected,
-            Err(cleanup) => CaptureError::BackendInit(format!(
-                "{rejected}; rejected capture cleanup failed: {cleanup}"
-            )),
-        };
+        let error = reject_opened_capture(capture, rejected);
         let _ = response.send(Err(error));
         return;
     }
@@ -2726,6 +2932,7 @@ fn handle_replace_capture(
         crate::timing::monotonic_timestamp_ns(),
     );
     let previous = source.capture.replace(capture);
+    source.native_aec_route = native_route;
     source.active_source_id = metadata.source_id;
     source.replacement_generation = metadata.source_generation;
     source.replacement_discontinuity_epoch = metadata.discontinuity_epoch;
@@ -2756,6 +2963,7 @@ fn handle_detach_capture(
         )));
         return;
     };
+    source.native_aec_route = None;
     let metadata = capture.open_metadata();
     source.active_source_id = metadata.source_id;
     source.replacement_generation = metadata.source_generation.next();

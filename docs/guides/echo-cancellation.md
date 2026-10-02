@@ -73,6 +73,41 @@ processing observations become obsolete. Current tests simulate backend reports
 and exercise the actual Session runtime; they do not qualify physical devices,
 native cancellation or automatic selection of a suitable native route.
 
+## Request a native route
+
+`Session::native_aec` records a request for one microphone and one exact output
+device. It does not add a portable Operator or enable the WebRTC engine. The
+request is available in the lean build, but a capture backend without a native
+AEC implementation rejects startup before opening the microphone. The built-in
+macOS, Windows and Linux capture backends do not yet implement this request.
+
+```rust,ignore
+let microphone = session.capture(Source::microphone(
+    DeviceSelector::id(DeviceId::new("microphone-device-id")),
+))?;
+session.native_aec(
+    &microphone,
+    NativePlaybackReference::output(DeviceId::new("output-device-id")),
+)?;
+microphone.send(session.polled_audio()?)?;
+let running = session.start()?;
+```
+
+The actual IDs must come from device discovery. The backend must report the
+opened microphone identity, exact playback device, enabled/non-bypassed effect
+and confirmed reference. Session checks all of them before admitting audio.
+It rejects a different input or output device rather than falling back to raw
+audio or the portable engine. Native and portable AEC cannot be requested on
+the same microphone ancestry; the original microphone remains the output stem
+for a native route, with no duplicate processing stage.
+
+If an accepted route is invalidated, Session discards pending microphone frames,
+detaches that capture and emits a source failure. Unrelated application stems
+continue. A replacement must pass the same checks. Backend reports are
+configuration evidence, not a measurement of acoustic echo removal; tests
+currently use mocked reports and real Session media delivery. Native device
+implementations and physical qualification remain open work.
+
 ## Run application capture with optional AEC
 
 This is an unreleased source example. Build from this checkout; the current
