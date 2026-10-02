@@ -4,7 +4,7 @@
 //! policy remain outside the core Session lifecycle.
 
 mod aec;
-pub use aec::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
+pub use aec::{EchoAudioInput, EchoCancelledAudio, EchoInputProcessing, PlaybackReference};
 mod audio_input;
 pub(crate) mod builtins;
 mod native_library;
