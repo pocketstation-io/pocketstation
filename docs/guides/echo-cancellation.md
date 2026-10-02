@@ -49,9 +49,11 @@ acoustic quality. Raw availability does not mean the delivered input is raw.
 
 Backends can provide a `CaptureProcessingObservationHandle` from the existing
 `ActiveCaptureBackend` interface. Its paired reporter publishes complete facts
-for that specific open. Built-in platform backends currently report unknown;
-OS effect queries and native route enablement remain unfinished. No operating
-system, source name or successful device open is substituted for those facts.
+for that specific open. The Windows WASAPI backend queries effects on the same
+opened microphone stream that supplies PCM and subscribes to effect and device
+changes. If those APIs or notifications are unavailable, its processing facts
+remain unknown. macOS and Linux still report unknown. No operating system,
+source name or successful device open is substituted for those facts.
 
 When a backend reports already processed input, portable AEC startup rejects it
 before media delivery and rolls back opened resources. A caller declaration
@@ -78,8 +80,12 @@ native cancellation or automatic selection of a suitable native route.
 `Session::native_aec` records a request for one microphone and one exact output
 device. It does not add a portable Operator or enable the WebRTC engine. The
 request is available in the lean build, but a capture backend without a native
-AEC implementation rejects startup before opening the microphone. The built-in
-macOS, Windows and Linux capture backends do not yet implement this request.
+AEC implementation rejects startup before delivering microphone audio. The
+Windows WASAPI backend attempts to bind an exact active microphone and render
+endpoint, selects the communications audio category, requests that render
+endpoint through Windows' AEC control, and requires an active AEC effect on the
+same opened capture client. It rejects unsupported endpoints. macOS and Linux
+do not yet implement a native route.
 
 ```rust,ignore
 let microphone = session.capture(Source::microphone(
@@ -104,9 +110,13 @@ for a native route, with no duplicate processing stage.
 If an accepted route is invalidated, Session discards pending microphone frames,
 detaches that capture and emits a source failure. Unrelated application stems
 continue. A replacement must pass the same checks. Backend reports are
-configuration evidence, not a measurement of acoustic echo removal; tests
-currently use mocked reports and real Session media delivery. Native device
-implementations and physical qualification remain open work.
+configuration evidence, not a measurement of acoustic echo removal. Session
+tests cover route admission and invalidation with controlled backend reports.
+A Windows 11 ARM64 VM probe exercised an actual WASAPI microphone open and
+classified its virtual endpoint as unsupported for native AEC. It did not
+produce an acoustically qualified native route. Notification timing and
+physical route changes require further qualification before claiming that no
+affected sample can pass during a device transition.
 
 ## Run application capture with optional AEC
 

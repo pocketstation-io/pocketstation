@@ -10,6 +10,8 @@ mod process_identity;
 mod runtime_lifecycle;
 
 #[cfg(target_os = "windows")]
+mod native_aec;
+#[cfg(target_os = "windows")]
 mod session_backend;
 #[cfg(target_os = "windows")]
 mod source;
