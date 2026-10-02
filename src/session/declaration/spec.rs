@@ -62,6 +62,7 @@ impl SessionSpecVersion {
 pub struct StemSpec {
     stem_id: StemId,
     source: Source,
+    native_aec_request: Option<crate::capture::NativeAecRequest>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -148,6 +149,19 @@ impl SourceOutputSpec {
 }
 
 impl StemSpec {
+    pub(crate) fn with_native_aec_request(
+        mut self,
+        request: Option<crate::capture::NativeAecRequest>,
+    ) -> Self {
+        self.native_aec_request = request;
+        self
+    }
+
+    /// Requested native processing; device support and activation are checked at start.
+    pub fn native_aec_request(&self) -> Option<&crate::capture::NativeAecRequest> {
+        self.native_aec_request.as_ref()
+    }
+
     pub const fn id(&self) -> StemId {
         self.stem_id
     }
@@ -459,6 +473,16 @@ impl SessionSpec {
                 });
             }
             stem.source.validate()?;
+            if let Some(request) = &stem.native_aec_request {
+                if !matches!(stem.source, Source::Microphone(_))
+                    || request.playback_device().as_str().trim().is_empty()
+                {
+                    return Err(SessionError::InvalidSelector {
+                        reason: "native AEC requires a microphone and an exact playback device"
+                            .into(),
+                    });
+                }
+            }
             if !self.connections.iter().any(
                 |connection| matches!(connection.origin, StreamOrigin::Stem(stem_id) if stem_id == stem.stem_id),
             )
@@ -746,7 +770,11 @@ impl SessionSpec {
 }
 
 pub(crate) fn stem_spec(stem_id: StemId, source: Source) -> StemSpec {
-    StemSpec { stem_id, source }
+    StemSpec {
+        stem_id,
+        source,
+        native_aec_request: None,
+    }
 }
 
 pub(crate) fn source_instance_spec(

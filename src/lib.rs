@@ -10,7 +10,8 @@ mod endpoint;
 mod frame;
 pub use crate::aec::{aec_available, EchoCancellationObservations, EchoCancellationState};
 pub use crate::session::extensions::{
-    EchoAudioInput, EchoCancelledAudio, EchoInputProcessing, PlaybackReference,
+    EchoAudioInput, EchoCancelledAudio, EchoInputProcessing, NativePlaybackReference,
+    PlaybackReference,
 };
 /// Stable signal, port, capability, partition, and extension APIs.
 ///
@@ -39,14 +40,15 @@ pub use crate::session::error_code::{
 
 pub use crate::capture::{
     application_capture_available, capture_processing_observations, discover_sources,
-    resolve_query, ActiveCaptureBackend, ApplicationPolicyObservation, CallbackCaptureBackend,
-    CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery, CaptureError,
-    CaptureMode, CaptureNativeFormat, CaptureObservationHandle, CaptureObservations,
+    native_aec_route, resolve_query, ActiveCaptureBackend, ApplicationPolicyObservation,
+    CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery,
+    CaptureError, CaptureMode, CaptureNativeFormat, CaptureObservationHandle, CaptureObservations,
     CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition,
     CaptureProcessingObservationHandle, CaptureProcessingObservations, CaptureProcessingReporter,
     CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleRepresentation, CaptureScope,
     CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle,
     CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider,
+    NativeAecRequest, NativeAecRoute, NativeAecRouteHandle, NativeAecRouteReporter,
     PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope,
     SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind,
     SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement,

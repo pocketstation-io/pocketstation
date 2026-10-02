@@ -9,8 +9,10 @@ use crate::{
     PortDirection, SampleFormat,
 };
 mod input;
+mod selection;
 use crate::{EchoCancellationObservations, Session, SessionError, StemHandle, StreamOrigin};
 pub use input::{EchoAudioInput, EchoInputProcessing};
+pub use selection::NativePlaybackReference;
 #[cfg(feature = "aec")]
 use std::sync::Arc;
 
@@ -100,6 +102,14 @@ impl Session {
         if microphone.origin == reference.input.origin {
             return Err(SessionError::InvalidOperator {
                 reason: "microphone and playback reference must be different streams".into(),
+            });
+        }
+        if self
+            .declaration
+            .has_native_aec_request(&microphone.origin)?
+        {
+            return Err(SessionError::InvalidOperator {
+                reason: "native AEC is already requested upstream; use that microphone without a portable stage".into(),
             });
         }
         if self
@@ -267,9 +277,18 @@ impl Session {
         microphone: impl Into<EchoAudioInput>,
         reference: PlaybackReference,
     ) -> Result<EchoCancelledAudio, SessionError> {
-        if microphone.into().session_id != self.id() || reference.input.session_id != self.id() {
+        let microphone = microphone.into();
+        if microphone.session_id != self.id() || reference.input.session_id != self.id() {
             return Err(SessionError::InvalidOperator {
                 reason: "echo inputs belong to a different Session".into(),
+            });
+        }
+        if self
+            .declaration
+            .has_native_aec_request(&microphone.origin)?
+        {
+            return Err(SessionError::InvalidOperator {
+                reason: "native AEC is already requested upstream; use that microphone without a portable stage".into(),
             });
         }
         Err(SessionError::InvalidOperator {

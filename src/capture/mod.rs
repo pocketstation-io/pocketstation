@@ -26,6 +26,7 @@ mod frame_stream;
 mod identity;
 #[cfg(feature = "internal-testing")]
 mod lifecycle_registry;
+mod native_aec;
 mod observations;
 pub(crate) mod platform;
 mod processing;
@@ -49,9 +50,10 @@ pub(crate) use capture_owner::CaptureOpenMetadata;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use capture_owner::{prepare_capture, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID};
 pub use capture_owner::{
-    prepare_capture_with_start_gate, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery,
-    CaptureLineageSeed, CaptureObservationReceipt, CaptureOwner, CaptureOwnerObservations,
-    CapturePrepareRequest, CaptureStopOutcome, PreparedCaptureBackend,
+    prepare_capture_with_start_gate, prepare_capture_with_start_gate_native, ActiveCaptureBackend,
+    CallbackCaptureBackend, CaptureDelivery, CaptureLineageSeed, CaptureObservationReceipt,
+    CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome,
+    PreparedCaptureBackend,
 };
 pub use events::*;
 pub use frame_stream::{
@@ -67,6 +69,10 @@ pub use frame_stream::{
 pub use identity::*;
 #[cfg(feature = "internal-testing")]
 pub use lifecycle_registry::*;
+pub use native_aec::{
+    native_aec_route, NativeAecRequest, NativeAecRoute, NativeAecRouteHandle,
+    NativeAecRouteReporter,
+};
 #[cfg(any(
     test,
     feature = "internal-testing",
