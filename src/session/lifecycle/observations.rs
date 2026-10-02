@@ -1,7 +1,9 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 
-use crate::capture::{CaptureNativeFormat, CaptureOwnerObservations};
+use crate::capture::{
+    CaptureNativeFormat, CaptureOwnerObservations, CaptureProcessingObservations,
+};
 use crate::endpoint::EndpointDriverObservations;
 use crate::frame::{EndpointId, RouteId, SourceId, StemId};
 use crate::runtime::{
@@ -39,6 +41,7 @@ pub struct SessionMetricsSnapshot {
     polled_audio: PolledAudioObservations,
     sources: Box<[SessionSourceMetrics]>,
     source_native_formats: Box<[SessionSourceNativeFormatObservation]>,
+    source_processing: Box<[SessionSourceProcessingObservations]>,
     source_replacements: Box<[SessionSourceReplacementObservations]>,
     source_activity: Box<[SessionSourceActivityObservations]>,
     source_signal: Box<[SessionSourceSignalObservations]>,
@@ -51,6 +54,7 @@ pub struct SessionMetricsSnapshot {
 pub(crate) struct SessionSourceMetricSnapshots {
     pub(crate) metrics: Box<[SessionSourceMetrics]>,
     pub(crate) native_formats: Box<[SessionSourceNativeFormatObservation]>,
+    pub(crate) processing: Box<[SessionSourceProcessingObservations]>,
     pub(crate) replacements: Box<[SessionSourceReplacementObservations]>,
     pub(crate) activity: Box<[SessionSourceActivityObservations]>,
     pub(crate) signal: Box<[SessionSourceSignalObservations]>,
@@ -69,6 +73,7 @@ impl SessionMetricsSnapshot {
         let SessionSourceMetricSnapshots {
             metrics,
             native_formats,
+            processing,
             replacements,
             activity,
             signal,
@@ -78,6 +83,7 @@ impl SessionMetricsSnapshot {
             polled_audio,
             sources: metrics,
             source_native_formats: native_formats,
+            source_processing: processing,
             source_replacements: replacements,
             source_activity: activity,
             source_signal: signal,
@@ -115,6 +121,16 @@ impl SessionMetricsSnapshot {
 
     pub fn source_native_format_count(&self) -> usize {
         self.source_native_formats.len()
+    }
+
+    /// Processing facts for the currently attached capture at `index`, in
+    /// declaration order. An absent physical source has unknown processing.
+    pub fn source_processing(&self, index: usize) -> Option<&SessionSourceProcessingObservations> {
+        self.source_processing.get(index)
+    }
+
+    pub fn source_processing_count(&self) -> usize {
+        self.source_processing.len()
     }
 
     /// Returns explicit host-requested physical-source replacement facts for
@@ -204,6 +220,17 @@ pub struct SessionSourceMetrics {
 pub struct SessionSourceNativeFormatObservation {
     pub stem_id: StemId,
     pub opened_native_format: Option<CaptureNativeFormat>,
+}
+
+/// Processing observations bound to the currently attached physical capture.
+/// Replacement or detach invalidates observations from the previous open.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceProcessingObservations {
+    pub stem_id: StemId,
+    pub attached_source_id: Option<SourceId>,
+    pub source_generation: u32,
+    pub discontinuity_epoch: u64,
+    pub processing: CaptureProcessingObservations,
 }
 
 /// Control-path accounting for explicit physical-source replacement.

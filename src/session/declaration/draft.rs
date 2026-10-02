@@ -814,6 +814,7 @@ impl Session {
                         operator.operator.operator_id.clone(),
                         operator.operator.configuration.clone(),
                     )
+                    .with_echo_processing(operator.operator.echo_processed)
                 })
                 .collect(),
             connections: draft

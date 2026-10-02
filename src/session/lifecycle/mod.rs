@@ -1,5 +1,7 @@
 //! Session engine construction, transactional startup, observations, and stop.
 
+#[cfg(feature = "aec")]
+mod aec_admission;
 mod control;
 mod endpoint_setup;
 mod engine;
@@ -40,9 +42,9 @@ pub use observations::{
     SessionSourceActivityEvaluation, SessionSourceActivityObservations,
     SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
     SessionSourceMetrics, SessionSourceNativeFormatObservation,
-    SessionSourceReplacementObservations, SessionSourceSignalEvaluation,
-    SessionSourceSignalObservations, SessionSourceSignalPolicy, SessionSourceSignalPolicyError,
-    SessionSourceSignalState,
+    SessionSourceProcessingObservations, SessionSourceReplacementObservations,
+    SessionSourceSignalEvaluation, SessionSourceSignalObservations, SessionSourceSignalPolicy,
+    SessionSourceSignalPolicyError, SessionSourceSignalState,
 };
 pub(crate) use running::start_prepared_session_cancellable_with_trace;
 pub use running::RunningSession;

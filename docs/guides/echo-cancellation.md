@@ -35,9 +35,43 @@ The guard conservatively follows all upstream Operator inputs: a custom Operator
 cannot erase ancestry simply by returning a new stream. Route the existing
 processed audio to another consumer instead of adding cancellation again.
 Unknown inputs remain supported by this explicit portable-engine API; this is
-not an automatic native-selection policy. Discovery of processing on an opened
-OS capture stream, effect changes and route-qualified native selection remain
-unfinished.
+not an automatic native-selection policy.
+
+## Observe opened input processing
+
+`running.metrics_snapshot()?.source_processing(index)` reports processing for
+one opened capture, with its physical source ID, source generation and
+discontinuity epoch. Entries follow source declaration order. The three separate
+facts are `native_aec_supported`, `echo_processed` and `raw_audio_available`.
+Each is optional: unknown is never treated as false. Support does not mean an
+effect is active; active processing does not establish reference suitability or
+acoustic quality. Raw availability does not mean the delivered input is raw.
+
+Backends can provide a `CaptureProcessingObservationHandle` from the existing
+`ActiveCaptureBackend` interface. Its paired reporter publishes complete facts
+for that specific open. Built-in platform backends currently report unknown;
+OS effect queries and native route enablement remain unfinished. No operating
+system, source name or successful device open is substituted for those facts.
+
+When a backend reports already processed input, portable AEC startup rejects it
+before media delivery and rolls back opened resources. A caller declaration
+cannot override those opened-stream facts. During execution, Session checks
+reported changes before and after AEC work. An observed activation or invalidated
+processing state terminates that stage; changing the report back to unprocessed
+does not erase the transition. Cancellation and closure still release resources.
+These checks do not change the independently captured application or microphone.
+
+A processed replacement microphone is rejected before attachment to a portable
+AEC input. Replacement observations use the new open only; an old reporter cannot
+change the new source's facts. Source failure or explicit detach clears its active
+processing observations. Reopen first detaches the old input, so failed
+reacquisition leaves it detached. Restart after choosing a supported input.
+
+These are reported-state checks, not a sample-level native guarantee. A backend
+must order effect changes with affected media and invalidate delivery when its
+processing observations become obsolete. Current tests simulate backend reports
+and exercise the actual Session runtime; they do not qualify physical devices,
+native cancellation or automatic selection of a suitable native route.
 
 ## Run application capture with optional AEC
 

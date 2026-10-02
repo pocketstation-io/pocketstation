@@ -10,11 +10,11 @@ use crate::capture::frame_stream::{
 };
 use crate::capture::{
     source_runtime_event_channel, CaptureError, CaptureMode, CaptureNativeFormat,
-    CaptureObservationHandle, CaptureObservations, CapturedFrameObservationHandle,
-    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch,
-    SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle,
-    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
-    SourceRuntimeEventSender,
+    CaptureObservationHandle, CaptureObservations, CaptureProcessingObservationHandle,
+    CaptureProcessingObservations, CapturedFrameObservationHandle, CapturedFrameSender,
+    CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch, SourceGeneration,
+    SourceRuntimeEvent, SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations,
+    SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
 };
 
 /// Monotonic timestamp domain used by native capture backends.
@@ -113,6 +113,13 @@ pub trait ActiveCaptureBackend: Send {
         None
     }
 
+    /// Processing facts observed on this opened stream, if the backend can
+    /// inspect them. Absence means unknown, not unprocessed audio.
+    /// The handle is acquired at open; updates occur on backend control threads.
+    fn processing_observation_handle(&self) -> Option<CaptureProcessingObservationHandle> {
+        None
+    }
+
     fn observation_handle(&self) -> CaptureObservationHandle;
 
     fn observations(&self) -> CaptureObservations;
@@ -152,6 +159,7 @@ impl PreparedCapture {
             frame_stream: frame_observations,
             runtime_events: runtime_event_observations,
             opened_native_format: active_backend.native_format(),
+            processing: active_backend.processing_observation_handle(),
         };
         Ok(CaptureOwner {
             active_backend,
@@ -187,6 +195,7 @@ pub struct CaptureObservationReceipt {
     frame_stream: CapturedFrameObservationHandle,
     runtime_events: SourceRuntimeEventObservationHandle,
     opened_native_format: Option<CaptureNativeFormat>,
+    processing: Option<CaptureProcessingObservationHandle>,
 }
 
 impl CaptureObservationReceipt {
@@ -200,6 +209,20 @@ impl CaptureObservationReceipt {
 
     pub const fn opened_native_format(&self) -> Option<CaptureNativeFormat> {
         self.opened_native_format
+    }
+
+    pub fn processing_observations(&self) -> CaptureProcessingObservations {
+        self.processing.as_ref().map_or_else(
+            CaptureProcessingObservations::default,
+            CaptureProcessingObservationHandle::observations,
+        )
+    }
+
+    pub(crate) fn processing_admission_snapshot(&self) -> (CaptureProcessingObservations, u64) {
+        self.processing.as_ref().map_or_else(
+            || (CaptureProcessingObservations::default(), 0),
+            CaptureProcessingObservationHandle::admission_snapshot,
+        )
     }
 }
 

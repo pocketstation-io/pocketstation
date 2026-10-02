@@ -321,6 +321,9 @@ struct SourceCaptureObservationState {
     source_generation: u32,
     discontinuity_epoch: u64,
     latest_completed_at_ns: Option<u64>,
+    processing_revision_at_attach: u64,
+    capture_attach_count: u64,
+    aec_input: bool,
 }
 
 /// Control-path indirection for the currently attached physical capture.
@@ -336,6 +339,7 @@ impl SourceCaptureObservationHandle {
         current: CaptureObservationReceipt,
         metadata: crate::capture::CaptureOpenMetadata,
     ) -> Self {
+        let processing_revision_at_attach = current.processing_admission_snapshot().1;
         Self {
             state: Arc::new(Mutex::new(SourceCaptureObservationState {
                 current: Some(current),
@@ -347,6 +351,9 @@ impl SourceCaptureObservationHandle {
                 source_generation: metadata.source_generation.0,
                 discontinuity_epoch: metadata.discontinuity_epoch,
                 latest_completed_at_ns: None,
+                processing_revision_at_attach,
+                capture_attach_count: 1,
+                aec_input: false,
             })),
         }
     }
@@ -385,6 +392,8 @@ impl SourceCaptureObservationHandle {
             .state
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
+        state.capture_attach_count = state.capture_attach_count.saturating_add(1);
+        state.processing_revision_at_attach = current.processing_admission_snapshot().1;
         state.current = Some(current);
         state.completed_total = state.completed_total.saturating_add(1);
         state.attached_source_id = Some(metadata.source_id);
@@ -448,6 +457,109 @@ impl SourceCaptureObservationHandle {
             discontinuity_epoch: state.discontinuity_epoch,
             latest_completed_at_ns: state.latest_completed_at_ns,
         }
+    }
+
+    pub(super) fn processing_observations(
+        &self,
+        stem_id: StemId,
+    ) -> super::observations::SessionSourceProcessingObservations {
+        let state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        super::observations::SessionSourceProcessingObservations {
+            stem_id,
+            attached_source_id: state.attached_source_id,
+            source_generation: state.source_generation,
+            discontinuity_epoch: state.discontinuity_epoch,
+            processing: state.current.as_ref().map_or_else(
+                crate::capture::CaptureProcessingObservations::default,
+                CaptureObservationReceipt::processing_observations,
+            ),
+        }
+    }
+
+    pub(super) fn validate_aec_replacement(
+        &self,
+        replacement: &CaptureObservationReceipt,
+    ) -> Result<(), crate::capture::CaptureError> {
+        let state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let (facts, revision) = replacement.processing_admission_snapshot();
+        if state.aec_input && (facts.echo_processed == Some(true) || revision == u64::MAX) {
+            return Err(crate::capture::CaptureError::BackendInit(
+                "replacement microphone already supplies echo-processed audio; portable AEC cannot attach".into(),
+            ));
+        }
+        Ok(())
+    }
+
+    #[cfg(feature = "aec")]
+    pub(super) fn aec_admission(&self) -> Result<SourceAecAdmission, crate::graph::NodeError> {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let current = state.current.as_ref().ok_or_else(|| {
+            crate::graph::NodeError::Prepare("AEC microphone capture is detached".into())
+        })?;
+        let (facts, revision) = current.processing_admission_snapshot();
+        if facts.echo_processed == Some(true)
+            || revision == u64::MAX
+            || state.capture_attach_count == u64::MAX
+        {
+            return Err(crate::graph::NodeError::Prepare(
+                "opened capture already supplies echo-processed audio or has invalid processing history".into(),
+            ));
+        }
+        state.aec_input = true;
+        Ok(SourceAecAdmission {
+            capture: self.clone(),
+            initial_attach_count: state.capture_attach_count,
+            initial_revision: revision,
+        })
+    }
+}
+
+/// A portable processor follows the current physical capture of its input.
+/// Only its async worker checks this value; callbacks never read these locks.
+#[cfg(feature = "aec")]
+#[derive(Clone)]
+pub(super) struct SourceAecAdmission {
+    capture: SourceCaptureObservationHandle,
+    initial_attach_count: u64,
+    initial_revision: u64,
+}
+
+#[cfg(feature = "aec")]
+impl SourceAecAdmission {
+    pub(super) fn check(&self) -> Result<(), crate::graph::NodeError> {
+        let state = self
+            .capture
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let current = state.current.as_ref().ok_or_else(|| {
+            crate::graph::NodeError::Process("AEC microphone capture is detached".into())
+        })?;
+        let (facts, revision) = current.processing_admission_snapshot();
+        let admitted_revision = if state.capture_attach_count == self.initial_attach_count {
+            self.initial_revision
+        } else {
+            state.processing_revision_at_attach
+        };
+        if facts.echo_processed == Some(true)
+            || revision == u64::MAX
+            || state.capture_attach_count == u64::MAX
+            || revision != admitted_revision
+        {
+            return Err(crate::graph::NodeError::Process(
+                "microphone processing changed after AEC admission; restart with an explicitly selected input".into(),
+            ));
+        }
+        Ok(())
     }
 }
 
