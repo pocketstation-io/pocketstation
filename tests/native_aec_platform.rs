@@ -8,7 +8,9 @@
 
 use std::time::{Duration, Instant};
 
-use pocketstation::{DeviceId, DeviceSelector, NativePlaybackReference, Session, Source};
+use pocketstation::{
+    DeviceId, DeviceSelector, NativePlaybackReference, Session, SessionStartErrorCode, Source,
+};
 use wasapi::{DeviceEnumerator, Direction};
 
 struct ComGuard;
@@ -164,6 +166,20 @@ fn given_enumerated_windows_endpoints_when_native_aec_requested_then_route_opens
             assert!(running.stop().is_success(), "native Session stops cleanly");
         }
         Err(error) => {
+            // The virtual endpoint is allowed to lack a controllable AEC
+            // effect. An unrelated startup failure must fail this probe;
+            // otherwise broken capture setup could appear to pass admission.
+            assert_eq!(
+                error.code(),
+                SessionStartErrorCode::CaptureBackendFailed,
+                "native AEC failed before the expected effect check: {error:?}"
+            );
+            assert!(
+                error.message().contains(
+                    "selected Windows capture endpoint has no active controllable AEC effect"
+                ),
+                "native AEC failed for a reason other than an unavailable effect: {error:?}"
+            );
             // Session did not hand the caller a RunningSession or a polling
             // receiver. Its gated startup may have opened a device briefly,
             // but no microphone frame was delivered to this application.
