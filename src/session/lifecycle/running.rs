@@ -53,10 +53,11 @@ use crate::session::{
     SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics,
     SessionSourceActivityObservations, SessionSourceFailure, SessionSourceMetrics,
-    SessionSourceNativeFormatObservation, SessionSourceReplacement, SessionSourceReplacementError,
-    SessionSourceReplacementObservations, SessionSourceSignalObservations, SessionTerminalOutcome,
-    SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity,
-    SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext,
+    SessionSourceNativeFormatObservation, SessionSourceProcessingObservations,
+    SessionSourceReplacement, SessionSourceReplacementError, SessionSourceReplacementObservations,
+    SessionSourceSignalObservations, SessionTerminalOutcome, SessionTraceRecorderHandle, Source,
+    SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime,
+    SourceRuntimeObservationHandle, SourceSessionContext,
 };
 
 struct RuntimeSource {
@@ -611,6 +612,16 @@ impl RunningSession {
             .into_boxed_slice()
     }
 
+    pub(crate) fn source_processing_observations(
+        &self,
+    ) -> Box<[SessionSourceProcessingObservations]> {
+        self.source_observations
+            .iter()
+            .map(|binding| binding.capture.processing_observations(binding.stem_id))
+            .collect::<Vec<_>>()
+            .into_boxed_slice()
+    }
+
     pub(crate) fn indexed_metrics_full(&self) -> IndexedSessionMetrics {
         let (sources, routes) = self.indexed_metrics();
         let external_sources = if self.external_sources.is_empty() {
@@ -1158,6 +1169,24 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
             ));
         }
     };
+    if let Err(mut error) = validate_opened_echo_inputs(&spec, &captures) {
+        let mut rollback = rollback_captures(captures);
+        rollback.append(rollback_running_endpoints(running_endpoints));
+        if let SessionStartError::OperatorPrepare {
+            rollback_failures_total,
+            ..
+        } = &mut error
+        {
+            *rollback_failures_total = rollback.failures_total();
+        }
+        return Err(complete_start_failure(
+            session_id,
+            &event_sender,
+            event_receiver,
+            error,
+            rollback.failures,
+        ));
+    }
     if start_cancellation.is_requested() {
         let mut rollback = rollback_captures(captures);
         rollback.append(rollback_running_endpoints(running_endpoints));
@@ -1210,6 +1239,26 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
             },
         )
         .collect::<Vec<_>>();
+    #[cfg(feature = "aec")]
+    let operator_mappings =
+        match bind_aec_admissions(&spec, operator_mappings, &source_observations) {
+            Ok(mappings) => mappings,
+            Err(error) => {
+                let mut rollback = rollback_captures(captures);
+                rollback.append(rollback_running_endpoints(running_endpoints));
+                return Err(complete_start_failure(
+                    session_id,
+                    &event_sender,
+                    event_receiver,
+                    SessionStartError::OperatorPrepare {
+                        operator_instance_id: error.0,
+                        message: error.1.to_string(),
+                        rollback_failures_total: rollback.failures_total(),
+                    },
+                    rollback.failures,
+                ));
+            }
+        };
     let runner = match RealtimePlanRunner::new(executor, source_inputs, cancellation) {
         Ok(runner) => runner,
         Err(source) => {
@@ -1782,6 +1831,81 @@ fn prepare_external_source_runtimes(
         route_observations,
         operator_inputs,
     ))
+}
+
+#[cfg(feature = "aec")]
+fn bind_aec_admissions(
+    spec: &crate::session::SessionSpec,
+    mut mappings: Vec<PreparedOperatorMapping>,
+    sources: &[SourceObservationBinding],
+) -> Result<Vec<PreparedOperatorMapping>, (OperatorInstanceId, crate::graph::NodeError)> {
+    for mapping in &mut mappings {
+        let Some(operator) = spec.operators().iter().find(|operator| {
+            operator.instance_id() == mapping.instance_id && operator.echo_processed()
+        }) else {
+            continue;
+        };
+        let mut ancestors = std::collections::HashSet::new();
+        for connection in spec.connections() {
+            if matches!(connection.target(), crate::session::ConnectionTarget::OperatorInput {
+                operator_instance_id, input_port: Some(port),
+            } if *operator_instance_id == operator.instance_id() && port == "microphone")
+            {
+                ancestors.extend(spec.upstream_capture_stems(connection.origin()));
+            }
+        }
+        let admissions = sources
+            .iter()
+            .filter(|source| ancestors.contains(&source.stem_id))
+            .map(|source| source.capture.aec_admission())
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|error| (mapping.instance_id, error))?;
+        mapping.factory = Arc::new(super::aec_admission::AecAdmissionFactory::new(
+            Arc::clone(&mapping.factory),
+            admissions,
+        ));
+    }
+    Ok(mappings)
+}
+
+fn validate_opened_echo_inputs(
+    spec: &crate::session::SessionSpec,
+    captures: &[OpenedCapture],
+) -> Result<(), SessionStartError> {
+    for operator in spec
+        .operators()
+        .iter()
+        .filter(|operator| operator.echo_processed())
+    {
+        for connection in spec.connections() {
+            if !matches!(connection.target(), crate::session::ConnectionTarget::OperatorInput {
+                operator_instance_id, input_port: Some(port),
+            } if *operator_instance_id == operator.instance_id() && port == "microphone")
+            {
+                continue;
+            }
+            let ancestors = spec.upstream_capture_stems(connection.origin());
+            for capture in captures
+                .iter()
+                .filter(|capture| ancestors.contains(&capture.stem_id))
+            {
+                if capture
+                    .owner
+                    .observation_receipt()
+                    .processing_observations()
+                    .echo_processed
+                    == Some(true)
+                {
+                    return Err(SessionStartError::OperatorPrepare {
+                        operator_instance_id: operator.instance_id(),
+                        message: format!("opened capture {:?} already supplies echo-processed audio; reuse it instead of adding AEC", capture.stem_id),
+                        rollback_failures_total: 0,
+                    });
+                }
+            }
+        }
+    }
+    Ok(())
 }
 
 fn prepare_operator_runtimes(
@@ -2429,6 +2553,10 @@ fn run_runtime_worker(
                             source.replacement_generation = metadata.source_generation.next();
                             source.replacement_discontinuity_epoch =
                                 metadata.discontinuity_epoch.saturating_add(1);
+                            source.capture_observations.detach(
+                                source.replacement_generation,
+                                source.replacement_discontinuity_epoch,
+                            );
                             captures.push((source.stem_id, failed_capture.stop_and_join()));
                         }
                         break;
@@ -2450,6 +2578,10 @@ fn run_runtime_worker(
                     source.active_source_id = metadata.source_id;
                     source.replacement_generation = metadata.source_generation.next();
                     source.replacement_discontinuity_epoch = metadata.discontinuity_epoch;
+                    source.capture_observations.detach(
+                        source.replacement_generation,
+                        source.replacement_discontinuity_epoch,
+                    );
                     captures.push((source.stem_id, failed_capture.stop_and_join()));
                 }
             }
@@ -2556,6 +2688,19 @@ fn handle_replace_capture(
         )));
         return;
     };
+    if let Err(rejected) = source
+        .capture_observations
+        .validate_aec_replacement(&capture.observation_receipt())
+    {
+        let error = match capture.stop_and_join() {
+            Ok(_) => rejected,
+            Err(cleanup) => CaptureError::BackendInit(format!(
+                "{rejected}; rejected capture cleanup failed: {cleanup}"
+            )),
+        };
+        let _ = response.send(Err(error));
+        return;
+    }
     let previous_metadata = source.capture.as_ref().map(|active| active.open_metadata());
     let source_generation = previous_metadata.map_or(source.replacement_generation, |metadata| {
         metadata.source_generation.next()

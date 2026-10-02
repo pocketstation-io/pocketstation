@@ -201,12 +201,15 @@ impl SessionEngineHost {
             Box::default,
             RunningSession::source_replacement_observations,
         );
+        let source_processing = running_session
+            .map_or_else(Box::default, RunningSession::source_processing_observations);
         Some(SessionMetricsSnapshot::new(
             events.observations(),
             polled_audio,
             SessionSourceMetricSnapshots {
                 metrics: sources,
                 native_formats: source_native_formats,
+                processing: source_processing,
                 replacements: source_replacements,
                 activity: source_activity,
                 signal: source_signal,

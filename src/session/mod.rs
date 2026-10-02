@@ -90,7 +90,8 @@ pub use lifecycle::{
     SessionSourceActivityEvaluation, SessionSourceActivityObservations,
     SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
     SessionSourceMetrics, SessionSourceNativeFormatObservation,
-    SessionSourceReplacementObservations, SessionSourceSignalObservations,
+    SessionSourceProcessingObservations, SessionSourceReplacementObservations,
+    SessionSourceSignalObservations,
 };
 pub use lifecycle::{
     NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,

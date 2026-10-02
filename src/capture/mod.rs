@@ -28,6 +28,7 @@ mod identity;
 mod lifecycle_registry;
 mod observations;
 pub(crate) mod platform;
+mod processing;
 mod query;
 mod selection;
 mod timeline;
@@ -78,6 +79,10 @@ pub use lifecycle_registry::*;
 ))]
 pub use observations::CaptureObservationCounters;
 pub use observations::{CaptureObservationHandle, CaptureObservations};
+pub use processing::{
+    capture_processing_observations, CaptureProcessingObservationHandle,
+    CaptureProcessingObservations, CaptureProcessingReporter,
+};
 pub use query::*;
 pub use selection::*;
 #[cfg(any(

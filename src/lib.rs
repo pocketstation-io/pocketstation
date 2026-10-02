@@ -38,19 +38,20 @@ pub use crate::session::error_code::{
 };
 
 pub use crate::capture::{
-    application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend,
-    ApplicationPolicyObservation, CallbackCaptureBackend, CaptureAuthorizationSnapshot,
-    CaptureCapabilityState, CaptureDelivery, CaptureError, CaptureMode, CaptureNativeFormat,
-    CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome, CapturePermissionLifecycle,
-    CapturePermissionTransition, CaptureRuntimeFailure, CaptureRuntimeFailureClass,
-    CaptureSampleRepresentation, CaptureScope, CaptureSessionGrant, CaptureSource,
-    CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender,
-    CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch,
-    PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope,
-    SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider,
-    SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery,
-    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender,
-    SourceState, StableSourceId,
+    application_capture_available, capture_processing_observations, discover_sources,
+    resolve_query, ActiveCaptureBackend, ApplicationPolicyObservation, CallbackCaptureBackend,
+    CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery, CaptureError,
+    CaptureMode, CaptureNativeFormat, CaptureObservationHandle, CaptureObservations,
+    CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition,
+    CaptureProcessingObservationHandle, CaptureProcessingObservations, CaptureProcessingReporter,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleRepresentation, CaptureScope,
+    CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider,
+    PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope,
+    SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind,
+    SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement,
+    SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 
 /// Reads the current microphone authorization state without prompting.
@@ -129,14 +130,14 @@ pub use crate::session::lifecycle::{
     SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
     SessionRouteDropObservations, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
     SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics, SessionSourceNativeFormatObservation, SessionSourceReplacement,
-    SessionSourceReplacementError, SessionSourceReplacementObservations,
-    SessionSourceSignalEvaluation, SessionSourceSignalObservations, SessionSourceSignalPolicy,
-    SessionSourceSignalPolicyError, SessionSourceSignalState, SessionStartCancellation,
-    SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecord,
-    SessionTraceRecordKind, SessionTraceRecorder, SessionTraceRecorderFinishError,
-    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceTerminal,
-    SessionTraceValidation, SessionTraceValidationError,
+    SessionSourceMetrics, SessionSourceNativeFormatObservation,
+    SessionSourceProcessingObservations, SessionSourceReplacement, SessionSourceReplacementError,
+    SessionSourceReplacementObservations, SessionSourceSignalEvaluation,
+    SessionSourceSignalObservations, SessionSourceSignalPolicy, SessionSourceSignalPolicyError,
+    SessionSourceSignalState, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
+    SessionTrace, SessionTraceRecord, SessionTraceRecordKind, SessionTraceRecorder,
+    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
+    SessionTraceTerminal, SessionTraceValidation, SessionTraceValidationError,
 };
 pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{

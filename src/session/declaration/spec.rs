@@ -198,6 +198,7 @@ pub struct OperatorInstanceSpec {
     instance_id: OperatorInstanceId,
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
+    echo_processed: bool,
 }
 
 /// Stable origin of a declared Session stream.
@@ -242,6 +243,15 @@ pub struct ConnectionSpec {
 }
 
 impl OperatorInstanceSpec {
+    pub(crate) fn with_echo_processing(mut self, echo_processed: bool) -> Self {
+        self.echo_processed = echo_processed;
+        self
+    }
+
+    pub(crate) const fn echo_processed(&self) -> bool {
+        self.echo_processed
+    }
+
     pub const fn instance_id(&self) -> OperatorInstanceId {
         self.instance_id
     }
@@ -342,6 +352,45 @@ impl SessionSpec {
 
     pub fn connections(&self) -> &[ConnectionSpec] {
         &self.connections
+    }
+
+    pub(crate) fn upstream_capture_stems(&self, origin: &StreamOrigin) -> HashSet<StemId> {
+        let mut pending = vec![origin.clone()];
+        let mut visited = HashSet::new();
+        let mut stems = HashSet::new();
+        while let Some(origin) = pending.pop() {
+            let instance_id = match origin {
+                StreamOrigin::Stem(stem_id) => {
+                    if let Some(ingress) = self
+                        .generated_audio_ingresses
+                        .iter()
+                        .find(|ingress| ingress.stem_id == stem_id)
+                    {
+                        ingress.operator_instance_id
+                    } else {
+                        stems.insert(stem_id);
+                        continue;
+                    }
+                }
+                StreamOrigin::OperatorOutput {
+                    operator_instance_id,
+                    ..
+                } => operator_instance_id,
+                StreamOrigin::SourceOutput { .. } => continue,
+            };
+            if !visited.insert(instance_id) {
+                continue;
+            }
+            for connection in &self.connections {
+                if matches!(connection.target, ConnectionTarget::OperatorInput {
+                    operator_instance_id, ..
+                } if operator_instance_id == instance_id)
+                {
+                    pending.push(connection.origin.clone());
+                }
+            }
+        }
+        stems
     }
 
     pub fn validate(&self) -> Result<(), SessionError> {
@@ -769,6 +818,7 @@ pub(crate) fn operator_spec(
         instance_id,
         operator_id,
         configuration,
+        echo_processed: false,
     }
 }
 
@@ -787,7 +837,7 @@ pub(crate) const fn connection_spec(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::session::{DeviceSelector, EndpointConfiguration};
+    use crate::session::{DeviceSelector, EndpointConfiguration, Operator, Session};
 
     fn valid_legacy_compatible_spec() -> SessionSpec {
         SessionSpec {
@@ -864,5 +914,113 @@ mod tests {
             spec.validate(),
             Err(SessionError::InvalidOperator { .. })
         ));
+    }
+
+    #[test]
+    fn given_capture_fan_in_and_external_audio_when_reentered_then_only_capture_ancestors_survive()
+    {
+        let session = Session::new();
+        let microphone = session.capture(Source::microphone_default()).unwrap();
+        let playback = session.capture(Source::SystemAudio).unwrap();
+        let external = session
+            .source(
+                SourceTypeId::new("io.example.source.external.v1").unwrap(),
+                SourceConfiguration::default(),
+            )
+            .unwrap()
+            .output("audio")
+            .unwrap();
+        let transform = session
+            .operator(Operator::new(
+                OperatorId::new("io.pocketstation.aec3.0"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        microphone
+            .connect(transform.input("microphone").unwrap())
+            .unwrap();
+        playback
+            .connect(transform.input("reference").unwrap())
+            .unwrap();
+        external
+            .connect(transform.input("external").unwrap())
+            .unwrap();
+        let transformed = transform.output("audio").unwrap();
+        let reentered = transformed.reenter_audio().unwrap();
+        let downstream = session
+            .operator(Operator::new(
+                OperatorId::new("example.operator.downstream.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        reentered
+            .connect(downstream.input("audio").unwrap())
+            .unwrap();
+        microphone
+            .connect(downstream.input("original").unwrap())
+            .unwrap();
+        let output = downstream.output("audio").unwrap();
+        output.send(session.polled_audio().unwrap()).unwrap();
+
+        let spec = session.freeze().unwrap();
+        let expected = HashSet::from([microphone.id(), playback.id()]);
+        for origin in [
+            transformed.signal_origin().1,
+            reentered.signal_origin().1,
+            output.signal_origin().1,
+        ] {
+            assert_eq!(spec.upstream_capture_stems(&origin), expected);
+        }
+        assert!(spec
+            .upstream_capture_stems(&external.signal_origin().1)
+            .is_empty());
+        assert!(spec
+            .operators()
+            .iter()
+            .all(|operator| !operator.echo_processed()));
+    }
+
+    #[test]
+    fn given_operator_and_reentry_cycles_when_ancestry_inspected_then_capture_is_retained_once() {
+        let session = Session::new();
+        let microphone = session.capture(Source::microphone_default()).unwrap();
+        let first = session
+            .operator(Operator::new(
+                OperatorId::new("example.operator.first.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        let second = session
+            .operator(Operator::new(
+                OperatorId::new("example.operator.second.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        microphone
+            .connect(first.input("microphone").unwrap())
+            .unwrap();
+        let first_output = first.output("audio").unwrap();
+        first_output
+            .connect(second.input("audio").unwrap())
+            .unwrap();
+        let second_output = second.output("audio").unwrap();
+        second_output
+            .connect(first.input("feedback").unwrap())
+            .unwrap();
+        let reentered = second_output.reenter_audio().unwrap();
+        reentered
+            .connect(first.input("reentered-feedback").unwrap())
+            .unwrap();
+
+        // Schema inspection precedes compilation, which rejects executable cycles.
+        let spec = session.freeze().unwrap();
+        let expected = HashSet::from([microphone.id()]);
+        for origin in [
+            first_output.signal_origin().1,
+            second_output.signal_origin().1,
+            reentered.signal_origin().1,
+        ] {
+            assert_eq!(spec.upstream_capture_stems(&origin), expected);
+        }
     }
 }
