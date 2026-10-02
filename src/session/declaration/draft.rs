@@ -1,3 +1,4 @@
+use std::collections::{HashMap, HashSet};
 use std::fmt;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
@@ -278,10 +279,130 @@ impl SessionDraft {
     }
 }
 
+impl SessionDraft {
+    fn has_echo_processing(&self, origin: &StreamOrigin) -> Result<bool, SessionError> {
+        // Setup-only graph walk. Each operator is visited once, including cycles.
+        // No recursion, callbacks or external factory calls under the draft lock.
+        let mut parents: HashMap<OperatorInstanceId, Vec<&StreamOrigin>> = HashMap::new();
+        for connection in &self.connections {
+            if let ConnectionTarget::OperatorInput {
+                operator_instance_id,
+                ..
+            } = connection.target
+            {
+                parents
+                    .entry(operator_instance_id)
+                    .or_default()
+                    .push(&connection.origin);
+            }
+        }
+        let mut pending = vec![origin];
+        let mut visited = HashSet::new();
+        while let Some(origin) = pending.pop() {
+            let Some(operator) = self.origin_operator(origin)? else {
+                continue;
+            };
+            if !visited.insert(operator.instance_id) {
+                continue;
+            }
+            if operator.operator.echo_processed {
+                return Ok(true);
+            }
+            if let Some(inputs) = parents.get(&operator.instance_id) {
+                pending.extend(inputs.iter().copied());
+            }
+        }
+        Ok(false)
+    }
+
+    fn origin_operator(
+        &self,
+        origin: &StreamOrigin,
+    ) -> Result<Option<&OperatorDraft>, SessionError> {
+        let id = match origin {
+            StreamOrigin::Stem(stem_id) => {
+                if self.stems.iter().any(|stem| stem.stem_id == *stem_id) {
+                    return Ok(None);
+                }
+                self.generated_audio_ingresses
+                    .iter()
+                    .find(|ingress| ingress.stem_id == *stem_id)
+                    .ok_or(SessionError::UnknownStem { stem_id: *stem_id })?
+                    .operator_instance_id
+            }
+            StreamOrigin::SourceOutput {
+                source_instance_id,
+                output_port,
+                stream_id,
+                source_id,
+            } => {
+                if !self.source_instances.iter().any(|source| {
+                    source.instance_id == *source_instance_id && source.source_id == *source_id
+                }) {
+                    return Err(SessionError::UnknownSourceInstance {
+                        source_instance_id: *source_instance_id,
+                    });
+                }
+                if !self.source_outputs.iter().any(|output| {
+                    output.source_instance_id == *source_instance_id
+                        && output.output_port == *output_port
+                        && output.stream_id == *stream_id
+                }) {
+                    return Err(SessionError::UnknownSourceOutput {
+                        source_instance_id: *source_instance_id,
+                        output_port: output_port.clone(),
+                    });
+                }
+                return Ok(None);
+            }
+            StreamOrigin::OperatorOutput {
+                operator_instance_id,
+                ..
+            } => *operator_instance_id,
+        };
+        self.operators
+            .iter()
+            .find(|operator| operator.instance_id == id)
+            .map(Some)
+            .ok_or(SessionError::UnknownOperatorInstance {
+                operator_instance_id: id,
+            })
+    }
+
+    fn validate_echo_processing(&self) -> Result<(), SessionError> {
+        for operator in self
+            .operators
+            .iter()
+            .filter(|operator| operator.operator.echo_processed)
+        {
+            for connection in &self.connections {
+                let ConnectionTarget::OperatorInput {
+                    operator_instance_id,
+                    input_port,
+                } = &connection.target
+                else {
+                    continue;
+                };
+                if *operator_instance_id == operator.instance_id
+                    && input_port.as_deref() == Some("microphone")
+                    && self.has_echo_processing(&connection.origin)?
+                {
+                    return Err(SessionError::InvalidOperator {
+                        reason: "echo input already passes through cancellation; route the existing processed audio instead".into(),
+                    });
+                }
+            }
+        }
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct Operator {
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
+    // Core-owned effect marker; external IDs or configurations cannot assert it.
+    echo_processed: bool,
 }
 
 impl Operator {
@@ -289,7 +410,14 @@ impl Operator {
         Self {
             operator_id,
             configuration,
+            echo_processed: false,
         }
+    }
+
+    #[cfg(feature = "aec")]
+    pub(crate) fn with_echo_processing(mut self) -> Self {
+        self.echo_processed = true;
+        self
     }
 
     pub const fn operator_id(&self) -> &OperatorId {
@@ -333,6 +461,9 @@ pub(crate) enum OriginDefinition {
 }
 
 impl Session {
+    pub(crate) fn has_echo_processing(&self, origin: &StreamOrigin) -> Result<bool, SessionError> {
+        self.shared.draft()?.has_echo_processing(origin)
+    }
     #[cfg(feature = "aec")]
     pub(crate) fn origin_definition(
         &self,
@@ -497,6 +628,15 @@ impl Session {
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;
         // Reserve every fallible ID before changing declarations.
+        if operator.echo_processed {
+            for (_, origin, port) in inputs {
+                if *port == "microphone" && draft.has_echo_processing(origin)? {
+                    return Err(SessionError::InvalidOperator {
+                        reason: "echo input already passes through cancellation; route the existing processed audio instead".into(),
+                    });
+                }
+            }
+        }
         draft
             .next_operator_instance_id
             .checked_add(1)
@@ -606,6 +746,7 @@ impl Session {
     pub fn freeze(self) -> Result<SessionSpec, SessionError> {
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;
+        draft.validate_echo_processing()?;
         draft.status = DraftStatus::Frozen;
 
         let declarations = SessionSpecDeclarations {
@@ -1290,6 +1431,136 @@ mod tests {
         ApplicationSelector, DeviceSelector, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,
         RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY,
     };
+
+    #[cfg(feature = "aec")]
+    #[test]
+    fn given_processed_input_when_declared_under_lock_then_rejection_keeps_ids_and_graph_intact() {
+        let session = Session::new();
+        let microphone = session.capture(Source::microphone_default()).unwrap();
+        let first = session
+            .connected_audio_operator(
+                Operator::new(
+                    OperatorId::new("test.aec.first"),
+                    OperatorConfiguration::new(),
+                )
+                .with_echo_processing(),
+                &[(session.id(), microphone.signal_origin().1, "microphone")],
+                "microphone",
+            )
+            .unwrap();
+        let snapshot = || {
+            let draft = session.shared.draft().unwrap();
+            (
+                draft.operators.len(),
+                draft.connections.len(),
+                draft.generated_audio_ingresses.len(),
+                draft.next_operator_instance_id,
+                draft.next_route_id,
+                draft.next_stem_id,
+                draft.next_external_source_id,
+                draft.next_stream_id,
+            )
+        };
+        let before = snapshot();
+        let error = session
+            .connected_audio_operator(
+                Operator::new(
+                    OperatorId::new("test.aec.second"),
+                    OperatorConfiguration::new(),
+                )
+                .with_echo_processing(),
+                &[(session.id(), first.signal_origin().1, "microphone")],
+                "microphone",
+            )
+            .unwrap_err();
+        assert!(error
+            .to_string()
+            .contains("already passes through cancellation"));
+        assert_eq!(snapshot(), before);
+    }
+
+    #[cfg(feature = "aec")]
+    #[test]
+    fn given_late_processed_connection_when_frozen_then_reprocessing_is_rejected() {
+        let session = Session::new();
+        let microphone = session.capture(Source::microphone_default()).unwrap();
+        let reference = session.capture(Source::SystemAudio).unwrap();
+        let middle = session
+            .operator(Operator::new(
+                OperatorId::new("example.operator.middle.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        let output = middle.output("audio").unwrap();
+        assert!(!session
+            .has_echo_processing(&output.signal_origin().1)
+            .unwrap());
+        let first = session
+            .connected_audio_operator(
+                Operator::new(
+                    OperatorId::new("test.aec.first"),
+                    OperatorConfiguration::new(),
+                )
+                .with_echo_processing(),
+                &[
+                    (session.id(), microphone.signal_origin().1, "microphone"),
+                    (session.id(), reference.signal_origin().1, "reference"),
+                ],
+                "microphone",
+            )
+            .unwrap();
+        let second = session
+            .connected_audio_operator(
+                Operator::new(
+                    OperatorId::new("test.aec.second"),
+                    OperatorConfiguration::new(),
+                )
+                .with_echo_processing(),
+                &[
+                    (session.id(), output.signal_origin().1, "microphone"),
+                    (session.id(), reference.signal_origin().1, "reference"),
+                ],
+                "microphone",
+            )
+            .unwrap();
+        second.record("second").unwrap();
+        first.connect(middle.input("audio").unwrap()).unwrap();
+        let error = session.freeze().unwrap_err();
+        assert!(error
+            .to_string()
+            .contains("already passes through cancellation"));
+    }
+
+    #[test]
+    fn given_generic_cycle_or_aec_like_name_when_inspected_then_traversal_finishes_without_forging_evidence(
+    ) {
+        let session = Session::new();
+        let first = session
+            .operator(Operator::new(
+                OperatorId::new("io.pocketstation.aec3.0"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        let second = session
+            .operator(Operator::new(
+                OperatorId::new("example.operator.second.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        first
+            .output("audio")
+            .unwrap()
+            .connect(second.input("audio").unwrap())
+            .unwrap();
+        second
+            .output("audio")
+            .unwrap()
+            .connect(first.input("audio").unwrap())
+            .unwrap();
+        assert!(!session
+            .has_echo_processing(&first.output("audio").unwrap().signal_origin().1)
+            .unwrap());
+    }
 
     fn proof_draft() -> (Session, StemHandle, StemHandle, EndpointHandle) {
         let session = Session::new();

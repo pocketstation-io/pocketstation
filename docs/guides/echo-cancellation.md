@@ -13,6 +13,32 @@ availability is separate from device support and acoustic qualification. A devic
 may already supply processed input; enabling another processor is an explicit
 application choice, not an automatic fallback.
 
+## Check input processing
+
+`Session::echo_input_processing(input)` is available without the AEC engine.
+It reports `echo_processed: Some(true)` with `evidence: "session"` when the
+declared stream has a built-in cancellation stage in its ancestry. Cloning,
+passing through another Operator or reentering that stream does not erase this
+fact. It describes processing ancestry, not measured cancellation quality.
+`None` with `evidence: "unknown"` means Core has no processing evidence; it
+does not mean the microphone is raw.
+
+A caller can declare externally processed input with
+`input.with_echo_processing(true)`, or explicitly declare unprocessed input
+with `false`. Such observations use `evidence: "caller"`; they are application
+assertions, not native-device discovery. A caller cannot override known Session
+cancellation ancestry by declaring it unprocessed.
+
+`echo_cancel` rejects a known processed microphone before changing its graph.
+Starting the Session also checks connections added after declaring the stage.
+The guard conservatively follows all upstream Operator inputs: a custom Operator
+cannot erase ancestry simply by returning a new stream. Route the existing
+processed audio to another consumer instead of adding cancellation again.
+Unknown inputs remain supported by this explicit portable-engine API; this is
+not an automatic native-selection policy. Discovery of processing on an opened
+OS capture stream, effect changes and route-qualified native selection remain
+unfinished.
+
 ## Run application capture with optional AEC
 
 This is an unreleased source example. Build from this checkout; the current

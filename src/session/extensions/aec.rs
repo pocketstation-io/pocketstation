@@ -8,38 +8,11 @@ use crate::{
     AudioCaps, ChannelLayout, MediaCaps, Operator, OperatorConfiguration, OperatorId,
     PortDirection, SampleFormat,
 };
-use crate::{
-    DerivedStreamHandle, EchoCancellationObservations, Session, SessionError, SessionId,
-    SourceOutputHandle, StemHandle, StreamOrigin,
-};
+mod input;
+use crate::{EchoCancellationObservations, Session, SessionError, StemHandle, StreamOrigin};
+pub use input::{EchoAudioInput, EchoInputProcessing};
 #[cfg(feature = "aec")]
 use std::sync::Arc;
-
-/// A Session-owned audio source selected for echo processing.
-#[derive(Clone, Debug)]
-pub struct EchoAudioInput {
-    session_id: SessionId,
-    origin: StreamOrigin,
-}
-
-impl From<&StemHandle> for EchoAudioInput {
-    fn from(value: &StemHandle) -> Self {
-        let (session_id, origin) = value.signal_origin();
-        Self { session_id, origin }
-    }
-}
-impl From<&SourceOutputHandle> for EchoAudioInput {
-    fn from(value: &SourceOutputHandle) -> Self {
-        let (session_id, origin) = value.signal_origin();
-        Self { session_id, origin }
-    }
-}
-impl From<&DerivedStreamHandle> for EchoAudioInput {
-    fn from(value: &DerivedStreamHandle) -> Self {
-        let (session_id, origin) = value.signal_origin();
-        Self { session_id, origin }
-    }
-}
 
 /// Explicit permission to use an already-declared stream as an echo reference.
 /// This never opens, records or sends another application's audio.
@@ -129,6 +102,15 @@ impl Session {
                 reason: "microphone and playback reference must be different streams".into(),
             });
         }
+        if self
+            .echo_input_processing(microphone.clone())?
+            .echo_processed
+            == Some(true)
+        {
+            return Err(SessionError::InvalidOperator {
+                reason: "echo input already passes through cancellation; route the existing processed audio instead".into(),
+            });
+        }
         // Read owned declaration snapshots and consult cloned factory Arcs outside
         // both draft and registration locks. Rejection leaves the draft intact.
         let microphone_channels = self.echo_input_channels(&microphone.origin)?;
@@ -150,7 +132,7 @@ impl Session {
                     reason: e.to_string(),
                 })?;
         let audio = self.declaration.connected_audio_operator(
-            Operator::new(operator_id, OperatorConfiguration::new()),
+            Operator::new(operator_id, OperatorConfiguration::new()).with_echo_processing(),
             &[
                 (
                     microphone.session_id,

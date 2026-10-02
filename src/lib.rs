@@ -9,7 +9,9 @@ pub mod connector;
 mod endpoint;
 mod frame;
 pub use crate::aec::{aec_available, EchoCancellationObservations, EchoCancellationState};
-pub use crate::session::extensions::{EchoAudioInput, EchoCancelledAudio, PlaybackReference};
+pub use crate::session::extensions::{
+    EchoAudioInput, EchoCancelledAudio, EchoInputProcessing, PlaybackReference,
+};
 /// Stable signal, port, capability, partition, and extension APIs.
 ///
 /// Compiler IR, registries, runtime plans, and execution machinery remain
