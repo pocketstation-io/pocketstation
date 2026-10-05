@@ -12,7 +12,7 @@ use super::config::{
 use crate::frame::{SessionId, StemId};
 use crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver};
 use hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 pub(crate) const RECORDING_MANIFEST_FILE_NAME: &str = "manifest.json";
 pub(crate) const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 2;
@@ -84,7 +84,7 @@ pub enum RecorderError {
     Json(#[from] serde_json::Error),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RecordingState {
     Recording,
@@ -92,7 +92,7 @@ pub enum RecordingState {
     Incomplete,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscontinuityRecord {
     pub stem_id: u64,
     pub label: String,
@@ -103,7 +103,7 @@ pub struct DiscontinuityRecord {
     pub sequence_end: Option<u64>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DiscontinuityKind {
     TimestampGap,
@@ -1348,6 +1348,10 @@ fn samples_for_duration_ns(duration_ns: u64, sample_rate_hz: u32, channels: u8) 
 
 fn checksum_fnv1a64(path: &Path) -> Result<String, RecorderError> {
     let mut reader = BufReader::new(File::open(path)?);
+    checksum_fnv1a64_reader(&mut reader)
+}
+
+pub(super) fn checksum_fnv1a64_reader(reader: &mut impl Read) -> Result<String, RecorderError> {
     let mut checksum = 0xcbf2_9ce4_8422_2325u64;
     let mut buffer = [0u8; 8_192];
     loop {
@@ -1597,14 +1601,14 @@ fn write_session_destination_metrics(
     Ok(())
 }
 
-#[derive(Serialize)]
-struct ManifestDocument {
-    schema_version: u32,
-    session_id: u64,
-    recording_group_id: String,
-    state: RecordingState,
-    stems: Vec<ManifestStem>,
-    errors: Vec<String>,
+#[derive(Serialize, Deserialize)]
+pub(super) struct ManifestDocument {
+    pub(super) schema_version: u32,
+    pub(super) session_id: u64,
+    pub(super) recording_group_id: String,
+    pub(super) state: RecordingState,
+    pub(super) stems: Vec<ManifestStem>,
+    pub(super) errors: Vec<String>,
 }
 
 impl ManifestDocument {
@@ -1734,32 +1738,32 @@ impl ManifestDocument {
     }
 }
 
-#[derive(Serialize)]
-struct ManifestStem {
-    label: String,
-    wav_path: String,
-    session_id: u64,
-    source_id: Option<u64>,
-    stem_id: u64,
-    clock_id: Option<u32>,
-    source_generation: Option<u32>,
-    permission_epoch: Option<u64>,
-    source_timeline_origin_ns: Option<u64>,
-    session_timeline_origin_ns: u64,
-    sample_rate_hz: u32,
-    channels: u8,
-    sample_format: &'static str,
-    finalization_state: RecordingState,
-    first_timestamp_ns: Option<u64>,
-    final_timestamp_ns: Option<u64>,
-    written_frames: u64,
-    silence_filled_samples: u64,
-    stale_frames: u64,
-    gap_ranges: Vec<DiscontinuityRecord>,
-    wav_bytes: Option<u64>,
-    checksum_algorithm: &'static str,
-    checksum: Option<String>,
-    error: Option<String>,
+#[derive(Serialize, Deserialize)]
+pub(super) struct ManifestStem {
+    pub(super) label: String,
+    pub(super) wav_path: String,
+    pub(super) session_id: u64,
+    pub(super) source_id: Option<u64>,
+    pub(super) stem_id: u64,
+    pub(super) clock_id: Option<u32>,
+    pub(super) source_generation: Option<u32>,
+    pub(super) permission_epoch: Option<u64>,
+    pub(super) source_timeline_origin_ns: Option<u64>,
+    pub(super) session_timeline_origin_ns: u64,
+    pub(super) sample_rate_hz: u32,
+    pub(super) channels: u8,
+    pub(super) sample_format: String,
+    pub(super) finalization_state: RecordingState,
+    pub(super) first_timestamp_ns: Option<u64>,
+    pub(super) final_timestamp_ns: Option<u64>,
+    pub(super) written_frames: u64,
+    pub(super) silence_filled_samples: u64,
+    pub(super) stale_frames: u64,
+    pub(super) gap_ranges: Vec<DiscontinuityRecord>,
+    pub(super) wav_bytes: Option<u64>,
+    pub(super) checksum_algorithm: String,
+    pub(super) checksum: Option<String>,
+    pub(super) error: Option<String>,
 }
 
 impl ManifestStem {
@@ -1777,7 +1781,7 @@ impl ManifestStem {
             session_timeline_origin_ns: config.timeline_mapping.session_origin_ns,
             sample_rate_hz: config.sample_rate_hz,
             channels: config.channels,
-            sample_format: "f32_interleaved",
+            sample_format: "f32_interleaved".into(),
             finalization_state: state,
             first_timestamp_ns: None,
             final_timestamp_ns: None,
@@ -1786,7 +1790,7 @@ impl ManifestStem {
             stale_frames: 0,
             gap_ranges: Vec::new(),
             wav_bytes: None,
-            checksum_algorithm: "fnv1a64",
+            checksum_algorithm: "fnv1a64".into(),
             checksum: None,
             error: None,
         }
@@ -1829,7 +1833,7 @@ impl ManifestStem {
             session_timeline_origin_ns: declaration.session_timeline_origin_ns,
             sample_rate_hz: declaration.sample_rate_hz,
             channels: declaration.channels,
-            sample_format: "f32_interleaved",
+            sample_format: "f32_interleaved".into(),
             finalization_state: state,
             first_timestamp_ns: None,
             final_timestamp_ns: None,
@@ -1838,7 +1842,7 @@ impl ManifestStem {
             stale_frames: 0,
             gap_ranges: Vec::new(),
             wav_bytes: None,
-            checksum_algorithm: "fnv1a64",
+            checksum_algorithm: "fnv1a64".into(),
             checksum: None,
             error,
         }

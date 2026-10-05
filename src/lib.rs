@@ -144,9 +144,10 @@ pub use crate::session::lifecycle::{
 pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
-    SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
-    SessionSourceActivityEvaluation, SessionSourceActivityObservations,
-    SessionSourceActivityPolicy, SessionSourceActivityPolicyError, SessionSourceActivityState,
+    SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState,
+    SessionRecordingStemOutcome, SessionSourceActivityEvaluation,
+    SessionSourceActivityObservations, SessionSourceActivityPolicy,
+    SessionSourceActivityPolicyError, SessionSourceActivityState,
     DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME,
     SESSION_RECORDING_MANIFEST_SCHEMA_VERSION,
 };
@@ -1224,3 +1225,10 @@ impl SessionStopResult {
         self.outcome.is_success()
     }
 }
+
+/// Source-aware replay and bounded context windows over finalized recordings.
+pub use crate::recording::{
+    DiscontinuityKind as RecordingDiscontinuityKind, DiscontinuityRecord as RecordingDiscontinuity,
+    RecordedAudio, RecordedStem, RecordingClip, RecordingClipError, RecordingClipWindow,
+    MAX_RECORDING_CLIP_BYTES,
+};

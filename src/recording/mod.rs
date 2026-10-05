@@ -3,6 +3,7 @@
 //! Session may offer convenience syntax, but recording policy, timeline,
 //! persistence, and finalization remain in this module.
 
+mod clip;
 mod config;
 mod endpoint;
 mod error_code;
@@ -19,9 +20,13 @@ pub use endpoint::{
 pub use error_code::{recording_outcome_error_code, RecordingErrorCode};
 #[cfg(test)]
 pub use writer::MultistemRecording;
-#[cfg(any(test, feature = "internal-testing"))]
 pub use writer::{DiscontinuityKind, DiscontinuityRecord};
 pub use writer::{
     RecorderError, RecordingObservations, RecordingOutcome, RecordingState, RecordingStemOutcome,
 };
 pub(crate) use writer::{RECORDING_MANIFEST_FILE_NAME, RECORDING_MANIFEST_SCHEMA_VERSION};
+
+pub use clip::{
+    RecordedAudio, RecordedStem, RecordingClip, RecordingClipError, RecordingClipWindow,
+    MAX_RECORDING_CLIP_BYTES,
+};
