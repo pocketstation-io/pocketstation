@@ -218,6 +218,48 @@ fn given_timestamp_and_sequence_gap_when_finished_then_silence_and_events_preser
         manifest["stems"][0]["silence_filled_samples"],
         FRAME_SAMPLES as u64
     );
+    let clip = outcome
+        .read_clip(
+            SessionId(7),
+            StemId(20),
+            crate::RecordingClipWindow::new(0, 60_000_000).unwrap(),
+        )
+        .unwrap();
+    assert_eq!(clip.sample_frames, (FRAME_SAMPLES * 3) as u64);
+    assert_eq!(clip.discontinuities.len(), 2);
+    let samples: Vec<f32> = hound::WavReader::new(std::io::Cursor::new(clip.wav))
+        .unwrap()
+        .into_samples::<f32>()
+        .map(Result::unwrap)
+        .collect();
+    assert!(samples[..FRAME_SAMPLES]
+        .iter()
+        .all(|sample| *sample == 0.25));
+    assert!(samples[FRAME_SAMPLES..FRAME_SAMPLES * 2]
+        .iter()
+        .all(|sample| *sample == 0.0));
+    assert!(samples[FRAME_SAMPLES * 2..]
+        .iter()
+        .all(|sample| *sample == 0.5));
+    // Half-open clips exclude a gap ending exactly at their start, but retain
+    // an instantaneous sequence-reset observation at that same start.
+    let tail = outcome
+        .read_clip(
+            SessionId(7),
+            StemId(20),
+            crate::RecordingClipWindow::new(40_000_000, 60_000_000).unwrap(),
+        )
+        .unwrap();
+    assert_eq!(tail.discontinuities.len(), 1);
+    assert_eq!(tail.discontinuities[0].kind, DiscontinuityKind::SequenceGap);
+    let before_gap = outcome
+        .read_clip(
+            SessionId(7),
+            StemId(20),
+            crate::RecordingClipWindow::new(0, 20_000_000).unwrap(),
+        )
+        .unwrap();
+    assert!(before_gap.discontinuities.is_empty());
 }
 
 #[test]

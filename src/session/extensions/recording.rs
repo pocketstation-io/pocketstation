@@ -36,6 +36,23 @@ impl SessionRecordingReceipt {
     pub fn outcome(&self) -> Option<&RecordingOutcome> {
         self.inner.result()
     }
+
+    /// Read source-aware audio after recording finalization, on a blocking
+    /// control worker. This never opens a device or changes the Session graph.
+    pub fn read_clip(
+        &self,
+        session_id: crate::frame::SessionId,
+        stem_id: crate::frame::StemId,
+        window: crate::RecordingClipWindow,
+    ) -> Result<crate::RecordingClip, crate::RecordingClipError> {
+        let outcome = self
+            .outcome()
+            .ok_or(crate::RecordingClipError::InvalidRecording)?;
+        if outcome.state != crate::recording::RecordingState::Complete {
+            return Err(crate::RecordingClipError::InvalidRecording);
+        }
+        crate::RecordedAudio::open(&outcome.session_dir, session_id)?.read_clip(stem_id, window)
+    }
 }
 
 impl SessionEngineBuilder {
