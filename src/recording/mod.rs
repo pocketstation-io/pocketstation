@@ -7,6 +7,7 @@ mod clip;
 mod config;
 mod endpoint;
 mod error_code;
+mod history;
 mod writer;
 
 #[cfg(any(test, feature = "internal-testing"))]
@@ -29,4 +30,9 @@ pub(crate) use writer::{RECORDING_MANIFEST_FILE_NAME, RECORDING_MANIFEST_SCHEMA_
 pub use clip::{
     RecordedAudio, RecordedStem, RecordingClip, RecordingClipError, RecordingClipWindow,
     MAX_RECORDING_CLIP_BYTES,
+};
+pub(crate) use history::HistoryFactory;
+pub use history::{
+    AudioHistory, AudioHistoryConfig, AudioHistoryError, AudioHistoryObservations,
+    AudioHistoryState,
 };

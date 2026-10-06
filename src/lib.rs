@@ -10,8 +10,8 @@ mod endpoint;
 mod frame;
 pub use crate::aec::{aec_available, EchoCancellationObservations, EchoCancellationState};
 pub use crate::session::extensions::{
-    EchoAudioInput, EchoCancelledAudio, EchoInputProcessing, NativePlaybackReference,
-    PlaybackReference,
+    AudioHistoryDeclarationError, EchoAudioInput, EchoCancelledAudio, EchoInputProcessing,
+    NativePlaybackReference, PlaybackReference,
 };
 /// Stable signal, port, capability, partition, and extension APIs.
 ///
@@ -1228,7 +1228,8 @@ impl SessionStopResult {
 
 /// Source-aware replay and bounded context windows over finalized recordings.
 pub use crate::recording::{
-    DiscontinuityKind as RecordingDiscontinuityKind, DiscontinuityRecord as RecordingDiscontinuity,
-    RecordedAudio, RecordedStem, RecordingClip, RecordingClipError, RecordingClipWindow,
-    MAX_RECORDING_CLIP_BYTES,
+    AudioHistory, AudioHistoryConfig, AudioHistoryError, AudioHistoryObservations,
+    AudioHistoryState, DiscontinuityKind as RecordingDiscontinuityKind,
+    DiscontinuityRecord as RecordingDiscontinuity, RecordedAudio, RecordedStem, RecordingClip,
+    RecordingClipError, RecordingClipWindow, MAX_RECORDING_CLIP_BYTES,
 };

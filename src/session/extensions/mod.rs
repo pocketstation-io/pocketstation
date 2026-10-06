@@ -8,7 +8,9 @@ pub use aec::{
     EchoAudioInput, EchoCancelledAudio, EchoInputProcessing, NativePlaybackReference,
     PlaybackReference,
 };
+mod audio_history;
 mod audio_input;
+pub use audio_history::AudioHistoryDeclarationError;
 pub(crate) mod builtins;
 mod native_library;
 mod polled_audio;

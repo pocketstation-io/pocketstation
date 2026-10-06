@@ -25,6 +25,9 @@ pub struct RecordingClipWindow {
 }
 
 impl RecordingClipWindow {
+    pub(super) fn sample_aligned(start_ns: u64, end_ns: u64) -> Self {
+        Self { start_ns, end_ns }
+    }
     /// Validate a nonempty interval of at most 120 seconds.
     pub fn new(start_ns: u64, end_ns: u64) -> Result<Self, RecordingClipError> {
         if end_ns <= start_ns || end_ns - start_ns > MAX_WINDOW_NS {
