@@ -33,6 +33,36 @@ signal/telemetry detectors use the same ns interval without introducing provider
 catalogs into Core. Wake phrases use external KWS Operators and the existing
 bounded signal path; Capturo opens its composer, never implicitly captures/sends.
 
-Next distinct qualification: live bounded history Endpoint on the existing
-runtime, delayed triggers, lost context, cancellation, output quotas and recovery.
-No live, acoustic, AI-superiority, SDK binary or release claim is made here.
+The live slice adds `Session::audio_history(AudioHistoryConfig)` and explicit
+`SourceOutputHandle::retain_audio` / `StemHandle::retain_audio` routes. This is
+production code in `recording`, using existing grouped Endpoint execution,
+source-aware queues and Session startup/shutdown. Ordinary capture has no history
+worker or retention allocation. No duplicate capture, processing engine, package,
+feature or dependency is introduced.
+
+One endpoint control worker retains up to 64 independently identified stems.
+Default shared limits are 30 seconds, 16 MiB PCM and 4096 buffers; maximums are
+120 seconds, 64 MiB and 65536 buffers. Oldest PCM is evicted before incoming PCM
+is copied. Buffer metadata capacity shrinks after eviction and clear. Reads copy
+bounded PCM under a control mutex and encode WAV after release; callbacks and
+realtime partitions retain the existing bounded copy-to-branch-pool boundary.
+Callers bound concurrent reads and delayed-trigger retries. There is no hidden
+request backlog, detector catalog or native inference.
+
+Live windows deliberately differ from finalized file windows: missing pre-roll
+returns Expired; future post-roll returns NotReady; gaps return MissingContext
+instead of invented silence; completed short captures return Ended. Cancellation
+purges history; graceful stop leaves bounded retained history readable. Source
+generation, clock or permission changes reset that stem. Failure immediately
+purges PCM and reports Failed. Continuous samples use exact sample counters,
+including fractional-nanosecond durations, rather than repeated rounded offsets.
+
+Python sync/async and Node bind these Core APIs. Python native reads release the
+GIL; async reads run on workers. Node native reads use blocking workers and exact
+bigint identities/timestamps. Cancelling an await does not interrupt a started
+copy; applications own concurrency and returned clips.
+
+Qualification uses ordinary Session execution with controlled PCM and installed
+local native artifacts in Lab. It proves routing/retention/slicing, not physical
+acquisition, recognition, wake-word quality, native AEC, platform breadth or
+release readiness. Capturo integration remains a separate consumer step.

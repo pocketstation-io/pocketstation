@@ -4980,3 +4980,31 @@ No live rolling history, wake recognition, physical platform, publication or
 registry availability claim. The five prior release edits remain byte-preserved.
 Staff review PASS for the finalized-recording code; formal clean-owner
 acceptance remains pending because unrelated release edits are preserved.
+
+### W21 live audio history — candidate 148, 2026-10-06
+
+REAL component implementation; LOOPBACK-ONLY installed integration.
+`Session::audio_history` and explicit source/stem retention use the ordinary
+grouped Endpoint runtime. Default shared limits are 30s / 16 MiB PCM / 4096
+buffers; all queue, buffer-count and PCM bounds are explicit. Independent stems,
+channel interleaving, Session time, clock/generation/permission identity and exact
+sample indexes survive extraction. Delayed post-context, expired/missing context,
+source resets, clear, graceful completion, cancellation purge and immediate
+worker failure are distinct. No detector, inference, dependency, feature,
+version or implicit device capture was added.
+
+Validation: 738 all-target/all-feature tests pass; the later oversized-input
+failure case also passes in the five-test history suite (739 distinct Core
+tests across both runs). Seven doc examples, CODE_PROTOCOL including hot-path
+checks/strict Clippy, and release quickstart compilation pass. Lab installs real
+local Python/Node artifacts: two independently retained/recorded PCM stems,
+288 history buffers and 128 concurrent reads per SDK, exact live/finalized and
+cross-SDK WAV bytes, bounded retention, explicit expiry, zero recorder drops,
+new-Session capture and cancellation purge.
+
+Evidence: factory `docs/execution/evidence/W21-RECORDING-TRIGGER-CLIPS/live-history-148`.
+Scaffold inventory: no new runtime stub/mock; controlled Lab PCM is explicitly
+LOOPBACK-ONLY. Staff review: PASS for this component boundary. Release/clean-owner
+acceptance remains pending against preserved unrelated manifests/AEC work; no
+physical capture, wake recognition, native-AEC or platform claim. Capturo's
+consumer integration is next and is not declared done here.
