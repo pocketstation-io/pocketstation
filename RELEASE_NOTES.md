@@ -4,6 +4,41 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.13 — 2026-10-06
+
+### Retain and extract source-aware audio context
+
+`Session::audio_history` retains only explicitly routed stems through the
+existing Endpoint runtime. Defaults are 30 seconds, 16 MiB of PCM and
+4,096 buffers shared across stems; the first reached limit evicts older audio.
+`retain_audio` declares the route. `AudioHistory::read_clip` returns original
+channel samples, exact sample bounds and source/session/stem/clock provenance.
+Pending post-context, expired pre-context, gaps and worker failures have typed
+errors. Stop preserves audio within those limits; cancellation purges it. No detector,
+implicit microphone capture or source mixing is introduced.
+
+`RecordedAudio::read_clip` extracts the same source-aware context from finalized
+Session recordings, verifies the selected WAV and includes intersecting
+discontinuities. External detector intervals use `RecordingClipWindow`; Core
+owns time/sample mapping and audio extraction. Python and Node project these
+APIs without a second retention or slicing implementation.
+
+### Optional echo processing
+
+Echo cancellation is available through `Session::echo_cancel` when the `aec`
+Cargo feature is enabled. Default builds omit the WebRTC processing engine.
+The microphone and playback reference are selected explicitly; application-only
+capture continues to work without a microphone. Session reports processing
+availability and rejects known already-processed microphone ancestry or a
+second cancellation stage. Unknown input processing is reported as unknown.
+
+`Session::native_aec` can request an exact playback output device without the
+portable engine. Unsupported routes fail before microphone delivery. The current
+Windows implementation validates an active AEC effect on the opened WASAPI
+capture client; this is not a claim of measured acoustic quality. macOS and
+Linux native routes remain unsupported. Physical double-talk and route-change
+qualification remain in progress.
+
 ## 1.1.12 — 2026-09-26
 
 macOS microphone frames now preserve a continuous sample timeline when native

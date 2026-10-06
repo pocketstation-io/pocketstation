@@ -5008,3 +5008,12 @@ LOOPBACK-ONLY. Staff review: PASS for this component boundary. Release/clean-own
 acceptance remains pending against preserved unrelated manifests/AEC work; no
 physical capture, wake recognition, native-AEC or platform claim. Capturo's
 consumer integration is next and is not declared done here.
+# 2026-10-06 — clip/history release preparation
+
+User resumes publication of existing Core 1.1.13 and corresponding SDKs where
+qualification permits. The prepared version and release notes now cover the
+committed bounded live-history and finalized-recording clip APIs. Same-source
+local component/Lab evidence remains in candidate148; release package and CI
+qualification belong to candidate149. No new dependency or native fork change.
+Native macOS/Linux AEC remains unsupported; physical/Windows qualification is
+in progress. Release preparation does not claim registry publication.
