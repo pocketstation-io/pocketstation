@@ -434,3 +434,21 @@ pub enum RecordingClipError {
     #[error(transparent)]
     Recorder(#[from] RecorderError),
 }
+
+impl RecordingClipError {
+    /// Stable classification shared by native SDKs; messages retain error detail.
+    pub const fn code(&self) -> &'static str {
+        match self {
+            Self::InvalidWindow => "recording.clip_invalid_window",
+            Self::InvalidRecording => "recording.clip_invalid_recording",
+            Self::UnknownStem => "recording.clip_unknown_stem",
+            Self::NoAudio => "recording.clip_no_audio",
+            Self::ChangedRecording => "recording.clip_changed_recording",
+            Self::SizeLimit => "recording.clip_size_limit",
+            Self::Io(_) => "recording.clip_io",
+            Self::Wav(_) => "recording.clip_wav",
+            Self::Json(_) => "recording.clip_json",
+            Self::Recorder(_) => "recording.clip_checksum",
+        }
+    }
+}
