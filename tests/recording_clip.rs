@@ -215,3 +215,17 @@ fn given_manifest_with_foreign_paths_or_lineage_when_opened_then_core_rejects_it
     std::fs::write(&manifest, serde_json::to_vec(&altered).unwrap()).unwrap();
     assert!(RecordedAudio::open(&path, id).is_err());
 }
+
+#[test]
+fn given_invalid_public_clip_interval_when_classified_then_sdk_error_code_is_stable() {
+    let error = pocketstation::RecordingClipWindow::new(7, 7).unwrap_err();
+    assert_eq!(error.code(), "recording.clip_invalid_window");
+    assert_eq!(
+        pocketstation::RecordingClipError::UnknownStem.code(),
+        "recording.clip_unknown_stem"
+    );
+    assert_eq!(
+        pocketstation::RecordingClipError::ChangedRecording.code(),
+        "recording.clip_changed_recording"
+    );
+}
