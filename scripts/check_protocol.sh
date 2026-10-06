@@ -20,10 +20,15 @@ fi
 echo "scope: full workspace (${#rust_files[@]} Rust files)"
 
 echo "PUBLIC-DOCS: concrete developer language..."
+# Explicit tracked filenames keep ignored-but-tracked documentation in the
+# check. Recursive ripgrep discovery can omit it in a local checkout.
+public_docs=()
+while IFS= read -r file; do
+  public_docs+=("$file")
+done < <(git ls-files -- README.md RELEASE_NOTES.md docs examples native | rg '\.(md|mdx)$')
 public_doc_vocabulary="$(
   rg -n -i '\b(boundary|path|surface|authority|projection|lowering|flow|layer|bounded|contracts?)\b' \
-    README.md RELEASE_NOTES.md docs examples native \
-    --glob '*.md' --glob '*.mdx' 2>/dev/null || true
+    "${public_docs[@]}" 2>/dev/null || true
 )"
 if [ -n "${public_doc_vocabulary}" ]; then
   echo "  FAIL: public documentation uses vague shorthand instead of a concrete API, queue, limit, process, service, or request:"

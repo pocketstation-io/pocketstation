@@ -4,7 +4,7 @@ Status: Accepted ownership; PARTIAL workflow qualification, 2026-10-05.
 
 The user assigns generic trigger/clip support to Core and explicitly excludes
 native AI claims. Existing async Operators accept PCM and emit typed signals
-with timing, lineage, bounded routes, cancellation and required-delivery failures.
+with timing, lineage, configured route capacities, cancellation and required-delivery failures.
 Recognition and application actions remain external. This is the narrow recording
 primitive missing from that composition; the external consumer failed to import
 RecordedAudio/RecordingClipWindow before implementation (factory evidence).
@@ -31,7 +31,7 @@ Capturo configures literal rules, accepts source-scoped ASR match intervals,
 stores immutable session-owned clips and displays History. Future generic
 signal/telemetry detectors use the same ns interval without introducing provider
 catalogs into Core. Wake phrases use external KWS Operators and the existing
-bounded signal path; Capturo opens its composer, never implicitly captures/sends.
+signal queues with explicit capacities; Capturo opens its composer, never implicitly captures/sends.
 
 The live slice adds `Session::audio_history(AudioHistoryConfig)` and explicit
 `SourceOutputHandle::retain_audio` / `StemHandle::retain_audio` routes. This is
@@ -44,15 +44,15 @@ One endpoint control worker retains up to 64 independently identified stems.
 Default shared limits are 30 seconds, 16 MiB PCM and 4096 buffers; maximums are
 120 seconds, 64 MiB and 65536 buffers. Oldest PCM is evicted before incoming PCM
 is copied. Buffer metadata capacity shrinks after eviction and clear. Reads copy
-bounded PCM under a control mutex and encode WAV after release; callbacks and
-realtime partitions retain the existing bounded copy-to-branch-pool boundary.
+up to 32 MiB PCM under a control mutex and encode WAV after release; callbacks and
+realtime partitions retain the existing copy-to-branch-pool operation and its fixed capacity.
 Callers bound concurrent reads and delayed-trigger retries. There is no hidden
 request backlog, detector catalog or native inference.
 
 Live windows deliberately differ from finalized file windows: missing pre-roll
 returns Expired; future post-roll returns NotReady; gaps return MissingContext
 instead of invented silence; completed short captures return Ended. Cancellation
-purges history; graceful stop leaves bounded retained history readable. Source
+purges history; graceful stop leaves retained history readable within its configured limits. Source
 generation, clock or permission changes reset that stem. Failure immediately
 purges PCM and reports Failed. Continuous samples use exact sample counters,
 including fractional-nanosecond durations, rather than repeated rounded offsets.
