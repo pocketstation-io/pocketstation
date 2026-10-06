@@ -26,7 +26,7 @@ You need Rust 1.95 or newer and one supported desktop application producing
 audio.
 
 ```bash
-cargo add pocketstation@1.1.12
+cargo add pocketstation@1.1.13
 ```
 
 ```rust,no_run
@@ -90,12 +90,12 @@ does not present a partial recording as a successful one.
 
 ## Use one capture for several jobs
 
-The development checkout includes built-in echo cancellation through
+The package includes built-in echo cancellation through
 `Session::echo_cancel`. The native engine is excluded from default builds. Enable the `aec` Cargo
 feature explicitly; `aec_available()` reports whether it is included. Callers select the microphone and playback reference;
-Session registers the processor and owns its worker. This is unreleased work
-with same-clock PCM integration tests; physical capture and device-clock
-adaptation are not yet qualified. See [echo cancellation](docs/guides/echo-cancellation.md)
+Session registers the processor and owns its worker. Same-clock PCM integration
+is tested; physical double-talk and device-clock adaptation are not yet
+qualified. See [echo cancellation](docs/guides/echo-cancellation.md)
 for the supported inputs and current limitations.
 
 A stem can feed several destinations at once:
@@ -217,7 +217,7 @@ Native prerequisites:
 Disable native capture when a tool only needs PocketStation types or docs:
 
 ```toml
-pocketstation = { version = "1.1.12", default-features = false }
+pocketstation = { version = "1.1.13", default-features = false }
 ```
 
 ## Continue from the task you have

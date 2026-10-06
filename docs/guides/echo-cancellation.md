@@ -1,11 +1,11 @@
 # Echo cancellation
 
-The development checkout exposes `Session::echo_cancel` with an opt-in `aec`
+The package exposes `Session::echo_cancel` with an opt-in `aec`
 feature. Default builds omit the WebRTC engine. `aec_available()` reports build
 availability; requesting processing without it returns an explicit error before
 adding an Operator. The compatibility feature `echo-cancellation` enables `aec`. No
 example-package dependency or factory registration is required. This API is
-unreleased and physical acoustic qualification is incomplete.
+available in 1.1.13; physical acoustic qualification is incomplete.
 
 
 This feature does not discover or enable OS-provided AEC automatically. Build
@@ -120,8 +120,7 @@ affected sample can pass during a device transition.
 
 ## Run application capture with optional AEC
 
-This is an unreleased source example. Build from this checkout; the current
-published package does not contain this API. macOS application capture requires
+Build this source example from this checkout. macOS application capture requires
 system audio permission; microphone capture requires microphone permission.
 The AEC build additionally needs the tools listed below.
 
