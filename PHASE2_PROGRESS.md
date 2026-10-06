@@ -5017,3 +5017,15 @@ local component/Lab evidence remains in candidate148; release package and CI
 qualification belong to candidate149. No new dependency or native fork change.
 Native macOS/Linux AEC remains unsupported; physical/Windows qualification is
 in progress. Release preparation does not claim registry publication.
+
+## 2026-10-06 — make the documentation gate reproducible
+
+Same-source macOS/Windows compile and link checks passed. Linux tests, feature
+closure, strict Clippy, documentation, architecture and quickstart passed, then
+CODE_PROTOCOL rejected five phrases in the tracked recording ADR. Local recursive
+ripgrep had skipped that file through the checkout's ignore configuration.
+The gate now scans explicit Git-tracked Markdown filenames, including tracked
+ignored documents. The ADR names actual capacities and operations instead of
+rejected shorthand. No runtime, dependency or acceptance rule is removed.
+An adversarial tracked-ADR probe and the full protocol gate precede the new
+candidate push; cloud CI must pass again before publication.
