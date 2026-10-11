@@ -27,6 +27,7 @@ mod identity;
 #[cfg(feature = "internal-testing")]
 mod lifecycle_registry;
 mod native_aec;
+mod native_call_observations;
 mod observations;
 pub(crate) mod platform;
 mod processing;
@@ -52,8 +53,8 @@ pub use capture_owner::{prepare_capture, PreparedCapture, CAPTURE_MONOTONIC_CLOC
 pub use capture_owner::{
     prepare_capture_with_start_gate, prepare_capture_with_start_gate_native, ActiveCaptureBackend,
     CallbackCaptureBackend, CaptureDelivery, CaptureLineageSeed, CaptureObservationReceipt,
-    CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome,
-    PreparedCaptureBackend,
+    CaptureOpenCancellation, CaptureOpenFailure, CaptureOwner, CaptureOwnerObservations,
+    CapturePrepareRequest, CaptureStopOutcome, PreparedCaptureBackend,
 };
 pub use events::*;
 pub use frame_stream::{
@@ -72,6 +73,13 @@ pub use lifecycle_registry::*;
 pub use native_aec::{
     native_aec_route, NativeAecRequest, NativeAecRoute, NativeAecRouteHandle,
     NativeAecRouteReporter,
+};
+pub(crate) use native_call_observations::NativeCallObservationState;
+#[cfg(any(test, all(target_os = "macos", feature = "coreaudio-capture")))]
+pub(crate) use native_call_observations::NativeCallReporter;
+pub use native_call_observations::{
+    NativeCallObservations, NativeCallOperation, NativeCallSpan, NATIVE_CALL_COMPLETED_CAPACITY,
+    NATIVE_CALL_CURRENT_CAPACITY,
 };
 #[cfg(any(
     test,

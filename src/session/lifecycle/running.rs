@@ -1185,6 +1185,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         capture_backends,
         options,
         Arc::clone(&capture_start_gate),
+        &start_cancellation,
     ) {
         Ok(captures) => captures,
         Err(error) => {
@@ -2414,9 +2415,17 @@ fn prepare_and_open_captures(
     backends: CaptureBackendSet<'_>,
     options: SessionStartOptions,
     start_gate: Arc<CaptureDeliveryStartGate>,
+    cancellation: &SessionStartCancellation,
 ) -> Result<Vec<OpenedCapture>, CaptureAcquisitionError> {
     let mut captures = Vec::with_capacity(spec.stems().len());
     for stem in spec.stems() {
+        if cancellation.is_requested() {
+            return Err(CaptureAcquisitionError::Cancelled {
+                stem_id: stem.id(),
+                cleanup_error: None,
+                prior_captures: captures,
+            });
+        }
         let binding = match stem.source() {
             Source::Application(_) | Source::SystemAudio => backends.application,
             Source::Microphone(_) => backends.microphone,
@@ -2447,33 +2456,48 @@ fn prepare_and_open_captures(
                 });
             }
         };
-        let capture = match prepared.open() {
+        let capture = match prepared.open_cancellable(&cancellation.capture_open_cancellation()) {
             Ok(capture) => capture,
-            Err(source) => {
+            Err(crate::capture::CaptureOpenFailure::Cancelled { cleanup_error }) => {
+                return Err(CaptureAcquisitionError::Cancelled {
+                    stem_id: stem.id(),
+                    cleanup_error,
+                    prior_captures: captures,
+                });
+            }
+            Err(crate::capture::CaptureOpenFailure::Backend {
+                source,
+                cleanup_error,
+            }) => {
                 return Err(CaptureAcquisitionError::Open {
                     stem_id: stem.id(),
                     source,
+                    cleanup_error,
                     prior_captures: captures,
                 });
             }
         };
         if let Some(native) = native_request.as_ref() {
             let Source::Microphone(selector) = stem.source() else {
+                let (source, cleanup_error) = reject_start_capture(
+                    capture,
+                    CaptureError::BackendInit(
+                        "native AEC request is attached to a non-microphone source".to_owned(),
+                    ),
+                );
                 return Err(CaptureAcquisitionError::Open {
                     stem_id: stem.id(),
-                    source: reject_opened_capture(
-                        capture,
-                        CaptureError::BackendInit(
-                            "native AEC request is attached to a non-microphone source".to_owned(),
-                        ),
-                    ),
+                    source,
+                    cleanup_error,
                     prior_captures: captures,
                 });
             };
             if let Err(source) = validate_native_route(&capture, native, selector) {
+                let (source, cleanup_error) = reject_start_capture(capture, source);
                 return Err(CaptureAcquisitionError::Open {
                     stem_id: stem.id(),
-                    source: reject_opened_capture(capture, source),
+                    source,
+                    cleanup_error,
                     prior_captures: captures,
                 });
             }
@@ -2486,6 +2510,13 @@ fn prepare_and_open_captures(
         });
     }
     Ok(captures)
+}
+
+fn reject_start_capture(
+    capture: crate::capture::CaptureOwner,
+    rejected: CaptureError,
+) -> (CaptureError, Option<CaptureError>) {
+    (rejected, capture.stop_and_join().err())
 }
 
 fn reject_opened_capture(
@@ -2501,6 +2532,11 @@ fn reject_opened_capture(
 }
 
 enum CaptureAcquisitionError {
+    Cancelled {
+        stem_id: StemId,
+        cleanup_error: Option<CaptureError>,
+        prior_captures: Vec<OpenedCapture>,
+    },
     Prepare {
         stem_id: StemId,
         source: CaptureError,
@@ -2509,6 +2545,7 @@ enum CaptureAcquisitionError {
     Open {
         stem_id: StemId,
         source: CaptureError,
+        cleanup_error: Option<CaptureError>,
         prior_captures: Vec<OpenedCapture>,
     },
 }
@@ -2519,6 +2556,30 @@ impl CaptureAcquisitionError {
         running_endpoints: Vec<RunningEndpointBinding>,
     ) -> (SessionStartError, Vec<SessionRollbackFailure>) {
         match self {
+            Self::Cancelled {
+                stem_id,
+                cleanup_error,
+                prior_captures,
+            } => {
+                let mut rollback = rollback_captures(prior_captures);
+                if let Some(source) = cleanup_error {
+                    rollback.failures.push(SessionRollbackFailure::new(
+                        SessionRollbackStage::StopOpenedCapture,
+                        SessionControlFailure::new(
+                            SessionComponentId::Source { stem_id },
+                            "cleanup_failed_capture_open",
+                            source.to_string(),
+                        ),
+                    ));
+                }
+                rollback.append(rollback_running_endpoints(running_endpoints));
+                (
+                    SessionStartError::Cancelled {
+                        rollback_failures_total: rollback.failures_total(),
+                    },
+                    rollback.failures,
+                )
+            }
             Self::Prepare {
                 stem_id,
                 source,
@@ -2538,9 +2599,20 @@ impl CaptureAcquisitionError {
             Self::Open {
                 stem_id,
                 source,
+                cleanup_error,
                 prior_captures,
             } => {
                 let mut rollback = rollback_captures(prior_captures);
+                if let Some(source) = cleanup_error {
+                    rollback.failures.push(SessionRollbackFailure::new(
+                        SessionRollbackStage::StopOpenedCapture,
+                        SessionControlFailure::new(
+                            SessionComponentId::Source { stem_id },
+                            "cleanup_failed_capture_open",
+                            source.to_string(),
+                        ),
+                    ));
+                }
                 rollback.append(rollback_running_endpoints(running_endpoints));
                 (
                     SessionStartError::CaptureOpen {
