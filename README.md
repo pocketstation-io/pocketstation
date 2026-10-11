@@ -167,12 +167,12 @@ returns one result that includes component and recording failures.
 
 Use `SessionStartCancellation::observed()` when a caller needs to inspect native
 startup while `Session::start_cancellable` is still running. The token exposes
-bounded current-call and completed-call observations without audio samples or
+64 current-call slots and the first 128 completed native calls without audio samples or
 source identifiers. Cancellation is cooperative: it cannot interrupt an
 in-flight operating-system call. `SessionStartError::rollback_failures_total()`
 reports cleanup failures so callers can keep resources reserved when cleanup is
 uncertain. See [capture and route](docs/guides/capture-and-route.md) for the
-observation limits and recovery contract.
+observation limits and recovery behavior.
 
 Realtime callbacks and realtime processing are checked to remain:
 
