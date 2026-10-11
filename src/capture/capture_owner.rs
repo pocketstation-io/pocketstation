@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
 use std::sync::Arc;
 
 use crate::frame::{
@@ -77,6 +77,110 @@ pub struct CaptureDelivery {
     pub runtime_event_sender: SourceRuntimeEventSender,
 }
 
+/// Cooperative cancellation of a control-thread capture open.
+///
+/// Native calls already in progress cannot be preempted. Backends check this
+/// token after those calls return, before acquiring the next resource.
+#[derive(Clone, Debug, Default)]
+pub struct CaptureOpenCancellation {
+    requested: Arc<AtomicBool>,
+    native_calls: Option<Arc<crate::capture::NativeCallObservationState>>,
+}
+
+impl CaptureOpenCancellation {
+    pub fn request(&self) {
+        self.requested.store(true, Ordering::Release);
+    }
+
+    pub fn is_requested(&self) -> bool {
+        self.requested.load(Ordering::Acquire)
+    }
+
+    pub(crate) fn from_requested(requested: Arc<AtomicBool>) -> Self {
+        Self {
+            requested,
+            native_calls: None,
+        }
+    }
+
+    pub(crate) fn from_requested_observed(
+        requested: Arc<AtomicBool>,
+        native_calls: Option<Arc<crate::capture::NativeCallObservationState>>,
+    ) -> Self {
+        Self {
+            requested,
+            native_calls,
+        }
+    }
+
+    /// Optional native-control facts shared with the caller's startup token.
+    /// No facts imply capture success, cancellation preemption or cleanup.
+    pub fn native_call_observations(&self) -> Option<crate::capture::NativeCallObservations> {
+        self.native_calls.as_ref().map(|state| state.snapshot())
+    }
+
+    #[cfg(any(test, all(target_os = "macos", feature = "coreaudio-capture")))]
+    pub(crate) fn native_call_reporter(&self) -> Option<crate::capture::NativeCallReporter> {
+        self.native_calls
+            .as_ref()
+            .and_then(|state| state.reporter())
+    }
+
+    pub(crate) fn check(&self) -> Result<(), CaptureOpenFailure> {
+        if self.is_requested() {
+            Err(CaptureOpenFailure::Cancelled {
+                cleanup_error: None,
+            })
+        } else {
+            Ok(())
+        }
+    }
+}
+
+/// Failed or cancelled acquisition, retaining a separate cleanup failure.
+///
+/// Cleanup failure means the backend could not confirm resource reclamation;
+/// cancellation alone does not establish that resources were released.
+#[derive(Debug, thiserror::Error)]
+pub enum CaptureOpenFailure {
+    #[error("capture open cancelled")]
+    Cancelled { cleanup_error: Option<CaptureError> },
+    #[error("capture open failed: {source}")]
+    Backend {
+        source: CaptureError,
+        cleanup_error: Option<CaptureError>,
+    },
+}
+
+impl From<CaptureError> for CaptureOpenFailure {
+    fn from(source: CaptureError) -> Self {
+        Self::Backend {
+            source,
+            cleanup_error: None,
+        }
+    }
+}
+
+impl CaptureOpenFailure {
+    pub(crate) fn with_cleanup(self, cleanup_error: Option<CaptureError>) -> Self {
+        match self {
+            Self::Cancelled { .. } => Self::Cancelled { cleanup_error },
+            Self::Backend { source, .. } => Self::Backend {
+                source,
+                cleanup_error,
+            },
+        }
+    }
+
+    pub(crate) fn into_capture_error(self) -> CaptureError {
+        match self {
+            Self::Cancelled { cleanup_error } => cleanup_error
+                .unwrap_or_else(|| CaptureError::BackendInit("capture open cancelled".to_owned())),
+            Self::Backend { source, .. } => source,
+        }
+    }
+}
+
 /// Platform-neutral prepare/open API for callback-oriented capture.
 ///
 /// Implementations validate and reserve setup-time resources in `prepare`.
@@ -109,12 +213,33 @@ pub trait PreparedCaptureBackend: Send {
         self: Box<Self>,
         delivery: CaptureDelivery,
     ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError>;
+
+    /// Opens cooperatively, retaining cleanup failure after a late success.
+    /// Override this hook to check cancellation between native acquisitions.
+    /// The default preserves existing backends and checks before/after `open`.
+    fn open_cancellable(
+        self: Box<Self>,
+        delivery: CaptureDelivery,
+        cancellation: &CaptureOpenCancellation,
+    ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureOpenFailure> {
+        cancellation.check()?;
+        let active = self.open(delivery)?;
+        if cancellation.is_requested() {
+            return Err(CaptureOpenFailure::Cancelled {
+                cleanup_error: active.stop_and_join().err(),
+            });
+        }
+        Ok(active)
+    }
 }
 
 /// Native capture resources owned for exactly one active capture.
 ///
-/// Implementations must make `stop_and_join` bounded and must also stop and
-/// reclaim the same resources from `Drop`. Dropping this owner is a
+/// Implementations bound their own queues and workers. Synchronous native
+/// calls have backend-defined completion limits and cannot be preempted here.
+/// `stop_and_join` must report unconfirmed cleanup; `Drop` must attempt cleanup
+/// once, retaining any context a native callback may still reference instead
+/// of retrying or freeing it after uncertainty. Dropping this owner is a
 /// control-thread operation, never an audio-callback or realtime operation.
 pub trait ActiveCaptureBackend: Send {
     /// Resolved native source identity for every frame emitted by this open.
@@ -175,9 +300,34 @@ impl PreparedCapture {
         source_generation: SourceGeneration,
         discontinuity_epoch: u64,
     ) -> Result<CaptureOwner, CaptureError> {
+        self.open_using(source_generation, discontinuity_epoch, None)
+            .map_err(CaptureOpenFailure::into_capture_error)
+    }
+
+    pub(crate) fn open_cancellable(
+        self,
+        cancellation: &CaptureOpenCancellation,
+    ) -> Result<CaptureOwner, CaptureOpenFailure> {
+        self.open_using(SourceGeneration::INITIAL, 0, Some(cancellation))
+    }
+
+    fn open_using(
+        self,
+        source_generation: SourceGeneration,
+        discontinuity_epoch: u64,
+        cancellation: Option<&CaptureOpenCancellation>,
+    ) -> Result<CaptureOwner, CaptureOpenFailure> {
         let frame_observations = self.frame_stream.observation_handle();
         let runtime_event_observations = self.runtime_event_receiver.observation_handle();
-        let active_backend = self.backend.open(self.delivery)?;
+        let active_backend = match cancellation {
+            Some(cancellation) => self.backend.open_cancellable(self.delivery, cancellation)?,
+            None => self.backend.open(self.delivery)?,
+        };
+        if cancellation.is_some_and(CaptureOpenCancellation::is_requested) {
+            return Err(CaptureOpenFailure::Cancelled {
+                cleanup_error: active_backend.stop_and_join().err(),
+            });
+        }
         let source_id = active_backend.source_id();
         let observation_receipt = CaptureObservationReceipt {
             backend: active_backend.observation_handle(),
@@ -580,6 +730,104 @@ mod tests {
             emitted_source_id: SourceId(2),
             resolved_source_id: SourceId(2),
         }
+    }
+
+    struct LegacyLateOpen {
+        inner: TestPreparedBackend,
+        cancellation: CaptureOpenCancellation,
+    }
+    impl PreparedCaptureBackend for LegacyLateOpen {
+        fn open(
+            self: Box<Self>,
+            delivery: CaptureDelivery,
+        ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
+            let active = Box::new(self.inner).open(delivery)?;
+            self.cancellation.request();
+            Ok(active)
+        }
+    }
+
+    #[test]
+    fn given_legacy_backend_when_late_cancellation_is_requested_then_default_hook_stops_late_success(
+    ) {
+        let opened = Arc::new(AtomicBool::new(false));
+        let stopped = Arc::new(AtomicBool::new(false));
+        let backend = test_backend(Arc::clone(&opened), Arc::clone(&stopped));
+        let mut prepared = prepare_capture(
+            &backend,
+            CapturePrepareRequest {
+                mode: CaptureMode::SystemMix,
+                lineage_seed: lineage_seed(),
+                frame_capacity_frames: 1,
+                runtime_event_capacity_events: 1,
+            },
+        )
+        .expect("prepare legacy backend");
+        let cancellation = CaptureOpenCancellation::default();
+        prepared.backend = Box::new(LegacyLateOpen {
+            inner: TestPreparedBackend {
+                opened: Arc::clone(&opened),
+                stopped: Arc::clone(&stopped),
+                emitted_source_id: SourceId(2),
+                resolved_source_id: SourceId(2),
+            },
+            cancellation: cancellation.clone(),
+        });
+        assert!(matches!(
+            prepared.open_cancellable(&cancellation),
+            Err(CaptureOpenFailure::Cancelled {
+                cleanup_error: None
+            })
+        ));
+        assert!(opened.load(Ordering::Acquire));
+        assert!(stopped.load(Ordering::Acquire));
+    }
+
+    #[test]
+    fn given_prepared_backend_when_late_cancellation_precedes_open_then_default_hook_never_opens() {
+        let opened = Arc::new(AtomicBool::new(false));
+        let backend = test_backend(Arc::clone(&opened), Arc::new(AtomicBool::new(false)));
+        let prepared = prepare_capture(
+            &backend,
+            CapturePrepareRequest {
+                mode: CaptureMode::SystemMix,
+                lineage_seed: lineage_seed(),
+                frame_capacity_frames: 1,
+                runtime_event_capacity_events: 1,
+            },
+        )
+        .expect("prepare legacy backend");
+        let cancellation = CaptureOpenCancellation::default();
+        cancellation.request();
+        assert!(matches!(
+            prepared.open_cancellable(&cancellation),
+            Err(CaptureOpenFailure::Cancelled {
+                cleanup_error: None
+            })
+        ));
+        assert!(!opened.load(Ordering::Acquire));
+    }
+
+    #[test]
+    fn given_primary_native_error_when_legacy_open_projects_late_cancellation_failure_then_primary_status_is_preserved(
+    ) {
+        let failure = CaptureOpenFailure::Backend {
+            source: CaptureError::BackendStatus {
+                operation: "start",
+                status_code: 0x10004003,
+            },
+            cleanup_error: Some(CaptureError::BackendStatus {
+                operation: "stop",
+                status_code: -1,
+            }),
+        };
+        assert!(matches!(
+            failure.into_capture_error(),
+            CaptureError::BackendStatus {
+                status_code: 0x10004003,
+                ..
+            }
+        ));
     }
 
     #[test]

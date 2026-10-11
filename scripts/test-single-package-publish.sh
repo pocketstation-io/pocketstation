@@ -83,6 +83,14 @@ for required_path in \
   docs/troubleshooting.md \
   include/pocketstation.h \
   src/lib.rs \
+  src/capture/native_call_observations.rs \
+  src/capture/capture_owner.rs \
+  src/capture/platform/macos/macos_tap.rs \
+  src/session/lifecycle/control.rs \
+  src/session/lifecycle/running.rs \
+  tests/session_facade.rs \
+  native/macos/asp/source_discovery.h \
+  native/macos/asp/source_discovery.m \
   src/aec/mod.rs \
   src/aec/processor.rs \
   src/session/extensions/aec.rs; do

@@ -43,17 +43,19 @@ pub use crate::capture::{
     native_aec_route, resolve_query, ActiveCaptureBackend, ApplicationPolicyObservation,
     CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery,
     CaptureError, CaptureMode, CaptureNativeFormat, CaptureObservationHandle, CaptureObservations,
-    CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition,
-    CaptureProcessingObservationHandle, CaptureProcessingObservations, CaptureProcessingReporter,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleRepresentation, CaptureScope,
-    CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle,
-    CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider,
-    NativeAecRequest, NativeAecRoute, NativeAecRouteHandle, NativeAecRouteReporter,
-    PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope,
-    SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind,
-    SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement,
-    SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle,
-    SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId,
+    CaptureOpenCancellation, CaptureOpenFailure, CaptureOpenOutcome, CapturePermissionLifecycle,
+    CapturePermissionTransition, CaptureProcessingObservationHandle, CaptureProcessingObservations,
+    CaptureProcessingReporter, CaptureRuntimeFailure, CaptureRuntimeFailureClass,
+    CaptureSampleRepresentation, CaptureScope, CaptureSessionGrant, CaptureSource,
+    CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender,
+    CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, NativeAecRequest,
+    NativeAecRoute, NativeAecRouteHandle, NativeAecRouteReporter, NativeCallObservations,
+    NativeCallOperation, NativeCallSpan, PermissionEpoch, PermissionObservation,
+    PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope, SourceGeneration,
+    SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider, SourceQuery,
+    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery,
+    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender,
+    SourceState, StableSourceId, NATIVE_CALL_COMPLETED_CAPACITY, NATIVE_CALL_CURRENT_CAPACITY,
 };
 
 /// Reads the current microphone authorization state without prompting.
@@ -1023,6 +1025,7 @@ pub struct SessionStartError {
     code: SessionStartErrorCode,
     message: String,
     compile_diagnostic: Option<Box<SessionCompileDiagnostic>>,
+    rollback_failures_total: u64,
 }
 
 impl SessionStartError {
@@ -1031,6 +1034,7 @@ impl SessionStartError {
             code,
             message: message.into(),
             compile_diagnostic: None,
+            rollback_failures_total: 0,
         }
     }
 
@@ -1044,6 +1048,15 @@ impl SessionStartError {
 
     pub fn message(&self) -> &str {
         &self.message
+    }
+
+    /// Number of cleanup failures reported by the startup transaction.
+    ///
+    /// A nonzero count means rollback could not confirm cleanup. Zero means
+    /// no rollback failure was reported; it does not prove physical resource
+    /// release or cover compensation after explicit sidecar startup failure.
+    pub const fn rollback_failures_total(&self) -> u64 {
+        self.rollback_failures_total
     }
 
     /// Returns structured compiler facts when startup failed while compiling
@@ -1101,6 +1114,10 @@ impl From<SessionEngineHostBuildError> for SessionStartError {
 
 impl From<SessionEngineStartError> for SessionStartError {
     fn from(error: SessionEngineStartError) -> Self {
+        let rollback_failures_total = match &error {
+            SessionEngineStartError::Start(failure) => failure.error().rollback_failures_total(),
+            _ => 0,
+        };
         let compile_diagnostic = match &error {
             SessionEngineStartError::Compile(error) => Some(Box::new(error.diagnostic())),
             _ => None,
@@ -1117,6 +1134,7 @@ impl From<SessionEngineStartError> for SessionStartError {
         };
         let mut start_error = Self::new(code, format!("Session start failed: {error}"));
         start_error.compile_diagnostic = compile_diagnostic;
+        start_error.rollback_failures_total = rollback_failures_total;
         start_error
     }
 }

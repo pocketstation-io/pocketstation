@@ -165,6 +165,15 @@ recording destination before it opens the Session start gate. A setup failure
 rolls back prepared resources. Stopping a running Session joins its workers and
 returns one result that includes component and recording failures.
 
+Use `SessionStartCancellation::observed()` when a caller needs to inspect native
+startup while `Session::start_cancellable` is still running. The token exposes
+64 current-call slots and the first 128 completed native calls without audio samples or
+source identifiers. Cancellation is cooperative: it cannot interrupt an
+in-flight operating-system call. `SessionStartError::rollback_failures_total()`
+reports cleanup failures so callers can keep resources reserved when cleanup is
+uncertain. See [capture and route](docs/guides/capture-and-route.md) for the
+observation limits and recovery behavior.
+
 Realtime callbacks and realtime processing are checked to remain:
 
 ```text
@@ -217,7 +226,7 @@ Native prerequisites:
 Disable native capture when a tool only needs PocketStation types or docs:
 
 ```toml
-pocketstation = { version = "1.1.13", default-features = false }
+pocketstation = { version = "1.1.14", default-features = false }
 ```
 
 ## Continue from the task you have
