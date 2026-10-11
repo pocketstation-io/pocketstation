@@ -119,7 +119,7 @@ impl CaptureOpenCancellation {
         self.native_calls.as_ref().map(|state| state.snapshot())
     }
 
-    #[cfg(any(test, all(target_os = "macos", feature = "coreaudio-capture")))]
+    #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
     pub(crate) fn native_call_reporter(&self) -> Option<crate::capture::NativeCallReporter> {
         self.native_calls
             .as_ref()
@@ -162,6 +162,7 @@ impl From<CaptureError> for CaptureOpenFailure {
 }
 
 impl CaptureOpenFailure {
+    #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
     pub(crate) fn with_cleanup(self, cleanup_error: Option<CaptureError>) -> Self {
         match self {
             Self::Cancelled { .. } => Self::Cancelled { cleanup_error },
