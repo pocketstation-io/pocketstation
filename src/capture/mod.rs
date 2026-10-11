@@ -75,7 +75,7 @@ pub use native_aec::{
     NativeAecRouteReporter,
 };
 pub(crate) use native_call_observations::NativeCallObservationState;
-#[cfg(any(test, all(target_os = "macos", feature = "coreaudio-capture")))]
+#[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
 pub(crate) use native_call_observations::NativeCallReporter;
 pub use native_call_observations::{
     NativeCallObservations, NativeCallOperation, NativeCallSpan, NATIVE_CALL_COMPLETED_CAPACITY,
