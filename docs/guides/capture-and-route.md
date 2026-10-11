@@ -90,6 +90,94 @@ let mut running = session.start()?;
 Each frame retains its source, stream, and stem lineage. Combining sources in a
 Session does not mix their PCM.
 
+## Cancel capture setup
+
+Use `Session::start_cancellable` with a `SessionStartCancellation` when the user
+can cancel while a device is opening. Request the token from the application's
+control thread. The same token reaches capture acquisition: after a synchronous
+native call returns, PocketStation checks it before acquiring the next resource,
+starting a device or creating a reader. A cancelled application open prevents
+the microphone declaration from opening.
+
+Cancellation does not interrupt a CoreAudio call already in progress. If device
+start has already begun, setup waits for its return and attempts reverse cleanup.
+The public `SessionStartError::rollback_failures_total()` getter preserves the
+startup transaction's reported cleanup failure count for both cancellation and
+backend errors. A nonzero count means rollback could not confirm cleanup; retain
+that distinction in application state. Zero means no rollback failure was
+reported, and does not prove physical resource release. The error's existing
+code, message, cancellation kind and compiler diagnostic remain available.
+Consumers need no internal engine error type or error-message parsing.
+
+This count applies to transactional Session startup used by ordinary
+recording and audio-history composition. It does not cover compensation after
+an explicitly registered sidecar fails to start, or the defensive missing-event
+receiver invariant fallback. These are separate cleanup-reporting limitations;
+recording and history use endpoints and do not implicitly register sidecars.
+
+On macOS, application and system capture share a process-wide limit of 64 native
+tap owners, including opens in progress. Confirmed cleanup releases a slot.
+If unregistering or destroying a native resource fails, or a registration or
+creation result leaves ownership unknown, PocketStation retains that owner's
+callback context and slot, and refuses further native tap opens in this process.
+It does not retry uncertain cleanup in `Drop` or automatically restart the
+process. Existing admitted owners keep their own contexts; the microphone uses
+its separate input backend. This prevents repeated failed opens from retaining
+an unbounded number of contexts.
+
+The cancellation and cleanup tests use injected native operations. They establish
+operation ordering and failure reporting; they do not establish native-call latency or
+successful cleanup on a physical audio device.
+
+### Observe a native call during setup
+
+Use `SessionStartCancellation::observed()` before starting the Session to
+enable native control-call observations. Keep a clone on the application's
+control thread while its existing setup worker calls `start_cancellable`.
+Ordinary default tokens leave this optional storage disabled.
+
+```rust,no_run
+use pocketstation::SessionStartCancellation;
+
+let start_token = SessionStartCancellation::observed();
+let observer = start_token.clone();
+// Pass start_token to the existing Session setup worker.
+if let Some(snapshot) = observer.native_call_observations() {
+    for call in snapshot.current.iter().flatten() {
+        let _operation = call.operation;
+        let _started_at_ns = call.started_at_ns;
+    }
+}
+```
+
+Each capture open has an ordinal and its own current-call slot. A call appears
+before native entry and remains current until return, including during reverse
+cleanup on a reader thread. The snapshot uses PocketStation's process monotonic
+nanosecond clock, never wall-clock time. Ordinals are diagnostic identities;
+snapshots contain no application names, process IDs, device IDs or audio.
+
+Up to 64 opens can be observed independently. The first 128 completed spans
+retain return times and signed statuses. HAL property and device leaves expose
+their OSStatus; callback registration exposes the existing controller result,
+which maps zero with no callback identity to an unspecified error. Native calls
+without a status, including discovery and process-instance queries, leave the
+status absent. Separate non-status spans also cover the existing global/process
+tap-description initializers and mute-behavior setter before HAL acquisition.
+Return alone does not establish useful audio or resource release.
+
+Reads make a fixed number of attempts per slot. `busy_slots` records overlapping
+publications; omitted-open/call and truncated-history counters describe missing
+observations. `counters_inexact` reports exhausted or contended counter updates.
+Slots and counters do not restrict capture admission. Records are independently
+coherent, rather than a simultaneous view of every worker; a returning call can
+appear in current and completed records during one read.
+
+This mechanism observes existing macOS application/system capture control
+calls. Other capture backends may produce no spans. It does not enable
+`PKS_TAP_DIAG`, make extra property queries, interrupt a blocked call, choose a
+timeout, retry cleanup or change the native ownership limit above. Native speech
+and cleanup still require evidence from the affected device and route.
+
 ## Choose the audio cadence
 
 Twenty milliseconds is the default for general capture. Select the 10 ms

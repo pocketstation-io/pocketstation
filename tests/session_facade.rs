@@ -23,6 +23,394 @@ fn given_public_facade_when_session_declared_then_canonical_types_are_used() {
     let _ = configured.id();
 }
 
+mod public_rollback {
+    use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+    use std::sync::Arc;
+
+    use pocketstation::{
+        ActiveCaptureBackend, AudioHistoryConfig, CallbackCaptureBackend, CaptureDelivery,
+        CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations,
+        CaptureOpenCancellation, CaptureOpenFailure, Operator, OperatorConfiguration, OperatorId,
+        PreparedCaptureBackend, Session, SessionStartCancellation, SessionStartError,
+        SessionStartErrorCode, SessionStartErrorKind, Source, SourceId,
+    };
+
+    #[derive(Clone, Copy)]
+    enum Open {
+        Active { cancel: bool, cleanup_fails: bool },
+        Failed { cleanup_fails: bool },
+    }
+
+    #[derive(Default)]
+    struct Calls {
+        prepare: AtomicU64,
+        open: AtomicU64,
+        stop: AtomicU64,
+        observed: AtomicBool,
+    }
+
+    struct Backend {
+        behavior: Open,
+        source_id: SourceId,
+        calls: Arc<Calls>,
+    }
+
+    struct Prepared(Backend);
+    struct Active(Backend);
+
+    fn cleanup_error() -> CaptureError {
+        CaptureError::BackendStatus {
+            operation: "MOCKED capture unregister",
+            status_code: -50,
+        }
+    }
+
+    impl CallbackCaptureBackend for Backend {
+        fn prepare(&self, _: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+            self.calls.prepare.fetch_add(1, Ordering::Relaxed);
+            Ok(Box::new(Prepared(Backend {
+                behavior: self.behavior,
+                source_id: self.source_id,
+                calls: Arc::clone(&self.calls),
+            })))
+        }
+    }
+
+    impl PreparedCaptureBackend for Prepared {
+        fn open(
+            self: Box<Self>,
+            _: CaptureDelivery,
+        ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
+            panic!("public Session must use its cancellable acquisition path");
+        }
+
+        fn open_cancellable(
+            self: Box<Self>,
+            _: CaptureDelivery,
+            cancellation: &CaptureOpenCancellation,
+        ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureOpenFailure> {
+            self.0.calls.open.fetch_add(1, Ordering::Relaxed);
+            self.0.calls.observed.store(
+                cancellation.native_call_observations().is_some(),
+                Ordering::Release,
+            );
+            match self.0.behavior {
+                Open::Active { cancel, .. } => {
+                    if cancel {
+                        cancellation.request();
+                    }
+                    Ok(Box::new(Active(self.0)))
+                }
+                Open::Failed { cleanup_fails } => Err(CaptureOpenFailure::Backend {
+                    source: CaptureError::BackendStatus {
+                        operation: "MOCKED capture start",
+                        status_code: 0x10004003,
+                    },
+                    cleanup_error: cleanup_fails.then(cleanup_error),
+                }),
+            }
+        }
+    }
+
+    impl ActiveCaptureBackend for Active {
+        fn source_id(&self) -> SourceId {
+            self.0.source_id
+        }
+
+        fn observation_handle(&self) -> CaptureObservationHandle {
+            CaptureObservationHandle::default()
+        }
+
+        fn observations(&self) -> CaptureObservations {
+            CaptureObservations::default()
+        }
+
+        fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+            self.0.calls.stop.fetch_add(1, Ordering::Relaxed);
+            if matches!(
+                self.0.behavior,
+                Open::Active {
+                    cleanup_fails: true,
+                    ..
+                }
+            ) {
+                Err(cleanup_error())
+            } else {
+                Ok(CaptureObservations::default())
+            }
+        }
+    }
+
+    fn composition(
+        application: Open,
+        microphone: Open,
+        recording_root: Option<&std::path::Path>,
+    ) -> (Session, Arc<Calls>, Arc<Calls>) {
+        let app_calls = Arc::new(Calls::default());
+        let mic_calls = Arc::new(Calls::default());
+        let builder = Session::builder().capture_backends(
+            Arc::new(Backend {
+                behavior: application,
+                source_id: SourceId::new(101),
+                calls: Arc::clone(&app_calls),
+            }),
+            Arc::new(Backend {
+                behavior: microphone,
+                source_id: SourceId::new(102),
+                calls: Arc::clone(&mic_calls),
+            }),
+        );
+        let session = match recording_root {
+            Some(root) => builder.recording_root(root).build(),
+            None => builder.build(),
+        };
+        let _history = session
+            .audio_history(AudioHistoryConfig::default())
+            .expect("bounded history declaration");
+        let app = session
+            .capture(Source::application("MOCKED application"))
+            .unwrap();
+        let mic = session.capture(Source::microphone_default()).unwrap();
+        app.record("application").unwrap();
+        mic.record("microphone").unwrap();
+        app.retain_audio().unwrap();
+        mic.retain_audio().unwrap();
+        (session, app_calls, mic_calls)
+    }
+
+    fn failure(session: Session, token: SessionStartCancellation) -> SessionStartError {
+        match session.start_cancellable(token) {
+            Err(error) => error,
+            Ok(mut running) => {
+                let _ = running.cancel();
+                panic!("MOCKED startup fault must reject the public Session");
+            }
+        }
+    }
+
+    #[test]
+    fn given_observed_public_token_when_cloned_and_used_by_session_then_optional_read_state_reaches_backend(
+    ) {
+        let ordinary = SessionStartCancellation::default();
+        assert!(ordinary.native_call_observations().is_none());
+        let token = SessionStartCancellation::observed();
+        let clone = token.clone();
+        let initial = clone.native_call_observations().unwrap();
+        assert_eq!(
+            initial.current.len(),
+            pocketstation::NATIVE_CALL_CURRENT_CAPACITY
+        );
+        assert_eq!(
+            initial.completed.len(),
+            pocketstation::NATIVE_CALL_COMPLETED_CAPACITY
+        );
+        assert!(initial.current.iter().all(Option::is_none));
+        assert!(initial.completed.iter().all(Option::is_none));
+        let root = tempfile::tempdir().unwrap();
+        let (session, app, mic) = composition(
+            Open::Active {
+                cancel: true,
+                cleanup_fails: false,
+            },
+            Open::Failed {
+                cleanup_fails: false,
+            },
+            Some(root.path()),
+        );
+        let error = failure(session, token);
+        assert!(error.is_cancelled());
+        assert!(clone.is_requested());
+        assert_eq!(error.rollback_failures_total(), 0);
+        assert!(app.observed.load(Ordering::Acquire));
+        assert_eq!(app.stop.load(Ordering::Acquire), 1);
+        assert_eq!(mic.prepare.load(Ordering::Acquire), 0);
+        // A MOCKED backend that makes no native calls cannot fabricate spans.
+        let final_snapshot = clone.native_call_observations().unwrap();
+        assert_eq!(final_snapshot.completed_calls_total, 0);
+        assert!(final_snapshot.current.iter().all(Option::is_none));
+    }
+
+    #[test]
+    fn given_late_open_cancel_when_public_recording_history_starts_then_cleanup_count_and_cancel_code_survive(
+    ) {
+        for cleanup_fails in [false, true] {
+            let root = tempfile::tempdir().unwrap();
+            let (session, app, mic) = composition(
+                Open::Active {
+                    cancel: true,
+                    cleanup_fails,
+                },
+                Open::Failed {
+                    cleanup_fails: false,
+                },
+                Some(root.path()),
+            );
+            let error = failure(session, SessionStartCancellation::default());
+            assert_eq!(error.rollback_failures_total(), u64::from(cleanup_fails));
+            assert_eq!(error.code(), SessionStartErrorCode::StartCancelled);
+            assert_eq!(error.kind(), SessionStartErrorKind::Cancelled);
+            assert!(error.is_cancelled());
+            assert_eq!(error.message(), "Session start failed: Session transactional start failed: Session start was cancelled");
+            assert!(error.compile_diagnostic().is_none());
+            assert_eq!(error.clone(), error);
+            assert_eq!(app.open.load(Ordering::Acquire), 1);
+            assert_eq!(app.stop.load(Ordering::Acquire), 1);
+            assert_eq!(mic.prepare.load(Ordering::Acquire), 0);
+            assert_eq!(mic.open.load(Ordering::Acquire), 0);
+        }
+    }
+
+    #[test]
+    fn given_backend_open_failure_when_public_recording_history_starts_then_primary_error_and_cleanup_count_survive(
+    ) {
+        for cleanup_fails in [false, true] {
+            let root = tempfile::tempdir().unwrap();
+            let (session, app, mic) = composition(
+                Open::Failed { cleanup_fails },
+                Open::Failed {
+                    cleanup_fails: false,
+                },
+                Some(root.path()),
+            );
+            let error = failure(session, SessionStartCancellation::default());
+            assert_eq!(error.rollback_failures_total(), u64::from(cleanup_fails));
+            assert_eq!(error.code(), SessionStartErrorCode::CaptureBackendFailed);
+            assert_eq!(error.kind(), SessionStartErrorKind::Engine);
+            assert!(!error.is_cancelled());
+            assert!(error
+                .message()
+                .ends_with("capture backend failed while MOCKED capture start: status 268451843"));
+            assert!(!error.message().contains("unregister"));
+            assert!(error.compile_diagnostic().is_none());
+            assert_eq!(app.open.load(Ordering::Acquire), 1);
+            assert_eq!(app.stop.load(Ordering::Acquire), 0);
+            assert_eq!(mic.prepare.load(Ordering::Acquire), 0);
+        }
+    }
+
+    #[test]
+    fn given_prior_capture_cleanup_failure_when_microphone_open_fails_then_public_count_retains_every_reported_failure(
+    ) {
+        for microphone_cleanup_fails in [false, true] {
+            let root = tempfile::tempdir().unwrap();
+            let (session, app, mic) = composition(
+                Open::Active {
+                    cancel: false,
+                    cleanup_fails: true,
+                },
+                Open::Failed {
+                    cleanup_fails: microphone_cleanup_fails,
+                },
+                Some(root.path()),
+            );
+            let error = failure(session, SessionStartCancellation::default());
+            assert_eq!(
+                error.rollback_failures_total(),
+                1 + u64::from(microphone_cleanup_fails)
+            );
+            assert_eq!(error.code(), SessionStartErrorCode::CaptureBackendFailed);
+            assert!(!error.is_cancelled());
+            assert_eq!(app.stop.load(Ordering::Acquire), 1);
+            assert_eq!(mic.open.load(Ordering::Acquire), 1);
+        }
+    }
+
+    #[test]
+    fn given_requested_cancel_when_public_recording_history_starts_then_no_capture_opens_or_rollback_failure_is_reported(
+    ) {
+        let root = tempfile::tempdir().unwrap();
+        let (session, app, mic) = composition(
+            Open::Failed {
+                cleanup_fails: true,
+            },
+            Open::Failed {
+                cleanup_fails: true,
+            },
+            Some(root.path()),
+        );
+        let token = SessionStartCancellation::default();
+        token.request();
+        let error = failure(session, token);
+        assert_eq!(error.rollback_failures_total(), 0);
+        assert!(error.is_cancelled());
+        assert_eq!(app.prepare.load(Ordering::Acquire), 0);
+        assert_eq!(mic.prepare.load(Ordering::Acquire), 0);
+    }
+
+    #[test]
+    fn given_missing_recording_root_when_public_recording_history_starts_then_preacquisition_error_has_zero_reported_failures(
+    ) {
+        let (session, app, mic) = composition(
+            Open::Failed {
+                cleanup_fails: true,
+            },
+            Open::Failed {
+                cleanup_fails: true,
+            },
+            None,
+        );
+        let error = failure(session, SessionStartCancellation::default());
+        assert_eq!(error.rollback_failures_total(), 0);
+        assert_eq!(
+            error.code(),
+            SessionStartErrorCode::MissingRecordingConfiguration
+        );
+        assert_eq!(
+            error.kind(),
+            SessionStartErrorKind::MissingRecordingConfiguration
+        );
+        assert_eq!(
+            error.message(),
+            "recording routes require an explicit Session recording root"
+        );
+        assert!(!error.is_cancelled());
+        assert!(error.compile_diagnostic().is_none());
+        assert_eq!(app.prepare.load(Ordering::Acquire), 0);
+        assert_eq!(mic.prepare.load(Ordering::Acquire), 0);
+    }
+
+    #[test]
+    fn given_unregistered_operator_when_public_recording_history_compiles_then_diagnostic_and_zero_reported_count_survive(
+    ) {
+        let root = tempfile::tempdir().unwrap();
+        let (session, app, mic) = composition(
+            Open::Failed {
+                cleanup_fails: true,
+            },
+            Open::Failed {
+                cleanup_fails: true,
+            },
+            Some(root.path()),
+        );
+        let operator_id = "example.operator.unregistered.v1";
+        let compiler_input = session
+            .capture(Source::application("MOCKED compiler input"))
+            .unwrap();
+        let output = compiler_input
+            .through(Operator::new(
+                OperatorId::new(operator_id),
+                OperatorConfiguration::new(),
+            ))
+            .unwrap();
+        output.send(session.polled_audio().unwrap()).unwrap();
+        let error = failure(session, SessionStartCancellation::default());
+        assert_eq!(error.rollback_failures_total(), 0);
+        assert_eq!(error.code(), SessionStartErrorCode::CompileFailed);
+        assert_eq!(error.kind(), SessionStartErrorKind::Engine);
+        assert!(!error.is_cancelled());
+        assert_eq!(error.message(), "Session start failed: Session compilation failed: async operator example.operator.unregistered.v1 is not registered");
+        let diagnostic = error
+            .compile_diagnostic()
+            .expect("public compiler diagnostic");
+        assert_eq!(diagnostic.code(), "compile.unknown_async_operator");
+        assert_eq!(diagnostic.operator_id(), Some(operator_id));
+        assert_eq!(diagnostic.node_index(), None);
+        assert_eq!(error.clone().compile_diagnostic(), Some(diagnostic));
+        assert_eq!(app.prepare.load(Ordering::Acquire), 0);
+        assert_eq!(mic.prepare.load(Ordering::Acquire), 0);
+    }
+}
+
 #[cfg(feature = "conformance-fixtures")]
 #[test]
 fn given_system_audio_when_session_runs_then_system_mix_keeps_its_own_stem() {

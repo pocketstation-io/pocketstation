@@ -1,6 +1,7 @@
 use crate::capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
+    CaptureObservationHandle, CaptureObservations, CaptureOpenCancellation, CaptureOpenFailure,
+    PreparedCaptureBackend,
 };
 
 use crate::capture::platform::macos::DesktopCaptureSource;
@@ -46,6 +47,24 @@ impl CallbackCaptureBackend for DesktopCaptureBackend {
 }
 
 impl PreparedCaptureBackend for PreparedDesktopCapture {
+    fn open_cancellable(
+        self: Box<Self>,
+        delivery: CaptureDelivery,
+        cancellation: &CaptureOpenCancellation,
+    ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureOpenFailure> {
+        let CaptureDelivery {
+            frame_sender,
+            runtime_event_sender,
+        } = delivery;
+        let source = DesktopCaptureSource::capture_mode_cancellable(
+            self.mode,
+            self.audio_frame_duration,
+            frame_sender.into_callback(),
+            Some(runtime_event_sender),
+            cancellation,
+        )?;
+        Ok(Box::new(ActiveDesktopCapture { source }))
+    }
     fn open(
         self: Box<Self>,
         delivery: CaptureDelivery,

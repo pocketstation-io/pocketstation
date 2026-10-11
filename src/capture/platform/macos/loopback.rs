@@ -69,19 +69,40 @@ impl SystemLoopbackSource {
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
         audio_frame_duration: crate::frame::AudioFrameDuration,
-        mut callback: F,
+        callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
+        Self::capture_mode_cancellable(
+            mode,
+            audio_frame_duration,
+            callback,
+            runtime_event_sender,
+            &crate::capture::CaptureOpenCancellation::default(),
+        )
+        .map_err(crate::capture::CaptureOpenFailure::into_capture_error)
+    }
+    pub(crate) fn capture_mode_cancellable<F>(
+        mode: CaptureMode,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+        mut callback: F,
+        runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
+        cancellation: &crate::capture::CaptureOpenCancellation,
+    ) -> Result<Self, crate::capture::CaptureOpenFailure>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        cancellation.check()?;
         // macOS 14.4+ (public support): use the process tap path (no HAL plugin, no routing change).
         if crate::capture::platform::macos::macos_tap::tap_available() {
-            return crate::capture::platform::macos::macos_tap::TapLoopbackSource::capture_mode_with_runtime_event_sender(
+            return crate::capture::platform::macos::macos_tap::TapLoopbackSource::capture_mode_cancellable(
                 mode,
                 audio_frame_duration,
                 callback,
                 runtime_event_sender,
+                cancellation,
             )
             .map(|t| Self(Impl::Tap(t)));
         }
@@ -89,7 +110,7 @@ impl SystemLoopbackSource {
         // Older macOS: ASP fallback only supports SystemMix.
         match mode {
             CaptureMode::SystemMix => {}
-            other => return Err(LoopbackError::ModeUnsupported(other)),
+            other => return Err(LoopbackError::ModeUnsupported(other).into()),
         }
 
         require_asp_driver_active(crate::capture::platform::macos::macos_asp::asp_is_installed())?;
@@ -125,6 +146,7 @@ impl SystemLoopbackSource {
         let initial_drop_count = reader.drop_count();
         let initial_timeline_reject_count = reader.timeline_reject_callback_count();
 
+        cancellation.check()?;
         let thread = std::thread::Builder::new()
             .name("pks-asp-reader".into())
             .spawn(move || {

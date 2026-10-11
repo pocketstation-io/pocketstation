@@ -40,6 +40,63 @@ uint64_t pks_process_start_time_ns(int32_t process_id);
 // Enumerate live audio source processes. Returns count written (≤ max).
 int pks_discover_sources(PksCaptureSourceInfo *out, int max);
 
+// Borrowed only during one synchronous control call. Never stored in a tap,
+// ring, IOProc or retained native resource. A zero call ordinal omits a marker.
+typedef struct {
+    uint64_t (*begin)(void *, uint32_t operation);
+    void (*end)(void *, uint64_t call, int32_t status, uint8_t has_status);
+    void *context;
+} PksNativeCallObserver;
+
+// Static tags mirror NativeCallOperation; no native/private identity is passed.
+typedef enum {
+    PKS_NATIVE_CALL_SOURCE_DEVICE_DISCOVERY = 1,
+    PKS_NATIVE_CALL_DEVICE_LIST_SIZE = 2,
+    PKS_NATIVE_CALL_DEVICE_LIST_DATA = 3,
+    PKS_NATIVE_CALL_DEVICE_STREAMS_SIZE = 4,
+    PKS_NATIVE_CALL_DEVICE_STREAMS_DATA = 5,
+    PKS_NATIVE_CALL_DEVICE_UID = 6,
+    PKS_NATIVE_CALL_DEVICE_NAME = 7,
+    PKS_NATIVE_CALL_DEVICE_SAMPLE_RATE = 8,
+    PKS_NATIVE_CALL_PROCESS_LIST_SIZE = 9,
+    PKS_NATIVE_CALL_PROCESS_LIST_DATA = 10,
+    PKS_NATIVE_CALL_PROCESS_ID = 11,
+    PKS_NATIVE_CALL_PROCESS_BUNDLE_ID = 12,
+    PKS_NATIVE_CALL_PROCESS_RUNNING_OUTPUT = 13,
+    PKS_NATIVE_CALL_PROCESS_START_TIME = 14,
+    PKS_NATIVE_CALL_PROCESS_NAME = 15,
+    PKS_NATIVE_CALL_APPLICATION_LABEL = 16,
+    PKS_NATIVE_CALL_RESOLVE_PROCESS_LIST_SIZE = 17,
+    PKS_NATIVE_CALL_RESOLVE_PROCESS_LIST_DATA = 18,
+    PKS_NATIVE_CALL_RESOLVE_PROCESS_ID = 19,
+    PKS_NATIVE_CALL_CREATE_PROCESS_TAP = 20,
+    PKS_NATIVE_CALL_TAP_UID = 21,
+    PKS_NATIVE_CALL_CREATE_AGGREGATE_DEVICE = 22,
+    PKS_NATIVE_CALL_STREAM_FORMAT = 23,
+    PKS_NATIVE_CALL_IO_BUFFER_SIZE_BEFORE = 24,
+    PKS_NATIVE_CALL_IO_BUFFER_SIZE_RANGE = 25,
+    PKS_NATIVE_CALL_IO_BUFFER_SIZE_SETTABLE = 26,
+    PKS_NATIVE_CALL_IO_BUFFER_SIZE_SET = 27,
+    PKS_NATIVE_CALL_IO_BUFFER_SIZE_APPLIED = 28,
+    PKS_NATIVE_CALL_REGISTER_IO_PROC = 29,
+    PKS_NATIVE_CALL_START_DEVICE = 30,
+    PKS_NATIVE_CALL_STOP_DEVICE = 31,
+    PKS_NATIVE_CALL_UNREGISTER_IO_PROC = 32,
+    PKS_NATIVE_CALL_DESTROY_AGGREGATE_DEVICE = 33,
+    PKS_NATIVE_CALL_DESTROY_PROCESS_TAP = 34,
+    PKS_NATIVE_CALL_DEVICE_LATENCY = 35,
+    PKS_NATIVE_CALL_SAFETY_OFFSET = 36,
+    PKS_NATIVE_CALL_SAFETY_OFFSET_SETTABLE = 37,
+    PKS_NATIVE_CALL_STREAM_LIST_SIZE = 38,
+    PKS_NATIVE_CALL_STREAM_LIST_DATA = 39,
+    PKS_NATIVE_CALL_STREAM_LATENCY = 40,
+    PKS_NATIVE_CALL_GLOBAL_TAP_DESCRIPTION = 41,
+    PKS_NATIVE_CALL_PROCESS_TAP_DESCRIPTION = 42,
+    PKS_NATIVE_CALL_TAP_MUTE_BEHAVIOR = 43,
+} PksNativeCallOperation;
+int pks_discover_sources_observed(PksCaptureSourceInfo *, int, const PksNativeCallObserver *);
+uint64_t pks_process_start_time_ns_observed(int32_t, const PksNativeCallObserver *);
+
 typedef struct PksProcessTapHandle PksProcessTapHandle;
 
 typedef enum PksTapOperationStage {
@@ -52,7 +109,42 @@ typedef enum PksTapOperationStage {
     PKS_TAP_STAGE_CREATE_IO_PROC = 6,
     PKS_TAP_STAGE_START_DEVICE = 7,
     PKS_TAP_STAGE_PLATFORM_SUPPORT = 8,
+    PKS_TAP_STAGE_STOP_DEVICE = 9,
+    PKS_TAP_STAGE_DESTROY_IO_PROC = 10,
+    PKS_TAP_STAGE_DESTROY_AGGREGATE = 11,
+    PKS_TAP_STAGE_DESTROY_TAP = 12,
+    PKS_TAP_STAGE_REGISTRATION_UNCERTAIN = 13,
 } PksTapOperationStage;
+
+// Control-thread ownership only. Operation callbacks permit deterministic
+// fault tests to execute the same controller without invoking CoreAudio.
+typedef struct {
+    uint8_t registered, start_attempted, started, cleanup_attempted;
+    uint8_t retained, aggregate_owned, tap_owned, registration_uncertain;
+    int32_t cleanup_status;
+    uint8_t cleanup_stage;
+    uint8_t reserved[3];
+} PksTapControl;
+typedef struct {
+    int32_t (*register_io)(void *);
+    int32_t (*start)(void *);
+    int32_t (*stop)(void *);
+    int32_t (*unregister_io)(void *);
+    int32_t (*destroy_aggregate)(void *);
+    int32_t (*destroy_tap)(void *);
+} PksTapControlOperations;
+typedef int (*PksTapCancellationCheck)(void *);
+int pks_tap_control_start(PksTapControl *, const PksTapControlOperations *, void *,
+                         PksTapCancellationCheck, void *, int32_t *, uint8_t *);
+// Success authorizes the caller to free context. Failure retains all remaining
+// ownership. No operation is retried after an uncertain cleanup.
+int pks_tap_control_cleanup(PksTapControl *, const PksTapControlOperations *, void *,
+                           int32_t *, uint8_t *);
+PksProcessTapHandle *pks_create_process_tap_checked(const int32_t *, int,
+    int32_t *, uint8_t *, int32_t *, uint8_t *, PksTapCancellationCheck, void *);
+int pks_tap_start_cancellable(PksProcessTapHandle *, uint16_t,
+    PksTapCancellationCheck, void *, int32_t *, uint8_t *);
+int pks_destroy_process_tap_checked(PksProcessTapHandle *, int32_t *, uint8_t *);
 
 // Create a tap. pids=NULL / pid_count=0 → global system tap (all output).
 // Returns NULL on failure or on macOS < 14.2.
@@ -65,7 +157,7 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
 int pks_tap_start(PksProcessTapHandle *tap, uint16_t requested_io_duration_ms,
                   int32_t *out_status, uint8_t *out_stage);
 
-// Destroy handle and release all CoreAudio resources.
+// Destroy on confirmed cleanup only; uncertain cleanup retains the handle.
 void pks_destroy_process_tap(PksProcessTapHandle *tap);
 
 // Read up to frame_count interleaved f32 stereo frames. Returns frames read.
@@ -90,3 +182,20 @@ uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap);
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap);
 uint32_t pks_tap_channels(const PksProcessTapHandle *tap);
 float    pks_tap_level(const PksProcessTapHandle *tap);
+
+// Observed variants execute the same production controller and native leaves.
+int pks_tap_control_start_observed(PksTapControl *, const PksTapControlOperations *, void *,
+    PksTapCancellationCheck, void *, int32_t *, uint8_t *, const PksNativeCallObserver *);
+int pks_tap_control_cleanup_observed(PksTapControl *, const PksTapControlOperations *, void *,
+    int32_t *, uint8_t *, const PksNativeCallObserver *);
+PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *, int,
+    int32_t *, uint8_t *, int32_t *, uint8_t *, PksTapCancellationCheck, void *,
+    const PksNativeCallObserver *);
+int pks_tap_start_observed(PksProcessTapHandle *, uint16_t, PksTapCancellationCheck,
+    void *, int32_t *, uint8_t *, const PksNativeCallObserver *);
+int pks_destroy_process_tap_observed(PksProcessTapHandle *, int32_t *, uint8_t *,
+    const PksNativeCallObserver *);
+uint32_t pks_tap_input_device_latency_frames_observed(const PksProcessTapHandle *, const PksNativeCallObserver *);
+uint32_t pks_tap_input_safety_offset_frames_observed(const PksProcessTapHandle *, const PksNativeCallObserver *);
+uint8_t pks_tap_input_safety_offset_settable_observed(const PksProcessTapHandle *, const PksNativeCallObserver *);
+uint32_t pks_tap_input_stream_latency_frames_observed(const PksProcessTapHandle *, const PksNativeCallObserver *);

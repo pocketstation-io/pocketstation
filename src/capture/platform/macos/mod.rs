@@ -89,6 +89,41 @@ impl DesktopCaptureSource {
         }
     }
 
+    pub(crate) fn capture_mode_cancellable<F>(
+        mode: crate::capture::CaptureMode,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+        callback: F,
+        runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
+        cancellation: &crate::capture::CaptureOpenCancellation,
+    ) -> Result<Self, crate::capture::CaptureOpenFailure>
+    where
+        F: FnMut(crate::frame::AudioFrame) + Send + 'static,
+    {
+        cancellation.check()?;
+        match mode {
+            crate::capture::CaptureMode::InputDevice(selector) => {
+                MacosInputSource::capture_cancellable(
+                    selector,
+                    audio_frame_duration,
+                    callback,
+                    runtime_event_sender,
+                    cancellation,
+                )
+                .map(DesktopCaptureImplementation::Input)
+                .map(Self)
+            }
+            mode => SystemLoopbackSource::capture_mode_cancellable(
+                mode,
+                audio_frame_duration,
+                callback,
+                runtime_event_sender,
+                cancellation,
+            )
+            .map(DesktopCaptureImplementation::Loopback)
+            .map(Self),
+        }
+    }
+
     pub fn observations(&self) -> crate::capture::CaptureObservations {
         match &self.0 {
             DesktopCaptureImplementation::Input(source) => source.observations(),

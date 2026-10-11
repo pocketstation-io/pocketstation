@@ -4,6 +4,39 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.14 — 2026-10-11
+
+### Observe native startup and retain uncertain cleanup
+
+`SessionStartCancellation::observed()` opts into native startup observations.
+Cloned tokens expose up to 64 independent current opens and the first 128
+completed calls, with explicit busy, omission and truncation counters. Static
+operation tags distinguish discovery, property access, acquisition, registration,
+start and rollback. Records contain ordinals, monotonic times and optional
+native statuses; they do not contain audio, source identifiers or callback logs.
+Default tokens retain their existing behavior and allocate no observation state.
+
+Cancellation is checked between synchronous native operations, including after
+late registration returns. It prevents later acquisition, start, reader creation
+and stem preparation once observed. It does not preempt a pending operating-system
+call or promise a startup deadline. Current macOS diagnosis has observed blocked
+registration and unregister calls; useful audio and latency qualification remain
+separate.
+
+The public `SessionStartError::rollback_failures_total()` preserves reported
+cleanup failures alongside the primary error and cancellation classification.
+An uncertain native cleanup retains callback context and its ownership lease,
+without a second cleanup attempt from `Drop`. A process-wide 64-owner budget
+preserves concurrent captures; uncertainty blocks future native tap admissions.
+No automatic process or operating-system restart is implemented. A zero reported
+rollback count alone does not establish physical device release.
+
+Release publication and recovery now check out and validate the exact selected
+tag in every job. The main workflow controller remains separately bound for
+manual recovery. Registry visibility queries have fixed time and byte limits,
+reject redirects and unexpected statuses, and never republish a visible version.
+An existing version's visibility is separate from archive checksum verification.
+
 ## 1.1.13 — 2026-10-06
 
 ### Retain and extract source-aware audio context

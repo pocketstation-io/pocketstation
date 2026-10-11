@@ -22,15 +22,60 @@
 
 #include "source_discovery.h"
 
+// Optional observation is scoped to synchronous control calls only.
+static uint64_t pks_observe_begin(const PksNativeCallObserver *observer, uint32_t operation) {
+    return observer ? observer->begin(observer->context, operation) : 0;
+}
+static void pks_observe_end(const PksNativeCallObserver *observer, uint64_t call,
+                            int32_t status, uint8_t has_status) {
+    if (observer) observer->end(observer->context, call, status, has_status);
+}
+static OSStatus pks_property_size(const PksNativeCallObserver *observer, uint32_t operation,
+    AudioObjectID object, const AudioObjectPropertyAddress *address,
+    UInt32 qualifier_size, const void *qualifier, UInt32 *size) {
+    uint64_t call = pks_observe_begin(observer, operation);
+    OSStatus status = AudioObjectGetPropertyDataSize(object, address, qualifier_size, qualifier, size);
+    pks_observe_end(observer, call, status, 1);
+    return status;
+}
+static OSStatus pks_property_data(const PksNativeCallObserver *observer, uint32_t operation,
+    AudioObjectID object, const AudioObjectPropertyAddress *address,
+    UInt32 qualifier_size, const void *qualifier, UInt32 *size, void *data) {
+    uint64_t call = pks_observe_begin(observer, operation);
+    OSStatus status = AudioObjectGetPropertyData(object, address, qualifier_size, qualifier, size, data);
+    pks_observe_end(observer, call, status, 1);
+    return status;
+}
+static OSStatus pks_property_settable(const PksNativeCallObserver *observer, uint32_t operation,
+    AudioObjectID object, const AudioObjectPropertyAddress *address, Boolean *settable) {
+    uint64_t call = pks_observe_begin(observer, operation);
+    OSStatus status = AudioObjectIsPropertySettable(object, address, settable);
+    pks_observe_end(observer, call, status, 1);
+    return status;
+}
+static OSStatus pks_property_set(const PksNativeCallObserver *observer, uint32_t operation,
+    AudioObjectID object, const AudioObjectPropertyAddress *address,
+    UInt32 qualifier_size, const void *qualifier, UInt32 size, const void *data) {
+    uint64_t call = pks_observe_begin(observer, operation);
+    OSStatus status = AudioObjectSetPropertyData(object, address, qualifier_size, qualifier, size, data);
+    pks_observe_end(observer, call, status, 1);
+    return status;
+}
+
 uint64_t pks_process_start_time_ns(int32_t process_id) {
+    return pks_process_start_time_ns_observed(process_id, NULL);
+}
+uint64_t pks_process_start_time_ns_observed(int32_t process_id, const PksNativeCallObserver *observer) {
     pid_t pid = (pid_t)process_id;
     struct proc_bsdinfo info;
+    uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_PROCESS_START_TIME);
     int bytes = proc_pidinfo(
         pid,
         PROC_PIDTBSDINFO,
         0,
         &info,
         (int)sizeof(info));
+    pks_observe_end(observer, call, 0, 0);
     if (bytes != (int)sizeof(info)
             || info.pbi_start_tvusec >= 1000000u
             || info.pbi_start_tvsec > UINT64_MAX / 1000000000u) {
@@ -102,6 +147,7 @@ struct PksProcessTapHandle {
     AudioObjectID       tap_id;
     AudioObjectID       agg_device_id;
     AudioDeviceIOProcID io_proc_id;
+    PksTapControl control;
     uint32_t            io_buffer_before_frames;
     uint32_t            io_buffer_requested_frames;
     uint32_t            io_buffer_applied_frames;
@@ -109,6 +155,117 @@ struct PksProcessTapHandle {
     uint32_t            io_buffer_max_frames;
     PksTapRing          ring;
 };
+
+// These synchronous operations run only on the owning control thread.
+int pks_tap_control_start_observed(PksTapControl *state,
+    const PksTapControlOperations *ops, void *context,
+    PksTapCancellationCheck cancelled, void *cancel_context,
+    int32_t *out_status, uint8_t *out_stage, const PksNativeCallObserver *observer) {
+    if (out_status) *out_status = 0;
+    if (out_stage) *out_stage = 0;
+    if (state->registered || state->registration_uncertain
+            || state->cleanup_attempted || state->retained) {
+        if (out_status) *out_status = kAudioHardwareIllegalOperationError;
+        if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_IO_PROC;
+        return -1;
+    }
+    if (cancelled && cancelled(cancel_context)) return -2;
+    // An RPC error need not establish that remote registration was rejected.
+    state->registration_uncertain = 1;
+    uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_REGISTER_IO_PROC);
+    int32_t status = ops->register_io(context);
+    pks_observe_end(observer, call, status, 1);
+    if (status != 0) {
+        if (state->registration_uncertain) state->cleanup_status = status;
+        if (out_status) *out_status = status;
+        if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_IO_PROC;
+        return -1;
+    }
+    state->registration_uncertain = 0;
+    state->registered = 1;
+    if (cancelled && cancelled(cancel_context)) return -2;
+    state->start_attempted = 1;
+    call = pks_observe_begin(observer, PKS_NATIVE_CALL_START_DEVICE);
+    status = ops->start(context);
+    pks_observe_end(observer, call, status, 1);
+    if (status != 0) {
+        if (out_status) *out_status = status;
+        if (out_stage) *out_stage = PKS_TAP_STAGE_START_DEVICE;
+        return -1;
+    }
+    state->started = 1;
+    return cancelled && cancelled(cancel_context) ? -2 : 0;
+}
+
+static int pks_tap_retain(PksTapControl *state, int32_t status, uint8_t stage,
+                         int32_t *out_status, uint8_t *out_stage) {
+    state->retained = 1;
+    state->cleanup_status = status;
+    state->cleanup_stage = stage;
+    if (out_status) *out_status = status;
+    if (out_stage) *out_stage = stage;
+    return -1;
+}
+
+int pks_tap_control_cleanup_observed(PksTapControl *state,
+    const PksTapControlOperations *ops, void *context,
+    int32_t *out_status, uint8_t *out_stage, const PksNativeCallObserver *observer) {
+    if (out_status) *out_status = state->cleanup_status;
+    if (out_stage) *out_stage = state->cleanup_stage;
+    if (state->cleanup_attempted) return state->retained ? -1 : 0;
+    state->cleanup_attempted = 1;
+    if (state->registration_uncertain) {
+        return pks_tap_retain(state, state->cleanup_status,
+            PKS_TAP_STAGE_REGISTRATION_UNCERTAIN, out_status, out_stage);
+    }
+    int32_t status;
+    if (state->start_attempted) {
+        uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_STOP_DEVICE);
+        status = ops->stop(context);
+        pks_observe_end(observer, call, status, 1);
+        if (status != 0) return pks_tap_retain(state, status,
+            PKS_TAP_STAGE_STOP_DEVICE, out_status, out_stage);
+        state->started = 0;
+        state->start_attempted = 0;
+    }
+    if (state->registered) {
+        uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_UNREGISTER_IO_PROC);
+        status = ops->unregister_io(context);
+        pks_observe_end(observer, call, status, 1);
+        if (status != 0) return pks_tap_retain(state, status,
+            PKS_TAP_STAGE_DESTROY_IO_PROC, out_status, out_stage);
+        state->registered = 0;
+    }
+    if (state->aggregate_owned) {
+        uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_DESTROY_AGGREGATE_DEVICE);
+        status = ops->destroy_aggregate(context);
+        pks_observe_end(observer, call, status, 1);
+        if (status != 0) return pks_tap_retain(state, status,
+            PKS_TAP_STAGE_DESTROY_AGGREGATE, out_status, out_stage);
+        state->aggregate_owned = 0;
+    }
+    if (state->tap_owned) {
+        uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_DESTROY_PROCESS_TAP);
+        status = ops->destroy_tap(context);
+        pks_observe_end(observer, call, status, 1);
+        if (status != 0) return pks_tap_retain(state, status,
+            PKS_TAP_STAGE_DESTROY_TAP, out_status, out_stage);
+        state->tap_owned = 0;
+    }
+    // The caller frees only after this return; state may be embedded in context.
+    return 0;
+}
+
+int pks_tap_control_start(PksTapControl *state, const PksTapControlOperations *ops,
+    void *context, PksTapCancellationCheck cancelled, void *cancel_context,
+    int32_t *status, uint8_t *stage) {
+    return pks_tap_control_start_observed(state, ops, context, cancelled, cancel_context,
+                                        status, stage, NULL);
+}
+int pks_tap_control_cleanup(PksTapControl *state, const PksTapControlOperations *ops,
+    void *context, int32_t *status, uint8_t *stage) {
+    return pks_tap_control_cleanup_observed(state, ops, context, status, stage, NULL);
+}
 
 // ─── IO callback — real-time thread, no ObjC/alloc/lock/log ────────────────
 
@@ -189,14 +346,14 @@ static OSStatus tap_io_proc(
 // ─── Helper: look up AudioObjectID for a given PID ──────────────────────────
 
 // Returns kAudioObjectUnknown if no process object with that PID is found.
-static AudioObjectID pks_audio_object_id_for_pid(pid_t target_pid) {
+static AudioObjectID pks_audio_object_id_for_pid(pid_t target_pid, const PksNativeCallObserver *observer) {
     AudioObjectPropertyAddress addr = {
         kAudioHardwarePropertyProcessObjectList,
         kAudioObjectPropertyScopeGlobal,
         kAudioObjectPropertyElementMain
     };
     uint32_t dataSize = 0;
-    if (AudioObjectGetPropertyDataSize(kAudioObjectSystemObject, &addr, 0, NULL, &dataSize) != noErr)
+    if (pks_property_size(observer, PKS_NATIVE_CALL_RESOLVE_PROCESS_LIST_SIZE, kAudioObjectSystemObject, &addr, 0, NULL, &dataSize) != noErr)
         return kAudioObjectUnknown;
     if (dataSize == 0) return kAudioObjectUnknown;
 
@@ -204,7 +361,7 @@ static AudioObjectID pks_audio_object_id_for_pid(pid_t target_pid) {
     AudioObjectID *objs = (AudioObjectID *)malloc(dataSize);
     if (!objs) return kAudioObjectUnknown;
 
-    if (AudioObjectGetPropertyData(kAudioObjectSystemObject, &addr, 0, NULL, &dataSize, objs) != noErr) {
+    if (pks_property_data(observer, PKS_NATIVE_CALL_RESOLVE_PROCESS_LIST_DATA, kAudioObjectSystemObject, &addr, 0, NULL, &dataSize, objs) != noErr) {
         free(objs);
         return kAudioObjectUnknown;
     }
@@ -219,7 +376,7 @@ static AudioObjectID pks_audio_object_id_for_pid(pid_t target_pid) {
     for (uint32_t i = 0; i < count; i++) {
         pid_t pid = 0;
         uint32_t sz = sizeof(pid);
-        if (AudioObjectGetPropertyData(objs[i], &pidAddr, 0, NULL, &sz, &pid) == noErr) {
+        if (pks_property_data(observer, PKS_NATIVE_CALL_RESOLVE_PROCESS_ID, objs[i], &pidAddr, 0, NULL, &sz, &pid) == noErr) {
             if (pid == target_pid) {
                 result = objs[i];
                 break;
@@ -232,14 +389,16 @@ static AudioObjectID pks_audio_object_id_for_pid(pid_t target_pid) {
 
 // ─── Source discovery ───────────────────────────────────────────────────────
 
-static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int written) {
+static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int written, const PksNativeCallObserver *observer) {
     int initialWritten = written;
     if (@available(macOS 14.0, *)) {
+        uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_SOURCE_DEVICE_DISCOVERY);
         AVCaptureDeviceDiscoverySession *session =
             [AVCaptureDeviceDiscoverySession
                 discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeMicrophone]
                 mediaType:AVMediaTypeAudio
                 position:AVCaptureDevicePositionUnspecified];
+        pks_observe_end(observer, call, 0, 0);
         for (AVCaptureDevice *device in session.devices) {
             if (written >= max) break;
             PksCaptureSourceInfo *info = &out[written];
@@ -288,15 +447,13 @@ static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int writ
         kAudioObjectPropertyElementMain
     };
     uint32_t devicesSize = 0;
-    if (AudioObjectGetPropertyDataSize(
-            kAudioObjectSystemObject, &devicesAddr, 0, NULL, &devicesSize) != noErr
+    if (pks_property_size(observer, PKS_NATIVE_CALL_DEVICE_LIST_SIZE, kAudioObjectSystemObject, &devicesAddr, 0, NULL, &devicesSize) != noErr
             || devicesSize < sizeof(AudioObjectID)) {
         return written;
     }
     AudioObjectID *devices = (AudioObjectID *)malloc(devicesSize);
     if (!devices) return written;
-    if (AudioObjectGetPropertyData(
-            kAudioObjectSystemObject, &devicesAddr, 0, NULL,
+    if (pks_property_data(observer, PKS_NATIVE_CALL_DEVICE_LIST_DATA, kAudioObjectSystemObject, &devicesAddr, 0, NULL,
             &devicesSize, devices) != noErr) {
         free(devices);
         return written;
@@ -311,15 +468,13 @@ static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int writ
             kAudioObjectPropertyElementMain
         };
         uint32_t streamsSize = 0;
-        if (AudioObjectGetPropertyDataSize(
-                device, &streamsAddr, 0, NULL, &streamsSize) != noErr
+        if (pks_property_size(observer, PKS_NATIVE_CALL_DEVICE_STREAMS_SIZE, device, &streamsAddr, 0, NULL, &streamsSize) != noErr
                 || streamsSize < sizeof(AudioBufferList)) {
             continue;
         }
         AudioBufferList *streams = (AudioBufferList *)malloc(streamsSize);
         if (!streams) continue;
-        if (AudioObjectGetPropertyData(
-                device, &streamsAddr, 0, NULL, &streamsSize, streams) != noErr) {
+        if (pks_property_data(observer, PKS_NATIVE_CALL_DEVICE_STREAMS_DATA, device, &streamsAddr, 0, NULL, &streamsSize, streams) != noErr) {
             free(streams);
             continue;
         }
@@ -344,8 +499,7 @@ static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int writ
         };
         CFStringRef uid = NULL;
         uint32_t valueSize = sizeof(uid);
-        if (AudioObjectGetPropertyData(
-                device, &uidAddr, 0, NULL, &valueSize, &uid) != noErr || !uid) {
+        if (pks_property_data(observer, PKS_NATIVE_CALL_DEVICE_UID, device, &uidAddr, 0, NULL, &valueSize, &uid) != noErr || !uid) {
             continue;
         }
         bool copiedUID = CFStringGetCString(
@@ -360,8 +514,7 @@ static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int writ
         };
         CFStringRef name = NULL;
         valueSize = sizeof(name);
-        if (AudioObjectGetPropertyData(
-                device, &nameAddr, 0, NULL, &valueSize, &name) == noErr && name) {
+        if (pks_property_data(observer, PKS_NATIVE_CALL_DEVICE_NAME, device, &nameAddr, 0, NULL, &valueSize, &name) == noErr && name) {
             CFStringGetCString(
                 name, info->name, sizeof(info->name), kCFStringEncodingUTF8);
             CFRelease(name);
@@ -377,8 +530,7 @@ static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int writ
         };
         Float64 rate = 0.0;
         valueSize = sizeof(rate);
-        if (AudioObjectGetPropertyData(
-                device, &rateAddr, 0, NULL, &valueSize, &rate) == noErr
+        if (pks_property_data(observer, PKS_NATIVE_CALL_DEVICE_SAMPLE_RATE, device, &rateAddr, 0, NULL, &valueSize, &rate) == noErr
                 && rate > 0.0 && rate <= (Float64)UINT32_MAX) {
             info->sample_rate = (uint32_t)rate;
         } else {
@@ -391,26 +543,27 @@ static int pks_append_input_devices(PksCaptureSourceInfo *out, int max, int writ
 }
 
 int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
+    return pks_discover_sources_observed(out, max, NULL);
+}
+int pks_discover_sources_observed(PksCaptureSourceInfo *out, int max, const PksNativeCallObserver *observer) {
     if (!out || max <= 0) return 0;
 
     @autoreleasepool {
-        int written = pks_append_input_devices(out, max, 0);
+        int written = pks_append_input_devices(out, max, 0, observer);
         AudioObjectPropertyAddress addr = {
             kAudioHardwarePropertyProcessObjectList,
             kAudioObjectPropertyScopeGlobal,
             kAudioObjectPropertyElementMain
         };
         uint32_t dataSize = 0;
-        OSStatus err = AudioObjectGetPropertyDataSize(
-            kAudioObjectSystemObject, &addr, 0, NULL, &dataSize);
+        OSStatus err = pks_property_size(observer, PKS_NATIVE_CALL_PROCESS_LIST_SIZE, kAudioObjectSystemObject, &addr, 0, NULL, &dataSize);
         if (err != noErr || dataSize == 0) return written;
 
         uint32_t count = dataSize / sizeof(AudioObjectID);
         AudioObjectID *objs = (AudioObjectID *)malloc(dataSize);
         if (!objs) return written;
 
-        err = AudioObjectGetPropertyData(
-            kAudioObjectSystemObject, &addr, 0, NULL, &dataSize, objs);
+        err = pks_property_data(observer, PKS_NATIVE_CALL_PROCESS_LIST_DATA, kAudioObjectSystemObject, &addr, 0, NULL, &dataSize, objs);
         if (err != noErr) { free(objs); return written; }
 
         for (uint32_t i = 0; i < count && written < max; i++) {
@@ -431,10 +584,10 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
             };
             pid_t pid = 0;
             uint32_t sz = sizeof(pid);
-            if (AudioObjectGetPropertyData(obj, &pidAddr, 0, NULL, &sz, &pid) != noErr)
+            if (pks_property_data(observer, PKS_NATIVE_CALL_PROCESS_ID, obj, &pidAddr, 0, NULL, &sz, &pid) != noErr)
                 continue;
             info->pid = (int32_t)pid;
-            info->process_start_time_ns = pks_process_start_time_ns(pid);
+            info->process_start_time_ns = pks_process_start_time_ns_observed(pid, observer);
 
             // Bundle ID
             AudioObjectPropertyAddress bidAddr = {
@@ -444,7 +597,7 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
             };
             CFStringRef bidRef = NULL;
             sz = sizeof(bidRef);
-            if (AudioObjectGetPropertyData(obj, &bidAddr, 0, NULL, &sz, &bidRef) == noErr && bidRef) {
+            if (pks_property_data(observer, PKS_NATIVE_CALL_PROCESS_BUNDLE_ID, obj, &bidAddr, 0, NULL, &sz, &bidRef) == noErr && bidRef) {
                 CFStringGetCString(bidRef, info->bundle_id, sizeof(info->bundle_id),
                                    kCFStringEncodingUTF8);
                 CFRelease(bidRef);
@@ -458,12 +611,14 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
             };
             UInt32 running = 0;
             sz = sizeof(running);
-            AudioObjectGetPropertyData(obj, &runAddr, 0, NULL, &sz, &running);
+            pks_property_data(observer, PKS_NATIVE_CALL_PROCESS_RUNNING_OUTPUT, obj, &runAddr, 0, NULL, &sz, &running);
             info->state = running ? PKS_SOURCE_STATE_PLAYING : PKS_SOURCE_STATE_SILENT;
 
             // Friendly label only. Identity remains the bundle/PID fields.
+            uint64_t label_call = pks_observe_begin(observer, PKS_NATIVE_CALL_APPLICATION_LABEL);
             NSRunningApplication *pidApp =
                 [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
+            pks_observe_end(observer, label_call, 0, 0);
             if (pidApp && pidApp.localizedName) {
                 [pidApp.localizedName getCString:info->name
                                        maxLength:sizeof(info->name)
@@ -471,8 +626,10 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
             }
             if (info->bundle_id[0] != '\0') {
                 NSString *bid = [NSString stringWithUTF8String:info->bundle_id];
+                label_call = pks_observe_begin(observer, PKS_NATIVE_CALL_APPLICATION_LABEL);
                 NSArray<NSRunningApplication *> *apps =
                     [NSRunningApplication runningApplicationsWithBundleIdentifier:bid];
+                pks_observe_end(observer, label_call, 0, 0);
                 NSRunningApplication *app = apps.firstObject;
                 if (info->name[0] == '\0' && app && app.localizedName) {
                     [app.localizedName getCString:info->name
@@ -481,7 +638,9 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
                 }
             }
             if (info->name[0] == '\0') {
+                uint64_t name_call = pks_observe_begin(observer, PKS_NATIVE_CALL_PROCESS_NAME);
                 proc_name(pid, info->name, (uint32_t)sizeof(info->name));
+                pks_observe_end(observer, name_call, 0, 0);
             }
             if (info->name[0] == '\0')
                 strncpy(info->name, info->bundle_id[0] ? info->bundle_id : "unknown",
@@ -501,24 +660,38 @@ static OSStatus pks_failure_status(OSStatus status) {
     return status == noErr ? kAudioHardwareUnspecifiedError : status;
 }
 
-PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
-                                            int32_t *out_status, uint8_t *out_stage) {
+static PksProcessTapHandle *pks_failed_create(PksProcessTapHandle *tap,
+    int32_t *cleanup_status, uint8_t *cleanup_stage, const PksNativeCallObserver *observer) {
+    pks_destroy_process_tap_observed(tap, cleanup_status, cleanup_stage, observer);
+    return NULL;
+}
+
+PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *pids, int pid_count,
+    int32_t *out_status, uint8_t *out_stage,
+    int32_t *cleanup_status, uint8_t *cleanup_stage,
+    PksTapCancellationCheck cancelled, void *cancel_context, const PksNativeCallObserver *observer) {
+    if (cleanup_status) *cleanup_status = 0;
+    if (cleanup_stage) *cleanup_stage = 0;
     if (out_status) *out_status = noErr;
     if (out_stage) *out_stage = 0;
+    if (cancelled && cancelled(cancel_context)) return NULL;
     if (@available(macOS 14.2, *)) {
         @autoreleasepool {
             CATapDescription *tapDesc;
             if (pid_count == 0 || !pids) {
                 // Global system tap: capture all output, exclude nothing.
+                uint64_t description_call = pks_observe_begin(observer, PKS_NATIVE_CALL_GLOBAL_TAP_DESCRIPTION);
                 tapDesc = [[CATapDescription alloc]
                     initStereoGlobalTapButExcludeProcesses:@[]];
+                pks_observe_end(observer, description_call, 0, 0);
             } else {
                 // Tap specific processes by PID.
                 // CATapDescription takes AudioObjectIDs, not PIDs.
                 NSMutableArray<NSNumber *> *objIDs =
                     [NSMutableArray arrayWithCapacity:(NSUInteger)pid_count];
                 for (int i = 0; i < pid_count; i++) {
-                    AudioObjectID objID = pks_audio_object_id_for_pid((pid_t)pids[i]);
+                    if (cancelled && cancelled(cancel_context)) return NULL;
+                    AudioObjectID objID = pks_audio_object_id_for_pid((pid_t)pids[i], observer);
                     if (objID != kAudioObjectUnknown)
                         [objIDs addObject:@(objID)];
                 }
@@ -527,8 +700,10 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
                     if (out_stage) *out_stage = PKS_TAP_STAGE_RESOLVE_PROCESS;
                     return NULL;
                 }
+                uint64_t description_call = pks_observe_begin(observer, PKS_NATIVE_CALL_PROCESS_TAP_DESCRIPTION);
                 tapDesc = [[CATapDescription alloc]
                     initStereoMixdownOfProcesses:objIDs];
+                pks_observe_end(observer, description_call, 0, 0);
             }
             if (!tapDesc) {
                 if (out_status) *out_status = kAudioHardwareUnspecifiedError;
@@ -536,16 +711,36 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
                 return NULL;
             }
             // Keep the source playing (CATapUnmuted = 0).
+            uint64_t mute_call = pks_observe_begin(observer, PKS_NATIVE_CALL_TAP_MUTE_BEHAVIOR);
             tapDesc.muteBehavior = CATapUnmuted;
+            pks_observe_end(observer, mute_call, 0, 0);
 
-            AudioObjectID tapID = kAudioObjectUnknown;
-            OSStatus err = AudioHardwareCreateProcessTap(tapDesc, &tapID);
-            if (err != noErr || tapID == kAudioObjectUnknown) {
-                if (out_status) *out_status = pks_failure_status(err);
-                if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_PROCESS_TAP;
+            PksProcessTapHandle *h = calloc(1, sizeof(PksProcessTapHandle));
+            if (!h) {
+                if (out_status) *out_status = kAudioHardwareUnspecifiedError;
+                if (out_stage) *out_stage = PKS_TAP_STAGE_ALLOCATE_HANDLE;
                 return NULL;
             }
+            if (cancelled && cancelled(cancel_context))
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
+            AudioObjectID tapID = kAudioObjectUnknown;
+            uint64_t call = pks_observe_begin(observer, PKS_NATIVE_CALL_CREATE_PROCESS_TAP);
+            OSStatus err = AudioHardwareCreateProcessTap(tapDesc, &tapID);
+            pks_observe_end(observer, call, err, 1);
+            h->tap_id = tapID;
+            h->control.tap_owned = tapID != kAudioObjectUnknown;
+            if (err != noErr || tapID == kAudioObjectUnknown) {
+                if (tapID == kAudioObjectUnknown) {
+                    h->control.registration_uncertain = 1;
+                    h->control.cleanup_status = pks_failure_status(err);
+                }
+                if (out_status) *out_status = pks_failure_status(err);
+                if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_PROCESS_TAP;
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
+            }
 
+            if (cancelled && cancelled(cancel_context))
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
             // Get the tap's UID for the aggregate device descriptor.
             AudioObjectPropertyAddress uidAddr = {
                 kAudioTapPropertyUID,
@@ -554,15 +749,17 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
             };
             CFStringRef tapUID = NULL;
             uint32_t uidSz = sizeof(tapUID);
-            err = AudioObjectGetPropertyData(tapID, &uidAddr, 0, NULL, &uidSz, &tapUID);
+            err = pks_property_data(observer, PKS_NATIVE_CALL_TAP_UID, tapID, &uidAddr, 0, NULL, &uidSz, &tapUID);
             if (err != noErr || !tapUID) {
+                if (tapUID) CFRelease(tapUID);
                 if (out_status) *out_status = pks_failure_status(err);
                 if (out_stage) *out_stage = PKS_TAP_STAGE_READ_TAP_UID;
-                AudioHardwareDestroyProcessTap(tapID);
-                return NULL;
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
             }
 
             NSString *tapUIDStr = (__bridge_transfer NSString *)tapUID;
+            if (cancelled && cancelled(cancel_context))
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
             NSString *aggUID = [NSString stringWithFormat:
                 @"io.pocketstation.tap.%@", tapUIDStr];
 
@@ -578,28 +775,25 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
                 @(kAudioAggregateDeviceTapListKey):   @[subTap]
             };
 
+            if (cancelled && cancelled(cancel_context))
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
             AudioObjectID aggID = kAudioObjectUnknown;
+            call = pks_observe_begin(observer, PKS_NATIVE_CALL_CREATE_AGGREGATE_DEVICE);
             err = AudioHardwareCreateAggregateDevice(
                 (__bridge CFDictionaryRef)aggDesc, &aggID);
+            pks_observe_end(observer, call, err, 1);
+            h->agg_device_id = aggID;
+            h->control.aggregate_owned = aggID != kAudioObjectUnknown;
             if (err != noErr || aggID == kAudioObjectUnknown) {
+                if (aggID == kAudioObjectUnknown) {
+                    h->control.registration_uncertain = 1;
+                    h->control.cleanup_status = pks_failure_status(err);
+                }
                 if (out_status) *out_status = pks_failure_status(err);
                 if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_AGGREGATE_DEVICE;
-                AudioHardwareDestroyProcessTap(tapID);
-                return NULL;
+                return pks_failed_create(h, cleanup_status, cleanup_stage, observer);
             }
 
-            PksProcessTapHandle *h =
-                (PksProcessTapHandle *)calloc(1, sizeof(PksProcessTapHandle));
-            if (!h) {
-                if (out_status) *out_status = kAudioHardwareUnspecifiedError;
-                if (out_stage) *out_stage = PKS_TAP_STAGE_ALLOCATE_HANDLE;
-                AudioHardwareDestroyAggregateDevice(aggID);
-                AudioHardwareDestroyProcessTap(tapID);
-                return NULL;
-            }
-            h->tap_id        = tapID;
-            h->agg_device_id = aggID;
-            h->io_proc_id    = NULL;
             atomic_store(&h->ring.write_head, 0);
             h->ring.read_head = 0;
             atomic_store(&h->ring.drop_count, 0);
@@ -620,7 +814,7 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
 
 static void pks_prefer_io_buffer_size(PksProcessTapHandle *tap,
                                       double sample_rate,
-                                      uint16_t requested_io_duration_ms) {
+                                      uint16_t requested_io_duration_ms, const PksNativeCallObserver *observer) {
     AudioObjectPropertyAddress size_addr = {
         kAudioDevicePropertyBufferFrameSize,
         kAudioObjectPropertyScopeGlobal,
@@ -628,7 +822,7 @@ static void pks_prefer_io_buffer_size(PksProcessTapHandle *tap,
     };
     uint32_t property_size = sizeof(uint32_t);
     uint32_t current_frames = 0;
-    if (AudioObjectGetPropertyData(tap->agg_device_id, &size_addr, 0, NULL,
+    if (pks_property_data(observer, PKS_NATIVE_CALL_IO_BUFFER_SIZE_BEFORE, tap->agg_device_id, &size_addr, 0, NULL,
                                    &property_size, &current_frames) != noErr) {
         return;
     }
@@ -642,7 +836,7 @@ static void pks_prefer_io_buffer_size(PksProcessTapHandle *tap,
     };
     AudioValueRange range = {0};
     property_size = sizeof(range);
-    if (AudioObjectGetPropertyData(tap->agg_device_id, &range_addr, 0, NULL,
+    if (pks_property_data(observer, PKS_NATIVE_CALL_IO_BUFFER_SIZE_RANGE, tap->agg_device_id, &range_addr, 0, NULL,
                                    &property_size, &range) != noErr
             || !isfinite(range.mMinimum)
             || !isfinite(range.mMaximum)
@@ -674,74 +868,123 @@ static void pks_prefer_io_buffer_size(PksProcessTapHandle *tap,
     }
 
     Boolean settable = false;
-    if (AudioObjectIsPropertySettable(tap->agg_device_id, &size_addr, &settable) != noErr
+    if (pks_property_settable(observer, PKS_NATIVE_CALL_IO_BUFFER_SIZE_SETTABLE, tap->agg_device_id, &size_addr, &settable) != noErr
             || !settable) {
         return;
     }
     property_size = sizeof(requested_frames);
-    if (AudioObjectSetPropertyData(tap->agg_device_id, &size_addr, 0, NULL,
+    if (pks_property_set(observer, PKS_NATIVE_CALL_IO_BUFFER_SIZE_SET, tap->agg_device_id, &size_addr, 0, NULL,
                                    property_size, &requested_frames) != noErr) {
         return;
     }
 
     uint32_t applied_frames = 0;
     property_size = sizeof(applied_frames);
-    if (AudioObjectGetPropertyData(tap->agg_device_id, &size_addr, 0, NULL,
+    if (pks_property_data(observer, PKS_NATIVE_CALL_IO_BUFFER_SIZE_APPLIED, tap->agg_device_id, &size_addr, 0, NULL,
                                    &property_size, &applied_frames) == noErr
             && applied_frames > 0) {
         tap->io_buffer_applied_frames = applied_frames;
     }
 }
 
-int pks_tap_start(PksProcessTapHandle *tap, uint16_t requested_io_duration_ms,
-                  int32_t *out_status, uint8_t *out_stage) {
+static int32_t pks_register_io(void *context) {
+    PksProcessTapHandle *tap = context;
+    OSStatus status = AudioDeviceCreateIOProcID(
+        tap->agg_device_id, tap_io_proc, &tap->ring, &tap->io_proc_id);
+    if (tap->io_proc_id) {
+        tap->control.registered = 1;
+        tap->control.registration_uncertain = 0;
+    }
+    if (status != noErr || !tap->io_proc_id) {
+        tap->control.cleanup_status = pks_failure_status(status);
+        return pks_failure_status(status);
+    }
+    return noErr;
+}
+static int32_t pks_start_io(void *context) {
+    PksProcessTapHandle *tap = context;
+    return AudioDeviceStart(tap->agg_device_id, tap->io_proc_id);
+}
+static int32_t pks_stop_io(void *context) {
+    PksProcessTapHandle *tap = context;
+    return AudioDeviceStop(tap->agg_device_id, tap->io_proc_id);
+}
+static int32_t pks_unregister_io(void *context) {
+    PksProcessTapHandle *tap = context;
+    OSStatus status = AudioDeviceDestroyIOProcID(tap->agg_device_id, tap->io_proc_id);
+    if (status == noErr) tap->io_proc_id = NULL;
+    return status;
+}
+static int32_t pks_destroy_aggregate(void *context) {
+    PksProcessTapHandle *tap = context;
+    OSStatus status = AudioHardwareDestroyAggregateDevice(tap->agg_device_id);
+    if (status == noErr) tap->agg_device_id = kAudioObjectUnknown;
+    return status;
+}
+static int32_t pks_destroy_tap(void *context) {
+    PksProcessTapHandle *tap = context;
+    OSStatus status = AudioHardwareDestroyProcessTap(tap->tap_id);
+    if (status == noErr) tap->tap_id = kAudioObjectUnknown;
+    return status;
+}
+static const PksTapControlOperations pks_native_tap_operations = {
+    pks_register_io, pks_start_io, pks_stop_io, pks_unregister_io,
+    pks_destroy_aggregate, pks_destroy_tap
+};
+
+PksProcessTapHandle *pks_create_process_tap_checked(const int32_t *pids, int count,
+    int32_t *status, uint8_t *stage, int32_t *cleanup_status, uint8_t *cleanup_stage,
+    PksTapCancellationCheck cancelled, void *cancel_context) {
+    return pks_create_process_tap_observed(pids, count, status, stage, cleanup_status,
+        cleanup_stage, cancelled, cancel_context, NULL);
+}
+
+PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
+    int32_t *out_status, uint8_t *out_stage) {
+    return pks_create_process_tap_checked(pids, pid_count, out_status, out_stage,
+                                         NULL, NULL, NULL, NULL);
+}
+
+int pks_tap_start_observed(PksProcessTapHandle *tap,
+    uint16_t requested_io_duration_ms, PksTapCancellationCheck cancelled,
+    void *cancel_context, int32_t *out_status, uint8_t *out_stage, const PksNativeCallObserver *observer) {
     if (out_status) *out_status = noErr;
     if (out_stage) *out_stage = 0;
-    if (!tap || tap->io_proc_id) {
+    if (!tap || tap->control.registered || tap->control.registration_uncertain
+            || tap->control.cleanup_attempted || tap->control.retained) {
         if (out_status) *out_status = kAudioHardwareIllegalOperationError;
         if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_IO_PROC;
         return -1;
     }
+    if (cancelled && cancelled(cancel_context)) return -2;
     if (@available(macOS 14.2, *)) {
-        // Detect the aggregate device's input format to get the actual sample rate.
-        AudioObjectPropertyAddress fmtAddr = {
-            kAudioDevicePropertyStreamFormat,
-            kAudioObjectPropertyScopeInput,
+        AudioObjectPropertyAddress address = {
+            kAudioDevicePropertyStreamFormat, kAudioObjectPropertyScopeInput,
             kAudioObjectPropertyElementMain
         };
-        AudioStreamBasicDescription fmt;
-        memset(&fmt, 0, sizeof(fmt));
-        uint32_t fmtSz = sizeof(fmt);
-        if (AudioObjectGetPropertyData(tap->agg_device_id, &fmtAddr, 0, NULL,
-                                       &fmtSz, &fmt) == noErr && fmt.mSampleRate > 0)
-            atomic_store(&tap->ring.sample_rate, (uint32_t)fmt.mSampleRate);
-
-        pks_prefer_io_buffer_size(
-            tap,
-            (fmt.mSampleRate > 0) ? fmt.mSampleRate : 48000.0,
-            requested_io_duration_ms);
-
-        OSStatus err = AudioDeviceCreateIOProcID(
-            tap->agg_device_id, tap_io_proc, &tap->ring, &tap->io_proc_id);
-        if (err != noErr) {
-            if (out_status) *out_status = err;
-            if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_IO_PROC;
-            return -1;
-        }
-
-        err = AudioDeviceStart(tap->agg_device_id, tap->io_proc_id);
-        if (err != noErr) {
-            if (out_status) *out_status = err;
-            if (out_stage) *out_stage = PKS_TAP_STAGE_START_DEVICE;
-            AudioDeviceDestroyIOProcID(tap->agg_device_id, tap->io_proc_id);
-            tap->io_proc_id = NULL;
-            return -1;
-        }
-        return 0;
+        AudioStreamBasicDescription format = {0};
+        uint32_t size = sizeof(format);
+        if (pks_property_data(observer, PKS_NATIVE_CALL_STREAM_FORMAT, tap->agg_device_id, &address, 0, NULL,
+            &size, &format) == noErr && format.mSampleRate > 0)
+            atomic_store(&tap->ring.sample_rate, (uint32_t)format.mSampleRate);
+        pks_prefer_io_buffer_size(tap,
+            format.mSampleRate > 0 ? format.mSampleRate : 48000.0,
+            requested_io_duration_ms, observer);
+        return pks_tap_control_start_observed(&tap->control, &pks_native_tap_operations,
+            tap, cancelled, cancel_context, out_status, out_stage, observer);
     }
     if (out_status) *out_status = kAudioHardwareUnsupportedOperationError;
     if (out_stage) *out_stage = PKS_TAP_STAGE_PLATFORM_SUPPORT;
     return -1;
+}
+int pks_tap_start_cancellable(PksProcessTapHandle *tap, uint16_t duration_ms,
+    PksTapCancellationCheck cancelled, void *cancel_context, int32_t *status, uint8_t *stage) {
+    return pks_tap_start_observed(tap, duration_ms, cancelled, cancel_context, status, stage, NULL);
+}
+int pks_tap_start(PksProcessTapHandle *tap, uint16_t duration_ms,
+    int32_t *out_status, uint8_t *out_stage) {
+    return pks_tap_start_cancellable(tap, duration_ms, NULL, NULL,
+                                    out_status, out_stage);
 }
 
 // ─── Read ────────────────────────────────────────────────────────────────────
@@ -838,7 +1081,7 @@ uint32_t pks_tap_io_buffer_max_frames(const PksProcessTapHandle *tap) {
 
 static uint32_t pks_tap_input_device_property(
     const PksProcessTapHandle *tap,
-    AudioObjectPropertySelector selector) {
+    AudioObjectPropertySelector selector, const PksNativeCallObserver *observer, uint32_t operation) {
     if (!tap) return 0;
     AudioObjectPropertyAddress address = {
         selector,
@@ -847,21 +1090,30 @@ static uint32_t pks_tap_input_device_property(
     };
     uint32_t value = 0;
     uint32_t size = sizeof(value);
-    return AudioObjectGetPropertyData(
+    return pks_property_data(observer, operation,
         tap->agg_device_id, &address, 0, NULL, &size, &value) == noErr
         ? value
         : 0;
 }
 
 uint32_t pks_tap_input_device_latency_frames(const PksProcessTapHandle *tap) {
-    return pks_tap_input_device_property(tap, kAudioDevicePropertyLatency);
+    return pks_tap_input_device_latency_frames_observed(tap, NULL);
+}
+uint32_t pks_tap_input_device_latency_frames_observed(const PksProcessTapHandle *tap, const PksNativeCallObserver *observer) {
+    return pks_tap_input_device_property(tap, kAudioDevicePropertyLatency, observer, PKS_NATIVE_CALL_DEVICE_LATENCY);
 }
 
 uint32_t pks_tap_input_safety_offset_frames(const PksProcessTapHandle *tap) {
-    return pks_tap_input_device_property(tap, kAudioDevicePropertySafetyOffset);
+    return pks_tap_input_safety_offset_frames_observed(tap, NULL);
+}
+uint32_t pks_tap_input_safety_offset_frames_observed(const PksProcessTapHandle *tap, const PksNativeCallObserver *observer) {
+    return pks_tap_input_device_property(tap, kAudioDevicePropertySafetyOffset, observer, PKS_NATIVE_CALL_SAFETY_OFFSET);
 }
 
 uint8_t pks_tap_input_safety_offset_settable(const PksProcessTapHandle *tap) {
+    return pks_tap_input_safety_offset_settable_observed(tap, NULL);
+}
+uint8_t pks_tap_input_safety_offset_settable_observed(const PksProcessTapHandle *tap, const PksNativeCallObserver *observer) {
     if (!tap) return 0;
     AudioObjectPropertyAddress address = {
         kAudioDevicePropertySafetyOffset,
@@ -869,11 +1121,13 @@ uint8_t pks_tap_input_safety_offset_settable(const PksProcessTapHandle *tap) {
         kAudioObjectPropertyElementMain
     };
     Boolean settable = false;
-    return AudioObjectIsPropertySettable(
-        tap->agg_device_id, &address, &settable) == noErr && settable;
+    return pks_property_settable(observer, PKS_NATIVE_CALL_SAFETY_OFFSET_SETTABLE, tap->agg_device_id, &address, &settable) == noErr && settable;
 }
 
 uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap) {
+    return pks_tap_input_stream_latency_frames_observed(tap, NULL);
+}
+uint32_t pks_tap_input_stream_latency_frames_observed(const PksProcessTapHandle *tap, const PksNativeCallObserver *observer) {
     if (!tap) return 0;
     AudioObjectPropertyAddress streams_address = {
         kAudioDevicePropertyStreams,
@@ -881,9 +1135,7 @@ uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap) {
         kAudioObjectPropertyElementMain
     };
     uint32_t streams_size = 0;
-    if (AudioObjectGetPropertyDataSize(
-            tap->agg_device_id,
-            &streams_address,
+    if (pks_property_size(observer, PKS_NATIVE_CALL_STREAM_LIST_SIZE, tap->agg_device_id, &streams_address,
             0,
             NULL,
             &streams_size) != noErr
@@ -893,9 +1145,7 @@ uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap) {
     }
     AudioStreamID *streams = (AudioStreamID *)malloc(streams_size);
     if (!streams) return 0;
-    if (AudioObjectGetPropertyData(
-            tap->agg_device_id,
-            &streams_address,
+    if (pks_property_data(observer, PKS_NATIVE_CALL_STREAM_LIST_DATA, tap->agg_device_id, &streams_address,
             0,
             NULL,
             &streams_size,
@@ -914,9 +1164,7 @@ uint32_t pks_tap_input_stream_latency_frames(const PksProcessTapHandle *tap) {
     for (uint32_t index = 0; index < stream_count; index++) {
         uint32_t latency_frames = 0;
         uint32_t latency_size = sizeof(latency_frames);
-        if (AudioObjectGetPropertyData(
-                streams[index],
-                &latency_address,
+        if (pks_property_data(observer, PKS_NATIVE_CALL_STREAM_LATENCY, streams[index], &latency_address,
                 0,
                 NULL,
                 &latency_size,
@@ -945,23 +1193,19 @@ float pks_tap_level(const PksProcessTapHandle *tap) {
 
 // ─── Destroy ─────────────────────────────────────────────────────────────────
 
+int pks_destroy_process_tap_observed(PksProcessTapHandle *tap,
+    int32_t *out_status, uint8_t *out_stage, const PksNativeCallObserver *observer) {
+    if (!tap) return 0;
+    int result = pks_tap_control_cleanup_observed(&tap->control, &pks_native_tap_operations,
+                                        tap, out_status, out_stage, observer);
+    if (result == 0) free(tap);
+    return result;
+}
+int pks_destroy_process_tap_checked(PksProcessTapHandle *tap, int32_t *status, uint8_t *stage) {
+    return pks_destroy_process_tap_observed(tap, status, stage, NULL);
+}
 void pks_destroy_process_tap(PksProcessTapHandle *tap) {
-    if (!tap) return;
-    if (tap->io_proc_id) {
-        AudioDeviceStop(tap->agg_device_id, tap->io_proc_id);
-        AudioDeviceDestroyIOProcID(tap->agg_device_id, tap->io_proc_id);
-        tap->io_proc_id = NULL;
-    }
-    if (tap->agg_device_id != kAudioObjectUnknown) {
-        AudioHardwareDestroyAggregateDevice(tap->agg_device_id);
-        tap->agg_device_id = kAudioObjectUnknown;
-    }
-    if (tap->tap_id != kAudioObjectUnknown) {
-        if (@available(macOS 14.2, *))
-            AudioHardwareDestroyProcessTap(tap->tap_id);
-        tap->tap_id = kAudioObjectUnknown;
-    }
-    free(tap);
+    pks_destroy_process_tap_checked(tap, NULL, NULL);
 }
 
 #pragma clang diagnostic pop

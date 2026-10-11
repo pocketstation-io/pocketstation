@@ -3010,6 +3010,246 @@ fn given_second_capture_open_failure_when_started_then_captures_and_endpoints_ro
     assert_no_live_owners(&application, &microphone, &endpoints);
 }
 
+#[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
+mod late_cancellation {
+    use super::*;
+    use crate::capture::platform::macos::macos_tap::late_cancellation_tests::{
+        run_fixture, Fault, Receipt, RegistrationBarrier,
+    };
+    use crate::capture::{CaptureOpenCancellation, CaptureOpenFailure};
+    use crate::session::{start_prepared_session_cancellable, SessionStartCancellation};
+
+    struct ControllerBackend {
+        prepares: AtomicU64,
+        fault: Fault,
+        barrier: Mutex<Option<RegistrationBarrier>>,
+        receipts: Arc<Mutex<Vec<Receipt>>>,
+    }
+    struct ControllerPrepared {
+        fault: Fault,
+        barrier: Option<RegistrationBarrier>,
+        receipts: Arc<Mutex<Vec<Receipt>>>,
+    }
+    impl CallbackCaptureBackend for ControllerBackend {
+        fn prepare(&self, _: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+            self.prepares.fetch_add(1, Ordering::Relaxed);
+            Ok(Box::new(ControllerPrepared {
+                fault: self.fault,
+                barrier: self.barrier.lock().expect("barrier").take(),
+                receipts: Arc::clone(&self.receipts),
+            }))
+        }
+    }
+    impl PreparedCaptureBackend for ControllerPrepared {
+        fn open(
+            self: Box<Self>,
+            _: CaptureDelivery,
+        ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
+            panic!("Session must use the additive cancellation hook");
+        }
+        fn open_cancellable(
+            self: Box<Self>,
+            _: CaptureDelivery,
+            cancellation: &CaptureOpenCancellation,
+        ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureOpenFailure> {
+            let mut receipt = run_fixture(cancellation, self.fault, self.barrier);
+            let failure = receipt
+                .failure
+                .take()
+                .expect("script must fail or cancel before a reader");
+            self.receipts.lock().expect("receipts").push(receipt);
+            Err(failure)
+        }
+    }
+    fn start(
+        fault: Fault,
+        barrier: Option<RegistrationBarrier>,
+        cancellation: SessionStartCancellation,
+    ) -> (crate::session::SessionStartFailure, Receipt) {
+        let nodes = node_registry();
+        let endpoints = Arc::new(EndpointControl::default());
+        let registry = endpoint_registry(&endpoints);
+        let receipts = Arc::new(Mutex::new(Vec::new()));
+        let application = ControllerBackend {
+            prepares: AtomicU64::new(0),
+            fault,
+            barrier: Mutex::new(barrier),
+            receipts: Arc::clone(&receipts),
+        };
+        let microphone = Arc::new(CaptureControl::default());
+        let microphone_backend = capture_backend(&microphone, 22);
+        let result = start_prepared_session_cancellable(
+            prepared_session(&nodes, &registry),
+            CaptureBackendSet {
+                application: &application,
+                microphone: &microphone_backend,
+            },
+            &registry,
+            SessionStartOptions::default(),
+            cancellation,
+        );
+        let failure = match result {
+            Err(failure) => failure,
+            Ok(_) => panic!("cancellation must reject startup"),
+        };
+        assert_eq!(application.prepares.load(Ordering::Acquire), 1);
+        assert_eq!(microphone.prepare_calls_total.load(Ordering::Acquire), 0);
+        assert_eq!(microphone.open_calls_total.load(Ordering::Acquire), 0);
+        assert_eq!(endpoints.deliveries_total.load(Ordering::Acquire), 0);
+        assert_eq!(endpoints.live_running_total.load(Ordering::Acquire), 0);
+        let receipt = receipts
+            .lock()
+            .expect("receipt")
+            .pop()
+            .expect("controller ran");
+        (failure, receipt)
+    }
+    #[test]
+    fn given_registration_returns_after_cancel_when_late_cancellation_session_starts_then_no_reader_or_next_stem_opens(
+    ) {
+        let cancellation = SessionStartCancellation::default();
+        let (entered_tx, entered_rx) = std::sync::mpsc::sync_channel(1);
+        let (release_tx, release_rx) = std::sync::mpsc::sync_channel(1);
+        let worker_token = cancellation.clone();
+        let worker = std::thread::spawn(move || {
+            start(
+                Fault::default(),
+                Some((entered_tx, release_rx)),
+                worker_token,
+            )
+        });
+        entered_rx
+            .recv_timeout(Duration::from_secs(5))
+            .expect("registration entered");
+        cancellation.request();
+        release_tx.send(()).expect("release registration");
+        let (mut failure, receipt) = worker.join().expect("startup worker");
+        assert!(matches!(
+            failure.error(),
+            SessionStartError::Cancelled {
+                rollback_failures_total: 0
+            }
+        ));
+        assert!(failure.rollback_failures().is_empty());
+        assert_eq!(
+            receipt.trace,
+            ["register", "unregister", "aggregate", "tap", "release"]
+        );
+        assert_failed_start_events(&mut failure, 0);
+    }
+    #[test]
+    fn given_observed_token_when_session_native_registration_blocks_then_clone_identifies_call_before_return(
+    ) {
+        let cancellation = SessionStartCancellation::observed();
+        let (entered_tx, entered_rx) = std::sync::mpsc::sync_channel(1);
+        let (release_tx, release_rx) = std::sync::mpsc::sync_channel(1);
+        let worker_token = cancellation.clone();
+        let worker = std::thread::spawn(move || {
+            start(
+                Fault::default(),
+                Some((entered_tx, release_rx)),
+                worker_token,
+            )
+        });
+        entered_rx
+            .recv_timeout(Duration::from_secs(5))
+            .expect("registration entered");
+        let snapshot = cancellation.native_call_observations().unwrap();
+        let current = snapshot
+            .current
+            .iter()
+            .flatten()
+            .copied()
+            .collect::<Vec<_>>();
+        assert_eq!(current.len(), 1);
+        assert_eq!(
+            current[0].operation,
+            crate::capture::NativeCallOperation::RegisterIoProc
+        );
+        assert_eq!(current[0].returned_at_ns, None);
+        assert_eq!(current[0].status_code, None);
+        cancellation.request();
+        assert_eq!(
+            cancellation.native_call_observations().unwrap().current,
+            snapshot.current
+        );
+        release_tx.send(()).expect("release registration");
+        let (mut failure, receipt) = worker.join().expect("startup worker");
+        assert!(matches!(
+            failure.error(),
+            SessionStartError::Cancelled {
+                rollback_failures_total: 0
+            }
+        ));
+        assert_eq!(
+            receipt.trace,
+            ["register", "unregister", "aggregate", "tap", "release"]
+        );
+        let final_snapshot = cancellation.native_call_observations().unwrap();
+        assert!(final_snapshot.current.iter().all(Option::is_none));
+        assert_eq!(final_snapshot.completed_calls_total, 4);
+        assert_failed_start_events(&mut failure, 0);
+    }
+
+    #[test]
+    fn given_each_native_cleanup_phase_fails_when_late_cancellation_session_rolls_back_then_uncertainty_is_counted(
+    ) {
+        for stage in 9..=12 {
+            let (mut failure, receipt) = start(
+                Fault {
+                    cleanup_stage: stage,
+                    cancel_at: if stage == 9 { 3 } else { 2 },
+                    ..Fault::default()
+                },
+                None,
+                SessionStartCancellation::default(),
+            );
+            assert!(matches!(
+                failure.error(),
+                SessionStartError::Cancelled {
+                    rollback_failures_total: 1
+                }
+            ));
+            assert_eq!(failure.rollback_failures().len(), 1);
+            assert_eq!(receipt.cleanup_stage, stage);
+            assert!(receipt.retained);
+            assert!(!receipt.trace.contains(&"release"));
+            assert_failed_start_events(&mut failure, 1);
+        }
+    }
+    #[test]
+    fn given_primary_native_status_when_late_cancellation_cleanup_is_uncertain_then_session_preserves_both_failures(
+    ) {
+        for fault in [
+            Fault {
+                start_status: 0x10004003,
+                cleanup_stage: 9,
+                ..Fault::default()
+            },
+            Fault {
+                register_status: 0x10004003,
+                ..Fault::default()
+            },
+        ] {
+            let (mut failure, receipt) = start(fault, None, SessionStartCancellation::default());
+            assert!(matches!(
+                failure.error(),
+                SessionStartError::CaptureOpen {
+                    source: CaptureError::BackendStatus {
+                        status_code: 0x10004003,
+                        ..
+                    },
+                    rollback_failures_total: 1,
+                    ..
+                }
+            ));
+            assert_eq!(failure.rollback_failures().len(), 1);
+            assert!(receipt.retained);
+            assert_failed_start_events(&mut failure, 1);
+        }
+    }
+}
+
 #[test]
 fn given_endpoint_start_failure_when_started_then_all_acquisitions_roll_back() {
     let nodes = node_registry();

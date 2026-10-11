@@ -162,9 +162,41 @@ const fn source_topology_has_input(
 #[derive(Clone, Debug, Default)]
 pub struct SessionStartCancellation {
     requested: Arc<AtomicBool>,
+    native_calls: Option<Arc<crate::capture::NativeCallObservationState>>,
 }
 
 impl SessionStartCancellation {
+    pub(crate) fn capture_open_cancellation(&self) -> crate::capture::CaptureOpenCancellation {
+        match &self.native_calls {
+            Some(state) => crate::capture::CaptureOpenCancellation::from_requested_observed(
+                Arc::clone(&self.requested),
+                Some(Arc::clone(state)),
+            ),
+            None => {
+                crate::capture::CaptureOpenCancellation::from_requested(Arc::clone(&self.requested))
+            }
+        }
+    }
+
+    /// Opts into fixed-capacity native-control call observations.
+    ///
+    /// All clones share the same read state. Ordinary `default()` tokens omit
+    /// this allocation. Observations never alter native acquisition or cleanup.
+    pub fn observed() -> Self {
+        Self {
+            requested: Arc::new(AtomicBool::new(false)),
+            native_calls: Some(crate::capture::NativeCallObservationState::new()),
+        }
+    }
+
+    /// Reads native calls while synchronous startup or later cleanup is blocked.
+    ///
+    /// `None` means observations were not enabled. An empty/busy/truncated
+    /// snapshot does not establish release, callback quiescence or success.
+    pub fn native_call_observations(&self) -> Option<crate::capture::NativeCallObservations> {
+        self.native_calls.as_ref().map(|state| state.snapshot())
+    }
+
     pub fn request(&self) {
         self.requested.store(true, Ordering::Release);
     }

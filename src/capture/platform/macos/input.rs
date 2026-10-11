@@ -176,13 +176,33 @@ pub struct MacosInputSource {
 impl MacosInputSource {
     pub(crate) fn capture_with_runtime_event_sender<F>(
         selector: InputDeviceSelector,
-        audio_frame_duration: AudioFrameDuration,
-        mut callback: F,
-        runtime_event_sender: Option<SourceRuntimeEventSender>,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+        callback: F,
+        runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
     ) -> Result<Self, CaptureError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
+        Self::capture_cancellable(
+            selector,
+            audio_frame_duration,
+            callback,
+            runtime_event_sender,
+            &crate::capture::CaptureOpenCancellation::default(),
+        )
+        .map_err(crate::capture::CaptureOpenFailure::into_capture_error)
+    }
+    pub(crate) fn capture_cancellable<F>(
+        selector: InputDeviceSelector,
+        audio_frame_duration: AudioFrameDuration,
+        mut callback: F,
+        runtime_event_sender: Option<SourceRuntimeEventSender>,
+        cancellation: &crate::capture::CaptureOpenCancellation,
+    ) -> Result<Self, crate::capture::CaptureOpenFailure>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        cancellation.check()?;
         require_microphone_permission(super::microphone_permission_observation())?;
         let host = cpal::default_host();
         let device = select_input_device(&host, &selector)?;
@@ -341,6 +361,7 @@ impl MacosInputSource {
                 let _ = sender.try_send(event);
             }
         };
+        cancellation.check()?;
         let stream = device
             .build_input_stream_raw(
                 stream_config,
@@ -351,6 +372,7 @@ impl MacosInputSource {
             )
             .map_err(|error| capture_backend_error("build input stream", error))?;
 
+        cancellation.check()?;
         let reader_running = Arc::clone(&running);
         let reader_counters = counters.clone();
         let reader_thread = std::thread::Builder::new()
@@ -446,20 +468,38 @@ impl MacosInputSource {
             })
             .map_err(|error| CaptureError::BackendInit(format!("input reader thread: {error}")))?;
 
+        if cancellation.is_requested() {
+            running.store(false, Ordering::Release);
+            drop(stream);
+            let cleanup_error =
+                crate::capture::join_capture_worker(reader_thread, "macOS input reader").err();
+            return Err(crate::capture::CaptureOpenFailure::Cancelled { cleanup_error });
+        }
         if let Err(error) = stream.play() {
             running.store(false, Ordering::Release);
-            let _ = reader_thread.join();
-            return Err(capture_backend_error("start input stream", error));
+            drop(stream);
+            let cleanup_error =
+                crate::capture::join_capture_worker(reader_thread, "macOS input reader").err();
+            return Err(crate::capture::CaptureOpenFailure::Backend {
+                source: capture_backend_error("start input stream", error),
+                cleanup_error,
+            });
         }
 
-        Ok(Self {
+        let source = Self {
             stream: Some(stream),
             reader_thread: Some(reader_thread),
             running,
             counters,
             source_id,
             native_format,
-        })
+        };
+        if cancellation.is_requested() {
+            return Err(crate::capture::CaptureOpenFailure::Cancelled {
+                cleanup_error: source.stop_and_join().err(),
+            });
+        }
+        Ok(source)
     }
 
     pub fn source_id(&self) -> crate::frame::SourceId {
