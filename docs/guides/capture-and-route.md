@@ -45,6 +45,72 @@ reported scope matches the intended reuse. The
 [platform operations guide](../operations/platform-support.md#reuse-a-discovered-source-safely)
 shows how to handle permission, persistence, and rediscovery.
 
+## Capture a frozen process set
+
+When one selected application instance owns several processes with different
+native application identities, use `Session::capture_process_set`. It opens one
+native stereo mixdown tap with the existing clock and frame assembly. Delivery
+uses the existing capture queue and its configured overflow behavior. The returned `SourceOutputHandle` routes like other registered-source
+outputs; the individual processes are members of that one source, not separate
+stems or a JavaScript mix.
+
+```rust,no_run
+use pocketstation::{ApplicationProcessSet, ObservedProcessInstance, ProcessSetError,
+    Session, SourceOutputHandle};
+
+fn capture_selected_instances(
+    session: &Session,
+    observed_members: Vec<ObservedProcessInstance>,
+) -> Result<SourceOutputHandle, ProcessSetError> {
+    session.capture_process_set(ApplicationProcessSet::new(observed_members)?)
+}
+```
+
+Call `discover_process_instances()` to obtain usable PID, stable application
+identity and original process-start observations. Keep these together. The
+caller establishes which application instance is intended, for example by
+joining its independently discovered browser-root ancestry to the observations.
+Require an observation for **every** intended member before declaring the set.
+Unobservable or churned rows are omitted from this discovery result; it is not
+evidence that the list contains every member of an application instance. Do not
+select only the loudest process or assume a silent member is irrelevant.
+
+Sets contain 1–32 distinct processes from one platform. PIDs must fit the
+positive native signed process-ID range and start observations must be nonzero.
+Construction canonicalizes order and rejects empty, oversized, duplicate and
+conflicting selections. Opening compares every original stable/start identity,
+resolves every member to a native process object, and checks every member again
+after starting the tap, before downstream delivery. A partial resolution fails;
+it never falls back to a broader application identity or the system mix.
+
+This capability requires macOS 26+ and native capture, where
+[automatic process restoration](https://developer.apple.com/documentation/coreaudio/catapdescription/isprocessrestoreenabled)
+can explicitly be disabled. The same capability check gates discovery,
+declaration and opening. Earlier supported macOS releases retain their existing
+selectors; they do not advertise strict-set availability. Other platforms and
+builds return `capture.unsupported` for this operation.
+
+The output is stereo. Its native rate and format must match the declared Session
+rate and format; opening fails before delivery if they differ. No resampling or
+implicit channel conversion is added. Per-source stereo media remains independent
+of the Session's default microphone channel count. Queue and native-ring loss
+retain sequence gaps and advance the discontinuity epoch.
+
+After admission, original surviving members may continue if another member exits.
+The selection never discovers or follows a new PID or restored bundle identity.
+When all original members exit, the registered source reports failure and joins
+after confirmed close. Inspect this output's external-source `failure_total` and
+`joined` metrics; the whole Session may still run other sources. Rediscover and
+create a new source/session explicitly to bind a changed instance.
+
+Startup `capture.cleanup_unconfirmed` means native teardown could not be confirmed,
+including cleanup after another startup resource fails. Preserve ownership and
+the original failure context. During stop, an actual native close failure has
+operation `close_external_capture` and error class `capture-close-unconfirmed`.
+An ordinary source-ended/read failure followed by confirmed close does not have
+that marker. Package tests exercise these failures; they do not prove
+physical application isolation or independently decoded guest sound.
+
 ## Capture everything playing on the computer
 
 Use system audio when the workflow needs the complete output mix instead of

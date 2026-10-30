@@ -39,6 +39,33 @@ struct AuditedCaptureSource {
     process_start_time_ns: u64,
 }
 
+pub(crate) fn discover_process_instances_native(
+) -> Result<Vec<crate::ObservedProcessInstance>, crate::ProcessSetError> {
+    if !exact_process_set_available() {
+        return Err(crate::ProcessSetError::Unsupported);
+    }
+    Ok(observed_process_instances_from_sources(
+        discover_sources_native_observed(None),
+    ))
+}
+
+fn observed_process_instances_from_sources(
+    sources: Vec<AuditedCaptureSource>,
+) -> Vec<crate::ObservedProcessInstance> {
+    sources
+        .into_iter()
+        .filter(|observed| observed.source.stable_id.kind == SourceKind::Application)
+        .filter_map(|observed| {
+            crate::ObservedProcessInstance::new(
+                crate::ProcessId::new(observed.source.process_id?),
+                observed.source.stable_id,
+                observed.process_start_time_ns,
+            )
+            .ok()
+        })
+        .collect()
+}
+
 #[derive(Debug, PartialEq, Eq)]
 struct ApplicationCaptureSelection {
     process_ids: Vec<i32>,
@@ -90,6 +117,7 @@ fn observer_pointer(observer: &Option<NativeObserver>) -> *const NativeObserver 
 
 extern "C" {
     fn pks_process_tap_available() -> i32;
+    fn pks_exact_process_tap_available() -> i32;
     fn pks_process_start_time_ns_observed(process_id: i32, observer: *const NativeObserver) -> u64;
     fn pks_discover_sources_observed(
         out: *mut RawSourceInfo,
@@ -97,6 +125,17 @@ extern "C" {
         observer: *const NativeObserver,
     ) -> i32;
     fn pks_create_process_tap_observed(
+        pids: *const i32,
+        process_count: i32,
+        out_status: *mut i32,
+        out_stage: *mut u8,
+        cleanup_status: *mut i32,
+        cleanup_stage: *mut u8,
+        cancelled: extern "C" fn(*mut std::ffi::c_void) -> i32,
+        cancellation: *mut std::ffi::c_void,
+        observer: *const NativeObserver,
+    ) -> *mut std::ffi::c_void;
+    fn pks_create_exact_process_tap_observed(
         pids: *const i32,
         process_count: i32,
         out_status: *mut i32,
@@ -181,6 +220,11 @@ pub fn tap_available() -> bool {
 
 /// Enumerate all running processes that have audio output.
 /// Returns an empty `Vec` on macOS < 14.4 (public support floor) or on non-macOS platforms.
+pub(crate) fn exact_process_set_available() -> bool {
+    // SAFETY: native feature probing neither captures nor borrows memory.
+    unsafe { pks_exact_process_tap_available() != 0 }
+}
+
 pub fn discover_sources_native() -> Vec<CaptureSource> {
     discover_sources_native_with_audit()
         .into_iter()
@@ -599,6 +643,28 @@ fn application_open_audit_for_process(
         })
 }
 
+fn exact_process_set_audits(
+    set: &crate::ApplicationProcessSet,
+    sources: &[AuditedCaptureSource],
+) -> Result<Vec<ExactApplicationOpenAudit>, LoopbackError> {
+    if set.platform() != Platform::Macos {
+        return Err(LoopbackError::BackendSetupRequired {
+            backend: "macos-exact-process-set",
+            action: "select process observations from this macOS host",
+        });
+    }
+    set.members()
+        .iter()
+        .map(|member| {
+            exact_application_open_audit(sources, member.process_id().get(), member.stable_id())
+                .filter(|audit| audit.process_start_time_ns == member.process_start_time_ns())
+                .ok_or_else(|| LoopbackError::SourceUnavailable {
+                    stable_key: member.stable_id().stable_key.clone(),
+                })
+        })
+        .collect()
+}
+
 fn capture_application_open_audit_for_process(
     process_id: u32,
     reporter: Option<&NativeCallReporter>,
@@ -696,6 +762,12 @@ fn verify_application_open_audits(
 // - AudioDeviceStart/Stop are safe to call from any thread.
 unsafe impl Send for ProcessTap {}
 
+#[derive(Clone, Copy)]
+enum TapMembershipAdmission {
+    Legacy,
+    Exact,
+}
+
 impl ProcessTap {
     fn global(
         cancellation: &CaptureOpenCancellation,
@@ -718,6 +790,36 @@ impl ProcessTap {
         cancellation: &CaptureOpenCancellation,
         native_calls: Option<NativeCallReporter>,
     ) -> Result<Self, CaptureOpenFailure> {
+        Self::create_with_admission(
+            pids,
+            process_count,
+            cancellation,
+            native_calls,
+            TapMembershipAdmission::Legacy,
+        )
+    }
+
+    fn for_exact_pids(
+        pids: &[i32],
+        cancellation: &CaptureOpenCancellation,
+        native_calls: Option<NativeCallReporter>,
+    ) -> Result<Self, CaptureOpenFailure> {
+        Self::create_with_admission(
+            pids.as_ptr(),
+            pids.len() as i32,
+            cancellation,
+            native_calls,
+            TapMembershipAdmission::Exact,
+        )
+    }
+
+    fn create_with_admission(
+        pids: *const i32,
+        process_count: i32,
+        cancellation: &CaptureOpenCancellation,
+        native_calls: Option<NativeCallReporter>,
+        admission: TapMembershipAdmission,
+    ) -> Result<Self, CaptureOpenFailure> {
         cancellation.check()?;
         let mut lease = TAP_ADMISSION.acquire()?;
         let observer = native_observer(native_calls.as_ref());
@@ -725,10 +827,14 @@ impl ProcessTap {
         let mut stage_code = 0;
         let mut cleanup_status = 0;
         let mut cleanup_stage = 0;
+        let create = match admission {
+            TapMembershipAdmission::Legacy => pks_create_process_tap_observed,
+            TapMembershipAdmission::Exact => pks_create_exact_process_tap_observed,
+        };
         // SAFETY: pids addresses process_count valid i32 values or is null when
         // process_count is zero; both out-pointers live through this call.
         let handle = unsafe {
-            pks_create_process_tap_observed(
+            create(
                 pids,
                 process_count,
                 &mut status_code,
@@ -934,17 +1040,64 @@ const PROCESS_LIFETIME_POLL_INTERVAL: Duration = Duration::from_millis(100);
 const EMPTY_RING_POLL_INTERVAL: Duration = Duration::from_micros(500);
 
 /// Captures system audio via CoreAudio process tap (macOS 14.2+).
+enum TapCaptureSelection {
+    Legacy(CaptureMode),
+    Exact(crate::ApplicationProcessSet),
+}
+
 pub struct TapLoopbackSource {
     reader_thread: Option<std::thread::JoinHandle<()>>,
     cleanup: Arc<TapCleanupReceipt>,
     pub(crate) stop_tx: std::sync::mpsc::SyncSender<()>,
     counters: CaptureObservationCounters,
     source_id: crate::frame::SourceId,
+    native_spec: crate::SampleSpec,
 }
 
 impl TapLoopbackSource {
     pub(crate) fn capture_mode_cancellable<F>(
         mode: CaptureMode,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+        callback: F,
+        runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
+        cancellation: &CaptureOpenCancellation,
+    ) -> Result<Self, CaptureOpenFailure>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        Self::capture_selection_cancellable(
+            TapCaptureSelection::Legacy(mode),
+            audio_frame_duration,
+            callback,
+            runtime_event_sender,
+            cancellation,
+        )
+    }
+
+    pub(crate) fn capture_process_set_cancellable<F>(
+        selection: crate::ApplicationProcessSet,
+        audio_frame_duration: crate::frame::AudioFrameDuration,
+        callback: F,
+        runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
+        cancellation: &CaptureOpenCancellation,
+    ) -> Result<Self, CaptureOpenFailure>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        if !exact_process_set_available() {
+            return Err(LoopbackError::NotSupported.into());
+        }
+        Self::capture_selection_cancellable(
+            TapCaptureSelection::Exact(selection),
+            audio_frame_duration,
+            callback,
+            runtime_event_sender,
+            cancellation,
+        )
+    }
+
+    fn capture_selection_cancellable<F>(
+        selection: TapCaptureSelection,
         audio_frame_duration: crate::frame::AudioFrameDuration,
         mut callback: F,
         runtime_event_sender: Option<crate::capture::SourceRuntimeEventSender>,
@@ -962,82 +1115,108 @@ impl TapLoopbackSource {
         }
 
         let native_calls = cancellation.native_call_reporter();
-        let (mut tap, stable_id, application_open_audits) = match &mode {
-            CaptureMode::SystemMix => (
-                ProcessTap::global(cancellation, native_calls)?,
-                stable_source_id(&mode)?,
-                Vec::new(),
-            ),
-            CaptureMode::Process(pid) => {
-                let audit =
-                    capture_application_open_audit_for_process(*pid, native_calls.as_ref())?;
-                let stable_id = audit.stable_id.clone();
-                (
-                    ProcessTap::for_pids(&[*pid as i32], cancellation, native_calls)?,
-                    stable_id,
-                    vec![audit],
-                )
-            }
-            CaptureMode::ExactApplication {
-                process_id,
-                stable_id,
-            } => {
-                let audit = capture_exact_application_open_audit(
-                    *process_id,
-                    stable_id,
-                    native_calls.as_ref(),
+        let (mut tap, stable_id, application_open_audits) = match &selection {
+            TapCaptureSelection::Exact(set) => {
+                let audits = exact_process_set_audits(
+                    set,
+                    &discover_sources_native_observed(native_calls.as_ref()),
                 )?;
-                (
-                    ProcessTap::for_pids(&[*process_id as i32], cancellation, native_calls)?,
-                    stable_id.clone(),
-                    vec![audit],
-                )
-            }
-            CaptureMode::ExactApplicationStable { stable_id } => {
-                let sources = discover_sources_native_observed(native_calls.as_ref())
-                    .into_iter()
-                    .map(|audited| audited.source)
+                let pids = set
+                    .members()
+                    .iter()
+                    .map(|member| member.process_id().get() as i32)
                     .collect::<Vec<_>>();
-                let selected = select_stable_application_capture(&sources, stable_id)?;
-                let audits = capture_application_open_audits(&selected, native_calls.as_ref())?;
                 (
-                    ProcessTap::for_pids(&selected.process_ids, cancellation, native_calls)?,
-                    selected.stable_id,
+                    ProcessTap::for_exact_pids(&pids, cancellation, native_calls)?,
+                    set.stable_id(),
                     audits,
                 )
             }
-            CaptureMode::Application(application) => {
-                let sources = discover_sources_native_observed(native_calls.as_ref())
-                    .into_iter()
-                    .map(|audited| audited.source)
-                    .collect::<Vec<_>>();
-                let selected = select_application_capture(&sources, application)?;
-                if std::env::var_os("PKS_TAP_DIAG").is_some() {
-                    eprintln!(
-                        "tap_diag: application={} sources={} process_ids={:?}",
-                        application,
-                        sources.len(),
-                        selected.process_ids
-                    );
+            TapCaptureSelection::Legacy(mode) => match mode {
+                CaptureMode::SystemMix => (
+                    ProcessTap::global(cancellation, native_calls)?,
+                    stable_source_id(mode)?,
+                    Vec::new(),
+                ),
+                CaptureMode::Process(pid) => {
+                    let audit =
+                        capture_application_open_audit_for_process(*pid, native_calls.as_ref())?;
+                    let stable_id = audit.stable_id.clone();
+                    (
+                        ProcessTap::for_pids(&[*pid as i32], cancellation, native_calls)?,
+                        stable_id,
+                        vec![audit],
+                    )
                 }
-                let audits = capture_application_open_audits(&selected, native_calls.as_ref())?;
-                (
-                    ProcessTap::for_pids(&selected.process_ids, cancellation, native_calls)?,
-                    selected.stable_id,
-                    audits,
-                )
-            }
-            CaptureMode::InputDevice(_) => {
-                return Err(LoopbackError::ModeUnsupported(mode).into());
-            }
+                CaptureMode::ExactApplication {
+                    process_id,
+                    stable_id,
+                } => {
+                    let audit = capture_exact_application_open_audit(
+                        *process_id,
+                        stable_id,
+                        native_calls.as_ref(),
+                    )?;
+                    (
+                        ProcessTap::for_pids(&[*process_id as i32], cancellation, native_calls)?,
+                        stable_id.clone(),
+                        vec![audit],
+                    )
+                }
+                CaptureMode::ExactApplicationStable { stable_id } => {
+                    let sources = discover_sources_native_observed(native_calls.as_ref())
+                        .into_iter()
+                        .map(|audited| audited.source)
+                        .collect::<Vec<_>>();
+                    let selected = select_stable_application_capture(&sources, stable_id)?;
+                    let audits = capture_application_open_audits(&selected, native_calls.as_ref())?;
+                    (
+                        ProcessTap::for_pids(&selected.process_ids, cancellation, native_calls)?,
+                        selected.stable_id,
+                        audits,
+                    )
+                }
+                CaptureMode::Application(application) => {
+                    let sources = discover_sources_native_observed(native_calls.as_ref())
+                        .into_iter()
+                        .map(|audited| audited.source)
+                        .collect::<Vec<_>>();
+                    let selected = select_application_capture(&sources, application)?;
+                    if std::env::var_os("PKS_TAP_DIAG").is_some() {
+                        eprintln!(
+                            "tap_diag: application={} sources={} process_ids={:?}",
+                            application,
+                            sources.len(),
+                            selected.process_ids
+                        );
+                    }
+                    let audits = capture_application_open_audits(&selected, native_calls.as_ref())?;
+                    (
+                        ProcessTap::for_pids(&selected.process_ids, cancellation, native_calls)?,
+                        selected.stable_id,
+                        audits,
+                    )
+                }
+                CaptureMode::InputDevice(_) => {
+                    return Err(LoopbackError::ModeUnsupported(mode.clone()).into());
+                }
+            },
         };
 
         if let Err(failure) = tap.start(audio_frame_duration, cancellation) {
             return Err(tap.fail_open(failure));
         }
-        if let Err(error) =
-            verify_application_open_audits(&application_open_audits, tap.native_calls.as_ref())
-        {
+        let audit_result = match &selection {
+            TapCaptureSelection::Exact(set) => exact_process_set_audits(
+                set,
+                &discover_sources_native_observed(tap.native_calls.as_ref()),
+            )
+            .map(|_| ()),
+            TapCaptureSelection::Legacy(_) => {
+                verify_application_open_audits(&application_open_audits, tap.native_calls.as_ref())
+            }
+        };
+        if let Err(error) = audit_result {
             return Err(tap.fail_open(error.into()));
         }
 
@@ -1225,11 +1404,20 @@ impl TapLoopbackSource {
             stop_tx,
             counters,
             source_id,
+            native_spec: crate::SampleSpec::new(
+                sample_rate_hz,
+                channel_count,
+                crate::SampleFormat::F32Interleaved,
+            ),
         })
     }
 
     pub fn source_id(&self) -> crate::frame::SourceId {
         self.source_id
+    }
+
+    pub(crate) fn native_spec(&self) -> crate::SampleSpec {
+        self.native_spec
     }
 
     pub fn observations(&self) -> CaptureObservations {
@@ -1962,6 +2150,110 @@ mod tests {
             sample_rate_hz: 48_000,
             channels: 2,
         }
+    }
+
+    #[test]
+    fn given_unobservable_unrelated_process_when_inventory_built_then_valid_observations_remain() {
+        let target = StableSourceId::new(Platform::Macos, SourceKind::Application, "target");
+        let other = StableSourceId::new(Platform::Macos, SourceKind::Application, "unrelated");
+        let observed = super::observed_process_instances_from_sources(vec![
+            audited_application(target, 42, 100),
+            audited_application(other, 99, 0),
+        ]);
+        assert_eq!(observed.len(), 1);
+        assert_eq!(observed[0].process_id().get(), 42);
+        // This filtered inventory is not evidence that all members of a caller's
+        // browser root are observable; that caller must check its complete set.
+    }
+
+    #[test]
+    fn given_multiple_exact_identities_when_member_disappears_during_open_then_all_member_audit_rejects(
+    ) {
+        let root = StableSourceId::new(Platform::Macos, SourceKind::Application, "root");
+        let helper = StableSourceId::new(Platform::Macos, SourceKind::Application, "helper");
+        let set = crate::ApplicationProcessSet::new(vec![
+            crate::ObservedProcessInstance::new(crate::ProcessId::new(42), root.clone(), 100)
+                .unwrap(),
+            crate::ObservedProcessInstance::new(crate::ProcessId::new(43), helper.clone(), 200)
+                .unwrap(),
+        ])
+        .unwrap();
+        let before = vec![
+            audited_application(root.clone(), 42, 100),
+            audited_application(helper.clone(), 43, 200),
+            audited_application(helper.clone(), 99, 300),
+        ];
+        let audits = super::exact_process_set_audits(&set, &before).unwrap();
+        assert_eq!(audits.len(), 2);
+        assert_eq!(
+            audits
+                .iter()
+                .map(|member| member.process_id)
+                .collect::<Vec<_>>(),
+            vec![42, 43]
+        );
+        // A surviving original member is sufficient only after admission, never
+        // for admitting a set whose other requested member disappeared.
+        assert!(selected_application_is_running_with(&audits, |pid| {
+            if pid == 42 {
+                100
+            } else {
+                0
+            }
+        }));
+        assert!(super::exact_process_set_audits(&set, &before[..1]).is_err());
+        let reused = vec![
+            audited_application(root, 42, 100),
+            audited_application(helper, 43, 201),
+        ];
+        assert!(super::exact_process_set_audits(&set, &reused).is_err());
+    }
+
+    #[test]
+    fn given_partial_native_process_resolution_when_exact_admission_runs_then_no_partial_set_is_accepted(
+    ) {
+        unsafe extern "C" {
+            fn pks_resolve_exact_process_members(
+                pids: *const i32,
+                member_count: i32,
+                objects: *mut u32,
+                resolve: extern "C" fn(i32, *mut std::ffi::c_void) -> u32,
+                context: *mut std::ffi::c_void,
+            ) -> i32;
+        }
+        extern "C" fn missing_middle(pid: i32, _: *mut std::ffi::c_void) -> u32 {
+            if pid == 43 {
+                0
+            } else {
+                pid as u32 + 100
+            }
+        }
+        let pids = [42, 43, 44];
+        let mut objects = [0; 3];
+        // SAFETY: fixed synchronous buffers and a non-capturing resolver; no HAL
+        // or permission operation is reachable through this injected resolver.
+        let result = unsafe {
+            pks_resolve_exact_process_members(
+                pids.as_ptr(),
+                3,
+                objects.as_mut_ptr(),
+                missing_middle,
+                std::ptr::null_mut(),
+            )
+        };
+        assert_eq!(result, -1);
+        // SAFETY: the same fixed buffers and synchronous resolver remain valid.
+        let result = unsafe {
+            pks_resolve_exact_process_members(
+                pids.as_ptr(),
+                1,
+                objects.as_mut_ptr(),
+                missing_middle,
+                std::ptr::null_mut(),
+            )
+        };
+        assert_eq!(result, 0);
+        assert_eq!(objects[0], 142);
     }
 
     #[test]

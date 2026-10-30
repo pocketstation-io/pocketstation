@@ -217,6 +217,13 @@ pub enum SessionStartError {
         message: String,
         rollback_failures_total: u64,
     },
+    #[error("capture open failed for source instance {source_instance_id:?}: {source}")]
+    ExternalSourceCapture {
+        source_instance_id: crate::session::SourceInstanceId,
+        #[source]
+        source: Box<crate::CaptureOpenFailure>,
+        rollback_failures_total: u64,
+    },
     #[error("external source audio ingress failed: {message}")]
     ExternalAudioBridge {
         message: String,
@@ -354,6 +361,10 @@ impl SessionStartError {
                 ..
             }
             | Self::ExternalSourcePrepare {
+                rollback_failures_total,
+                ..
+            }
+            | Self::ExternalSourceCapture {
                 rollback_failures_total,
                 ..
             }

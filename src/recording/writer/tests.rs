@@ -366,3 +366,488 @@ fn given_failed_recorder_branch_when_more_frames_dispatched_then_healthy_branch_
         .unwrap()
         .contains("frame lineage Source"));
 }
+
+#[derive(Clone, Copy)]
+enum OutputFault {
+    None,
+    WriteAfter(usize),
+    Flush,
+    Seek,
+}
+
+struct FaultingOutput {
+    file: File,
+    fault: OutputFault,
+    armed: Arc<AtomicBool>,
+    accepted_bytes: usize,
+}
+
+impl Write for FaultingOutput {
+    fn write(&mut self, bytes: &[u8]) -> std::io::Result<usize> {
+        if self.armed.load(Ordering::Relaxed) {
+            if let OutputFault::WriteAfter(limit_bytes) = self.fault {
+                let remaining_bytes = limit_bytes.saturating_sub(self.accepted_bytes);
+                if remaining_bytes == 0 {
+                    return Err(std::io::Error::other("injected ENOSPC during PCM write"));
+                }
+                let count = self
+                    .file
+                    .write(&bytes[..bytes.len().min(remaining_bytes)])?;
+                self.accepted_bytes += count;
+                return Ok(count);
+            }
+        }
+        self.file.write(bytes)
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        if self.armed.load(Ordering::Relaxed) && matches!(self.fault, OutputFault::Flush) {
+            return Err(std::io::Error::other("injected WAV flush failure"));
+        }
+        self.file.flush()
+    }
+}
+
+impl Seek for FaultingOutput {
+    fn seek(&mut self, position: std::io::SeekFrom) -> std::io::Result<u64> {
+        if self.armed.load(Ordering::Relaxed) && matches!(self.fault, OutputFault::Seek) {
+            return Err(std::io::Error::other("injected WAV header seek failure"));
+        }
+        self.file.seek(position)
+    }
+}
+
+fn output_fault_outcome(
+    directory: &Path,
+    fault: OutputFault,
+    second_frame: bool,
+    fail_checksum: bool,
+    label: &str,
+) -> (RecorderStemConfig, StemWorkerOutcome) {
+    fs::create_dir_all(directory.join("stems")).unwrap();
+    fs::create_dir_all(directory.join("events")).unwrap();
+    let (mut router, mut receivers, nodes) = router_with_sources(1);
+    let (source_id, stem_id) = if label == "microphone" {
+        (21, 22)
+    } else {
+        (11, 12)
+    };
+    let config = stem_config(90, source_id, stem_id, 13, label, 1_000, 10_000);
+    if second_frame {
+        router.dispatch_from(
+            nodes[0],
+            "out",
+            frame(&config, 1, 20_001_000, 0.5),
+            20_001_000,
+        );
+    }
+    let mut runtime = StemWorkerRuntime {
+        session_dir: directory.to_owned(),
+        config: config.clone(),
+        receiver: receivers.pop().unwrap(),
+        stop_requested: Arc::new(AtomicBool::new(true)),
+        telemetry: Arc::new(RecorderWorkerTelemetry::default()),
+        initial_frame: Some(PlanEdgeFrame::Exclusive(frame(&config, 0, 1_000, 0.25))),
+    };
+    let mut report = None;
+    let result = runtime.run_with_output(
+        &mut report,
+        |path, spec| {
+            let armed = Arc::new(AtomicBool::new(false));
+            let writer = WavWriter::new(
+                FaultingOutput {
+                    file: File::create(path)?,
+                    fault,
+                    armed: Arc::clone(&armed),
+                    accepted_bytes: 0,
+                },
+                spec,
+            )?;
+            armed.store(true, Ordering::Relaxed);
+            Ok(writer)
+        },
+        |path| {
+            if fail_checksum {
+                Err(std::io::Error::other("injected checksum read failure").into())
+            } else {
+                checksum_fnv1a64(path)
+            }
+        },
+    );
+    let telemetry = Arc::clone(&runtime.telemetry);
+    let outcome = runtime.into_outcome(report, result);
+    assert_eq!(
+        telemetry.snapshot().failures_total,
+        u64::from(outcome.error.is_some())
+    );
+    (config, outcome)
+}
+
+fn manifest_for_outcome(
+    config: &RecorderStemConfig,
+    outcome: StemWorkerOutcome,
+) -> ManifestDocument {
+    ManifestDocument::session_finished(
+        config.session_id,
+        &crate::endpoint::EndpointGroupId::new("recording.test.v1"),
+        &[SessionStemDeclaration {
+            session_id: config.session_id,
+            stem_id: config.stem_id,
+            label: config.label.clone(),
+            sample_rate_hz: config.sample_rate_hz,
+            channels: config.channels,
+            session_timeline_origin_ns: config.timeline_mapping.session_origin_ns,
+        }],
+        &[SessionStemWorkerOutcome {
+            config: Some(config.clone()),
+            worker: outcome,
+        }],
+    )
+}
+
+#[test]
+fn given_mid_frame_storage_failure_when_worker_ends_then_accepted_prefix_is_preserved_incomplete() {
+    let temp = TempDir::new().unwrap();
+    let (config, outcome) = output_fault_outcome(
+        temp.path(),
+        OutputFault::WriteAfter(FRAME_SAMPLES * 4 + 8),
+        true,
+        false,
+        "application",
+    );
+    let report = outcome.report.as_ref().unwrap();
+    assert_eq!(report.written_frames, 1);
+    assert_eq!(report.first_timestamp_ns, Some(10_000));
+    assert_eq!(report.final_timestamp_ns, Some(20_010_000));
+    assert!(outcome
+        .error
+        .as_deref()
+        .unwrap()
+        .contains("injected ENOSPC"));
+    // A partial second frame exists physically but is not a complete logical frame.
+    assert!(
+        fs::metadata(temp.path().join("stems/application.wav"))
+            .unwrap()
+            .len()
+            > 68 + 3_840
+    );
+    let manifest = manifest_for_outcome(&config, outcome);
+    let stem = &manifest.stems[0];
+    assert_eq!(manifest.state, RecordingState::Incomplete);
+    assert_eq!(stem.finalization_state, RecordingState::Incomplete);
+    assert_eq!(stem.written_frames, 1);
+    assert_eq!(stem.first_timestamp_ns, Some(10_000));
+    assert_eq!(stem.final_timestamp_ns, Some(20_010_000));
+    assert_eq!(stem.clock_id, Some(config.clock_id.0));
+    assert_eq!(stem.source_timeline_origin_ns, Some(1_000));
+    assert!(stem.wav_bytes.is_none());
+    assert!(stem.checksum.is_none());
+    assert_eq!(manifest.errors.len(), 1);
+}
+
+#[test]
+fn given_finalization_io_failures_when_worker_ends_then_known_clock_and_counts_are_not_erased() {
+    for fault in [OutputFault::Flush, OutputFault::Seek] {
+        let temp = TempDir::new().unwrap();
+        let (config, outcome) =
+            output_fault_outcome(temp.path(), fault, false, false, "application");
+        let original_error = outcome.error.clone().unwrap();
+        let manifest = manifest_for_outcome(&config, outcome);
+        assert_eq!(manifest.state, RecordingState::Incomplete);
+        let stem = &manifest.stems[0];
+        assert_eq!(stem.finalization_state, RecordingState::Incomplete);
+        assert_eq!(stem.written_frames, 1);
+        assert_eq!(stem.first_timestamp_ns, Some(10_000));
+        assert_eq!(stem.final_timestamp_ns, Some(20_010_000));
+        assert!(stem.wav_bytes.is_none());
+        assert!(stem.checksum.is_none());
+        assert_eq!(stem.error.as_ref(), Some(&original_error));
+        assert_eq!(manifest.errors, vec![original_error]);
+    }
+}
+
+#[test]
+fn given_checksum_failure_after_wav_finalize_when_reported_then_size_is_known_but_integrity_is_not()
+{
+    let temp = TempDir::new().unwrap();
+    let (config, outcome) =
+        output_fault_outcome(temp.path(), OutputFault::None, false, true, "application");
+    let manifest = manifest_for_outcome(&config, outcome);
+    let stem = &manifest.stems[0];
+    assert_eq!(manifest.state, RecordingState::Incomplete);
+    assert_eq!(stem.finalization_state, RecordingState::Incomplete);
+    assert_eq!(stem.written_frames, 1);
+    assert_eq!(
+        stem.wav_bytes,
+        Some(
+            fs::metadata(temp.path().join("stems/application.wav"))
+                .unwrap()
+                .len()
+        )
+    );
+    assert!(stem.checksum.is_none());
+    assert!(stem
+        .error
+        .as_deref()
+        .unwrap()
+        .contains("checksum read failure"));
+}
+
+#[test]
+fn given_ordinary_output_when_worker_finishes_then_complete_file_and_checksum_remain_verified() {
+    let temp = TempDir::new().unwrap();
+    let (config, outcome) =
+        output_fault_outcome(temp.path(), OutputFault::None, true, false, "application");
+    assert!(outcome.error.is_none());
+    let manifest = manifest_for_outcome(&config, outcome);
+    assert_eq!(manifest.state, RecordingState::Complete);
+    assert!(manifest.errors.is_empty());
+    let stem = &manifest.stems[0];
+    assert_eq!(stem.finalization_state, RecordingState::Complete);
+    assert_eq!(stem.written_frames, 2);
+    assert_eq!(stem.first_timestamp_ns, Some(10_000));
+    assert_eq!(stem.final_timestamp_ns, Some(40_010_000));
+    assert_eq!(
+        stem.checksum.as_deref(),
+        Some(
+            checksum_fnv1a64(&temp.path().join("stems/application.wav"))
+                .unwrap()
+                .as_str()
+        )
+    );
+    assert_eq!(
+        hound::WavReader::open(temp.path().join("stems/application.wav"))
+            .unwrap()
+            .duration(),
+        1_920
+    );
+}
+
+#[test]
+fn given_no_accepted_frame_when_write_fails_then_missing_timing_stays_unknown() {
+    let temp = TempDir::new().unwrap();
+    let (config, outcome) = output_fault_outcome(
+        temp.path(),
+        OutputFault::WriteAfter(0),
+        false,
+        false,
+        "application",
+    );
+    let manifest = manifest_for_outcome(&config, outcome);
+    let stem = &manifest.stems[0];
+    assert_eq!(manifest.state, RecordingState::Incomplete);
+    assert_eq!(stem.written_frames, 0);
+    assert!(stem.first_timestamp_ns.is_none());
+    assert!(stem.final_timestamp_ns.is_none());
+    assert!(stem.wav_bytes.is_none());
+    assert!(stem.checksum.is_none());
+    assert!(stem.error.is_some());
+}
+
+#[test]
+fn given_partial_report_when_another_stem_finishes_then_healthy_stem_and_legacy_manifest_are_preserved(
+) {
+    let temp = TempDir::new().unwrap();
+    let (bad_config, bad) = output_fault_outcome(
+        &temp.path().join("bad"),
+        OutputFault::Flush,
+        false,
+        false,
+        "application",
+    );
+    let (good_config, good) = output_fault_outcome(
+        &temp.path().join("good"),
+        OutputFault::None,
+        false,
+        false,
+        "microphone",
+    );
+    let manifest = ManifestDocument::finished(
+        SessionId(90),
+        &crate::endpoint::EndpointGroupId::new("recording.test.v1"),
+        &[bad_config, good_config],
+        &[bad, good],
+        None,
+    );
+    assert_eq!(manifest.state, RecordingState::Incomplete);
+    assert_eq!(manifest.errors.len(), 1);
+    assert_eq!(
+        manifest.stems[0].finalization_state,
+        RecordingState::Incomplete
+    );
+    assert_eq!(manifest.stems[0].written_frames, 1);
+    assert_eq!(
+        manifest.stems[1].finalization_state,
+        RecordingState::Complete
+    );
+    assert_eq!(manifest.stems[1].written_frames, 1);
+    assert!(manifest.stems[1].checksum.is_some());
+    // The current schema accepts null file integrity facts without invented zeros.
+    let json = serde_json::to_vec(&manifest).unwrap();
+    let restored: ManifestDocument = serde_json::from_slice(&json).unwrap();
+    assert!(restored.stems[0].wav_bytes.is_none());
+    assert_eq!(restored.stems[0].first_timestamp_ns, Some(10_000));
+    assert_eq!(
+        restored.stems[1].finalization_state,
+        RecordingState::Complete
+    );
+}
+
+#[test]
+fn given_late_worker_failure_when_recording_finishes_then_public_outcome_keeps_accepted_frames() {
+    let temp = TempDir::new().unwrap();
+    let (mut router, mut receivers, nodes) = router_with_sources(1);
+    let config = stem_config(91, 11, 12, 13, "application", 1_000, 10_000);
+    let wrong = stem_config(91, 99, 12, 13, "application", 1_000, 10_000);
+    router.dispatch_from(
+        nodes[0],
+        "out",
+        frame(&wrong, 1, 20_001_000, 0.5),
+        20_001_000,
+    );
+    let recording = MultistemRecording::start_observed(
+        temp.path(),
+        SessionId(91),
+        crate::endpoint::EndpointGroupId::new("recording.test.v1"),
+        vec![(
+            config.clone(),
+            receivers.pop().unwrap(),
+            PlanEdgeFrame::Exclusive(frame(&config, 0, 1_000, 0.25)),
+        )],
+    )
+    .unwrap();
+    let outcome = recording.finish().unwrap();
+    assert_eq!(outcome.state, RecordingState::Incomplete);
+    assert_eq!(outcome.failed_stems, 1);
+    assert_eq!(outcome.completed_stems, 0);
+    assert_eq!(outcome.stems[0].written_frames, 1);
+    assert!(outcome.stems[0]
+        .error
+        .as_deref()
+        .unwrap()
+        .contains("lineage Source"));
+    let manifest: ManifestDocument =
+        serde_json::from_reader(File::open(outcome.session_dir.join("manifest.json")).unwrap())
+            .unwrap();
+    assert_eq!(manifest.stems[0].first_timestamp_ns, Some(10_000));
+    assert_eq!(manifest.stems[0].final_timestamp_ns, Some(20_010_000));
+    assert_eq!(manifest.stems[0].written_frames, 1);
+    assert_eq!(manifest.errors.len(), 1);
+    assert!(outcome
+        .read_clip(
+            SessionId(91),
+            config.stem_id,
+            crate::RecordingClipWindow::new(10_000, 20_010_000).unwrap(),
+        )
+        .is_err());
+}
+
+fn production_recording_with_late_failure(root: &Path) -> SessionMultistemRecording {
+    let (mut router, mut receivers, nodes) = router_with_sources(1);
+    let config = stem_config(92, 11, 12, 13, "application", 10_000, 10_000);
+    let wrong = stem_config(92, 99, 12, 13, "application", 10_000, 10_000);
+    for (source, sequence, timestamp_ns) in [(&config, 0, 10_000), (&wrong, 1, 20_010_000)] {
+        router.dispatch_from(
+            nodes[0],
+            "out",
+            frame(source, sequence, timestamp_ns, 0.25),
+            timestamp_ns,
+        );
+    }
+    SessionMultistemRecording::start(
+        root,
+        SessionId(92),
+        crate::endpoint::EndpointGroupId::new("recording.test.v1"),
+        vec![SessionRecorderStemInput {
+            session_id: config.session_id,
+            stem_id: config.stem_id,
+            label: config.label,
+            sample_rate_hz: config.sample_rate_hz,
+            channels: config.channels,
+            session_timeline_origin_ns: config.timeline_mapping.session_origin_ns,
+            receiver: receivers.pop().unwrap(),
+        }],
+    )
+    .unwrap()
+}
+
+#[test]
+fn given_production_session_worker_failure_when_finish_runs_then_public_and_manifest_verdicts_agree(
+) {
+    let temp = TempDir::new().unwrap();
+    let outcome = production_recording_with_late_failure(temp.path())
+        .finish()
+        .unwrap();
+    let manifest: ManifestDocument =
+        serde_json::from_reader(File::open(outcome.session_dir.join("manifest.json")).unwrap())
+            .unwrap();
+    assert_eq!(outcome.state, RecordingState::Incomplete);
+    assert_eq!(outcome.completed_stems, 0);
+    assert_eq!(outcome.failed_stems, 1);
+    assert_eq!(outcome.stems[0].written_frames, 1);
+    assert_eq!(outcome.stems[0].error, manifest.stems[0].error);
+    assert!(outcome.stems[0]
+        .error
+        .as_deref()
+        .unwrap()
+        .contains("lineage Source"));
+    assert_eq!(manifest.stems[0].written_frames, 1);
+    assert_eq!(manifest.stems[0].first_timestamp_ns, Some(0));
+    assert_eq!(manifest.stems[0].final_timestamp_ns, Some(20_000_000));
+    assert_eq!(
+        manifest.stems[0].finalization_state,
+        RecordingState::Incomplete
+    );
+    assert_eq!(manifest.errors.len(), 1);
+}
+
+#[test]
+fn given_worker_and_auxiliary_write_failure_when_production_finish_runs_then_both_causes_survive() {
+    let temp = TempDir::new().unwrap();
+    let recording = production_recording_with_late_failure(temp.path());
+    let session_dir = recording.session_dir.clone();
+    let blocked_path = session_dir.join("metrics/destinations.jsonl");
+    fs::create_dir(&blocked_path).unwrap();
+    let secondary_kind = File::create(&blocked_path).unwrap_err().kind();
+    let error = recording.finish().unwrap_err();
+    let text = error.to_string();
+    assert!(text.contains("recording worker failure:"));
+    assert!(text.contains("lineage Source"));
+    assert!(text.contains("finalization artifact failure:"));
+    assert!(matches!(error, RecorderError::Io(ref error) if error.kind() == secondary_kind));
+    // No manifest persistence success is invented after the actual I/O error.
+    let retained: ManifestDocument =
+        serde_json::from_reader(File::open(session_dir.join("manifest.json")).unwrap()).unwrap();
+    assert_eq!(retained.state, RecordingState::Recording);
+    assert_ne!(
+        retained.stems[0].finalization_state,
+        RecordingState::Complete
+    );
+}
+
+#[test]
+fn given_missing_integrity_without_worker_error_when_projected_then_public_stem_keeps_unverified_error(
+) {
+    let temp = TempDir::new().unwrap();
+    let (config, mut outcome) =
+        output_fault_outcome(temp.path(), OutputFault::None, false, false, "application");
+    outcome.report.as_mut().unwrap().checksum_fnv1a64 = None;
+    assert!(outcome.error.is_none());
+    let stem = ManifestStem::from_outcome(&config, &outcome);
+    let public = stem.recording_outcome(&outcome);
+    assert_eq!(stem.finalization_state, RecordingState::Incomplete);
+    assert_eq!(public.written_frames, 1);
+    assert_eq!(
+        public.error.as_deref(),
+        Some("recorder worker finalization is unverified")
+    );
+}
+
+#[test]
+fn given_no_worker_failure_when_artifact_write_fails_then_original_io_error_is_unchanged() {
+    let error = RecorderError::Io(std::io::Error::from_raw_os_error(28));
+    let original = error.to_string();
+    let retained = retain_worker_error_context::<()>(Err(error), std::iter::empty()).unwrap_err();
+    assert_eq!(retained.to_string(), original);
+    assert!(matches!(retained, RecorderError::Io(error) if error.raw_os_error() == Some(28)));
+}

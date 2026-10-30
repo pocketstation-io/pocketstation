@@ -803,14 +803,26 @@ impl RunningSession {
                             self.session_id,
                             &self.event_sender,
                             &mut external_source_finalization_failures,
-                            SessionFinalizationStage::DrainRuntime,
+                            if error.capture_close_unconfirmed() {
+                                SessionFinalizationStage::StopCapture
+                            } else {
+                                SessionFinalizationStage::DrainRuntime
+                            },
                             SessionComponentId::Runtime,
-                            "join_external_source",
-                            format!(
-                                "source instance {} (source {}): {error}",
-                                source.instance_id.value(),
-                                source.source_id.get(),
-                            ),
+                            if error.capture_close_unconfirmed() {
+                                "close_external_capture"
+                            } else {
+                                "join_external_source"
+                            },
+                            if error.capture_close_unconfirmed() {
+                                "capture-close-unconfirmed".to_owned()
+                            } else {
+                                format!(
+                                    "source instance {} (source {}): {error}",
+                                    source.instance_id.value(),
+                                    source.source_id.get(),
+                                )
+                            },
                         );
                         1
                     }
@@ -1085,6 +1097,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         source_registry,
         endpoint_registry,
         session_timeline_origin,
+        &start_cancellation.capture_open_cancellation(),
     ) {
         Ok(prepared) => prepared,
         Err((error, rollback_failures)) => {
@@ -1705,6 +1718,7 @@ fn prepare_external_source_runtimes(
     source_registry: &SourceRegistry,
     endpoint_registry: &EndpointDriverRegistry,
     session_timeline_origin: SessionTimelineOrigin,
+    capture_cancellation: &crate::CaptureOpenCancellation,
 ) -> Result<ExternalSourcePreparation, (SessionStartError, Vec<SessionRollbackFailure>)> {
     let mut sources = Vec::with_capacity(mappings.len());
     let mut bridges = Vec::new();
@@ -1732,7 +1746,7 @@ fn prepare_external_source_runtimes(
                 });
             }
         }
-        let (runtime, receivers) = match source_registry.prepare_session(
+        let (runtime, receivers) = match source_registry.prepare_session_cancellable(
             &mapping.source_type_id,
             &mapping.configuration,
             &branch_specs,
@@ -1741,17 +1755,41 @@ fn prepare_external_source_runtimes(
                 source_id: mapping.source_id,
                 outputs: output_identities,
             },
+            capture_cancellation,
         ) {
             Ok(prepared) => prepared,
             Err(error) => {
-                let rollback = rollback_prepared_endpoints(std::mem::take(&mut endpoints));
-                return Err((
-                    SessionStartError::ExternalSourcePrepare {
+                let mut rollback = rollback_prepared_endpoints(std::mem::take(&mut endpoints));
+                let error = match error.into_capture_open_failure() {
+                    Ok(failure) => {
+                        let cleanup = match &failure {
+                            crate::CaptureOpenFailure::Cancelled { cleanup_error }
+                            | crate::CaptureOpenFailure::Backend { cleanup_error, .. } => {
+                                cleanup_error
+                            }
+                        };
+                        if cleanup.is_some() {
+                            rollback.failures.push(SessionRollbackFailure::new(
+                                crate::session::SessionRollbackStage::StopOpenedCapture,
+                                SessionControlFailure::new(
+                                    SessionComponentId::Runtime,
+                                    "cleanup_failed_external_capture_open",
+                                    "capture-close-unconfirmed",
+                                ),
+                            ));
+                        }
+                        SessionStartError::ExternalSourceCapture {
+                            source_instance_id: mapping.instance_id,
+                            source: Box::new(failure),
+                            rollback_failures_total: rollback.failures_total(),
+                        }
+                    }
+                    Err(error) => SessionStartError::ExternalSourcePrepare {
                         message: error.to_string(),
                         rollback_failures_total: rollback.failures_total(),
                     },
-                    rollback.failures,
-                ));
+                };
+                return Err((error, rollback.failures));
             }
         };
         if receivers.len() != mapping.branches.len() {

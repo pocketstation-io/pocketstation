@@ -666,14 +666,62 @@ static PksProcessTapHandle *pks_failed_create(PksProcessTapHandle *tap,
     return NULL;
 }
 
-PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *pids, int pid_count,
+typedef enum {
+    PksTapLegacySelection,
+    PksTapExactProcessSelection
+} PksTapSelectionAdmission;
+
+int pks_exact_process_tap_available(void) {
+    // Strict membership requires an explicit opt-out from bundle restoration.
+    if (@available(macOS 26.0, *)) return pks_process_tap_available();
+    return 0;
+}
+
+int pks_resolve_exact_process_members(const int32_t *pids, int count,
+    uint32_t *objects, PksProcessObjectResolver resolve, void *context) {
+    if (!pids || !objects || !resolve || count < 1 || count > 32) return -1;
+    for (int i = 0; i < count; i++) {
+        if (pids[i] <= 0) return -1;
+        uint32_t object = resolve(pids[i], context);
+        if (object == kAudioObjectUnknown) return -1;
+        objects[i] = object;
+    }
+    return 0;
+}
+
+typedef struct {
+    const PksNativeCallObserver *observer;
+    PksTapCancellationCheck cancelled;
+    void *cancel_context;
+} PksExactResolutionContext;
+
+static uint32_t pks_resolve_tap_process_object(int32_t pid, void *context) {
+    PksExactResolutionContext *resolution = context;
+    if (resolution->cancelled && resolution->cancelled(resolution->cancel_context))
+        return kAudioObjectUnknown;
+    return pks_audio_object_id_for_pid((pid_t)pid,
+        resolution->observer);
+}
+
+static PksProcessTapHandle *pks_create_process_tap_with_admission(const int32_t *pids, int pid_count,
     int32_t *out_status, uint8_t *out_stage,
     int32_t *cleanup_status, uint8_t *cleanup_stage,
-    PksTapCancellationCheck cancelled, void *cancel_context, const PksNativeCallObserver *observer) {
+    PksTapCancellationCheck cancelled, void *cancel_context, const PksNativeCallObserver *observer,
+    PksTapSelectionAdmission admission) {
     if (cleanup_status) *cleanup_status = 0;
     if (cleanup_stage) *cleanup_stage = 0;
     if (out_status) *out_status = noErr;
     if (out_stage) *out_stage = 0;
+    if (admission == PksTapExactProcessSelection && !pks_exact_process_tap_available()) {
+        if (out_status) *out_status = kAudioHardwareUnsupportedOperationError;
+        if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_PROCESS_TAP;
+        return NULL;
+    }
+    if (admission == PksTapExactProcessSelection && (!pids || pid_count < 1 || pid_count > 32)) {
+        if (out_status) *out_status = kAudioHardwareBadObjectError;
+        if (out_stage) *out_stage = PKS_TAP_STAGE_RESOLVE_PROCESS;
+        return NULL;
+    }
     if (cancelled && cancelled(cancel_context)) return NULL;
     if (@available(macOS 14.2, *)) {
         @autoreleasepool {
@@ -689,11 +737,23 @@ PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *pids, int pi
                 // CATapDescription takes AudioObjectIDs, not PIDs.
                 NSMutableArray<NSNumber *> *objIDs =
                     [NSMutableArray arrayWithCapacity:(NSUInteger)pid_count];
-                for (int i = 0; i < pid_count; i++) {
-                    if (cancelled && cancelled(cancel_context)) return NULL;
-                    AudioObjectID objID = pks_audio_object_id_for_pid((pid_t)pids[i], observer);
-                    if (objID != kAudioObjectUnknown)
-                        [objIDs addObject:@(objID)];
+                if (admission == PksTapExactProcessSelection) {
+                    uint32_t objects[32];
+                    PksExactResolutionContext resolution = { observer, cancelled, cancel_context };
+                    if (pks_resolve_exact_process_members(pids, pid_count, objects,
+                            pks_resolve_tap_process_object, &resolution) != 0) {
+                        if (cancelled && cancelled(cancel_context)) return NULL;
+                        if (out_status) *out_status = kAudioHardwareBadObjectError;
+                        if (out_stage) *out_stage = PKS_TAP_STAGE_RESOLVE_PROCESS;
+                        return NULL;
+                    }
+                    for (int i = 0; i < pid_count; i++) [objIDs addObject:@(objects[i])];
+                } else {
+                    for (int i = 0; i < pid_count; i++) {
+                        if (cancelled && cancelled(cancel_context)) return NULL;
+                        AudioObjectID objID = pks_audio_object_id_for_pid((pid_t)pids[i], observer);
+                        if (objID != kAudioObjectUnknown) [objIDs addObject:@(objID)];
+                    }
                 }
                 if (objIDs.count == 0) {
                     if (out_status) *out_status = kAudioHardwareBadObjectError;
@@ -709,6 +769,13 @@ PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *pids, int pi
                 if (out_status) *out_status = kAudioHardwareUnspecifiedError;
                 if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_PROCESS_TAP;
                 return NULL;
+            }
+            if (admission == PksTapExactProcessSelection) {
+                // The exact set owns process lifetimes, never bundle identity
+                // restoration. Older systems have no restoration property.
+                if (@available(macOS 26.0, *)) {
+                    tapDesc.processRestoreEnabled = NO;
+                }
             }
             // Keep the source playing (CATapUnmuted = 0).
             uint64_t mute_call = pks_observe_begin(observer, PKS_NATIVE_CALL_TAP_MUTE_BEHAVIOR);
@@ -931,6 +998,20 @@ static const PksTapControlOperations pks_native_tap_operations = {
     pks_register_io, pks_start_io, pks_stop_io, pks_unregister_io,
     pks_destroy_aggregate, pks_destroy_tap
 };
+
+PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *pids, int count,
+    int32_t *status, uint8_t *stage, int32_t *cleanup_status, uint8_t *cleanup_stage,
+    PksTapCancellationCheck cancelled, void *context, const PksNativeCallObserver *observer) {
+    return pks_create_process_tap_with_admission(pids, count, status, stage,
+        cleanup_status, cleanup_stage, cancelled, context, observer, PksTapLegacySelection);
+}
+
+PksProcessTapHandle *pks_create_exact_process_tap_observed(const int32_t *pids, int count,
+    int32_t *status, uint8_t *stage, int32_t *cleanup_status, uint8_t *cleanup_stage,
+    PksTapCancellationCheck cancelled, void *context, const PksNativeCallObserver *observer) {
+    return pks_create_process_tap_with_admission(pids, count, status, stage,
+        cleanup_status, cleanup_stage, cancelled, context, observer, PksTapExactProcessSelection);
+}
 
 PksProcessTapHandle *pks_create_process_tap_checked(const int32_t *pids, int count,
     int32_t *status, uint8_t *stage, int32_t *cleanup_status, uint8_t *cleanup_stage,

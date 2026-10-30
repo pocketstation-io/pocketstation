@@ -74,6 +74,7 @@ pub enum SessionStartErrorCode {
     CaptureSourceUnavailable,
     CaptureUnsupported,
     CaptureBackendFailed,
+    CaptureCleanupUnconfirmed,
     EndpointStartFailed,
     RuntimeStartFailed,
     MissingAudioReceipt,
@@ -100,6 +101,7 @@ impl SessionStartErrorCode {
             Self::CaptureSourceUnavailable => "capture.source_unavailable",
             Self::CaptureUnsupported => "capture.unsupported",
             Self::CaptureBackendFailed => "capture.backend_failed",
+            Self::CaptureCleanupUnconfirmed => "capture.cleanup_unconfirmed",
             Self::EndpointStartFailed => "session.endpoint_start_failed",
             Self::RuntimeStartFailed => "session.runtime_start_failed",
             Self::MissingAudioReceipt => "session.missing_audio_receipt",
@@ -241,6 +243,17 @@ pub const fn session_start_failure_code(error: &SessionStartError) -> SessionSta
         SessionStartError::EndpointPrepare { .. } => SessionStartErrorCode::EndpointPrepareFailed,
         SessionStartError::CapturePrepare { source, .. }
         | SessionStartError::CaptureOpen { source, .. } => capture_error_code(source),
+        SessionStartError::ExternalSourceCapture { source, .. } => match &**source {
+            crate::CaptureOpenFailure::Cancelled {
+                cleanup_error: Some(_),
+            }
+            | crate::CaptureOpenFailure::Backend {
+                cleanup_error: Some(_),
+                ..
+            } => SessionStartErrorCode::CaptureCleanupUnconfirmed,
+            crate::CaptureOpenFailure::Cancelled { .. } => SessionStartErrorCode::StartCancelled,
+            crate::CaptureOpenFailure::Backend { source, .. } => capture_error_code(source),
+        },
         SessionStartError::EndpointStart { .. } => SessionStartErrorCode::EndpointStartFailed,
         SessionStartError::RuntimeRunner { .. }
         | SessionStartError::RuntimeWorkerSpawn { .. }
@@ -319,6 +332,39 @@ mod tests {
     };
 
     #[test]
+    fn given_external_capture_cleanup_when_unconfirmed_then_stable_code_preserves_ownership() {
+        for cancelled in [false, true] {
+            for cleanup_failed in [false, true] {
+                let cleanup_error = cleanup_failed
+                    .then(|| CaptureError::BackendInit("native cleanup failed".into()));
+                let failure = if cancelled {
+                    crate::CaptureOpenFailure::Cancelled { cleanup_error }
+                } else {
+                    crate::CaptureOpenFailure::Backend {
+                        source: CaptureError::PermissionDenied {
+                            operation: "capture exact set",
+                        },
+                        cleanup_error,
+                    }
+                };
+                let error = crate::session::SessionStartError::ExternalSourceCapture {
+                    source_instance_id: crate::SourceInstanceId::new(1),
+                    source: Box::new(failure),
+                    rollback_failures_total: u64::from(cleanup_failed),
+                };
+                let expected = if cleanup_failed {
+                    super::SessionStartErrorCode::CaptureCleanupUnconfirmed
+                } else if cancelled {
+                    super::SessionStartErrorCode::StartCancelled
+                } else {
+                    super::SessionStartErrorCode::CapturePermissionDenied
+                };
+                assert_eq!(session_start_failure_code(&error), expected);
+            }
+        }
+    }
+
+    #[test]
     fn given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced() {
         let values = [
             SessionDeclarationErrorCode::NoSources.as_str(),
@@ -351,6 +397,7 @@ mod tests {
             SessionStartErrorCode::CaptureSourceUnavailable.as_str(),
             SessionStartErrorCode::CaptureUnsupported.as_str(),
             SessionStartErrorCode::CaptureBackendFailed.as_str(),
+            SessionStartErrorCode::CaptureCleanupUnconfirmed.as_str(),
             SessionStartErrorCode::EndpointStartFailed.as_str(),
             SessionStartErrorCode::RuntimeStartFailed.as_str(),
             SessionStartErrorCode::MissingAudioReceipt.as_str(),

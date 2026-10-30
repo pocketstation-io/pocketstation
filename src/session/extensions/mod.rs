@@ -14,6 +14,7 @@ pub use audio_history::AudioHistoryDeclarationError;
 pub(crate) mod builtins;
 mod native_library;
 mod polled_audio;
+pub(crate) mod process_set;
 mod recording;
 pub(crate) mod source;
 pub(crate) use audio_input::AudioInputFactory;

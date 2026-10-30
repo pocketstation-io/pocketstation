@@ -295,6 +295,23 @@ pub struct SourceEmission {
 
 pub trait SourceDriver: Send {
     fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError>;
+    /// Cooperatively prepares an owned source using the Session startup token.
+    /// Existing sources retain their preparation contract by default. Native
+    /// calls remain non-preemptive; cancellation is checked between acquisitions.
+    fn prepare_cancellable(
+        &mut self,
+        context: &SourcePrepareContext,
+        cancellation: &crate::CaptureOpenCancellation,
+    ) -> Result<(), SourceDriverError> {
+        let _ = cancellation;
+        self.prepare(context)
+    }
+    /// Retains an optional typed cause on the control path without changing the
+    /// public driver error enum or requiring a closed source/provider taxonomy.
+    fn take_failure_cause(&mut self) -> Option<Box<dyn std::error::Error + Send + Sync>> {
+        None
+    }
+
     fn next(
         &mut self,
         cancellation: &SourceCancellation,
@@ -393,9 +410,10 @@ impl SourceRegistry {
             .get(source_type_id)
             .cloned()
             .ok_or_else(|| SourceRuntimeError::UnregisteredSource(source_type_id.clone()))?;
-        PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)
+        PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None, None)
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn prepare_session(
         &self,
         source_type_id: &SourceTypeId,
@@ -408,7 +426,28 @@ impl SourceRegistry {
             .get(source_type_id)
             .cloned()
             .ok_or_else(|| SourceRuntimeError::UnregisteredSource(source_type_id.clone()))?;
-        PreparedSourceRuntime::prepare(factory, configuration, branch_specs, Some(session))
+        PreparedSourceRuntime::prepare(factory, configuration, branch_specs, Some(session), None)
+    }
+    pub(crate) fn prepare_session_cancellable(
+        &self,
+        source_type_id: &SourceTypeId,
+        configuration: &SourceConfiguration,
+        branch_specs: &[SourceOutputBranchSpec],
+        session: SourceSessionContext,
+        cancellation: &crate::CaptureOpenCancellation,
+    ) -> Result<(PreparedSourceRuntime, Vec<SourceOutputReceiver>), SourceRuntimeError> {
+        let factory = self
+            .factories
+            .get(source_type_id)
+            .cloned()
+            .ok_or_else(|| SourceRuntimeError::UnregisteredSource(source_type_id.clone()))?;
+        PreparedSourceRuntime::prepare(
+            factory,
+            configuration,
+            branch_specs,
+            Some(session),
+            Some(cancellation),
+        )
     }
 }
 
@@ -493,6 +532,7 @@ impl PreparedSourceRuntime {
         configuration: &SourceConfiguration,
         branch_specs: &[SourceOutputBranchSpec],
         session: Option<SourceSessionContext>,
+        cancellation: Option<&crate::CaptureOpenCancellation>,
     ) -> Result<(Self, Vec<SourceOutputReceiver>), SourceRuntimeError> {
         factory
             .manifest()
@@ -531,12 +571,17 @@ impl PreparedSourceRuntime {
         if fanouts.is_empty() {
             return Err(SourceRuntimeError::NoRoutedOutputs);
         }
-        driver
-            .prepare(&SourcePrepareContext {
-                manifest: manifest.clone(),
-                session: session.clone(),
-            })
-            .map_err(SourceRuntimeError::Driver)?;
+        let context = SourcePrepareContext {
+            manifest: manifest.clone(),
+            session: session.clone(),
+        };
+        let result = match cancellation {
+            Some(cancellation) => driver.prepare_cancellable(&context, cancellation),
+            None => driver.prepare(&context),
+        };
+        if let Err(error) = result {
+            return Err(driver_failure(driver.as_mut(), error, "prepare"));
+        }
         Ok((
             Self {
                 driver: Some(driver),
@@ -604,7 +649,7 @@ impl SourceRuntime {
         branch_specs: &[SourceOutputBranchSpec],
     ) -> Result<(Self, Vec<SourceOutputReceiver>), SourceRuntimeError> {
         let (prepared, receivers) =
-            PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)?;
+            PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None, None)?;
         Ok((prepared.start()?, receivers))
     }
 
@@ -662,8 +707,21 @@ fn finalize_source_driver(
         Ok(())
     };
     // Cleanup still runs when processing, drain or cancellation failed.
-    let close_result = driver.close().map_err(SourceRuntimeError::Driver);
-    let result = result.and(cancel_result).and(close_result);
+    let close_result = match driver.close() {
+        Ok(()) => Ok(()),
+        Err(error) => Err(driver_failure(driver, error, "close")),
+    };
+    let result = result.and(cancel_result);
+    let result = match close_result {
+        Err(SourceRuntimeError::DriverCause {
+            operation, cause, ..
+        }) => Err(SourceRuntimeError::DriverCause {
+            operation,
+            cause,
+            prior: result.err().map(Box::new),
+        }),
+        other => result.and(other),
+    };
     if result.is_err() {
         observations.failure_total.fetch_add(1, Ordering::Relaxed);
     }
@@ -684,9 +742,11 @@ fn run_source_driver(
     loop {
         let emission = match cancellation.stop_state() {
             SourceStopState::Running => {
-                let emission = driver
-                    .next(cancellation)
-                    .map_err(SourceRuntimeError::Driver)?;
+                let emission = driver.next(cancellation);
+                let emission = match emission {
+                    Ok(emission) => emission,
+                    Err(error) => return Err(driver_failure(driver, error, "read")),
+                };
                 if emission.is_none() && cancellation.stop_state() == SourceStopState::Finishing {
                     continue;
                 }
@@ -697,7 +757,10 @@ fn run_source_driver(
                 if started.elapsed() >= SOURCE_DRAIN_TIMEOUT {
                     return Err(SourceRuntimeError::DrainDeadlineExceeded);
                 }
-                let emission = driver.drain().map_err(SourceRuntimeError::Driver)?;
+                let emission = match driver.drain() {
+                    Ok(emission) => emission,
+                    Err(error) => return Err(driver_failure(driver, error, "drain")),
+                };
                 if started.elapsed() >= SOURCE_DRAIN_TIMEOUT {
                     return Err(SourceRuntimeError::DrainDeadlineExceeded);
                 }
@@ -855,8 +918,54 @@ pub enum SourceDriverError {
     Failed(String),
 }
 
+fn driver_failure(
+    driver: &mut dyn SourceDriver,
+    error: SourceDriverError,
+    operation: &'static str,
+) -> SourceRuntimeError {
+    match driver.take_failure_cause() {
+        Some(cause) => SourceRuntimeError::DriverCause {
+            operation,
+            cause,
+            prior: None,
+        },
+        None => SourceRuntimeError::Driver(error),
+    }
+}
+
+impl SourceRuntimeError {
+    pub(crate) fn capture_close_unconfirmed(&self) -> bool {
+        matches!(self, Self::DriverCause { operation: "close", cause, .. }
+            if cause.is::<crate::CaptureError>())
+    }
+    pub(crate) fn into_capture_open_failure(self) -> Result<crate::CaptureOpenFailure, Self> {
+        match self {
+            Self::DriverCause {
+                operation: "prepare",
+                cause,
+                prior,
+            } => match cause.downcast::<crate::CaptureOpenFailure>() {
+                Ok(failure) => Ok(*failure),
+                Err(cause) => Err(Self::DriverCause {
+                    operation: "prepare",
+                    cause,
+                    prior,
+                }),
+            },
+            other => Err(other),
+        }
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum SourceRuntimeError {
+    #[error("source driver {operation} failed: {cause}")]
+    DriverCause {
+        operation: &'static str,
+        #[source]
+        cause: Box<dyn std::error::Error + Send + Sync>,
+        prior: Option<Box<SourceRuntimeError>>,
+    },
     #[error("source did not finish draining within one second")]
     DrainDeadlineExceeded,
     #[error("invalid source manifest: {0}")]

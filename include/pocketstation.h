@@ -8,7 +8,9 @@ extern "C" {
 #endif
 
 #define PKS_SESSION_ABI_MAJOR 1u
-#define PKS_SESSION_ABI_MINOR 1u
+#define PKS_SESSION_ABI_MINOR 2u
+/* Existing record layouts retain their documented 1.1 schema. */
+#define PKS_SESSION_LEGACY_RECORD_MINOR 1u
 
 #define PKS_EXTENSION_ABI_MAJOR 1u
 #define PKS_EXTENSION_ABI_MINOR 2u
@@ -320,6 +322,65 @@ typedef struct {
   PksSessionUtf8 application_name;
 } PksSessionAppMicDeclaration;
 
+/* Additive Session ABI 1.2: control-thread only; no implicit microphone.
+ * Platform codes are explicit portable values, not Rust enum layout. */
+#define PKS_SESSION_PROCESS_PLATFORM_MACOS 1u
+#define PKS_SESSION_PROCESS_PLATFORM_WINDOWS 2u
+#define PKS_SESSION_PROCESS_PLATFORM_LINUX 3u
+#define PKS_SESSION_PROCESS_PLATFORM_IOS 4u
+#define PKS_SESSION_PROCESS_PLATFORM_ANDROID 5u
+#define PKS_SESSION_PROCESS_PLATFORM_WEB 6u
+#define PKS_SESSION_PROCESS_PLATFORM_UNKNOWN 7u
+#define PKS_SESSION_PROCESS_SET_DETAIL_UNSUPPORTED 1u
+#define PKS_SESSION_PROCESS_SET_DETAIL_INVALID 2u
+#define PKS_SESSION_PROCESS_SET_DETAIL_SOURCE_UNAVAILABLE 3u
+#define PKS_SESSION_PROCESS_SET_DETAIL_PERMISSION_DENIED 4u
+#define PKS_SESSION_PROCESS_SET_DETAIL_CLEANUP_UNCONFIRMED 5u
+#define PKS_SESSION_PROCESS_SET_DETAIL_BACKEND_FAILED 6u
+
+typedef struct {
+  uint32_t struct_size_bytes; uint16_t abi_major; uint16_t abi_minor;
+  uint32_t process_id; uint32_t platform;
+  uint64_t process_start_time_ns;
+  PksSessionUtf8 stable_key;
+} PksSessionProcessInstance;
+
+typedef struct {
+  uint32_t struct_size_bytes; uint16_t abi_major; uint16_t abi_minor;
+  PksSessionProcessInstance *members;
+  uint32_t member_capacity_count; uint32_t member_stride_bytes;
+  uint8_t *key_bytes; uint32_t key_capacity_bytes;
+  uint32_t required_member_count; uint32_t required_key_bytes;
+  uint32_t reserved_zero;
+} PksSessionProcessDiscovery;
+
+typedef struct {
+  uint32_t struct_size_bytes; uint16_t abi_major; uint16_t abi_minor;
+  const PksSessionProcessInstance *members;
+  uint32_t member_count; uint32_t member_stride_bytes;
+} PksSessionProcessSetDeclaration;
+
+typedef struct {
+  uint32_t struct_size_bytes; uint16_t abi_major; uint16_t abi_minor;
+  uint64_t source_instance_id; uint64_t source_id;
+  uint64_t emitted_total; uint64_t dropped_total; uint64_t failure_total;
+  uint64_t cancellation_total; uint64_t discontinuity_total;
+  uint64_t recovery_total; uint64_t policy_change_total;
+  uint32_t ready; uint32_t joined;
+} PksSessionExternalSourceMetrics;
+
+typedef struct {
+  uint32_t struct_size_bytes; uint16_t abi_major; uint16_t abi_minor;
+  uint32_t success; uint32_t runtime_worker_panicked;
+  uint64_t capture_finalization_failures_total;
+  uint64_t operator_finalization_failures_total;
+  uint64_t endpoint_finalization_failures_total;
+  uint64_t runtime_failures_total; uint64_t lineage_failures_total;
+  uint64_t source_send_rejections_total; uint64_t runtime_events_total;
+  uint32_t cleanup_unconfirmed; uint32_t reserved_zero;
+} PksSessionStopOutcome;
+
+
 typedef struct {
   uint32_t struct_size_bytes;
   uint16_t abi_major;
@@ -533,6 +594,36 @@ PksSessionStatus pks_session_create_app_mic(
     PksSessionHandle engine,
     const PksSessionAppMicDeclaration *declaration,
     PksSessionHandle *output_session);
+
+/* One coherent discovery per call. A NULL/zero-capacity size query returns
+ * required sizes (NoCapacity only if insufficient); retry reobserves, not a retained snapshot.
+ * Descriptor, initialized row headers and key arena must be aligned/disjoint;
+ * each row's declared size is <= member_stride_bytes. No partial rows/keys on
+ * insufficient capacity. Caller owns returned key views and keeps their arena
+ * live/immutable until create_process_set returns and has copied everything.
+ * New records require ABI minor >=2. Stable keys are bounded to 4096 bytes. */
+PksSessionStatus pks_session_discover_process_instances(
+    PksSessionProcessDiscovery *output);
+/* Declares 1..32 original observations; duplicates/mixed platform/invalid
+ * native PID/start are rejected. Explicit 48kHz stereo/20ms, no mic, capture
+ * only at start. Input views are borrowed for this call, copied before return;
+ * output_session must not overlap any input. No automatic source following. */
+PksSessionStatus pks_session_create_process_set(
+    PksSessionHandle engine,
+    const PksSessionProcessSetDeclaration *declaration,
+    PksSessionHandle *output_session);
+PksSessionStatus pks_session_external_source_metrics_count(
+    PksSessionHandle engine, PksSessionHandle session, uint32_t *output_count);
+PksSessionStatus pks_session_external_source_metrics_at(
+    PksSessionHandle engine, PksSessionHandle session, uint32_t index,
+    PksSessionExternalSourceMetrics *output);
+/* Requires an actual stop result; absence is InvalidLifecycleState. An
+ * unsuccessful source-loss result is distinct from cleanup_unconfirmed.
+ * Unconfirmed resources keep Session/Engine handles owned for diagnostics. */
+PksSessionStatus pks_session_stop_outcome_poll(
+    PksSessionHandle engine, PksSessionHandle session,
+    PksSessionStopOutcome *output);
+
 PksSessionStatus pks_session_compile(
     PksSessionHandle engine,
     PksSessionHandle session);

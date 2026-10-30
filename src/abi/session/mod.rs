@@ -3,6 +3,7 @@ mod abi;
 mod conformance_fixture;
 mod error;
 mod handle;
+mod process_set;
 mod runtime;
 
 pub use abi::{
@@ -388,7 +389,7 @@ pub unsafe extern "C" fn pks_session_metrics_poll(
         let snapshot = PksSessionMetricsSnapshot {
             struct_size_bytes: size_of::<PksSessionMetricsSnapshot>() as u32,
             abi_major: PKS_SESSION_ABI_MAJOR,
-            abi_minor: PKS_SESSION_ABI_MINOR,
+            abi_minor: abi::PKS_SESSION_LEGACY_RECORD_MINOR,
             reserved: 0,
             event_capacity_count: events.capacity_event_count,
             event_depth_count: events.depth_events,
@@ -480,7 +481,7 @@ pub unsafe extern "C" fn pks_session_source_metrics_at(
         let record = PksSessionSourceMetrics {
             struct_size_bytes: size_of::<PksSessionSourceMetrics>() as u32,
             abi_major: PKS_SESSION_ABI_MAJOR,
-            abi_minor: PKS_SESSION_ABI_MINOR,
+            abi_minor: abi::PKS_SESSION_LEGACY_RECORD_MINOR,
             stem_id: source.stem_id.0,
             capture_callback_buffers_total: capture.backend.callback_buffers_total,
             capture_frames_enqueued_total: capture.backend.frames_enqueued_total,
@@ -534,7 +535,7 @@ pub unsafe extern "C" fn pks_session_source_activity_at(
         let record = PksSessionSourceActivity {
             struct_size_bytes: size_of::<PksSessionSourceActivity>() as u32,
             abi_major: PKS_SESSION_ABI_MAJOR,
-            abi_minor: PKS_SESSION_ABI_MINOR,
+            abi_minor: abi::PKS_SESSION_LEGACY_RECORD_MINOR,
             stem_id: source.stem_id.0,
             session_started_at_ns: activity.session_started_at_ns,
             observed_at_ns: activity.observed_at_ns,
@@ -571,7 +572,7 @@ pub unsafe extern "C" fn pks_session_route_metrics_at(
         let record = PksSessionRouteMetrics {
             struct_size_bytes: size_of::<PksSessionRouteMetrics>() as u32,
             abi_major: PKS_SESSION_ABI_MAJOR,
-            abi_minor: PKS_SESSION_ABI_MINOR,
+            abi_minor: abi::PKS_SESSION_LEGACY_RECORD_MINOR,
             route_id: route.route_id.0,
             endpoint_id: route.endpoint_id.0,
             edge_queue_capacity_frames: edge.queue_capacity_frames,
@@ -657,7 +658,7 @@ pub unsafe extern "C" fn pks_session_audio_poll(
         let batch = PksSessionAudioBatch {
             struct_size_bytes: size_of::<PksSessionAudioBatch>() as u32,
             abi_major: PKS_SESSION_ABI_MAJOR,
-            abi_minor: PKS_SESSION_ABI_MINOR,
+            abi_minor: abi::PKS_SESSION_LEGACY_RECORD_MINOR,
             frame_count,
             reserved: 0,
             handle,

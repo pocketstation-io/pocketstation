@@ -81,7 +81,7 @@ comm -23 "${scratch}/expected-symbols.txt" "${scratch}/current-symbols.txt" \
 }
 
 rg -q '^#define PKS_SESSION_ABI_MAJOR 1u$' "${repo_root}/include/pocketstation.h"
-rg -q '^#define PKS_SESSION_ABI_MINOR 1u$' "${repo_root}/include/pocketstation.h"
+rg -q '^#define PKS_SESSION_ABI_MINOR 2u$' "${repo_root}/include/pocketstation.h"
 rg -q '^#define PKS_EXTENSION_ABI_MAJOR 1u$' "${repo_root}/include/pocketstation.h"
 rg -q '^#define PKS_EXTENSION_ABI_MINOR 2u$' "${repo_root}/include/pocketstation.h"
 cargo test --manifest-path "${repo_root}/Cargo.toml" --locked \

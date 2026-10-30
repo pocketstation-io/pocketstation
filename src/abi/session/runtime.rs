@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 
 use crate::session::{
@@ -7,7 +7,7 @@ use crate::session::{
     PolledAudioBatchLease, PolledAudioPollError, RunningSession, Session, SessionEngineHost,
     SessionEngineHostBuilder, SessionEvent, SessionEventKind, SessionEventReceive,
     SessionEventReceiver, SessionLifecycleState, SessionMetricsSnapshot, SessionStartCancellation,
-    SessionStartError, Source, SourceConfiguration, SourceTypeId,
+    Source, SourceConfiguration, SourceTypeId,
 };
 
 use crate::abi::executable_extension::{
@@ -17,7 +17,6 @@ use crate::abi::executable_extension::{
 use crate::abi::session::abi::{
     PksSessionAudioFrame, PksSessionEvent, PksSessionEventKind, PksSessionHandle,
     PksSessionHandleKind, PksSessionLifecycleState, PksSessionSampleFormat, PKS_SESSION_ABI_MAJOR,
-    PKS_SESSION_ABI_MINOR,
 };
 use crate::abi::session::error::AbiError;
 use crate::abi::session::handle::HandleTable;
@@ -25,6 +24,14 @@ use crate::abi::session::handle::HandleTable;
 const DEFAULT_ENGINE_CAPACITY_COUNT: usize = 16;
 const DEFAULT_SESSION_CAPACITY_COUNT: usize = 1;
 const ENGINE_HANDLE_SCOPE_ID: u64 = 1;
+
+#[cfg(test)]
+#[path = "process_set/lifecycle_tests.rs"]
+mod lifecycle_tests;
+#[path = "process_set/lifecycle.rs"]
+mod process_set_lifecycle;
+#[path = "process_set/runtime.rs"]
+mod process_set_runtime;
 
 static NEXT_ENGINE_SCOPE_ID: AtomicU64 = AtomicU64::new(2);
 
@@ -64,7 +71,10 @@ impl SessionObject {
         }
     }
 
-    fn request_stop(&mut self) -> Result<(), AbiError> {
+    fn request_stop(
+        &mut self,
+        stop_outcome: &mut Option<crate::session::SessionStopOutcome>,
+    ) -> Result<(), AbiError> {
         match self {
             Self::Running {
                 session,
@@ -73,6 +83,7 @@ impl SessionObject {
             } => {
                 let outcome = session.stop();
                 *stopped_successfully = Some(outcome.is_success());
+                *stop_outcome = Some(outcome);
                 if outcome.is_success() {
                     Ok(())
                 } else {
@@ -102,6 +113,10 @@ pub struct SessionRuntime {
     leases: HandleTable<PolledAudioBatchLease>,
     session_created: bool,
     session_scope_id: u64,
+    process_set_factory: Option<Arc<crate::session::extensions::process_set::ProcessSetFactory>>,
+    startup_cleanup_unconfirmed: bool,
+    start_cancelled_cleanly: bool,
+    last_stop_outcome: Option<crate::session::SessionStopOutcome>,
 }
 
 impl SessionRuntime {
@@ -128,6 +143,10 @@ impl SessionRuntime {
             ),
             session_created: false,
             session_scope_id: scope_id,
+            process_set_factory: None,
+            startup_cleanup_unconfirmed: false,
+            start_cancelled_cleanly: false,
+            last_stop_outcome: None,
         }
     }
 
@@ -150,6 +169,10 @@ impl SessionRuntime {
             ),
             session_created: false,
             session_scope_id: scope_id,
+            process_set_factory: None,
+            startup_cleanup_unconfirmed: false,
+            start_cancelled_cleanly: false,
+            last_stop_outcome: None,
         }
     }
 
@@ -339,17 +362,19 @@ impl SessionRuntime {
         handle: PksSessionHandle,
         start_cancellation: SessionStartCancellation,
     ) -> Result<(), AbiError> {
-        let object = self.sessions.get_mut(handle)?;
-        let current = std::mem::replace(object, SessionObject::Transitioning);
+        let current = {
+            let object = self.sessions.get_mut(handle)?;
+            std::mem::replace(object, SessionObject::Transitioning)
+        };
         let SessionObject::Compiled(compiled) = current else {
-            *object = current;
+            *self.sessions.get_mut(handle)? = current;
             return Err(AbiError::InvalidLifecycleState);
         };
         let host = self.host.as_ref().ok_or(AbiError::InvalidLifecycleState)?;
         match host.start_compiled_cancellable(compiled, start_cancellation) {
             Ok(mut session) => {
                 let events = session.take_event_receiver();
-                *object = SessionObject::Running {
+                *self.sessions.get_mut(handle)? = SessionObject::Running {
                     session,
                     events,
                     stopped_successfully: None,
@@ -357,26 +382,44 @@ impl SessionRuntime {
                 Ok(())
             }
             Err(error) => {
-                let cancelled = matches!(
-                    error.start_failure().map(|failure| failure.error()),
-                    Some(SessionStartError::Cancelled { .. })
-                );
+                let start_error = self.classify_start_failure(&error);
+                let cancelled = error.start_failure().is_some_and(|failure| {
+                    crate::session_start_failure_code(failure.error()).as_str()
+                        == "session.start_cancelled"
+                });
                 let mut events = None;
                 if let Some(mut failure) = error.into_start_failure() {
                     events = failure.take_event_receiver();
                 }
-                *object = SessionObject::Failed { events };
-                Err(if cancelled {
+                self.start_cancelled_cleanly = cancelled
+                    && !self.startup_cleanup_unconfirmed
+                    && !self.factory_cleanup_unconfirmed();
+                *self.sessions.get_mut(handle)? = SessionObject::Failed { events };
+                Err(if self.start_cancelled_cleanly {
                     AbiError::Cancelled
                 } else {
-                    AbiError::BackendFailure
+                    start_error
                 })
             }
         }
     }
 
     pub fn stop_session(&mut self, handle: PksSessionHandle) -> Result<(), AbiError> {
-        self.sessions.get_mut(handle)?.request_stop()
+        if self.start_cancelled_cleanly
+            && matches!(self.sessions.get(handle)?, SessionObject::Failed { .. })
+        {
+            return Ok(());
+        }
+        let result = self
+            .sessions
+            .get_mut(handle)?
+            .request_stop(&mut self.last_stop_outcome);
+        if self.startup_cleanup_unconfirmed || self.factory_cleanup_unconfirmed() {
+            return Err(AbiError::ProcessSetFailure {
+                detail_code: super::process_set::records::PROCESS_SET_CLEANUP_UNCONFIRMED,
+            });
+        }
+        result
     }
 
     pub fn session_state(
@@ -470,7 +513,7 @@ impl SessionRuntime {
         Ok(PksSessionAudioFrame {
             struct_size_bytes: std::mem::size_of::<PksSessionAudioFrame>() as u32,
             abi_major: PKS_SESSION_ABI_MAJOR,
-            abi_minor: PKS_SESSION_ABI_MINOR,
+            abi_minor: super::abi::PKS_SESSION_LEGACY_RECORD_MINOR,
             sample_format: PksSessionSampleFormat::F32Interleaved,
             sample_rate_hz: frame.sample_rate_hz(),
             channel_count: u32::from(frame.channels()),
@@ -498,30 +541,6 @@ impl SessionRuntime {
         let _ = self.leases.remove(batch_handle)?;
         Ok(())
     }
-
-    pub fn destroy_session(&mut self, handle: PksSessionHandle) -> Result<(), AbiError> {
-        let mut object = self.sessions.remove(handle)?;
-        if matches!(object.lifecycle_state(), PksSessionLifecycleState::Running) {
-            object.request_stop()?;
-        }
-        Ok(())
-    }
-
-    fn shutdown(&mut self) -> Result<(), AbiError> {
-        let mut failed = false;
-        self.sessions.for_each_mut(|object| {
-            if matches!(object.lifecycle_state(), PksSessionLifecycleState::Running)
-                && object.request_stop().is_err()
-            {
-                failed = true;
-            }
-        });
-        if failed {
-            Err(AbiError::BackendFailure)
-        } else {
-            Ok(())
-        }
-    }
 }
 
 fn map_poll_error(error: PolledAudioPollError) -> AbiError {
@@ -536,7 +555,7 @@ fn event_record(event: SessionEvent) -> PksSessionEvent {
     let mut record = PksSessionEvent {
         struct_size_bytes: std::mem::size_of::<PksSessionEvent>() as u32,
         abi_major: PKS_SESSION_ABI_MAJOR,
-        abi_minor: PKS_SESSION_ABI_MINOR,
+        abi_minor: super::abi::PKS_SESSION_LEGACY_RECORD_MINOR,
         kind: PksSessionEventKind::Lifecycle as u32,
         lifecycle_state: PksSessionLifecycleState::Failed as u32,
         reserved: 0,
@@ -595,7 +614,8 @@ struct EngineRuntime {
     lifecycle_state: AtomicU32,
     session_handle: OnceLock<PksSessionHandle>,
     session_scope_id: u64,
-    session_live: std::sync::atomic::AtomicBool,
+    session_live: AtomicBool,
+    closing_requested: AtomicBool,
 }
 
 impl EngineRuntime {
@@ -607,7 +627,8 @@ impl EngineRuntime {
             lifecycle_state: AtomicU32::new(PksSessionLifecycleState::Draft as u32),
             session_handle: OnceLock::new(),
             session_scope_id,
-            session_live: std::sync::atomic::AtomicBool::new(false),
+            session_live: AtomicBool::new(false),
+            closing_requested: AtomicBool::new(false),
         }
     }
 
@@ -697,18 +718,26 @@ impl RuntimeState {
     }
 
     pub fn release_engine(&self, handle: PksSessionHandle) -> Result<(), AbiError> {
-        let engine = self
-            .engines
-            .lock()
-            .map_err(|_| AbiError::BackendFailure)?
-            .remove(handle)?;
+        let engine = self.engine(handle)?;
+        engine.closing_requested.store(true, Ordering::Release);
         engine.start_cancellation.request();
-        let result = engine
+        engine.set_state(PksSessionLifecycleState::Stopping);
+        // The global handle table is never held while runtime shutdown joins.
+        let shutdown = engine
             .runtime
             .lock()
             .map_err(|_| AbiError::BackendFailure)?
             .shutdown();
-        result
+        if let Err(error) = shutdown {
+            engine.set_state(PksSessionLifecycleState::Failed);
+            return Err(error);
+        }
+        self.engines
+            .lock()
+            .map_err(|_| AbiError::BackendFailure)?
+            .remove(handle)?;
+        engine.session_live.store(false, Ordering::Release);
+        Ok(())
     }
 
     pub fn engine_is_live(&self, handle: PksSessionHandle) -> Result<bool, AbiError> {
@@ -754,19 +783,9 @@ impl RuntimeState {
         engine_handle: PksSessionHandle,
         application_name: String,
     ) -> Result<PksSessionHandle, AbiError> {
-        let engine = self.engine(engine_handle)?;
-        let handle = engine
-            .runtime
-            .lock()
-            .map_err(|_| AbiError::BackendFailure)?
-            .create_app_mic_session(application_name)?;
-        engine
-            .session_handle
-            .set(handle)
-            .map_err(|_| AbiError::NoCapacity)?;
-        engine.session_live.store(true, Ordering::Release);
-        engine.set_state(PksSessionLifecycleState::Draft);
-        Ok(handle)
+        self.create_guarded_session(engine_handle, |runtime| {
+            runtime.create_app_mic_session(application_name)
+        })
     }
 
     pub fn register_executable_extension(
@@ -774,9 +793,14 @@ impl RuntimeState {
         engine_handle: PksSessionHandle,
         registration: ExecutableExtensionRegistration,
     ) -> Result<(), AbiError> {
-        self.with_engine_mut(engine_handle, |runtime| {
-            runtime.register_executable_extension(registration)
-        })
+        let engine = self.engine(engine_handle)?;
+        engine.check_open()?;
+        let mut runtime = engine
+            .runtime
+            .lock()
+            .map_err(|_| AbiError::BackendFailure)?;
+        engine.check_open()?;
+        runtime.register_executable_extension(registration)
     }
 
     pub fn create_executable_extension_session(
@@ -784,19 +808,9 @@ impl RuntimeState {
         engine_handle: PksSessionHandle,
         pipeline: ExecutableExtensionPipeline,
     ) -> Result<PksSessionHandle, AbiError> {
-        let engine = self.engine(engine_handle)?;
-        let handle = engine
-            .runtime
-            .lock()
-            .map_err(|_| AbiError::BackendFailure)?
-            .create_executable_extension_session(pipeline)?;
-        engine
-            .session_handle
-            .set(handle)
-            .map_err(|_| AbiError::NoCapacity)?;
-        engine.session_live.store(true, Ordering::Release);
-        engine.set_state(PksSessionLifecycleState::Draft);
-        Ok(handle)
+        self.create_guarded_session(engine_handle, |runtime| {
+            runtime.create_executable_extension_session(pipeline)
+        })
     }
 
     pub fn compile_session(
@@ -806,11 +820,13 @@ impl RuntimeState {
     ) -> Result<(), AbiError> {
         let engine = self.engine(engine_handle)?;
         engine.validate_session(session_handle)?;
-        let result = engine
+        engine.check_open()?;
+        let mut runtime = engine
             .runtime
             .lock()
-            .map_err(|_| AbiError::BackendFailure)?
-            .compile_session(session_handle);
+            .map_err(|_| AbiError::BackendFailure)?;
+        engine.check_open()?;
+        let result = runtime.compile_session(session_handle);
         engine.set_state(if result.is_ok() {
             PksSessionLifecycleState::Compiled
         } else {
@@ -826,7 +842,8 @@ impl RuntimeState {
     ) -> Result<(), AbiError> {
         let engine = self.engine(engine_handle)?;
         engine.validate_session(session_handle)?;
-        if engine
+        engine.check_open()?;
+        engine
             .lifecycle_state
             .compare_exchange(
                 PksSessionLifecycleState::Compiled as u32,
@@ -834,50 +851,36 @@ impl RuntimeState {
                 Ordering::AcqRel,
                 Ordering::Acquire,
             )
-            .is_err()
-        {
-            return Err(AbiError::InvalidLifecycleState);
-        }
-        let result = engine
+            .map_err(|_| AbiError::InvalidLifecycleState)?;
+        let mut runtime = engine
             .runtime
             .lock()
-            .map_err(|_| AbiError::BackendFailure)?
-            .start_session(session_handle, engine.start_cancellation.clone());
+            .map_err(|_| AbiError::BackendFailure)?;
+        engine.check_open()?;
+        let result = runtime.start_session(session_handle, engine.start_cancellation.clone());
         match result {
-            Ok(()) => {
+            Ok(())
                 if engine.start_cancellation.is_requested()
-                    || engine
-                        .lifecycle_state
-                        .compare_exchange(
-                            PksSessionLifecycleState::Starting as u32,
-                            PksSessionLifecycleState::Running as u32,
-                            Ordering::AcqRel,
-                            Ordering::Acquire,
-                        )
-                        .is_err()
-                {
-                    engine.set_state(PksSessionLifecycleState::Stopping);
-                    let stop_result = engine
-                        .runtime
-                        .lock()
-                        .map_err(|_| AbiError::BackendFailure)?
-                        .stop_session(session_handle);
-                    engine.set_state(if stop_result.is_ok() {
-                        PksSessionLifecycleState::Stopped
-                    } else {
-                        PksSessionLifecycleState::Failed
-                    });
-                    Err(AbiError::Cancelled)
+                    || engine.closing_requested.load(Ordering::Acquire) =>
+            {
+                let stopped = runtime.stop_session(session_handle);
+                engine.set_state(if stopped.is_ok() {
+                    PksSessionLifecycleState::Stopped
                 } else {
-                    Ok(())
-                }
+                    PksSessionLifecycleState::Failed
+                });
+                stopped.and(Err(AbiError::Cancelled))
             }
-            Err(AbiError::Cancelled) => {
-                engine.set_state(PksSessionLifecycleState::Stopped);
-                Err(AbiError::Cancelled)
+            Ok(()) => {
+                engine.set_state(PksSessionLifecycleState::Running);
+                Ok(())
             }
             Err(error) => {
-                engine.set_state(PksSessionLifecycleState::Failed);
+                engine.set_state(if error == AbiError::Cancelled {
+                    PksSessionLifecycleState::Stopped
+                } else {
+                    PksSessionLifecycleState::Failed
+                });
                 Err(error)
             }
         }
@@ -892,31 +895,16 @@ impl RuntimeState {
         engine.validate_session(session_handle)?;
         engine.start_cancellation.request();
         match engine.state() {
-            PksSessionLifecycleState::Starting => {
-                engine.set_state(PksSessionLifecycleState::Stopping);
+            PksSessionLifecycleState::Draft | PksSessionLifecycleState::Compiled => {
+                return Err(AbiError::InvalidLifecycleState)
             }
-            PksSessionLifecycleState::Running => {
-                engine.set_state(PksSessionLifecycleState::Stopping);
-            }
-            PksSessionLifecycleState::Stopping => {}
-            PksSessionLifecycleState::Stopped => return Ok(()),
-            PksSessionLifecycleState::Draft
-            | PksSessionLifecycleState::Compiled
-            | PksSessionLifecycleState::Failed => {
-                return Err(AbiError::InvalidLifecycleState);
-            }
+            _ => engine.set_state(PksSessionLifecycleState::Stopping),
         }
         let mut runtime = engine
             .runtime
             .lock()
             .map_err(|_| AbiError::BackendFailure)?;
-        let result = match runtime.session_state(session_handle) {
-            Ok(PksSessionLifecycleState::Running) => runtime.stop_session(session_handle),
-            Ok(PksSessionLifecycleState::Failed) => Ok(()),
-            Ok(PksSessionLifecycleState::Stopped) => Ok(()),
-            Ok(_) => Err(AbiError::InvalidLifecycleState),
-            Err(error) => Err(error),
-        };
+        let result = runtime.stop_session(session_handle);
         engine.set_state(if result.is_ok() {
             PksSessionLifecycleState::Stopped
         } else {
@@ -942,6 +930,9 @@ impl RuntimeState {
     ) -> Result<(), AbiError> {
         let engine = self.engine(engine_handle)?;
         engine.validate_session(session_handle)?;
+        engine.closing_requested.store(true, Ordering::Release);
+        engine.start_cancellation.request();
+        engine.set_state(PksSessionLifecycleState::Stopping);
         let result = engine
             .runtime
             .lock()
@@ -949,6 +940,9 @@ impl RuntimeState {
             .destroy_session(session_handle);
         if result.is_ok() {
             engine.session_live.store(false, Ordering::Release);
+            engine.set_state(PksSessionLifecycleState::Stopped);
+        } else {
+            engine.set_state(PksSessionLifecycleState::Failed);
         }
         result
     }

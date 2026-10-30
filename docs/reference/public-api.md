@@ -23,6 +23,8 @@ Source, Operator, Connector, or Endpoint.
 | Select the default microphone | `Source::microphone_default` |
 | Select an input device | `Source::device` and `DeviceSelector` |
 | Discover applications and devices | `discover_sources` |
+| Discover process instances with retained start observations | `discover_process_instances` |
+| Capture an immutable exact process set through one native tap | `ObservedProcessInstance`, `ApplicationProcessSet`, `Session::capture_process_set` |
 | Resolve a structured query | `resolve_query` and `SourceQuery` |
 | Inspect microphone permission without prompting | `microphone_permission_observation` |
 | Reopen an exact running microphone after teardown | `RunningSession::reopen_microphone_source` |
@@ -32,6 +34,13 @@ Source, Operator, Connector, or Endpoint.
 
 `ApplicationSelector` supports display name, application identifier, process
 ID, stable source ID, and process instance. Ambiguous names fail before capture.
+
+Exact process sets are an additive Session source operation; existing exhaustive
+selectors are unchanged. They require a native macOS 26+ build and return a
+`SourceOutputHandle`. Unsupported platforms/builds return `capture.unsupported`.
+Discovery omits unobservable rows, so callers must establish complete intended
+membership independently and require a valid original observation for each
+member. See [exact process-set capture](../guides/capture-and-route.md#capture-a-frozen-process-set).
 
 ## Route source output
 
@@ -119,3 +128,30 @@ failure, recording stem, and remote publication can be correlated.
 - [Own capture, routing, and shutdown with one Session](../concepts/session-lifecycle.md)
 - [Set delivery behavior for each route](../concepts/delivery-and-failure.md)
 - [Read events, metrics, outcomes, and errors](events-and-errors.md)
+
+### C ABI 1.2 exact process sets
+
+`pks_session_discover_process_instances` copies original PID, platform, stable
+key and nanosecond start observations into caller-owned buffers. A size query
+and its retry are separate discoveries. An adequate call copies one complete
+observation; it never partially fills rows or key bytes. Initialize every row's
+1.2 size/version header before each retry, and keep its key arena alive until
+`pks_session_create_process_set` returns.
+
+`pks_session_create_process_set` copies 1–32 original observations and declares
+48 kHz stereo audio in 20 ms frames. It opens no microphone. Compile and start
+remain explicit. The existing app-plus-microphone constructor is unchanged.
+Only macOS 26+ builds with native capture support this selection; other builds
+return the documented unsupported detail without selecting another source.
+
+The library reports capability version 1.2. Existing event, metrics and audio
+records retain their 1.1 record version and layout; the additive process-set,
+external-source and stop-result records require 1.2 headers.
+
+`pks_session_external_source_metrics_at` reports actual registered-source
+observations. `pks_session_stop_outcome_poll` requires a completed stop and
+reports its actual failure counters. Failed native closure keeps the Session
+and engine handles available for inspection. Repeated stop/destroy calls do
+not erase an unconfirmed close or promise another native attempt. Confirmed
+closure following source loss can release the handles while the stop result
+continues to report the source failure. Shut-down engines reject new work.
