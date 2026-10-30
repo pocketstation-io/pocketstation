@@ -1,7 +1,9 @@
 use core::mem::size_of;
 
 pub const PKS_SESSION_ABI_MAJOR: u16 = 1;
-pub const PKS_SESSION_ABI_MINOR: u16 = 1;
+pub const PKS_SESSION_ABI_MINOR: u16 = 2;
+/// Stable schema of the pre-1.2 output record family.
+pub const PKS_SESSION_LEGACY_RECORD_MINOR: u16 = 1;
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

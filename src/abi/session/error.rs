@@ -32,6 +32,10 @@ pub enum AbiError {
     Cancelled,
     #[error("index is outside the bounded result")]
     IndexOutOfRange,
+    #[error("the exact process selection is invalid")]
+    InvalidProcessSet,
+    #[error("native process-set operation failed with detail code {detail_code}")]
+    ProcessSetFailure { detail_code: u32 },
 }
 
 impl AbiError {
@@ -65,6 +69,13 @@ impl AbiError {
             Self::Cancelled => PksSessionStatus::new(PksSessionStatusCode::Cancelled, 0),
             Self::IndexOutOfRange => {
                 PksSessionStatus::new(PksSessionStatusCode::IndexOutOfRange, 0)
+            }
+            Self::InvalidProcessSet => PksSessionStatus::new(
+                PksSessionStatusCode::InvalidArgument,
+                super::process_set::records::PROCESS_SET_INVALID,
+            ),
+            Self::ProcessSetFailure { detail_code } => {
+                PksSessionStatus::new(PksSessionStatusCode::BackendFailure, detail_code)
             }
         }
     }

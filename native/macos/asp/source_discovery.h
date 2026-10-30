@@ -191,6 +191,15 @@ int pks_tap_control_cleanup_observed(PksTapControl *, const PksTapControlOperati
 PksProcessTapHandle *pks_create_process_tap_observed(const int32_t *, int,
     int32_t *, uint8_t *, int32_t *, uint8_t *, PksTapCancellationCheck, void *,
     const PksNativeCallObserver *);
+// Exact admission: every requested PID must resolve; process restoration is
+// disabled. This never falls back to an application identity or global mix.
+typedef uint32_t (*PksProcessObjectResolver)(int32_t, void *);
+int pks_exact_process_tap_available(void);
+int pks_resolve_exact_process_members(const int32_t *, int, uint32_t *,
+    PksProcessObjectResolver, void *);
+PksProcessTapHandle *pks_create_exact_process_tap_observed(const int32_t *, int,
+    int32_t *, uint8_t *, int32_t *, uint8_t *, PksTapCancellationCheck, void *,
+    const PksNativeCallObserver *);
 int pks_tap_start_observed(PksProcessTapHandle *, uint16_t, PksTapCancellationCheck,
     void *, int32_t *, uint8_t *, const PksNativeCallObserver *);
 int pks_destroy_process_tap_observed(PksProcessTapHandle *, int32_t *, uint8_t *,

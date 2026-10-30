@@ -1,5 +1,5 @@
 use std::fs::{self, File};
-use std::io::{BufReader, BufWriter, Read, Write};
+use std::io::{BufReader, BufWriter, Read, Seek, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
@@ -334,8 +334,6 @@ impl MultistemRecording {
             outcomes.push(worker.join());
         }
 
-        merge_discontinuity_events(&self.session_dir, &self.configs)?;
-        write_destination_metrics(&self.session_dir, &outcomes)?;
         let manifest = ManifestDocument::finished(
             self.session_id,
             &self.group_id,
@@ -343,34 +341,30 @@ impl MultistemRecording {
             &outcomes,
             cancellation_error,
         );
-        write_manifest(&self.session_dir, &manifest)?;
-        write_summary(&self.session_dir, &manifest)?;
+        let artifact_result = (|| {
+            merge_discontinuity_events(&self.session_dir, &self.configs)?;
+            write_destination_metrics(&self.session_dir, &outcomes)?;
+            write_manifest(&self.session_dir, &manifest)?;
+            write_summary(&self.session_dir, &manifest)
+        })();
+        retain_worker_error_context(
+            artifact_result,
+            outcomes
+                .iter()
+                .filter_map(|outcome| outcome.error.as_deref()),
+        )?;
 
-        let completed_stems = outcomes
+        let completed_stems = manifest
+            .stems
             .iter()
-            .filter(|outcome| outcome.report.is_some())
+            .filter(|stem| stem.finalization_state == RecordingState::Complete)
             .count();
-        let failed_stems = outcomes.len().saturating_sub(completed_stems);
+        let failed_stems = manifest.stems.len().saturating_sub(completed_stems);
         let state = manifest.state;
         let stems = outcomes
             .iter()
-            .map(|outcome| RecordingStemOutcome {
-                label: outcome.label.clone(),
-                written_frames: outcome
-                    .report
-                    .as_ref()
-                    .map_or(0, |report| report.written_frames),
-                stale_frames: outcome
-                    .report
-                    .as_ref()
-                    .map_or(0, |report| report.stale_frames),
-                gap_ranges: outcome
-                    .report
-                    .as_ref()
-                    .map_or_else(Vec::new, |report| report.gap_ranges.clone()),
-                error: outcome.error.clone(),
-                edge_observations: outcome.observations,
-            })
+            .zip(&manifest.stems)
+            .map(|(outcome, stem)| stem.recording_outcome(outcome))
             .collect();
         self.finished = true;
         Ok(RecordingOutcome {
@@ -503,56 +497,73 @@ impl SessionMultistemRecording {
             .map(SessionStemWorker::join)
             .collect::<Vec<_>>();
 
-        merge_session_discontinuity_events(&self.session_dir, &self.declarations)?;
-        write_session_destination_metrics(&self.session_dir, &outcomes)?;
-        write_session_permission_events(&self.session_dir, &outcomes)?;
         let manifest = ManifestDocument::session_finished(
             self.session_id,
             &self.group_id,
             &self.declarations,
             &outcomes,
         );
-        write_manifest(&self.session_dir, &manifest)?;
-        write_summary(&self.session_dir, &manifest)?;
+        let artifact_result = (|| {
+            merge_session_discontinuity_events(&self.session_dir, &self.declarations)?;
+            write_session_destination_metrics(&self.session_dir, &outcomes)?;
+            write_session_permission_events(&self.session_dir, &outcomes)?;
+            write_manifest(&self.session_dir, &manifest)?;
+            write_summary(&self.session_dir, &manifest)
+        })();
+        retain_worker_error_context(
+            artifact_result,
+            outcomes
+                .iter()
+                .filter_map(|outcome| outcome.worker.error.as_deref()),
+        )?;
 
         let stems = outcomes
             .iter()
-            .map(|outcome| RecordingStemOutcome {
-                label: outcome.worker.label.clone(),
-                written_frames: outcome
-                    .worker
-                    .report
-                    .as_ref()
-                    .map_or(0, |report| report.written_frames),
-                stale_frames: outcome
-                    .worker
-                    .report
-                    .as_ref()
-                    .map_or(0, |report| report.stale_frames),
-                gap_ranges: outcome
-                    .worker
-                    .report
-                    .as_ref()
-                    .map_or_else(Vec::new, |report| report.gap_ranges.clone()),
-                error: outcome.worker.error.clone(),
-                edge_observations: outcome.worker.observations,
-            })
+            .zip(&manifest.stems)
+            .map(|(outcome, stem)| stem.recording_outcome(&outcome.worker))
             .collect::<Vec<_>>();
-        let failed_stems = stems.iter().filter(|stem| stem.error.is_some()).count();
-        let completed_stems = stems.len().saturating_sub(failed_stems);
+        let completed_stems = manifest
+            .stems
+            .iter()
+            .filter(|stem| stem.finalization_state == RecordingState::Complete)
+            .count();
+        let failed_stems = manifest.stems.len().saturating_sub(completed_stems);
         self.finished = true;
         Ok(RecordingOutcome {
             session_dir: self.session_dir.clone(),
-            state: if failed_stems == 0 {
-                RecordingState::Complete
-            } else {
-                RecordingState::Incomplete
-            },
+            state: manifest.state,
             completed_stems,
             failed_stems,
             stems,
         })
     }
+}
+
+// Preserve the established worker failure when a later artifact write also
+// fails. This cannot make metadata durable on an unwritable filesystem.
+fn retain_worker_error_context<'a, T>(
+    result: Result<T, RecorderError>,
+    worker_errors: impl Iterator<Item = &'a str>,
+) -> Result<T, RecorderError> {
+    result.map_err(|error| {
+        let primary = worker_errors.collect::<Vec<_>>();
+        if primary.is_empty() {
+            return error;
+        }
+        let kind = match &error {
+            RecorderError::Io(error) | RecorderError::Wav(hound::Error::IoError(error)) => {
+                error.kind()
+            }
+            _ => std::io::ErrorKind::Other,
+        };
+        RecorderError::Io(std::io::Error::new(
+            kind,
+            format!(
+                "recording worker failure: {}; finalization artifact failure: {error}",
+                primary.join("; ")
+            ),
+        ))
+    })
 }
 
 impl Drop for SessionMultistemRecording {
@@ -887,8 +898,8 @@ struct StemWorkerReport {
     silence_filled_samples: u64,
     stale_frames: u64,
     gap_ranges: Vec<DiscontinuityRecord>,
-    wav_bytes: u64,
-    checksum_fnv1a64: String,
+    wav_bytes: Option<u64>,
+    checksum_fnv1a64: Option<String>,
 }
 
 struct StemWorkerRuntime {
@@ -901,45 +912,52 @@ struct StemWorkerRuntime {
 }
 
 fn run_stem_worker(mut runtime: StemWorkerRuntime) -> StemWorkerOutcome {
-    let result = runtime.run();
-    if result.is_err() {
-        runtime
-            .telemetry
-            .failures_total
-            .fetch_add(1, Ordering::Relaxed);
-        runtime.receiver.mark_worker_failure();
-    }
-    let observations = runtime.receiver.observations();
-    match result {
-        Ok(Some(report)) => StemWorkerOutcome {
-            label: runtime.config.label.as_str().to_owned(),
-            report: Some(report),
-            error: None,
-            observations,
-        },
-        Ok(None) => StemWorkerOutcome {
-            label: runtime.config.label.as_str().to_owned(),
-            report: None,
-            error: None,
-            observations,
-        },
-        Err(error) => StemWorkerOutcome {
-            label: runtime.config.label.as_str().to_owned(),
-            report: None,
-            error: Some(error.to_string()),
-            observations,
-        },
-    }
+    let mut report = None;
+    let result = runtime.run(&mut report);
+    runtime.into_outcome(report, result)
 }
 
 impl StemWorkerRuntime {
-    fn run(&mut self) -> Result<Option<StemWorkerReport>, RecorderError> {
+    fn into_outcome(
+        self,
+        report: Option<StemWorkerReport>,
+        result: Result<(), RecorderError>,
+    ) -> StemWorkerOutcome {
+        if result.is_err() {
+            self.telemetry
+                .failures_total
+                .fetch_add(1, Ordering::Relaxed);
+            self.receiver.mark_worker_failure();
+        }
+        StemWorkerOutcome {
+            label: self.config.label.as_str().to_owned(),
+            report,
+            error: result.err().map(|error| error.to_string()),
+            observations: self.receiver.observations(),
+        }
+    }
+
+    fn run(&mut self, report: &mut Option<StemWorkerReport>) -> Result<(), RecorderError> {
+        self.run_with_output(
+            report,
+            |path, spec| WavWriter::create(path, spec),
+            checksum_fnv1a64,
+        )
+    }
+
+    fn run_with_output<W: Write + Seek>(
+        &mut self,
+        report: &mut Option<StemWorkerReport>,
+        create_writer: impl FnOnce(&Path, WavSpec) -> Result<WavWriter<W>, hound::Error>,
+        checksum: impl FnOnce(&Path) -> Result<String, RecorderError>,
+    ) -> Result<(), RecorderError> {
+        *report = None;
         let wav_path = self
             .session_dir
             .join("stems")
             .join(format!("{}.wav", self.config.label.as_str()));
         let event_path = stem_event_path(&self.session_dir, &self.config.label);
-        let mut writer = WavWriter::create(
+        let mut writer = create_writer(
             &wav_path,
             WavSpec {
                 channels: u16::from(self.config.channels),
@@ -954,20 +972,10 @@ impl StemWorkerRuntime {
                 .join("events")
                 .join(format!("processing-{}.jsonl", self.config.label.as_str())),
         );
-
-        if let Some(frame) = self.initial_frame.take() {
-            observe_and_write_frame(
-                &mut state,
-                &self.config,
-                &frame,
-                &mut writer,
-                &mut event_writer,
-                &self.telemetry,
-            )?;
-        }
-
-        loop {
-            if let Some(frame) = self.receiver.try_recv() {
+        let mut wav_bytes = None;
+        let mut checksum_value = None;
+        let result = (|| {
+            if let Some(frame) = self.initial_frame.take() {
                 observe_and_write_frame(
                     &mut state,
                     &self.config,
@@ -976,22 +984,40 @@ impl StemWorkerRuntime {
                     &mut event_writer,
                     &self.telemetry,
                 )?;
-                continue;
             }
-            if self.stop_requested.load(Ordering::Acquire) {
-                break;
-            }
-            thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
-        }
 
-        event_writer.flush()?;
-        if let Some(processing) = state.processing_writer.as_mut() {
-            processing.flush()?;
-        }
-        writer.finalize()?;
-        let wav_bytes = fs::metadata(&wav_path)?.len();
-        let checksum_fnv1a64 = checksum_fnv1a64(&wav_path)?;
-        Ok(Some(StemWorkerReport {
+            loop {
+                if let Some(frame) = self.receiver.try_recv() {
+                    observe_and_write_frame(
+                        &mut state,
+                        &self.config,
+                        &frame,
+                        &mut writer,
+                        &mut event_writer,
+                        &self.telemetry,
+                    )?;
+                    continue;
+                }
+                if self.stop_requested.load(Ordering::Acquire) {
+                    break;
+                }
+                thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
+            }
+
+            event_writer.flush()?;
+            if let Some(processing) = state.processing_writer.as_mut() {
+                processing.flush()?;
+            }
+            writer.finalize()?;
+            wav_bytes = Some(fs::metadata(&wav_path)?.len());
+            checksum_value = Some(checksum(&wav_path)?);
+            Ok(())
+        })();
+        // These are accepted logical frames, not a claim that buffered samples
+        // reached durable storage. A failed frame may have a partial WAV tail.
+        // Preserve the established clock/counters even when finalization fails;
+        // file size and checksum remain unknown until their own steps succeed.
+        *report = Some(StemWorkerReport {
             first_timestamp_ns: state.first_timestamp_ns,
             final_timestamp_ns: state.expected_timestamp_ns,
             written_frames: state.written_frames,
@@ -999,8 +1025,9 @@ impl StemWorkerRuntime {
             stale_frames: state.stale_frames,
             gap_ranges: state.gap_ranges,
             wav_bytes,
-            checksum_fnv1a64,
-        }))
+            checksum_fnv1a64: checksum_value,
+        });
+        result
     }
 }
 
@@ -1008,7 +1035,7 @@ fn observe_and_write_frame(
     state: &mut StemWriteState,
     config: &RecorderStemConfig,
     frame: &PlanEdgeFrame,
-    writer: &mut WavWriter<BufWriter<File>>,
+    writer: &mut WavWriter<impl Write + Seek>,
     event_writer: &mut BufWriter<File>,
     telemetry: &RecorderWorkerTelemetry,
 ) -> Result<(), RecorderError> {
@@ -1072,7 +1099,7 @@ impl StemWriteState {
         &mut self,
         config: &RecorderStemConfig,
         frame: &PlanEdgeFrame,
-        writer: &mut WavWriter<BufWriter<File>>,
+        writer: &mut WavWriter<impl Write + Seek>,
         event_writer: &mut BufWriter<File>,
     ) -> Result<(), RecorderError> {
         validate_frame_lineage(config, frame)?;
@@ -1643,16 +1670,12 @@ impl ManifestDocument {
         let stems = configs
             .iter()
             .zip(outcomes)
-            .map(|(config, outcome)| match &outcome.report {
-                Some(report) => ManifestStem::from_report(config, report),
-                None => {
-                    let message = outcome
-                        .error
-                        .clone()
-                        .unwrap_or_else(|| "recorder worker failed without an error".to_owned());
-                    errors.push(message.clone());
-                    ManifestStem::failed(config, message)
+            .map(|(config, outcome)| {
+                let stem = ManifestStem::from_outcome(config, outcome);
+                if let Some(error) = &stem.error {
+                    errors.push(error.clone());
                 }
+                stem
             })
             .collect();
         Self {
@@ -1701,13 +1724,12 @@ impl ManifestDocument {
             .zip(outcomes)
             .map(
                 |(declaration, outcome)| match (&outcome.config, &outcome.worker.report) {
-                    (Some(config), Some(report)) => ManifestStem::from_report(config, report),
-                    (Some(config), None) => {
-                        let message = outcome.worker.error.clone().unwrap_or_else(|| {
-                            "recorder worker failed without an error".to_owned()
-                        });
-                        errors.push(message.clone());
-                        ManifestStem::failed(config, message)
+                    (Some(config), _) => {
+                        let stem = ManifestStem::from_outcome(config, &outcome.worker);
+                        if let Some(error) = &stem.error {
+                            errors.push(error.clone());
+                        }
+                        stem
                     }
                     (None, _) => {
                         let message = outcome.worker.error.clone().unwrap_or_else(|| {
@@ -1796,17 +1818,47 @@ impl ManifestStem {
         }
     }
 
-    fn from_report(config: &RecorderStemConfig, report: &StemWorkerReport) -> Self {
-        let mut manifest = Self::new(config, RecordingState::Complete);
+    fn from_outcome(config: &RecorderStemConfig, outcome: &StemWorkerOutcome) -> Self {
+        let Some(report) = &outcome.report else {
+            return Self::failed(
+                config,
+                outcome
+                    .error
+                    .clone()
+                    .unwrap_or_else(|| "recorder worker failed without an error".to_owned()),
+            );
+        };
+        let error = outcome.error.clone().or_else(|| {
+            (report.wav_bytes.is_none() || report.checksum_fnv1a64.is_none())
+                .then(|| "recorder worker finalization is unverified".to_owned())
+        });
+        let state = if error.is_some() {
+            RecordingState::Incomplete
+        } else {
+            RecordingState::Complete
+        };
+        let mut manifest = Self::new(config, state);
         manifest.first_timestamp_ns = report.first_timestamp_ns;
         manifest.final_timestamp_ns = report.final_timestamp_ns;
         manifest.written_frames = report.written_frames;
         manifest.silence_filled_samples = report.silence_filled_samples;
         manifest.stale_frames = report.stale_frames;
         manifest.gap_ranges.clone_from(&report.gap_ranges);
-        manifest.wav_bytes = Some(report.wav_bytes);
-        manifest.checksum = Some(report.checksum_fnv1a64.clone());
+        manifest.wav_bytes = report.wav_bytes;
+        manifest.checksum.clone_from(&report.checksum_fnv1a64);
+        manifest.error = error;
         manifest
+    }
+
+    fn recording_outcome(&self, worker: &StemWorkerOutcome) -> RecordingStemOutcome {
+        RecordingStemOutcome {
+            label: self.label.clone(),
+            written_frames: self.written_frames,
+            stale_frames: self.stale_frames,
+            gap_ranges: self.gap_ranges.clone(),
+            error: self.error.clone(),
+            edge_observations: worker.observations,
+        }
     }
 
     fn failed(config: &RecorderStemConfig, error: String) -> Self {

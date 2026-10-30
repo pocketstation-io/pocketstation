@@ -144,13 +144,13 @@ int pks_session_c_header_conformance(void) {
   status = pks_session_event_poll(engine, session, &event);
   if (status.code != PKS_SESSION_STATUS_OK ||
       event.abi_major != PKS_SESSION_ABI_MAJOR ||
-      event.abi_minor != PKS_SESSION_ABI_MINOR) {
+      event.abi_minor != PKS_SESSION_LEGACY_RECORD_MINOR) {
     return 11;
   }
   status = pks_session_metrics_poll(engine, session, &metrics);
   if (status.code != PKS_SESSION_STATUS_OK ||
       metrics.abi_major != PKS_SESSION_ABI_MAJOR ||
-      metrics.abi_minor != PKS_SESSION_ABI_MINOR ||
+      metrics.abi_minor != PKS_SESSION_LEGACY_RECORD_MINOR ||
       metrics.event_capacity_count != config.session_event_capacity_count) {
     return 12;
   }

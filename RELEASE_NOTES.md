@@ -4,6 +4,13 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.15
+
+- Add `discover_process_instances`, `ObservedProcessInstance`, `ApplicationProcessSet`, and `Session::capture_process_set` for an explicitly declared set of observed process incarnations. Stale observations are rejected instead of silently following replacement processes.
+- Add C ABI 1.2 discovery, process-set capture, external-source metrics and stop-outcome records while preserving existing record layouts and legacy entry points. Engine and Session handles remain available for diagnostics when native cleanup is unconfirmed.
+- Explicit process-set capture requires macOS 26 or later and the existing capture permissions. It captures audio from the declared processes; it does not isolate individual browser tabs.
+- Retain partial recording writer failure reports, including frames written before a failure and finalization details.
+
 ## 1.1.14 — 2026-10-11
 
 ### Observe native startup and retain uncertain cleanup

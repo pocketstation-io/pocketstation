@@ -30,6 +30,7 @@ mod native_aec;
 mod native_call_observations;
 mod observations;
 pub(crate) mod platform;
+mod process_set;
 mod processing;
 mod query;
 mod selection;
@@ -57,6 +58,12 @@ pub use capture_owner::{
     CapturePrepareRequest, CaptureStopOutcome, PreparedCaptureBackend,
 };
 pub use events::*;
+#[cfg(all(
+    target_os = "macos",
+    feature = "coreaudio-capture",
+    not(any(test, feature = "internal-testing"))
+))]
+pub(crate) use frame_stream::captured_frame_stream_with_start_gate;
 pub use frame_stream::{
     capture_delivery_start_gate, CaptureDeliveryStartGate, CapturedFrameDelivery,
     CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream,
@@ -93,6 +100,10 @@ pub use native_call_observations::{
 ))]
 pub use observations::CaptureObservationCounters;
 pub use observations::{CaptureObservationHandle, CaptureObservations};
+pub use process_set::{
+    discover_process_instances, ApplicationProcessSet, ObservedProcessInstance, ProcessSetError,
+    MAX_APPLICATION_PROCESS_SET_MEMBERS,
+};
 pub use processing::{
     capture_processing_observations, CaptureProcessingObservationHandle,
     CaptureProcessingObservations, CaptureProcessingReporter,

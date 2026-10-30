@@ -57,6 +57,10 @@ pub use crate::capture::{
     SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender,
     SourceState, StableSourceId, NATIVE_CALL_COMPLETED_CAPACITY, NATIVE_CALL_CURRENT_CAPACITY,
 };
+pub use crate::capture::{
+    discover_process_instances, ApplicationProcessSet, ObservedProcessInstance, ProcessSetError,
+    MAX_APPLICATION_PROCESS_SET_MEMBERS,
+};
 
 /// Reads the current microphone authorization state without prompting.
 ///
@@ -267,6 +271,8 @@ pub struct Session {
     operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,
     source_registrations: Mutex<Vec<Arc<dyn SourceFactory>>>,
     audio_input_factory: Mutex<Option<Arc<crate::session::extensions::AudioInputFactory>>>,
+    process_set_factory:
+        Mutex<Option<Arc<crate::session::extensions::process_set::ProcessSetFactory>>>,
     sidecar_registrations: Mutex<Vec<SidecarProcessSpec>>,
     capture_backends: Option<CaptureBackendConfiguration>,
     session_trace: Option<SessionTraceConfiguration>,
@@ -382,6 +388,7 @@ impl SessionBuilder {
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
             audio_input_factory: Mutex::new(None),
+            process_set_factory: Mutex::new(None),
             sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: self.capture_backends,
             session_trace: self.session_trace,
@@ -403,6 +410,7 @@ impl Session {
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
             audio_input_factory: Mutex::new(None),
+            process_set_factory: Mutex::new(None),
             sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
@@ -419,6 +427,47 @@ impl Session {
 
     pub fn capture(&self, source: Source) -> Result<StemHandle, SessionError> {
         self.declaration.capture(source)
+    }
+
+    /// Declares one frozen set of observed application process instances.
+    ///
+    /// macOS process taps admit every original member before delivery. Other
+    /// platforms/builds reject this capability; existing selectors are unchanged.
+    pub fn capture_process_set(
+        &self,
+        selection: ApplicationProcessSet,
+    ) -> Result<SourceOutputHandle, ProcessSetError> {
+        if !cfg!(all(target_os = "macos", feature = "coreaudio-capture")) {
+            return Err(ProcessSetError::Unsupported);
+        }
+        #[cfg(all(target_os = "macos", feature = "coreaudio-capture"))]
+        if selection.platform() != crate::frame::Platform::Macos
+            || !crate::capture::platform::macos::macos_tap::exact_process_set_available()
+        {
+            return Err(ProcessSetError::Unsupported);
+        }
+        let mut slot = self
+            .process_set_factory
+            .lock()
+            .map_err(|_| ProcessSetError::Registration("registration state unavailable".into()))?;
+        let factory = match slot.as_ref() {
+            Some(factory) => Arc::clone(factory),
+            None => {
+                let factory = crate::session::extensions::process_set::ProcessSetFactory::new(
+                    self.sample_spec,
+                    self.audio_frame_duration,
+                )?;
+                self.source_registrations
+                    .lock()
+                    .map_err(|_| {
+                        ProcessSetError::Registration("registration state unavailable".into())
+                    })?
+                    .push(Arc::clone(&factory) as Arc<dyn SourceFactory>);
+                *slot = Some(Arc::clone(&factory));
+                factory
+            }
+        };
+        factory.declare(&self.declaration, selection)
     }
 
     /// Declares one instance of an open external source type.
@@ -649,10 +698,14 @@ impl Session {
             operator_registrations,
             source_registrations,
             audio_input_factory: _audio_input_factory,
+            process_set_factory,
             sidecar_registrations,
             capture_backends,
             session_trace,
         } = self;
+        let process_set_factory = process_set_factory.into_inner().map_err(|_| {
+            SessionStartError::invariant("process capture registration state unavailable")
+        })?;
         let mut session_trace_recorder = session_trace
             .map(|configuration| {
                 SessionTraceRecorder::start(
@@ -754,13 +807,20 @@ impl Session {
                 "native Session host did not retain its bounded audio receipt",
             )
         })?;
-        let mut running = host.start_compiled_cancellable(compiled, cancellation)?;
+        let mut running = match host.start_compiled_cancellable(compiled, cancellation) {
+            Ok(running) => running,
+            Err(error) => {
+                return Err(SessionStartError::from(error)
+                    .with_process_set_cleanup(process_set_factory.as_deref()));
+            }
+        };
         let Some(events) = running.take_event_receiver() else {
             let _ = running.stop();
             return Err(SessionStartError::new(
                 SessionStartErrorCode::MissingEventReceiver,
                 "running Session did not retain its event receiver",
-            ));
+            )
+            .with_process_set_cleanup(process_set_factory.as_deref()));
         };
         Ok(RunningSession {
             host,
@@ -792,6 +852,7 @@ impl Session {
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
             audio_input_factory: Mutex::new(None),
+            process_set_factory: Mutex::new(None),
             sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
@@ -1029,6 +1090,21 @@ pub struct SessionStartError {
 }
 
 impl SessionStartError {
+    fn with_process_set_cleanup(
+        mut self,
+        factory: Option<&crate::session::extensions::process_set::ProcessSetFactory>,
+    ) -> Self {
+        if let Some(factory) = factory.filter(|factory| factory.cleanup_unconfirmed()) {
+            self.code = SessionStartErrorCode::CaptureCleanupUnconfirmed;
+            self.rollback_failures_total = self.rollback_failures_total.max(1);
+            self.message = format!(
+                "{}; exact capture cleanup unconfirmed: {}",
+                self.message,
+                factory.cleanup_diagnostic()
+            );
+        }
+        self
+    }
     fn new(code: SessionStartErrorCode, message: impl Into<String>) -> Self {
         Self {
             code,
