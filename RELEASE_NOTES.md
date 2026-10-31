@@ -4,6 +4,11 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.16
+
+- Fix native macOS source compilation with older Apple SDK headers by declaring the documented process-restoration setter privately when needed. The macOS 26 runtime check and explicit disabling of process restoration remain unchanged.
+- Add macOS 15 to the existing native-library CI matrix to cover older SDK compilation alongside current macOS and Windows builds.
+
 ## 1.1.15
 
 - Add `discover_process_instances`, `ObservedProcessInstance`, `ApplicationProcessSet`, and `Session::capture_process_set` for an explicitly declared set of observed process incarnations. Stale observations are rejected instead of silently following replacement processes.

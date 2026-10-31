@@ -22,6 +22,13 @@
 
 #include "source_discovery.h"
 
+#if __MAC_OS_X_VERSION_MAX_ALLOWED < 260000
+// Older SDKs omit this setter; its call remains guarded by macOS 26 availability.
+@interface CATapDescription (PksProcessRestoration)
+- (void)setProcessRestoreEnabled:(BOOL)enabled API_AVAILABLE(macos(26.0));
+@end
+#endif
+
 // Optional observation is scoped to synchronous control calls only.
 static uint64_t pks_observe_begin(const PksNativeCallObserver *observer, uint32_t operation) {
     return observer ? observer->begin(observer->context, operation) : 0;
