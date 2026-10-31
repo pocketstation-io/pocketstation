@@ -739,6 +739,8 @@ mod tests {
 
     struct DeliveringPreparedCapture;
 
+    struct IdleCaptureBackend;
+
     struct DeliveringActiveCapture {
         stop_requested: Arc<AtomicBool>,
         worker: Option<std::thread::JoinHandle<()>>,
@@ -750,6 +752,24 @@ mod tests {
                 stop_requested: Arc::new(AtomicBool::new(false)),
                 worker: None,
             }
+        }
+    }
+
+    impl CallbackCaptureBackend for IdleCaptureBackend {
+        fn prepare(
+            &self,
+            _mode: CaptureMode,
+        ) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+            Ok(Box::new(Self))
+        }
+    }
+
+    impl PreparedCaptureBackend for IdleCaptureBackend {
+        fn open(
+            self: Box<Self>,
+            _delivery: CaptureDelivery,
+        ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
+            Ok(Box::new(DeliveringActiveCapture::idle()))
         }
     }
 
@@ -894,7 +914,7 @@ mod tests {
                 .expect("deterministic host builder");
         let capture_backend: Arc<dyn CallbackCaptureBackend> = Arc::new(DeliveringCaptureBackend);
         builder
-            .set_application_backend(Arc::clone(&capture_backend))
+            .set_application_backend(Arc::new(IdleCaptureBackend))
             .set_microphone_backend(capture_backend);
         let _ = builder
             .register_polled_audio_endpoint(PolledAudioEndpointConfig {
@@ -1083,7 +1103,8 @@ mod tests {
     }
 
     #[test]
-    fn given_deterministic_session_when_polled_then_audio_lease_is_bounded_and_stable() {
+    fn given_idle_application_and_emitting_microphone_when_polled_then_audio_lease_is_bounded_and_stable(
+    ) {
         let engine = deterministic_engine(1);
         let declaration = app_mic_declaration();
         let mut session = PksSessionHandle::invalid();
@@ -1168,19 +1189,43 @@ mod tests {
         // SAFETY: The test supplies valid writable count records.
         let route_metrics_count_status =
             unsafe { pks_session_route_metrics_count(engine, session, &mut route_metrics_count) };
-        // SAFETY: Both records contain only integer fields and zero is a valid
+        // SAFETY: These records contain only integer fields and zero is a valid
         // initialization for every field before the ABI overwrites the record.
-        let mut source_metrics = unsafe { std::mem::zeroed::<PksSessionSourceMetrics>() };
-        // SAFETY: See the preceding record initialization invariant.
         let mut source_activity = unsafe { std::mem::zeroed::<PksSessionSourceActivity>() };
         // SAFETY: See the preceding record initialization invariant.
+        let mut idle_source_activity = unsafe { std::mem::zeroed::<PksSessionSourceActivity>() };
+        // SAFETY: See the preceding record initialization invariant.
         let mut route_metrics = unsafe { std::mem::zeroed::<PksSessionRouteMetrics>() };
-        // SAFETY: The test supplies valid writable indexed metric records.
-        let source_metrics_status =
-            unsafe { pks_session_source_metrics_at(engine, session, 0, &mut source_metrics) };
-        // SAFETY: The test supplies a valid writable indexed activity record.
-        let source_activity_status =
-            unsafe { pks_session_source_activity_at(engine, session, 0, &mut source_activity) };
+        let mut matched_source = None;
+        for source_index in 0..source_metrics_count {
+            // SAFETY: The record contains only integer fields and the ABI
+            // overwrites it synchronously while its address is valid.
+            let mut candidate = unsafe { std::mem::zeroed::<PksSessionSourceMetrics>() };
+            // SAFETY: The test supplies a valid writable indexed metric record.
+            let status = unsafe {
+                pks_session_source_metrics_at(engine, session, source_index, &mut candidate)
+            };
+            assert_eq!(status.code, PksSessionStatusCode::Ok as u32);
+            if candidate.stem_id == frame.stem_id {
+                assert!(
+                    matched_source.is_none(),
+                    "delivered stem matched multiple sources"
+                );
+                matched_source = Some((source_index, candidate, status));
+            }
+        }
+        let (source_index, mut source_metrics, source_metrics_status) =
+            matched_source.expect("delivered frame must match one declared source");
+        // SAFETY: The test holds the audio lease and supplies a valid writable
+        // activity record for the matching declaration index.
+        let source_activity_status = unsafe {
+            pks_session_source_activity_at(engine, session, source_index, &mut source_activity)
+        };
+        // SAFETY: Declaration index zero is the idle application and the output
+        // record is valid for this synchronous call.
+        let idle_source_activity_status = unsafe {
+            pks_session_source_activity_at(engine, session, 0, &mut idle_source_activity)
+        };
         // SAFETY: The test supplies valid writable indexed metric records.
         let route_metrics_status =
             unsafe { pks_session_route_metrics_at(engine, session, 0, &mut route_metrics) };
@@ -1237,9 +1282,17 @@ mod tests {
         assert_eq!(route_metrics_count, 2);
         assert_eq!(source_metrics_status.code, PksSessionStatusCode::Ok as u32);
         assert_ne!(source_metrics.stem_id, 0);
+        assert_eq!(source_index, 1, "only the microphone emits in this fixture");
+        assert_eq!(source_metrics.stem_id, frame.stem_id);
         assert_eq!(source_activity_status.code, PksSessionStatusCode::Ok as u32);
         assert_eq!(source_activity.stem_id, source_metrics.stem_id);
         assert!(source_activity.frames_received_total > 0);
+        assert_eq!(
+            idle_source_activity_status.code,
+            PksSessionStatusCode::Ok as u32
+        );
+        assert_ne!(idle_source_activity.stem_id, frame.stem_id);
+        assert_eq!(idle_source_activity.frames_received_total, 0);
         assert!(
             source_activity.session_started_at_ns <= source_activity.first_frame_received_at_ns
         );
