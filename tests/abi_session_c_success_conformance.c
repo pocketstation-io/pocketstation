@@ -106,15 +106,29 @@ int main(void) {
   if (status.code != PKS_SESSION_STATUS_OK || route_metrics_count != 2u) {
     return 26;
   }
-  status =
-      pks_session_source_metrics_at(engine, session, 0u, &source_metrics);
-  if (status.code != PKS_SESSION_STATUS_OK || source_metrics.stem_id == 0u ||
+  uint32_t matching_source_index = 0u;
+  uint32_t matching_source_count = 0u;
+  for (uint32_t source_index = 0u; source_index < source_metrics_count;
+       ++source_index) {
+    PksSessionSourceMetrics candidate = {0};
+    status = pks_session_source_metrics_at(
+        engine, session, source_index, &candidate);
+    if (status.code != PKS_SESSION_STATUS_OK) {
+      return 20;
+    }
+    if (candidate.stem_id == first_frame.stem_id) {
+      matching_source_index = source_index;
+      source_metrics = candidate;
+      matching_source_count += 1u;
+    }
+  }
+  if (matching_source_count != 1u || source_metrics.stem_id == 0u ||
       source_metrics.ingress_queue_capacity_frames !=
           config.source_queue_capacity_frames) {
     return 20;
   }
-  status =
-      pks_session_source_activity_at(engine, session, 0u, &source_activity);
+  status = pks_session_source_activity_at(
+      engine, session, matching_source_index, &source_activity);
   if (status.code != PKS_SESSION_STATUS_OK ||
       source_activity.stem_id != source_metrics.stem_id ||
       source_activity.frames_received_total == 0u ||

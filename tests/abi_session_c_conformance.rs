@@ -71,3 +71,16 @@ fn given_abi_1_0_metrics_buffer_when_polled_then_tail_canary_is_unchanged() {
         "pocketstation-abi-c-1-0-metrics-canary",
     );
 }
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_two_source_audio_when_success_c_harness_executes_then_leases_and_source_observations_pass()
+{
+    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    compile_and_run_c_harness(
+        &manifest_dir
+            .join("tests")
+            .join("abi_session_c_success_conformance.c"),
+        "pocketstation-abi-c-success-conformance",
+    );
+}
