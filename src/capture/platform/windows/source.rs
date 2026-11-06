@@ -2126,41 +2126,65 @@ fn enumerate_wasapi_input_devices() -> Vec<crate::capture::CaptureSource> {
     sources
 }
 
-/// Enumerate active WASAPI audio sessions on the default render endpoint.
+/// Returns process instances observed on active render endpoints.
 ///
-/// Returns per-process `Application` sources.  On any error, returns an empty
-/// `Vec` — missing sessions are not fatal.
+/// An unavailable endpoint contributes no sessions; other endpoints remain visible.
 ///
 /// # Safety
 ///
-/// Caller must have initialised COM (MTA) before calling this function.
+/// Caller must initialise COM (MTA) and release these interfaces on this thread.
 unsafe fn enumerate_wasapi_sessions() -> Vec<crate::capture::CaptureSource> {
+    use crate::capture::windows_application_sources::collect_application_sources;
+    use windows::Win32::Media::Audio::{
+        eRender, IMMDeviceEnumerator, MMDeviceEnumerator, DEVICE_STATE_ACTIVE,
+    };
+    use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_ALL};
+
+    let enumerator: IMMDeviceEnumerator =
+        match CoCreateInstance(&MMDeviceEnumerator, None, CLSCTX_ALL) {
+            Ok(enumerator) => enumerator,
+            Err(_) => return Vec::new(),
+        };
+    let devices = match enumerator.EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE) {
+        Ok(devices) => devices,
+        Err(_) => return Vec::new(),
+    };
+    let endpoint_count = match devices.GetCount() {
+        Ok(endpoint_count) => endpoint_count,
+        Err(_) => return Vec::new(),
+    };
+    let current_pid = std::process::id();
+    collect_application_sources((0..endpoint_count).map(|endpoint_index| {
+        // SAFETY: COM is initialised on this thread; the collection owns its devices.
+        let device = match unsafe { devices.Item(endpoint_index) } {
+            Ok(device) => device,
+            Err(_) => return Vec::new(),
+        };
+        // SAFETY: COM and the device stay live; the callee releases local interfaces here.
+        unsafe { enumerate_wasapi_endpoint_sessions(&device, current_pid) }
+    }))
+}
+
+/// # Safety
+///
+/// COM (MTA) and the endpoint must remain live on this thread until return.
+unsafe fn enumerate_wasapi_endpoint_sessions(
+    device: &windows::Win32::Media::Audio::IMMDevice,
+    current_pid: u32,
+) -> Vec<crate::capture::CaptureSource> {
     use crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
     use crate::frame::Platform;
     use windows::Win32::Foundation::CloseHandle;
     use windows::Win32::Media::Audio::{
-        eMultimedia, eRender, AudioSessionStateActive, IAudioSessionControl, IAudioSessionControl2,
-        IAudioSessionEnumerator, IAudioSessionManager2, IMMDeviceEnumerator, MMDeviceEnumerator,
+        AudioSessionStateActive, IAudioSessionControl, IAudioSessionControl2,
+        IAudioSessionEnumerator, IAudioSessionManager2,
     };
-    use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_ALL};
+    use windows::Win32::System::Com::CLSCTX_ALL;
     use windows::Win32::System::Threading::{
         OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32,
         PROCESS_QUERY_LIMITED_INFORMATION,
     };
     use windows_core::{Interface, PWSTR};
-
-    let current_pid = std::process::id();
-
-    let enumerator: IMMDeviceEnumerator =
-        match CoCreateInstance(&MMDeviceEnumerator, None, CLSCTX_ALL) {
-            Ok(e) => e,
-            Err(_) => return Vec::new(),
-        };
-
-    let device = match enumerator.GetDefaultAudioEndpoint(eRender, eMultimedia) {
-        Ok(d) => d,
-        Err(_) => return Vec::new(),
-    };
 
     let session_manager: IAudioSessionManager2 = match device.Activate(CLSCTX_ALL, None) {
         Ok(sm) => sm,
@@ -2172,15 +2196,15 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<crate::capture::CaptureSource> {
         Err(_) => return Vec::new(),
     };
 
-    let count = match session_enum.GetCount() {
+    let session_count = match session_enum.GetCount() {
         Ok(c) => c,
         Err(_) => return Vec::new(),
     };
 
-    let mut sources: Vec<CaptureSource> = Vec::with_capacity(count as usize);
+    let mut sources: Vec<CaptureSource> = Vec::with_capacity(session_count as usize);
 
-    for i in 0..count {
-        let ctrl: IAudioSessionControl = match session_enum.GetSession(i) {
+    for session_index in 0..session_count {
+        let ctrl: IAudioSessionControl = match session_enum.GetSession(session_index) {
             Ok(c) => c,
             Err(_) => continue,
         };
