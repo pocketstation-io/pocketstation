@@ -35,6 +35,9 @@ mod processing;
 mod query;
 mod selection;
 mod timeline;
+#[cfg(any(test, all(target_os = "windows", feature = "wasapi-capture")))]
+#[path = "platform/windows/application_sources.rs"]
+mod windows_application_sources;
 
 pub use authorization::*;
 #[cfg(any(
