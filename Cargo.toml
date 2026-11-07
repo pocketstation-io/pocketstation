@@ -45,6 +45,7 @@ include = [
   "/tests/**",
   "/benches/**",
   "/proptest-regressions/**",
+  "!**/.DS_Store",
 ]
 
 [package.metadata.pocketstation]
