@@ -4,6 +4,11 @@ This page covers user-visible changes in the PocketStation 1.x release line.
 
 ## Unreleased
 
+## 1.1.17 — 2026-11-07
+
+- Discover Windows application audio across all active render outputs, including non-default routes. Repeated observations of the same process remain one source, with playing state preserved.
+- Reject stale Windows process selections after the source application exits, including when another handle retains its process object. Public APIs and capture scope are unchanged.
+
 ## 1.1.16
 
 - Fix native macOS source compilation with older Apple SDK headers by declaring the documented process-restoration setter privately when needed. The macOS 26 runtime check and explicit disabling of process restoration remain unchanged.
