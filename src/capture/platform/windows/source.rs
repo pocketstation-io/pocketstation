@@ -356,12 +356,20 @@ fn query_process_instance(
 
 fn query_process_creation_time_100ns(process_id: u32) -> windows_core::Result<u64> {
     use windows::Win32::Foundation::CloseHandle;
-    use windows::Win32::System::Threading::{OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION};
+    use windows::Win32::System::Threading::{
+        OpenProcess, PROCESS_ACCESS_RIGHTS, PROCESS_QUERY_LIMITED_INFORMATION,
+    };
+    const PROCESS_SYNCHRONIZE: PROCESS_ACCESS_RIGHTS = PROCESS_ACCESS_RIGHTS(0x0010_0000);
 
-    // SAFETY: OpenProcess receives a concrete PID and requests query-only
+    // SAFETY: OpenProcess receives a concrete PID and requests query/synchronize
     // access. A successful handle is closed before returning.
-    let process_handle =
-        unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, process_id) }?;
+    let process_handle = unsafe {
+        OpenProcess(
+            PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SYNCHRONIZE,
+            false,
+            process_id,
+        )
+    }?;
     let query_result = query_process_creation_time_from_handle(process_handle);
     // SAFETY: process_handle came from OpenProcess and has not been transferred
     // or closed.
@@ -374,15 +382,16 @@ fn query_process_creation_time_100ns(process_id: u32) -> windows_core::Result<u6
 fn query_process_creation_time_from_handle(
     process_handle: windows::Win32::Foundation::HANDLE,
 ) -> windows_core::Result<u64> {
-    use windows::Win32::Foundation::FILETIME;
+    use windows::Win32::Foundation::{ERROR_INVALID_PARAMETER, FILETIME};
     use windows::Win32::System::Threading::GetProcessTimes;
+    use windows_core::{Error, HRESULT};
 
     let mut creation_time = FILETIME::default();
     let mut exit_time = FILETIME::default();
     let mut kernel_time = FILETIME::default();
     let mut user_time = FILETIME::default();
     // SAFETY: every FILETIME pointer is valid for writes during this call and
-    // process_handle remains owned by this function until CloseHandle below.
+    // process_handle remains valid and owned by the caller throughout this call.
     unsafe {
         GetProcessTimes(
             process_handle,
@@ -392,7 +401,20 @@ fn query_process_creation_time_from_handle(
             &mut user_time,
         )
     }?;
-    Ok((u64::from(creation_time.dwHighDateTime) << 32) | u64::from(creation_time.dwLowDateTime))
+    // An exited process retains its creation time while any handle remains
+    // open. Check liveness on this same handle after reading the identity;
+    // successful GetProcessTimes alone must not admit an already-dead source.
+    match observe_process_handle(process_handle) {
+        ProcessInstanceWatchObservation::Running => Ok((u64::from(creation_time.dwHighDateTime)
+            << 32)
+            | u64::from(creation_time.dwLowDateTime)),
+        ProcessInstanceWatchObservation::Exited => Err(Error::from_hresult(HRESULT::from_win32(
+            ERROR_INVALID_PARAMETER.0,
+        ))),
+        ProcessInstanceWatchObservation::Failed { status_code } => {
+            Err(Error::from_hresult(HRESULT(status_code)))
+        }
+    }
 }
 
 struct ProcessInstanceWatch {
@@ -436,6 +458,15 @@ impl ProcessInstanceWatch {
                 // SAFETY: process_handle was returned by OpenProcess above and
                 // has not been transferred.
                 let _ = unsafe { windows::Win32::Foundation::CloseHandle(process_handle) };
+                if error.code()
+                    == windows_core::HRESULT::from_win32(
+                        windows::Win32::Foundation::ERROR_INVALID_PARAMETER.0,
+                    )
+                {
+                    return Err(LoopbackError::SourceUnavailable {
+                        stable_key: stable_key.to_owned(),
+                    });
+                }
                 return Err(LoopbackError::BackendStatus {
                     operation: "verify selected process lifecycle handle",
                     status_code: error.code().0,
@@ -454,27 +485,33 @@ impl ProcessInstanceWatch {
     }
 
     fn poll(&self) -> ProcessInstanceWatchObservation {
-        use windows::Win32::Foundation::{GetLastError, WAIT_FAILED, WAIT_OBJECT_0, WAIT_TIMEOUT};
-        use windows::Win32::System::Threading::WaitForSingleObject;
-        use windows_core::HRESULT;
+        observe_process_handle(self.process_handle)
+    }
+}
 
-        // SAFETY: process_handle remains valid for Self's lifetime; a zero-ms
-        // wait is nonblocking and does not mutate the handle.
-        match unsafe { WaitForSingleObject(self.process_handle, 0) } {
-            WAIT_OBJECT_0 => ProcessInstanceWatchObservation::Exited,
-            WAIT_TIMEOUT => ProcessInstanceWatchObservation::Running,
-            WAIT_FAILED => {
-                // SAFETY: called immediately on the same thread after the
-                // failed WaitForSingleObject.
-                let win32_error = unsafe { GetLastError() };
-                ProcessInstanceWatchObservation::Failed {
-                    status_code: HRESULT::from_win32(win32_error.0).0,
-                }
+fn observe_process_handle(
+    process_handle: windows::Win32::Foundation::HANDLE,
+) -> ProcessInstanceWatchObservation {
+    use windows::Win32::Foundation::{GetLastError, WAIT_FAILED, WAIT_OBJECT_0, WAIT_TIMEOUT};
+    use windows::Win32::System::Threading::WaitForSingleObject;
+    use windows_core::HRESULT;
+
+    // SAFETY: the caller owns a live handle for the duration of this call;
+    // a zero-ms wait is nonblocking and does not mutate a process handle.
+    match unsafe { WaitForSingleObject(process_handle, 0) } {
+        WAIT_OBJECT_0 => ProcessInstanceWatchObservation::Exited,
+        WAIT_TIMEOUT => ProcessInstanceWatchObservation::Running,
+        WAIT_FAILED => {
+            // SAFETY: called immediately on the same thread after the
+            // failed WaitForSingleObject.
+            let win32_error = unsafe { GetLastError() };
+            ProcessInstanceWatchObservation::Failed {
+                status_code: HRESULT::from_win32(win32_error.0).0,
             }
-            unexpected => ProcessInstanceWatchObservation::Failed {
-                status_code: unexpected.0 as i32,
-            },
         }
+        unexpected => ProcessInstanceWatchObservation::Failed {
+            status_code: unexpected.0 as i32,
+        },
     }
 }
 
@@ -2454,4 +2491,86 @@ fn run_native_input_capture(
     );
     stream.stop();
     result
+}
+
+#[cfg(test)]
+mod process_liveness_tests {
+    use super::*;
+    use std::os::windows::io::AsRawHandle;
+    use std::process::Command;
+    use std::time::Instant;
+    use windows::Win32::Foundation::{CloseHandle, ERROR_INVALID_PARAMETER, HANDLE};
+    use windows::Win32::System::Threading::{OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION};
+    use windows_core::HRESULT;
+
+    #[test]
+    fn given_live_process_when_identity_is_queried_then_creation_time_is_available() {
+        assert!(query_process_creation_time_100ns(std::process::id()).expect("live identity") > 0);
+    }
+
+    #[test]
+    fn given_exited_process_with_held_handle_when_opening_then_source_is_unavailable() {
+        const CHILD_MODE: &str = "POCKETSTATION_TEST_EXITED_PROCESS_CHILD";
+        if std::env::var_os(CHILD_MODE).as_deref() == Some(std::ffi::OsStr::new("1")) {
+            std::process::exit(259);
+        }
+        let mut child = Command::new(std::env::current_exe().expect("current test binary"))
+            .args([
+                "--exact",
+                concat!(
+                    "capture::platform::windows::source::process_liveness_tests::",
+                    "given_exited_process_with_held_handle_when_opening_then_source_is_unavailable"
+                ),
+                "--nocapture",
+            ])
+            .env(CHILD_MODE, "1")
+            .spawn()
+            .expect("start owned child");
+        let deadline = Instant::now() + Duration::from_secs(5);
+        loop {
+            if child.try_wait().expect("poll owned child").is_some() {
+                break;
+            }
+            if Instant::now() >= deadline {
+                let _ = child.kill();
+                let _ = child.wait();
+                panic!("owned child did not exit within five seconds");
+            }
+            std::thread::sleep(Duration::from_millis(10));
+        }
+        assert_eq!(child.wait().expect("join owned child").code(), Some(259));
+        let handle = HANDLE(child.as_raw_handle());
+        assert_eq!(
+            observe_process_handle(handle),
+            ProcessInstanceWatchObservation::Exited
+        );
+        let error =
+            query_process_creation_time_100ns(child.id()).expect_err("reject dead identity");
+        assert_eq!(error.code(), HRESULT::from_win32(ERROR_INVALID_PARAMETER.0));
+        assert!(matches!(
+            query_process_instance(child.id(), "held-exited-child"),
+            Err(LoopbackError::SourceUnavailable { .. })
+        ));
+        assert!(matches!(
+            ProcessInstanceWatch::open(
+                child.id(),
+                ProcessInstanceFingerprint::new(child.id(), 1),
+                "held-exited-child"
+            ),
+            Err(LoopbackError::SourceUnavailable { .. })
+        ));
+    }
+
+    #[test]
+    fn given_handle_without_synchronize_when_liveness_fails_then_error_is_preserved() {
+        // SAFETY: query-only access to this process; this test owns the handle.
+        let handle =
+            unsafe { OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, std::process::id()) }
+                .expect("query-only handle");
+        let result = query_process_creation_time_from_handle(handle);
+        // SAFETY: the handle has not been transferred or previously closed.
+        unsafe { CloseHandle(handle) }.expect("close query-only handle");
+        let error = result.expect_err("synchronization permission is required");
+        assert_ne!(error.code(), HRESULT::from_win32(ERROR_INVALID_PARAMETER.0));
+    }
 }
